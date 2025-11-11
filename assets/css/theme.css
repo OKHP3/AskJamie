@@ -1,0 +1,1056 @@
+/* OverKill Hill P³ – 2025 Industrial Blueprint Theme
+   Shared layout + motion for OverKill Hill, Ask Jamie (subsite), and sibling sites.
+*/
+
+/* ===== ROOT TOKENS ======================================================= */
+
+:root {
+  /* Core palette – OverKill Hill P³ industrial stripe family */
+  --okh-teal: #1c3a34;
+  --okh-olive: #676a2c;
+  --okh-ochre: #a06e28;
+  --okh-rust: #5b3a27;
+  --okh-espresso: #2a2320;
+  --okh-orange: #c46a2c; /* rust-orange text accent */
+  --okh-amber: #e6a03c;
+  --okh-paper: #f6f2ee;
+  --okh-gray: #6b7280;
+
+  /* Mapped design tokens (OKH default) */
+  --color-bg: var(--okh-espresso);
+  --color-surface: #111827;
+  --color-surface-soft: #181f26;
+  --color-fg: #e5e7eb;
+  --color-muted: var(--okh-gray);
+  --color-accent: var(--okh-orange);
+  --color-border-subtle: rgba(249, 250, 251, 0.08);
+
+  /* Typography – OverKill Hill default */
+  --font-heading: "Alfa Slab One", system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+  --font-body: "DM Sans", system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+
+  /* Layout */
+  --max-width: 1120px;
+  --radius-md: 0.75rem;
+  --radius-lg: 1.25rem;
+
+  /* Motion */
+  --shadow-soft: 0 18px 40px rgba(0, 0, 0, 0.5);
+}
+
+/* Optional light theme toggle */
+:root[data-theme="light"] {
+  --color-bg: #f9fafb;
+  --color-surface: #ffffff;
+  --color-surface-soft: #f3f4f6;
+  --color-fg: #0f172a;
+  --color-muted: #4b5563;
+  --color-border-subtle: rgba(15, 23, 42, 0.08);
+  --color-accent: var(--okh-orange);
+}
+
+body[data-theme="dark"] {
+  background: radial-gradient(circle at top, #1f2933, #020617);
+}
+
+body[data-theme="light"] {
+  background: radial-gradient(circle at top, #f6f2ee, #fff7f1);
+}
+
+
+/* ===== RESET & BASE ====================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: radial-gradient(circle at top, #1c3a34, #020617);
+  color: var(--color-fg);
+  font-family: var(--font-body);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-heading);
+  margin: 0 0 0.75rem;
+}
+
+p {
+  margin: 0 0 1rem;
+}
+
+ul {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+button {
+  font-family: inherit;
+}
+
+/* ===== UTILS & LAYOUT ==================================================== */
+
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.content-section {
+  padding: 4rem 0;
+}
+
+@media (min-width: 900px) {
+  .content-section {
+    padding: 4.5rem 0;
+  }
+}
+
+.grid {
+  display: grid;
+  gap: 1.75rem;
+}
+
+.grid-3 {
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+/* Cards */
+.card {
+  background: var(--color-surface-soft);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border-subtle);
+  padding: 1.5rem 1.75rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+.card h3 {
+  margin-bottom: 0.5rem;
+}
+
+.card p:last-child {
+  margin-bottom: 0;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.7rem 1.4rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease,
+    background 0.15s ease, border-color 0.15s ease;
+  text-decoration: none;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.7rem 1.4rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease,
+    background 0.15s ease, border-color 0.15s ease;
+  text-decoration: none;
+  background: linear-gradient(135deg, #c46a2c, #e6a03c);
+  color: #0f172a;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+  text-decoration: none;
+}
+
+.btn-quiet {
+  background: transparent;
+  border-color: var(--color-border-subtle);
+  color: var(--color-muted);
+}
+
+.btn-quiet:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+/* Skip link */
+.skip-link {
+  position: absolute;
+  left: -999px;
+  top: 0;
+  padding: 0.5rem 1rem;
+  background: #111827;
+  color: #f9fafb;
+  z-index: 999;
+}
+
+.skip-link:focus {
+  left: 1rem;
+  top: 1rem;
+}
+
+/* ===== HEADER & NAV ====================================================== */
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: radial-gradient(circle at top, #1f2933, #020617);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.25);
+  backdrop-filter: blur(18px);
+}
+
+.site-header .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 3.75rem;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.logo img {
+  border-radius: 0.8rem;
+}
+
+.primary-nav ul {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin: 0;
+  padding: 0;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.primary-nav a {
+  color: var(--color-muted);
+  text-decoration: none;
+  position: relative;
+}
+
+.primary-nav a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -0.2rem;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #ff7a00, #ffb347);
+  transition: width 0.2s ease;
+}
+
+.primary-nav a:hover::after {
+  width: 100%;
+}
+
+/* Global OKH headings: adjust weight and letter-spacing */
+body:not(.glee-main):not(.askjamie-main) h1,
+body:not(.glee-main):not(.askjamie-main) h2,
+body:not(.glee-main):not(.askjamie-main) h3 {
+  font-family: "Alfa Slab One", system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+  font-weight: 400;            /* Reduce weight from 700 to 400 */
+  letter-spacing: 0.05em;      /* Increase letter-spacing for clarity */
+}
+
+/* For Home hero title (“Precision · Protocol · Promptcraft”) */
+body:not(.glee-main):not(.askjamie-main) .hero h1 {
+  font-size: clamp(2.4rem, 3.6vw, 3.0rem);  /* Slightly smaller for readability */
+  letter-spacing: 0.08em;     /* Further breathing room between letters */
+  line-height: 1.08;          /* Reduce line height slightly */
+}
+
+/* For the “What happens at the Hill?” section */
+body:not(.glee-main):not(.askjamie-main) .hero-forge-card h3 {
+  font-size: clamp(1.2rem, 2.1vw, 1.6rem);  /* Size tuned for this secondary heading */
+  font-weight: 600;
+  letter-spacing: 0.06em;      /* Consistent letter-spacing */
+}
+
+/* Projects page header */
+body:not(.glee-main):not(.askjamie-main) .projects-hero h1 {
+  font-size: clamp(2.2rem, 3.2vw, 2.7rem);  /* Smaller than hero but still impactful */
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+
+/* Card titles (in Projects section) */
+body:not(.glee-main):not(.askjamie-main) .project-card h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;   /* Lighter weight */
+}
+
+
+/* ===== BRAND HEADER VARIANTS ============================================ */
+
+/* Ask Jamie + Glee share the light, paper header instead of OKH blueprint */
+
+.askjamie-main .site-header,
+.glee-main .site-header {
+  background: #f6f2ee;
+  border-bottom: 1px solid #d7d7d7;
+  box-shadow: none;
+}
+
+.glee-main .site-header {
+  border-bottom-color: #ffdcd2;
+}
+
+.askjamie-main .site-header .primary-nav a,
+.glee-main .site-header .primary-nav a {
+  color: #6b6b6b;
+}
+
+.glee-main .site-header .primary-nav a {
+  color: #6b5e57;
+}
+
+.askjamie-main .site-header .primary-nav a::after {
+  background: linear-gradient(90deg, #2d6f7e, #3c8ea1);
+}
+
+.glee-main .site-header .primary-nav a::after {
+  background: linear-gradient(90deg, #d35b2d, #f3b932);
+}
+
+.askjamie-main .nav-toggle .bar,
+.glee-main .nav-toggle .bar {
+  background: #2e2b29;
+}
+
+.askjamie-main .site-header.scrolled,
+.glee-main .site-header.scrolled {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.16);
+}
+
+
+/* Mobile nav toggle */
+.nav-toggle {
+  display: none;
+  background: none;
+  border: none;
+}
+
+.nav-toggle .bar {
+  display: block;
+  width: 20px;
+  height: 2px;
+  border-radius: 999px;
+  background: #e5e7eb;
+  margin: 3px 0;
+}
+
+/* Header scrolled state */
+.site-header.scrolled {
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.7);
+}
+
+/* Responsive nav */
+@media (max-width: 768px) {
+  .primary-nav {
+    position: fixed;
+    inset: 3.75rem 0 auto 0;
+    background: #020617;
+    transform: translateY(-120%);
+    transition: transform 0.2s ease;
+  }
+
+  .site-header.nav-open .primary-nav {
+    transform: translateY(0);
+  }
+
+  .primary-nav ul {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1rem 1.5rem 1.5rem;
+  }
+
+  .nav-toggle {
+    display: inline-flex;
+  }
+}
+
+/* Theme toggle button (small icon in header) */
+.theme-toggle {
+  margin-left: 0.75rem;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  background: rgba(15, 23, 42, 0.7);
+  color: #f9fafb;
+  font-size: 0.9rem;
+  padding: 0.25rem 0.6rem;
+  cursor: pointer;
+}
+
+/* ===== HERO – BLUEPRINT FORGE =========================================== */
+
+.hero {
+  position: relative;
+  min-height: 72vh;
+  display: flex;
+  align-items: center;
+  color: #f9fafb;
+  overflow: hidden;
+}
+
+.hero-inner {
+  position: relative;
+  z-index: 1;
+  padding: 4rem 0 3rem;
+}
+
+.hero-grid {
+  display: grid;
+  gap: 2.5rem;
+}
+
+@media (min-width: 900px) {
+  .hero-grid {
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    align-items: center;
+  }
+}
+
+.hero-eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 0.8rem;
+  color: var(--color-muted);
+  margin-bottom: 0.7rem;
+}
+
+.hero h1 {
+  font-size: clamp(2.4rem, 4vw, 3.2rem);
+  margin-bottom: 0.6rem;
+}
+
+.hero-subline {
+  font-size: 1.05rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: #9ca3af;
+  margin-bottom: 1.5rem;
+}
+
+.hero-tagline {
+  max-width: 32rem;
+  color: #e5e7eb;
+  margin-bottom: 1.75rem;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.hero-forge-card {
+  background: radial-gradient(circle at top left, #1f2933, #020617);
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  padding: 1.4rem 1.5rem;
+  box-shadow: var(--shadow-soft);
+  font-size: 0.95rem;
+}
+
+/* Blueprint animated background */
+.hero-blueprint-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.hero-blueprint-bg::before,
+.hero-blueprint-bg::after {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  background-image: repeating-linear-gradient(
+      0deg,
+      rgba(148, 163, 184, 0.14),
+      rgba(148, 163, 184, 0.14) 1px,
+      transparent 1px,
+      transparent 18px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(148, 163, 184, 0.09),
+      rgba(148, 163, 184, 0.09) 1px,
+      transparent 1px,
+      transparent 18px
+    );
+  opacity: 0.65;
+  mix-blend-mode: screen;
+  animation: blueprintShift 20s linear infinite;
+}
+
+.hero-blueprint-bg::after {
+  opacity: 0.4;
+  filter: blur(1px);
+}
+
+/* 20-second loop animation */
+@keyframes blueprintShift {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(-40px, -30px, 0);
+  }
+  100% {
+    transform: translate3d(-80px, -60px, 0);
+  }
+}
+
+.hero-side {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.hero-visual {
+  max-width: 320px;
+  margin-left: auto;
+}
+
+.hero-illustration {
+  border-radius: 1rem;
+  box-shadow: var(--shadow-soft);
+}
+
+@media (max-width: 899px) {
+  .hero-visual {
+    max-width: 260px;
+    margin: 0 auto 1.5rem;
+  }
+}
+
+/* ===================================================================== */
+/* BRAND SIGNATURE STRIPES – HORIZONTAL DRIFT                            */
+/* ===================================================================== */
+
+.brand-stripes {
+  position: absolute;
+  inset: -12% 0;              /* bleed a bit above/below */
+  z-index: -2;                /* behind glow/paper + content */
+  pointer-events: none;
+  opacity: 0.75;
+  background-size: 200% 100%; /* wider than screen so we can pan horizontally */
+  animation: stripeDrift 60s linear infinite;
+}
+
+/* OverKill Hill P³ – industrial stripe stack */
+.brand-stripes--okh {
+  background-image: linear-gradient(
+    to bottom,
+    #1c3a34 0%,
+    #1c3a34 20%,
+    #676a2c 20%,
+    #676a2c 40%,
+    #a06e28 40%,
+    #a06e28 60%,
+    #5b3a27 60%,
+    #5b3a27 80%,
+    #2a2320 80%,
+    #2a2320 100%
+  );
+}
+
+/* Glee-fully – retro rainbow spectrum */
+.brand-stripes--glee {
+  background-image: linear-gradient(
+    to bottom,
+    #f6f2ee 0%,
+    #f6f2ee 14%,
+    #f3b932 14%,
+    #f3b932 28%,
+    #d35b2d 28%,
+    #d35b2d 42%,
+    #9e3b2e 42%,
+    #9e3b2e 56%,
+    #2d6f7e 56%,
+    #2d6f7e 70%,
+    #0d2b3a 70%,
+    #0d2b3a 100%
+  );
+}
+
+/* (Optional) Ask Jamie – light, subtle echo of OverKill stripes */
+.brand-stripes--jamie {
+  background-image: linear-gradient(
+    to bottom,
+    #f6f2ee 0%,
+    #f6f2ee 20%,
+    #e1ecef 20%,
+    #e1ecef 40%,
+    #d9dfd1 40%,
+    #d9dfd1 60%,
+    #f2d7b1 60%,
+    #f2d7b1 80%,
+    #f6f2ee 80%,
+    #f6f2ee 100%
+  );
+  opacity: 0.6;
+}
+
+/* Slow horizontal drift */
+@keyframes stripeDrift {
+  0% {
+    background-position: 0% 0;
+  }
+  50% {
+    background-position: -50% 0;
+  }
+  100% {
+    background-position: 0% 0;
+  }
+}
+
+/* Respect reduced-motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .brand-stripes {
+    animation: none;
+    background-position: 0 0;
+  }
+}
+
+/* ===== SECTION STYLES ==================================================== */
+
+.section-header {
+  margin-bottom: 2.5rem;
+}
+
+.section-header p {
+  color: var(--color-muted);
+  max-width: 36rem;
+}
+
+/* Striped / alternate background */
+.stripe-bg {
+  background: radial-gradient(circle at top, #020617, #020617);
+  border-top: 1px solid rgba(148, 163, 184, 0.22);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.22);
+}
+
+/* Two-column layout */
+.two-column {
+  display: grid;
+  gap: 2rem;
+}
+
+@media (min-width: 900px) {
+  .two-column {
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  }
+}
+
+.feature-list {
+  list-style: none;
+  padding: 0;
+}
+
+.feature-list li {
+  margin-bottom: 0.75rem;
+}
+
+/* Manifesto */
+.manifesto-blockquote {
+  border-left: 4px solid var(--color-accent);
+  padding-left: 1.25rem;
+  margin: 0 0 1.75rem;
+  font-size: 1.05rem;
+}
+
+/* Projects cards */
+.project-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* About */
+.about-grid {
+  display: grid;
+  gap: 2rem;
+}
+
+@media (min-width: 900px) {
+  .about-grid {
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+  }
+}
+
+/* CTA section */
+.contact-cta {
+  text-align: center;
+  padding: 4rem 0 4.5rem;
+}
+
+.contact-cta p {
+  max-width: 40rem;
+  margin: 0 auto 1.5rem;
+}
+
+/* ===== FOOTER ============================================================ */
+
+.site-footer {
+  border-top: 1px solid rgba(148, 163, 184, 0.25);
+  background: #020617;
+  margin-top: 3rem;
+  padding-top: 2.5rem;
+}
+
+.footer-grid {
+  display: grid;
+  gap: 1.75rem;
+}
+
+@media (min-width: 900px) {
+  .footer-grid {
+    grid-template-columns: 2fr 1.2fr 1.2fr;
+  }
+}
+
+.footer-column h3,
+.footer-column h4 {
+  margin-bottom: 0.75rem;
+}
+
+.footer-column ul {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-column li {
+  margin-bottom: 0.4rem;
+}
+
+.footer-column a {
+  color: var(--color-muted);
+}
+
+.footer-column a:hover {
+  color: var(--color-accent);
+}
+
+.footer-bottom {
+  border-top: 1px solid rgba(107, 114, 128, 0.45);
+  margin-top: 2rem;
+  padding: 0.9rem 0;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--color-muted);
+}
+
+/* ===== SCROLL REVEAL ===================================================== */
+
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.reveal-on-scroll.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ===================================================================== */
+/* ASK JAMIE SUBSITE – MID-CENTURY PAPER + TEAL                          */
+/* ===================================================================== */
+
+.askjamie-main {
+  --color-bg: #f6f2ee; /* Paper base */
+  --color-surface: #fdfbf7;
+  --color-surface-soft: #f6f2ee;
+  --color-fg: #2e2b29;
+  --color-muted: #6b6b6b;
+  --color-accent: #2d6f7e;
+  --color-border-subtle: #d7d7d7;
+  --font-heading: "Baloo 2", system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+  --font-body: "Open Sans", system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-body);
+}
+
+/* Neutralize dark blueprint vibe inside Ask Jamie */
+.askjamie-main .hero {
+  background: none;
+  color: #2e2b29;
+}
+
+.askjamie-main .stripe-bg {
+  background: #f2e9e4;
+  border-top: 1px solid #d7d7d7;
+  border-bottom: 1px solid #d7d7d7;
+}
+
+/* Hero paper card */
+.askjamie-hero {
+  position: relative;
+  padding: 4rem 0 3.25rem;
+}
+
+.askjamie-paper {
+  position: absolute;
+  inset: 8% 5% 0 5%;
+  background: #f6f2ee;
+  background-image: radial-gradient(
+      circle at 0 0,
+      rgba(0, 0, 0, 0.05),
+      transparent 55%
+    ),
+    radial-gradient(
+      circle at 100% 100%,
+      rgba(0, 0, 0, 0.04),
+      transparent 55%
+    );
+  transform: rotate(-2deg);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.askjamie-hero-inner {
+  position: relative;
+  z-index: 1;
+}
+
+.askjamie-hero-grid {
+  display: grid;
+  gap: 2.5rem;
+  align-items: center;
+}
+
+@media (min-width: 900px) {
+  .askjamie-hero-grid {
+    grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+  }
+}
+
+.askjamie-hero-copy .eyebrow {
+  font-size: 0.85rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #3c8ea1;
+  margin-bottom: 0.5rem;
+}
+
+.askjamie-hero-copy h1 {
+  font-size: clamp(2.2rem, 4vw, 2.8rem);
+  font-family: "Baloo 2", system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+}
+
+.askjamie-hero-copy .hero-subtitle {
+  font-size: 1.02rem;
+  color: #4b5563;
+  margin-bottom: 0.75rem;
+}
+
+.askjamie-hero-copy .hero-tagline {
+  color: #6b6b6b;
+  margin-bottom: 1.6rem;
+}
+
+/* Avatar */
+.askjamie-avatar {
+  max-width: 260px;
+  width: 100%;
+  height: auto;
+  margin: 0 auto;
+  filter: none;
+}
+
+/* Cards and buttons tuned for Jamie palette */
+.askjamie-main .card {
+  background: #fdfbf7;
+  border-color: #d7d7d7;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+}
+
+.askjamie-main .btn-primary {
+  background: linear-gradient(135deg, #2d6f7e, #3c8ea1);
+  color: #f9fafb;
+  box-shadow: 0 10px 24px rgba(45, 111, 126, 0.45);
+}
+
+.askjamie-main .btn-primary:hover {
+  box-shadow: 0 14px 30px rgba(45, 111, 126, 0.6);
+}
+
+.askjamie-main .btn-quiet {
+  border-color: #d7d7d7;
+  color: #4b5563;
+}
+
+.askjamie-main .btn-quiet:hover {
+  border-color: #2d6f7e;
+  color: #2d6f7e;
+}
+
+/* Chat bubbles */
+.askjamie-main .chat-bubble.user {
+  background: #ffffff;
+  border-color: #d7d7d7;
+}
+
+.askjamie-main .chat-bubble.assistant {
+  background: #2d6f7e;
+  color: #f9fafb;
+}
+
+.askjamie-main .chat-bubble.assistant.secondary {
+  background: #fdfbf7;
+  color: #2e2b29;
+  border-color: #3c8ea1;
+}
+
+/* ===================================================================== */
+/* 🌈 GLEE-FULLY PERSONALIZABLE TOOLS – RETRO JOYFUL OVERLAY             */
+/* ===================================================================== */
+
+.glee-main {
+  --color-bg: #f6f2ee;        /* Cream */
+  --color-surface: #fffdfa;
+  --color-surface-soft: #fff7f1;
+  --color-fg: #2e2b29;        /* Charcoal */
+  --color-muted: #6b5e57;
+  --color-accent: #d94f63;    /* Coral */
+  --color-accent-2: #2d6f7e;  /* Teal */
+
+  font-family: "Open Sans", system-ui, -apple-system, BlinkMacSystemFont,
+    sans-serif;
+  color: var(--color-fg);
+  background: var(--color-bg);
+}
+
+/* Glee hero sits on light, not blueprint */
+.glee-main .hero {
+  background: none;
+  color: var(--color-fg);
+}
+
+.glee-main .hero-tagline {
+  color: var(--color-muted);
+}
+
+/* Headers */
+.glee-main h1,
+.glee-main h2,
+.glee-main h3 {
+  font-family: "Fredoka", "Poppins", sans-serif;
+  color: var(--color-accent-2);
+}
+
+/* Buttons */
+.glee-main .btn-primary {
+  background: linear-gradient(135deg, #d94f63, #d35b2d); /* coral → orange */
+  color: #2e2b29;
+  box-shadow: 0 10px 22px rgba(217, 79, 99, 0.4);
+}
+
+.glee-main .btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 16px 34px rgba(217, 79, 99, 0.55);
+}
+
+.glee-main .btn-quiet {
+  border-color: #ffd8d2;
+  color: var(--color-accent);
+}
+
+/* Glee Glow animation (kept, but tuned warmer) */
+.glee-glow {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    120deg,
+    rgba(243, 185, 50, 0.3),
+    rgba(211, 91, 45, 0.25),
+    rgba(60, 142, 161, 0.28)
+  );
+  background-size: 200% 200%;
+  animation: gleeSweep 18s linear infinite;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+
+@keyframes gleeSweep {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Cards */
+.glee-main .card {
+  background: #ffffff;
+  border-color: #ffe7e0;
+  box-shadow: 0 8px 20px rgba(255, 195, 160, 0.25);
+}
+
+/* Footer */
+.glee-main .site-footer {
+  background: #fff7f1;
+  color: var(--color-muted);
+  border-top: 1px solid #ffdcd2;
+}
