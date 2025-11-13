@@ -353,6 +353,10 @@ body:not(.glee-main):not(.askjamie-main) .project-card h3 {
   color: #6b5e57;
 }
 
+.askjamie-main .primary-nav a {
+  color: #2e2b29;
+}
+
 .askjamie-main .site-header .primary-nav a::after {
   background: linear-gradient(90deg, #2d6f7e, #3c8ea1);
 }
@@ -804,6 +808,30 @@ body:not(.glee-main):not(.askjamie-main) .project-card h3 {
   transform: translateY(0);
 }
 
+/* Chat mock layout – shared structure, brand-specific colors layered on top */
+.chat-mock {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.chat-bubble {
+  max-width: 34rem;
+  padding: 0.85rem 1rem;
+  border-radius: 0.9rem;
+  border: 1px solid var(--color-border-subtle);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.chat-bubble.user {
+  align-self: flex-start;
+}
+
+.chat-bubble.assistant {
+  align-self: flex-end;
+}
+
 /* ===================================================================== */
 /* ASK JAMIE SUBSITE – MID-CENTURY PAPER + TEAL                          */
 /* ===================================================================== */
@@ -842,6 +870,17 @@ body:not(.glee-main):not(.askjamie-main) .project-card h3 {
 .askjamie-hero {
   position: relative;
   padding: 4rem 0 3.25rem;
+}
+
+.askjamie-hero-visual {
+  display: flex;
+  justify-content: center;
+}
+
+@media (min-width: 900px) {
+  .askjamie-hero-visual {
+    justify-content: flex-end;
+  }
 }
 
 .askjamie-paper {
