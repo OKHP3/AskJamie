@@ -97,6 +97,16 @@ a:hover {
   text-decoration: underline;
 }
 
+/* Branded focus ring for keyboard users */
+a:focus-visible,
+button:focus-visible,
+.nav-toggle:focus-visible,
+.btn:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
 h1,
 h2,
 h3,
@@ -128,6 +138,11 @@ button {
 
 .content-section {
   padding: 4rem 0;
+}
+
+/* Subtle divider between stacked sections */
+.content-section + .content-section {
+  border-top: 1px solid var(--color-border-subtle);
 }
 
 @media (min-width: 900px) {
@@ -213,6 +228,19 @@ button {
   color: var(--color-accent);
 }
 
+/* Screen-reader-only text (for buttons like the mobile nav toggle) */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 /* Skip link */
 .skip-link {
   position: absolute;
@@ -284,6 +312,18 @@ button {
   height: 2px;
   background: linear-gradient(90deg, #ff7a00, #ffb347);
   transition: width 0.2s ease;
+}
+
+/* Current / active nav link */
+.primary-nav a[aria-current="page"],
+.primary-nav a.is-current {
+  color: var(--color-accent);
+  font-weight: 600;
+}
+
+.primary-nav a[aria-current="page"]::after,
+.primary-nav a.is-current::after {
+  width: 100%;
 }
 
 .primary-nav a:hover::after {
@@ -361,13 +401,23 @@ body:not(.glee-main):not(.askjamie-main) .project-card h3 {
   background: linear-gradient(90deg, #2d6f7e, #3c8ea1);
 }
 
+.askjamie-main .primary-nav a[aria-current="page"],
+.askjamie-main .primary-nav a.is-current {
+  color: #2d6f7e; /* AskJamie teal */
+}
+
 .glee-main .site-header .primary-nav a::after {
   background: linear-gradient(90deg, #d35b2d, #f3b932);
 }
 
+.glee-main .primary-nav a[aria-current="page"],
+.glee-main .primary-nav a.is-current {
+  color: #d35b2d; /* Glee rust */
+}
+
 .askjamie-main .nav-toggle .bar,
 .glee-main .nav-toggle .bar {
-  background: #2e2b29;
+  background: #2e2b29; /* Glee/AskJamie dark bar */
 }
 
 .askjamie-main .site-header.scrolled,
@@ -375,14 +425,18 @@ body:not(.glee-main):not(.askjamie-main) .project-card h3 {
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.16);
 }
 
-
 /* Mobile nav toggle */
 .nav-toggle {
   display: none;
   background: none;
   border: none;
+  padding: 0.25rem 0.5rem;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
 }
 
+/* three-bar hamburger */
 .nav-toggle .bar {
   display: block;
   width: 20px;
