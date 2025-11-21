@@ -2,13 +2,13 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>The OverKill Hill P³ Universe</title>
+    <title>AskJamie™ — P³ Universe Map</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="AskJamie™ is a mid-century modern AI helpdesk — a warm, trustworthy guide for questions, workflows, and decisions across the OverKill Hill P³™ ecosystem."
+      content="A visual map of the OverKill Hill P³™ universe from AskJamie’s perspective, showing how OverKill Hill, Glee‑fully Tools, BrandGuard, BFS, and narrative experiments connect."
     />
-    <link rel="stylesheet" href="assets/css/theme.css" />
+    <link rel="stylesheet" href="../assets/css/theme.css" />
     <!-- AskJamie typography: Baloo 2 (headings), Open Sans (body), Kalam 400 (accent) -->
     <link
       href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Open+Sans:wght@400;600&family=Kalam:wght@400&display=swap"
@@ -17,25 +17,32 @@
   </head>
   <body class="askjamie-main" data-theme="light">
     <a href="#main" class="skip-link">Skip to content</a>
+
     <header class="site-header" id="top">
       <div class="container">
         <div class="logo">
-          <a href="#top" aria-label="AskJamie™ Home">
-            <!-- the avatar image isn't included locally, so fall back to simple alt text -->
-            <span class="sr-only">AskJamie Avatar</span>
+          <a href="../index.html" aria-label="AskJamie™ Home">
+            <img
+              src="../assets/img/AskJamie%20AvatarTallLeft%20Square%201024.png"
+              alt="AskJamie™ avatar"
+              width="40"
+              height="40"
+            />
           </a>
         </div>
+
         <nav class="primary-nav" id="navigation" aria-label="Primary">
           <ul>
             <li><a href="/index.html#main">Home</a></li>
             <li><a href="/index.html#uses">What it’s for</a></li>
             <li><a href="/index.html#fit">Where it fits</a></li>
             <li><a href="/lens-system/index.html">Lens System</a></li>
-            <li><a href="/universe/index.html">Universe</a></li>
+            <li><a href="/universe/index.html" aria-current="page">Universe</a></li>
             <li><a href="/about/index.html">About</a></li>
             <li><a href="/contact/index.html">Contact</a></li>
           </ul>
         </nav>
+
         <button
           class="nav-toggle"
           aria-controls="navigation"
@@ -47,80 +54,126 @@
       </div>
     </header>
 
-    <main>
-      <section class="hero">
-        <div class="brand-stripes okh" aria-hidden="true"></div>
-        <div class="container">
-          <div class="hero-content">
-            <h1>The OverKill Hill P³ Universe</h1>
-            <p>
-              A network of systems, stories and experimental GPT ecosystems.
-              This page provides a high‑level view of how everything fits
-              together.
-            </p>
+    <main id="main">
+      <!-- HERO: angled paper + large mermaid universe diagram -->
+      <section
+        class="hero askjamie-hero askjamie-hero--universe"
+        aria-labelledby="hero-title"
+      >
+        <div class="brand-stripes brand-stripes--jamie" aria-hidden="true"></div>
+        <div class="askjamie-paper" aria-hidden="true"></div>
+
+        <div class="container askjamie-hero-inner reveal-on-scroll">
+          <div class="askjamie-hero-grid">
+            <div class="askjamie-hero-visual">
+              <figure class="askjamie-mermaid-shell">
+                <pre class="mermaid">
+graph LR
+  OKH[OverKill Hill P³]
+  OKH --> Glee[Glee‑fully Tools]
+  OKH --> AJ[AskJamie]
+  AJ --> BG[BrandGuard]
+  BG --> BFS[Framing Intelligent Futures]
+  OKH --> UT[Un‑NOCKed Truth]
+  OKH --> PS[PathScrib‑R]
+  OKH --> HR[Homestead‑R]
+  OKH --> FR[Found‑Rᵧ]
+  FR --> Meta[GPTs that build GPTs]
+  OKH --> WIP[Work in Progress]
+  WIP --> ARE[Abrahamic Reference Engine]
+  WIP --> MS[Magnus Progenitor Saga]
+  WIP --> BC[Biases as Constants]
+                </pre>
+                <figcaption class="sr-only">
+                  Diagram of the OverKill Hill P³™ universe, showing connections
+                  between OverKill Hill, AskJamie™, Glee‑fully Personalizable Tools™,
+                  BrandGuard™, BFS, and narrative experiments like Magnus Progenitor Saga.
+                </figcaption>
+              </figure>
+            </div>
+
+            <div class="askjamie-hero-copy">
+              <p class="eyebrow h-accent">AskJamie™</p>
+              <h1 id="hero-title">The OverKill Hill P³ universe, at a glance.</h1>
+              <p class="hero-subtitle">
+                This is Jamie’s mental map—how the brands, tools, and experimental GPTs
+                hang together behind the scenes.
+              </p>
+              <p class="hero-tagline">
+                Use it as an orientation layer. When you jump between AskJamie™, Glee‑fully,
+                and OverKill Hill P³™, this diagram is the “you are here” marker.
+              </p>
+
+              <div class="hero-actions">
+                <a href="../index.html" class="btn btn-quiet">Back to the main page</a>
+                <a
+                  href="https://chatgpt.com/g/ASK-JAMIE-GPT-ID-HERE"
+                  class="btn btn-primary"
+                  target="_blank"
+                  rel="noopener"
+                  >Open AskJamie™</a
+                >
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      <section class="content">
-        <div class="container">
-          <div class="section-header"><h2>Universe Diagram</h2></div>
-          <pre class="mermaid">
-            graph LR
-              OKH[OverKill Hill P³]
-              OKH --> Glee[Glee‑fully Tools]
-              OKH --> AJ[AskJamie]
-              AJ --> BG[BrandGuard]
-              BG --> BFS[Framing Intelligent Futures]
-              OKH --> UT[Un‑NOCKed Truth]
-              OKH --> PS[PathScrib‑R]
-              OKH --> HR[Homestead‑R]
-              OKH --> FR[Found‑Rᵧ]
-              FR --> Meta[GPTs that build GPTs]
-              OKH --> WIP[Work&nbsp;in&nbsp;Progress]
-              WIP --> ARE[Abrahamic Reference Engine]
-              WIP --> MS[Magnus&nbsp;Progenitor&nbsp;Saga]
-              WIP --> BC[Biases as Constants]
-          </pre>
+      <!-- Body content: brief explanation + next places to explore -->
+      <section class="content-section container reveal-on-scroll">
+        <header class="section-header">
+          <h2>How to read this map</h2>
+          <p>
+            Each node is a pillar in the OverKill Hill P³™ stack. Some are live today,
+            others are active experiments. AskJamie™ sits alongside OverKill Hill and
+            Glee‑fully, acting as the calm voice that explains how everything works.
+          </p>
+        </header>
+
+        <div class="grid grid-3">
+          <article class="card">
+            <h3>OverKill Hill P³™</h3>
+            <p>
+              The engineering spine. Frameworks, canon, and governance for how tools,
+              prompts, and GPT ecosystems are designed.
+            </p>
+          </article>
+          <article class="card">
+            <h3>AskJamie™</h3>
+            <p>
+              The voice layer. A mid‑century helpdesk persona that narrates, clarifies,
+              and walks you through decisions across the system.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Glee‑fully Tools™</h3>
+            <p>
+              The joy layer. Personalizable tools built for everyday life, infused with
+              Glee’s color, warmth, and playful structure.
+            </p>
+          </article>
         </div>
       </section>
 
-      <section class="content">
-        <div class="container">
-          <div class="section-header"><h2>Systems &amp; Ecosystems</h2></div>
-          <ul>
-            <li><strong><a href="https://glee-fully.tools/">Glee‑fully Personalizable Tools</a>:</strong>
-              A retro‑modern toolbox of GPTs built for joy, organisation and creative play.
-            </li>
-            <li><strong><a href="https://askjamie.bot/">AskJamie</a>:</strong>
-              A mid‑century helpdesk persona with several specialist spin‑offs for documentation, technical coaching and more.
-            </li>
-            <li><strong><a href="https://askjamie.bot/brandguard.html">OKH P³ BrandGuard</a>:</strong>
-              Guardian GPTs to enforce tone, consistency and ethical framing, including the BFS: Framing Intelligent Futures strategic tool.
-            </li>
-            <li><strong><a href="projects/un-nocked-truth.html">Un‑NOCKed Truth</a>:</strong>
-              Archery for anyone: a beginner‑friendly archery learning suite built on AI.
-            </li>
-            <li><strong><a href="projects/pathscrib-r.html">PathScrib‑R</a>:</strong>
-              A narrative copilot and generative writing assistant that explores plot and character arcs.
-            </li>
-            <li><strong><a href="projects/homestead-r.html">Homestead‑R</a>:</strong>
-              Homestead‑oriented GPTs for sustainable living, from seed planning to livestock care.
-            </li>
-            <li><strong><a href="projects/foundry.html">Found‑Rᵧ</a>:</strong>
-              GPTs that build GPTs. This meta‑ecosystem explores recursive design and emergent behaviour.
-            </li>
-            <li><strong><a href="projects.html"></a>Work in progress:</strong>
-              <ul>
-                <li><strong><a href="projects/abrahamic-reference-engine.html">Abrahamic Reference Engine</a>:</strong> A semantic engine for interfaith textual exploration.</li>
-                <li><strong><a href="projects/magnus-saga.html">Magnus Progenitor Saga</a>:</strong> An epic fiction project exploring origin and destiny.</li>
-                <li><strong><a href="projects/biases-as-constants.html">Biases as Constants</a>:</strong> A project interrogating how bias manifests across AI systems.</li>
-              </ul>
-            </li>
-          </ul>
-        </div>
+      <section class="content-section container reveal-on-scroll">
+        <header class="section-header">
+          <h2>Where to explore next</h2>
+        </header>
+        <ul class="link-list">
+          <li>
+            <strong>OverKill Hill P³™:</strong>
+            long‑form systems thinking, frameworks, and project ecosystems.
+          </li>
+          <li>
+            <strong>Glee‑fully Personalizable Tools™:</strong>
+            cozy, colorful tools that turn everyday logistics into something more playful.
+          </li>
+          <li>
+            <strong>AskJamie™ modules AJ01–AJ04:</strong>
+            résumé representative, professional portfolio, enterprise sleuth, and BrandGuard™.
+          </li>
+        </ul>
       </section>
-
     </main>
 
     <footer class="site-footer">
