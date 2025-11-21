@@ -34,18 +34,13 @@
 
         <nav class="primary-nav" id="navigation" aria-label="Primary">
           <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/lens-system/">Lens System</a></li>
-            <li><a href="/universe/">Universe</a></li>
-            <li><a href="/about/">About</a></li>
-            <li>
-              <a
-                href="https://chatgpt.com/g/ASK-JAMIE-GPT-ID-HERE"
-                target="_blank"
-                rel="noopener"
-                >Open AskJamie™</a
-              >
-            </li>
+            <li><a href="/index.html#main">Home</a></li>
+            <li><a href="/index.html#uses">What it’s for</a></li>
+            <li><a href="/index.html#fit">Where it fits</a></li>
+            <li><a href="/lens-system/index.html">Lens System</a></li>
+            <li><a href="/universe/index.html">Universe</a></li>
+            <li><a href="/about/index.html">About</a></li>
+            <li><a href="/contact/index.html">Contact</a></li>
           </ul>
         </nav>
 
@@ -83,7 +78,7 @@
                   />
                 </a>
                 <span class="breadcrumb-separator">·</span>
-                <span class="breadcrumb-label">AskJamie™ Lens System</span>
+                <span class="breadcrumb-label">Lens System</span>
               </p>
               <h1 id="hero-title">One voice. Four lenses.</h1>
               <p class="hero-subtitle">
@@ -384,23 +379,27 @@
         <div class="footer-column">
           <h3>AskJamie™</h3>
           <p>
-            Your articulate, architected AI persona — calm, diagram‑ready, and
-            built for thoughtful decisions across messy systems.
-          </p>
+            Your articulate, architected AI persona — clarity, confidence, and
+            calm across everyday insight and complex systems.
+          </p>          
         </div>
         <div class="footer-column">
           <h4>Navigation</h4>
           <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/lens-system/">Lens System</a></li>
-            <li><a href="/universe/">Universe</a></li>
-            <li><a href="/about/">About</a></li>
+            <li><a href="/index.html#main">Home</a></li>
+            <li><a href="/lens-system/index.html">Lens System</a></li>
+            <li><a href="/universe/index.html">Universe</a></li>
+            <li><a href="/about/index.html">About</a></li>
           </ul>
         </div>
         <div class="footer-column">
           <h4>Connect</h4>
           <ul>
             <li><a href="mailto:contact@askjamie.bot">contact@askjamie.bot</a></li>
+            <li><a href="https://ko-fi.com/overkillhillp3" target="_blank" rel="noopener">Ko-fi</a></li>
+            <li><a href="https://www.linkedin.com/company/overkillhillp3" target="_blank" rel="noopener">LinkedIn</a></li>
+            <li><a href="https://youtube.com/@overkillhillp3" target="_blank" rel="noopener">YouTube</a></li>
+            <li><a href="https://www.facebook.com/overkillhillp3" target="_blank" rel="noopener">Facebook</a></li>
           </ul>
         </div>
       </div>
@@ -410,5 +409,9 @@
     </footer>
 
     <script src="../assets/js/app.js"></script>
+    <script type="module">
+      import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
+      mermaid.initialize({ startOnLoad: true });
+    </script>
   </body>
 </html>
