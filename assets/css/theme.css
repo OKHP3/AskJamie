@@ -415,6 +415,15 @@ body:not(.glee-main):not(.askjamie-main) .project-card h3 {
   color: #d35b2d; /* Glee rust */
 }
 
+/* Glee/AskJamie mobile toggle styling */
+.askjamie-main .nav-toggle,
+.glee-main .nav-toggle {
+  padding: 0.4rem 0.6rem;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  background: rgba(246, 242, 238, 0.98); /* paper tone */
+}
+
 .askjamie-main .nav-toggle .bar,
 .glee-main .nav-toggle .bar {
   background: #2e2b29; /* Glee/AskJamie dark bar */
@@ -439,11 +448,11 @@ body:not(.glee-main):not(.askjamie-main) .project-card h3 {
 /* three-bar hamburger */
 .nav-toggle .bar {
   display: block;
-  width: 20px;
-  height: 2px;
+  width: 26px;
+  height: 3px;
   border-radius: 999px;
   background: #e5e7eb;
-  margin: 3px 0;
+  margin: 4px 0;
 }
 
 /* Header scrolled state */
@@ -473,6 +482,9 @@ body:not(.glee-main):not(.askjamie-main) .project-card h3 {
 
   .nav-toggle {
     display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
   }
 }
 
@@ -960,7 +972,7 @@ body:not(.glee-main):not(.askjamie-main) .project-card h3 {
 
 .askjamie-paper {
   position: absolute;
-  inset: 6% 10% 0 10%; /* ~80% width, reveals a little stripe on each side */
+  inset: 8% 2% 0 2%;/* ~80% width, reveals a little stripe on each side */
   background: #f6f2ee;
   background-image: radial-gradient(
       circle at 0 0,
@@ -992,6 +1004,19 @@ body:not(.glee-main):not(.askjamie-main) .project-card h3 {
 @media (min-width: 900px) {
   .askjamie-hero-grid {
     grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+  }
+}
+
+/* Keep the hero content comfortably inside the paper */
+.askjamie-hero-copy {
+  max-width: 38rem;         /* prevents the text from running too wide */
+  padding: 0 2rem 0 2.75rem; /* extra left padding to pull logo/text onto the paper */
+}
+
+/* On smaller screens, use slightly softer padding so it doesn't feel cramped */
+@media (max-width: 768px) {
+  .askjamie-hero-copy {
+    padding: 0 1.75rem;
   }
 }
 
