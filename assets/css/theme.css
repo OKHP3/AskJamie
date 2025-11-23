@@ -136,8 +136,11 @@ button {
   padding: 0 1.5rem;
 }
 
+/* Global vertical rhythm + gentle side breathing room
+   for all major sections across all brands */
 .content-section {
-  padding: 4rem 0;
+  padding-block: 4rem;      /* top / bottom */
+  padding-inline: min(2.5rem, 4vw);       /* left / right */
 }
 
 /* Subtle divider between stacked sections */
@@ -147,7 +150,7 @@ button {
 
 @media (min-width: 900px) {
   .content-section {
-    padding: 4.5rem 0;
+    padding-block: 4.5rem;  /* keep the slightly taller desktop spacing */
   }
 }
 
