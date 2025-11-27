@@ -7,7 +7,7 @@
     <meta name="description" content="AskJamie™ is a mid-century modern AI helpdesk — a warm, trustworthy guide for questions, workflows, and decisions across the OverKill Hill P³™ ecosystem." />
     <meta property="og:title" content="AskJamie™ — Friendly mid‑century AI helpdesk" />
     <meta property="og:description" content="Your articulate, architected AI persona..." />
-   <meta property="og:type" content="website" />
+    <meta property="og:type" content="website" />
     <meta property="og:url" content="https://askjamie.bot/" />
     <meta property="og:image" content="https://askjamie.bot/assets/img/AskJamie%20AvatarTallLeft%20Square%201024.png" />
     <link rel="stylesheet" href="assets/css/theme.css" />
@@ -26,17 +26,27 @@
     <header class="site-header" id="top">
       <div class="container">
         <div class="logo"><a href="/" aria-label="AskJamie™ Home"><img src="assets/img/AskJamie%20AvatarTallLeft%20Square%201024.png" alt="AskJamie™ avatar" width="40" height="40" /></a></div>
+
         <nav class="primary-nav" id="navigation" aria-label="Primary">
           <ul>
             <li><a href="index.html#main" aria-current="page">Who's AskJamie™</a></li>
             <li><a href="index.html#uses">What's it for</a></li>
             <li><a href="index.html#fit">Where it fits</a></li>
             <li><a href="lens-system/index.html">Lens System</a></li>
-            <li><a href="universe/index.html">OKHP³™ Universe</a></li>
-            <li><a href="about/index.html">About</a></li>
-            <li><a href="contact/index.html">Contact</a></li>
+
+            <!-- About cluster: Universe / About / Contact / Legal -->
+            <li class="has-submenu">
+              <a href="about/index.html">About</a>
+              <ul class="submenu">
+                <li><a href="universe/index.html">OKHP³™ Universe</a></li>
+                <li><a href="about/index.html">About AskJamie™</a></li>
+                <li><a href="contact/index.html">Contact</a></li>
+                <li><a href="legal/index.html">Legal</a></li>
+              </ul>
+            </li>
           </ul>
         </nav>
+
         <button class="nav-toggle" aria-controls="navigation" aria-expanded="false">
           <span class="sr-only">Toggle navigation</span>
           <span class="bar"></span><span class="bar"></span><span class="bar"></span>
