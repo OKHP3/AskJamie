@@ -330,7 +330,12 @@
         "@type": "WebSite",
         "name": "AskJamie™ — Friendly mid‑century AI helpdesk",
         "url": "https://askjamie.bot",
-        "description": "AskJamie™ is a mid-century modern AI helpdesk — a warm, trustworthy guide for questions, workflows, and decisions across the OverKill Hill P³™ ecosystem."
+        "description": "AskJamie™ is a mid-century modern AI helpdesk — a warm, trustworthy guide for questions, workflows, and decisions across the OverKill Hill P³™ ecosystem.",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "https://askjamie.bot/?s={search_term_string}",
+          "query-input": "required name=search_term_string"
+        }
       }
     </script>
     <script type="module">
@@ -372,5 +377,14 @@
       });
     </script>
     <script src="https://storage.ko-fi.com/cdn/scripts/overlay-widget.js"></script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-MT9Y10YY0G"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-MT9Y10YY0G');
+    </script>
   </body>
 </html>

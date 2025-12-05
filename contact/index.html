@@ -162,9 +162,21 @@
         <p>© <span id="current-year-askjamie">2025</span> AskJamie™. All rights reserved.</p>
       </div>
     </footer>
-
     <script src="/assets/js/app.js"></script>
-
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "AskJamie™ — Friendly mid‑century AI helpdesk",
+        "url": "https://askjamie.bot",
+        "description": "AskJamie™ is a mid-century modern AI helpdesk — a warm, trustworthy guide for questions, workflows, and decisions across the OverKill Hill P³™ ecosystem.",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "https://askjamie.bot/?s={search_term_string}",
+          "query-input": "required name=search_term_string"
+        }
+      }
+    </script>
     <script type="module">
       import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
 
@@ -202,6 +214,16 @@
           rankSpacing: 70
         }
       });
+    </script>
+    <script src="https://storage.ko-fi.com/cdn/scripts/overlay-widget.js"></script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-MT9Y10YY0G"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-MT9Y10YY0G');
     </script>
   </body>
 </html>
