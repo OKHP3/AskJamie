@@ -1,34 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <!-- ========================================
+       METADATA: Core Document & Character Set
+       ======================================== -->
     <meta charset="utf-8" />
-    <title>AskJamie™ — Friendly AI Helpdesk</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="language" content="English" />
+
+    <!-- ========================================
+       METADATA: Primary Title & Description
+       ======================================== -->
+    <title>AskJamie™ — Friendly mid‑century AI Helpdesk</title>
     <meta name="description" content="AskJamie™ is a mid-century modern AI helpdesk — a warm, trustworthy guide for questions, workflows, and decisions across the OverKill Hill P³™ ecosystem." />
-    <meta name="keywords" content="AskJamie, AI helpdesk, OverKill Hill P3, decision support, workflow guidance, mid-century modern design, AI persona, strategic intelligence layer" />
-    <meta name="author" content="AskJamie™" />
-    <meta name="twitter:description" content="AskJamie™ is a mid-century modern AI helpdesk — a warm, trustworthy guide for questions, workflows, and decisions across the OverKill Hill P³™ ecosystem." />
-    <meta name="twitter:image" content="https://askjamie.bot/assets/img/AskJamie%20AvatarTallLeft%20Square%201024.png" />
-    <meta property="og:title" content="AskJamie™ — Friendly mid‑century AI helpdesk" />
-    <meta property="og:description" content="Your articulate, architected AI persona..." />
+    <meta name="keywords" content="AskJamie, AI helpdesk, OverKill Hill P3, decision support, workflow guidance, mid-century modern design, AI persona, strategic intelligence" />
+    <meta name="author" content="OverKill Hill P³™" />
+    <link rel="canonical" href="https://askjamie.bot/" />
+
+    <!-- ========================================
+       METADATA: Open Graph (Social Sharing)
+       ======================================== -->
+    <meta property="og:title" content="AskJamie™ — Friendly mid‑century AI Helpdesk" />
+    <meta property="og:description" content="Your articulate, architected AI persona — clarity, confidence, and calm across everyday insight and complex systems." />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://askjamie.bot/" />
     <meta property="og:image" content="https://askjamie.bot/assets/img/AskJamie%20AvatarTallLeft%20Square%201024.png" />
-    <link rel="canonical" href="https://askjamie.bot/" />
-    <link rel="stylesheet" href="assets/css/theme.css" />
+    <meta property="og:image:alt" content="AskJamie™ avatar — mid-century AI helpdesk persona" />
+    <meta property="og:site_name" content="AskJamie™" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- ========================================
+       METADATA: Twitter Card (X Social)
+       ======================================== -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="AskJamie™ — Friendly mid‑century AI Helpdesk" />
+    <meta name="twitter:description" content="Your articulate, architected AI persona — clarity, confidence, and calm across everyday insight and complex systems." />
+    <meta name="twitter:image" content="https://askjamie.bot/assets/img/AskJamie%20AvatarTallLeft%20Square%201024.png" />
+    <meta name="twitter:image:alt" content="AskJamie™ avatar" />
+    <meta name="twitter:creator" content="@OverKillHillP3" />
+    <meta name="twitter:site" content="@OverKillHillP3" />
+
+    <!-- ========================================
+       METADATA: Search & Crawling
+       ======================================== -->
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="googlebot" content="index, follow" />
+    <meta name="bingbot" content="index, follow" />
+    <link rel="manifest" href="site.webmanifest" />
+
+    <!-- ========================================
+       METADATA: Color Scheme & Theme
+       ======================================== -->
+    <meta name="theme-color" content="#111827" />
+    <meta name="color-scheme" content="light dark" />
+
+    <!-- ========================================
+       FAVICONS: Multi-Format Icon Support
+       ======================================== -->
+    <link rel="icon" href="favicon.ico" sizes="any" />
     <link rel="icon" href="assets/img/favicons/favicon-32x32.png" sizes="32x32" type="image/png" />
     <link rel="icon" href="assets/img/favicons/favicon-16x16.png" sizes="16x16" type="image/png" />
     <link rel="apple-touch-icon" href="assets/img/favicons/apple-touch-icon.png" sizes="180x180" type="image/png" />
-    <link rel="icon" href="favicon.ico" sizes="any" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="AskJamie™ — Friendly mid‑century AI helpdesk" />
-    <meta name="robots" content="index, follow" />
-    <link rel="manifest" href="site.webmanifest" />
 
-    <!-- AskJamie typography: Baloo 2 (headings), Open Sans (body), Kalam 400 (accent) -->
-    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Open+Sans:wght@400;600&family=Kalam:wght@400&display=swap" rel="stylesheet" />
+    <!-- ========================================
+       STYLESHEETS & FONTS
+       ======================================== -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Open+Sans:wght@400;600&family=Kalam:wght@400&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="assets/css/theme.css" />
 
   </head>
 
@@ -40,9 +81,9 @@
 
         <nav class="primary-nav" id="navigation" aria-label="Primary">
           <ul>
-            <li><a href="/#main" aria-current="page">Who's AskJamie™</a></li>
-            <li><a href="/#uses">What's it for</a></li>
-            <li><a href="/#fit">Where it fits</a></li>
+            <li><a href="#main" aria-current="page">Who's AskJamie™</a></li>
+            <li><a href="#uses">What's it for</a></li>
+            <li><a href="#fit">Where it fits</a></li>
             <li><a href="lens-system/">Lens System</a></li>
 
             <!-- About cluster: Universe / About / Contact / Legal -->
@@ -66,7 +107,7 @@
       
       <section class="site-specials site-specials--jamie" aria-label="AskJamie update">
         <span class="site-specials-label">Today’s Special</span>
-        <a class="site-specials-link" href="/lens-system/okhp3-brandguard/bfs-framing-intelligent-futures/">
+        <a class="site-specials-link" href="lens-system/okhp3-brandguard/bfs-framing-intelligent-futures/">
           See how Builders FirstSource is protecting its claim on the AI frontiers, with a BrandGuard™ custom GPT.
         </a>
       </section>
