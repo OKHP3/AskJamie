@@ -1,45 +1,32 @@
 # AskJamie™
 
-**AskJamie™** is your articulate, architected AI companion — a trusted voice where clarity meets confidence.  
-Created under the **OverKill Hill P³™** umbrella and sibling to **Glee-fully Personalizable Tools™**, AskJamie™ brings human understanding to digital complexity.
+**AskJamie™** is a warm, technically literate AI helpdesk persona — your thinking partner for decisions, workflows, and systems questions across the OverKill Hill P³™ ecosystem. Built for people who need clarity, not jargon.
 
-### 💡 About
+## What It Is
 
-AskJamie™ was designed for a simple but ambitious goal:  
-to make advanced reasoning approachable and conversation meaningful.  
-In a world of noise, Jamie listens; in a web of systems, Jamie connects the dots.  
-Whether you’re exploring ideas, architecting solutions, or just seeking better words for what you already know, Jamie meets you where you are — then helps you think higher.
+AskJamie™ lives at the intersection of human communication and AI reasoning. Think of it as the vintage tech guy who actually listens — calm under pressure, diagram-ready on demand, and always routing toward the clearest path forward.
 
-### 🧠 How It Works
+The site documents the AskJamie™ Lens System: a public-facing portfolio of GPT architectures, BrandGuard™ case studies, and professional prototypes built under the OverKill Hill P³™ umbrella.
 
-Behind the calm tone lies a deep logic engine: contextual awareness, precision-driven prompting, and modular understanding across GPT architectures.  
-AskJamie™ functions as interpreter, strategist, and sounding board — a bridge between human intuition and machine reasoning.
+## What It Builds
 
-It’s not another chatbot; it’s a thinking partner shaped by years of systems design, narrative structure, and ethical prompting practice.
+- **Lens System** — a modular portfolio of AI case studies and GPT prototypes, each solving a real-world problem
+- **BrandGuard™ Series** — custom GPT proofs-of-concept demonstrating how brands can own their AI voice before drift defines it (LEGO, Starbucks, Builders FirstSource, Brooks Running, Ping, and more)
+- **Enterprise Sleuth™** — a working demo and recipe pack for building in-house AI investigator tools
+- **Resume Representative** — an AI-assisted professional portfolio tool
 
-### 🧩 Part of the OKH Ecosystem
+## Why It Matters
 
-AskJamie™ sits at the conversational heart of **OverKill Hill P³™**:
+AI is becoming the default front door for how people find and evaluate brands. AskJamie™ exists to demonstrate — clearly, publicly, and ethically — what it looks like when a brand shows up with intention inside that space. The BrandGuard™ series uses only public information and positions itself as demonstration, not impersonation.
 
-- **AskJamie Core** – the flagship conversational layer that unites clarity with empathy.  
-- **OKHPP³ BrandGuard™** – integrity and tone governance for brands and creators.  
-- **Four Child GPTs** – specialized assistants extending Jamie’s logic into niche domains.  
-- **Sibling Brand:** [Glee-fully Personalizable Tools™](https://glee-fully.tools) — joyful personalization.
+## Explore
 
-### 🎯 Why AskJamie™
-
-Because information alone isn’t enough — people need *interpretation*.  
-AskJamie™ is built for moments of uncertainty: when you’re mapping a strategy, designing a product, or wrestling with language that won’t behave.  
-Jamie translates complexity into calm direction, reminding you that clarity is both a skill and a kindness.
-
-### 🔗 Explore & Connect
-
-- **Website:** [https://askjamie.bot](https://askjamie.bot)  
-- **Email:** [contact@askjamie.bot](mailto:contact@askjamie.bot)  
+- **Website:** [https://askjamie.bot](https://askjamie.bot)
+- **Email:** [contact@askjamie.bot](mailto:contact@askjamie.bot)
+- **Parent brand:** [OverKill Hill P³™](https://overkillhill.com)
+- **Sibling brand:** [Glee-fully Personalizable Tools™](https://glee-fully.tools)
 - **Ko-fi:** [https://ko-fi.com/overkillhillp3](https://ko-fi.com/overkillhillp3)
 
 ---
 
-> **AskJamie™** — *Conversation with confidence.*  
-> Because understanding is the smartest system of all.  
-> **“Clarity is the kindest form of intelligence.”**
+> *Bring the messy context. Get calm, diagram-ready answers in return.*

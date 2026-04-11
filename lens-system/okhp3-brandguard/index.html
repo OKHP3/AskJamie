@@ -15,6 +15,7 @@
     <meta name="description" content="GPT‑AJ04: AskJamie™ OKHP³ BrandGuard™ — AI-powered tone, ethics, and identity guardrails for brands. Keep your GPT systems, copy, and campaigns aligned with values and compliance." />
     <meta name="keywords" content="BrandGuard, GPT-AJ04, AskJamie, OKHP3, tone guardrails, ethics sentinel, brand alignment, AI governance, prompt safety, brand voice, compliance" />
     <meta name="author" content="OverKill Hill P³™ / AskJamie™" />
+    <meta name="publisher" content="AskJamie™ · OverKill Hill P³™" />
     <link rel="canonical" href="https://askjamie.bot/lens-system/okhp3-brandguard/" />
 
     <!-- ========================================
@@ -27,6 +28,7 @@
     <meta property="og:image" content="https://askjamie.bot/assets/img/AskJamie%20AvatarTallLeft%20Square%201024.png" />
     <meta property="og:image:width" content="1024" />
     <meta property="og:image:height" content="1024" />
+    <meta property="og:image:type" content="image/png" />
     <meta property="og:image:alt" content="AskJamie™ avatar illustration" />
     <meta property="og:site_name" content="AskJamie™" />
     <meta property="og:locale" content="en_US" />
@@ -56,6 +58,9 @@
     <meta name="theme-color" content="#111827" />
     <meta name="color-scheme" content="light dark" />
 
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <!-- ========================================
          FAVICONS: Multi-Format Icon Support
          ======================================== -->
@@ -380,7 +385,7 @@
                   headlines.
                 </li>
               </ul>
-              <p style="margin-top: 1rem;">
+              <p class="u-mt-md">
                 Think of it as a mid‑century‑calm operations lead sitting next
                 to your most ambitious GPT ideas, quietly saying, “Yes — and
                 here’s how we do this responsibly.”
@@ -540,7 +545,7 @@
                 careful architecture into everyday brand decisions anyone on
                 your team can make in a chat.
               </p>
-              <p style="margin-top: 0.75rem;">
+              <p class="u-mt-sm">
                 Curious about the forge behind it? Visit
                 <a href="https://overkillhill.com/" target="_blank" rel="noopener"
                   >overkillhill.com</a
@@ -598,7 +603,7 @@
               you a fast, opinionated, and deeply brand‑aware second set of
               eyes on the work.
             </p>
-            <div class="hero-actions" style="justify-content:center;">
+            <div class="hero-actions" class="u-flex-center">
               <a
                 class="btn-primary"
                 href="https://chatgpt.com/g/g-691fa3532a588191b5b362f2fc07e8b3-okhp3-brandguardtm-by-askjamietm"
@@ -668,44 +673,6 @@
         }
       }
     </script>
-    <script type="module">
-      import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
-
-      // Pull final, brand-specific tokens (OKH / AskJamie / Glee) from computed styles
-      const styles = getComputedStyle(document.body);
-
-      const surface = styles.getPropertyValue("--color-surface").trim() || "#111827";
-      const surfaceSoft = styles.getPropertyValue("--color-surface-soft").trim() || "#181f26";
-      const fg = styles.getPropertyValue("--color-fg").trim() || "#e5e7eb";
-      const accent = styles.getPropertyValue("--color-accent").trim() || "#c46a2c";
-      const muted = styles.getPropertyValue("--color-muted").trim() || "#6b7280";
-      const fontBody =
-        styles.getPropertyValue("--font-body").trim() ||
-        '"DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif';
-
-      mermaid.initialize({
-        startOnLoad: true,
-        securityLevel: "loose",   // required for clickable links in diagrams
-        theme: "base",            // modifiable theme
-        themeVariables: {
-          primaryColor: surface,        // node background
-          primaryTextColor: fg,
-          primaryBorderColor: accent,
-          lineColor: accent,
-          secondaryColor: surfaceSoft,  // secondary fills / highlights
-          tertiaryColor: surfaceSoft,
-          textColor: fg,
-          fontFamily: fontBody,
-          noteBkgColor: surface,
-          noteTextColor: muted
-        },
-        flowchart: {
-          curve: "basis",
-          nodeSpacing: 60,
-          rankSpacing: 70
-        }
-      });
-    </script>
     <script src="https://storage.ko-fi.com/cdn/scripts/overlay-widget.js"></script>
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-MT9Y10YY0G"></script>
@@ -716,5 +683,6 @@
 
       gtag('config', 'G-MT9Y10YY0G');
     </script>
+      <script type="module" src="/assets/js/mermaid-init.js"></script>
   </body>
 </html>

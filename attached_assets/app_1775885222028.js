@@ -204,12 +204,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   var lerpedY = 0;
   var targetY = 0;
-  var SPEED   = 0.08;
-  var NAV_H   = 112;
-  var PAD     = 32;
+  var SPEED   = 0.08;   /* 0 = no movement, 1 = instant */
+  var NAV_H   = 112;    /* minimum px from viewport top — clears sticky nav */
+  var PAD     = 32;     /* px breathing room above the footer */
 
   function lerp(a, b, t) { return a + (b - a) * t; }
 
+  /* Natural document position of the TOC widget before any transforms */
   function getNaturalTop(el) {
     var top = 0;
     while (el) { top += el.offsetTop; el = el.offsetParent; }
@@ -237,8 +238,10 @@ document.addEventListener("DOMContentLoaded", () => {
   requestAnimationFrame(tick);
 
   window.addEventListener('resize', function () {
-    toc.style.transform = '';
-    if (window.innerWidth >= 1024) {
+    if (window.innerWidth < 1024) {
+      toc.style.transform = '';
+    } else {
+      toc.style.transform = '';
       tocNaturalTop = getNaturalTop(toc);
       tocH = toc.offsetHeight;
     }

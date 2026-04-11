@@ -15,6 +15,7 @@
     <meta name="description" content="AskJamie™ is an Interpretive Lens System — four disciplined ways of seeing and expressing your story through one consistent voice. Explore Résumé Representative, Professional Portfolio, Enterprise Sleuth, and OKHP³ BrandGuard™." />
     <meta name="keywords" content="AskJamie, Interpretive Lens System, AI persona, strategic reasoning, brand voice, professional portfolio, enterprise analysis, narrative architecture" />
     <meta name="author" content="AskJamie™ / OverKill Hill P³™" />
+    <meta name="publisher" content="AskJamie™ · OverKill Hill P³™" />
     <link rel="canonical" href="https://askjamie.bot/lens-system/" />
 
     <!-- ========================================
@@ -26,6 +27,7 @@
     <meta property="og:url" content="https://askjamie.bot/lens-system/" />
     <meta property="og:image" content="https://askjamie.bot/assets/img/AskJamie%20AvatarTallLeft%20Square%201024.png" />
     <meta property="og:image:alt" content="AskJamie™ avatar illustration" />
+    <meta property="og:image:type" content="image/png" />
     <meta property="og:site_name" content="AskJamie™" />
 
     <!-- ========================================
@@ -53,6 +55,9 @@
     <meta name="theme-color" content="#1f2937" />
     <meta name="color-scheme" content="light dark" />
 
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <!-- ========================================
          FAVICONS: Multi-Format Icon Support
          ======================================== -->
@@ -492,44 +497,6 @@
         }
       }
     </script>
-    <script type="module">
-      import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
-
-      // Pull final, brand-specific tokens (OKH / AskJamie / Glee) from computed styles
-      const styles = getComputedStyle(document.body);
-
-      const surface = styles.getPropertyValue("--color-surface").trim() || "#111827";
-      const surfaceSoft = styles.getPropertyValue("--color-surface-soft").trim() || "#181f26";
-      const fg = styles.getPropertyValue("--color-fg").trim() || "#e5e7eb";
-      const accent = styles.getPropertyValue("--color-accent").trim() || "#c46a2c";
-      const muted = styles.getPropertyValue("--color-muted").trim() || "#6b7280";
-      const fontBody =
-        styles.getPropertyValue("--font-body").trim() ||
-        '"DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif';
-
-      mermaid.initialize({
-        startOnLoad: true,
-        securityLevel: "loose",   // required for clickable links in diagrams
-        theme: "base",            // modifiable theme
-        themeVariables: {
-          primaryColor: surface,        // node background
-          primaryTextColor: fg,
-          primaryBorderColor: accent,
-          lineColor: accent,
-          secondaryColor: surfaceSoft,  // secondary fills / highlights
-          tertiaryColor: surfaceSoft,
-          textColor: fg,
-          fontFamily: fontBody,
-          noteBkgColor: surface,
-          noteTextColor: muted
-        },
-        flowchart: {
-          curve: "basis",
-          nodeSpacing: 60,
-          rankSpacing: 70
-        }
-      });
-    </script>
     <script src="https://storage.ko-fi.com/cdn/scripts/overlay-widget.js"></script>
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-MT9Y10YY0G"></script>
@@ -540,5 +507,6 @@
 
       gtag('config', 'G-MT9Y10YY0G');
     </script>
+      <script type="module" src="/assets/js/mermaid-init.js"></script>
   </body>
 </html>

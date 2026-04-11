@@ -16,6 +16,7 @@
     <meta name="description" content="AskJamie™ is a modern AI helpdesk — a warm, trustworthy guide for questions, workflows, and decisions across the OverKill Hill P³™ ecosystem." />
     <meta name="keywords" content="AskJamie, AI helpdesk, OverKill Hill P3, decision support, workflow guidance, modern design, AI persona, strategic intelligence" />
     <meta name="author" content="OverKill Hill P³™" />
+    <meta name="publisher" content="AskJamie™ · OverKill Hill P³™" />
     <link rel="canonical" href="https://askjamie.bot/" />
 
     <!-- ========================================
@@ -28,6 +29,7 @@
     <meta property="og:image" content="https://askjamie.bot/assets/img/AskJamie%20AvatarTallLeft%20Square%201024.png" />
     <meta property="og:image:width" content="1024" />
     <meta property="og:image:height" content="1024" />
+    <meta property="og:image:type" content="image/png" />
     <meta property="og:image:alt" content="AskJamie™ avatar — AI helpdesk persona" />
     <meta property="og:site_name" content="AskJamie™" />
     <meta property="og:locale" content="en_US" />
@@ -47,6 +49,7 @@
        METADATA: Search & Crawling
        ======================================== -->
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="revisit-after" content="7 days" />
     <meta name="googlebot" content="index, follow" />
     <meta name="bingbot" content="index, follow" />
     <link rel="manifest" href="site.webmanifest" />
@@ -57,6 +60,9 @@
     <meta name="theme-color" content="#111827" />
     <meta name="color-scheme" content="light dark" />
 
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <!-- ========================================
        FAVICONS: Multi-Format Icon Support
        ======================================== -->
@@ -128,7 +134,7 @@
             <div class="askjamie-hero-copy">
               <!-- Replace plain text brand with logo image for improved brand fidelity -->
               <a href="#top" aria-label="AskJamie™ home" class="askjamie-logo">
-                <img src="assets/img/AskJamie%20TitleCreamBlueBackdropBlueGrayLeft%20Square%201024.png" alt="AskJamie™ logo" width="200" height="auto" style="max-width:100%;height:auto;" />
+                <img src="assets/img/AskJamie%20TitleCreamBlueBackdropBlueGrayLeft%20Square%201024.png" alt="AskJamie™ logo" width="200" height="auto" class="img-fluid" />
               </a>
               <h1 id="hero-title">Your friendly AI helpdesk.</h1>
               <p class="hero-subtitle">
@@ -307,44 +313,6 @@
         }
       }
     </script>
-    <script type="module">
-      import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
-
-      // Pull final, brand-specific tokens (OKH / AskJamie / Glee) from computed styles
-      const styles = getComputedStyle(document.body);
-
-      const surface = styles.getPropertyValue("--color-surface").trim() || "#111827";
-      const surfaceSoft = styles.getPropertyValue("--color-surface-soft").trim() || "#181f26";
-      const fg = styles.getPropertyValue("--color-fg").trim() || "#e5e7eb";
-      const accent = styles.getPropertyValue("--color-accent").trim() || "#c46a2c";
-      const muted = styles.getPropertyValue("--color-muted").trim() || "#6b7280";
-      const fontBody =
-        styles.getPropertyValue("--font-body").trim() ||
-        '"DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif';
-
-      mermaid.initialize({
-        startOnLoad: true,
-        securityLevel: "loose",   // required for clickable links in diagrams
-        theme: "base",            // modifiable theme
-        themeVariables: {
-          primaryColor: surface,        // node background
-          primaryTextColor: fg,
-          primaryBorderColor: accent,
-          lineColor: accent,
-          secondaryColor: surfaceSoft,  // secondary fills / highlights
-          tertiaryColor: surfaceSoft,
-          textColor: fg,
-          fontFamily: fontBody,
-          noteBkgColor: surface,
-          noteTextColor: muted
-        },
-        flowchart: {
-          curve: "basis",
-          nodeSpacing: 60,
-          rankSpacing: 70
-        }
-      });
-    </script>
     <script src="https://storage.ko-fi.com/cdn/scripts/overlay-widget.js"></script>
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-MT9Y10YY0G"></script>
@@ -355,5 +323,6 @@
 
       gtag('config', 'G-MT9Y10YY0G');
     </script>
+      <script type="module" src="/assets/js/mermaid-init.js"></script>
   </body>
 </html>
