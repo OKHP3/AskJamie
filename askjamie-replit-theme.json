@@ -28,8 +28,22 @@
       "destructiveText":       "#ffffff"
     },
     "forms": {
-      "input":  "#fdfbf7",
-      "border": "#d7d7d7"
+      "input":       "#fdfbf7",
+      "border":      "#d7d7d7",
+      "focusBorder": "#2d6f7e"
+    },
+    "containers": {
+      "cardBackground":    "#fdfbf7",
+      "cardText":          "#2e2b29",
+      "popoverBackground": "#fdfbf7",
+      "popoverText":       "#2e2b29"
+    },
+    "charts": {
+      "chart1": "#2d6f7e",
+      "chart2": "#76b2ba",
+      "chart3": "#e6a03c",
+      "chart4": "#d5ba9a",
+      "chart5": "#69584c"
     }
   },
   "_palette": {

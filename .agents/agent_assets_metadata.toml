@@ -5,10 +5,10 @@ generated = []
 id = "uzXkx6Oj7m819VTWK0-3A"
 uri = "file://askjamie-replit-theme.json"
 type = "unspecified"
-title = "AskJamie™ — Replit App Theme (JSON)"
+title = "AskJamie™ — Replit App Theme (JSON, updated)"
 
 [[outputs]]
 id = "CGqgj81X4-GGym3bGtyFh"
 uri = "file://askjamie-replit-theme-guide.md"
 type = "text"
-title = "AskJamie™ — Replit App Theme Guide (Markdown)"
+title = "AskJamie™ — Replit App Theme Guide (updated)"
