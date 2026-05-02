@@ -76,6 +76,7 @@
        ======================================== -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin />
         <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Open+Sans:wght@400;600&family=Kalam:wght@400&display=swap" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Open+Sans:wght@400;600&family=Kalam:wght@400&display=swap" media="print" onload="this.media='all'" />
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Open+Sans:wght@400;600&family=Kalam:wght@400&display=swap" /></noscript>
@@ -87,7 +88,7 @@
     <a href="#main" class="skip-link">Skip to content</a>
     <header class="site-header" id="top">
       <div class="container">
-        <div class="logo"><a href="/" aria-label="AskJamie™ Home"><img src="assets/img/AskJamie%20AvatarTallLeft%20Square%201024.png" alt="AskJamie™ avatar" width="40" height="40" /></a></div>
+        <div class="logo"><a href="/" aria-label="AskJamie™ Home"><img src="assets/img/AskJamie%20AvatarTallLeft%20Square%201024.png" alt="AskJamie™ avatar" width="40" height="40" decoding="async"></a></div>
 
         <nav class="primary-nav" id="navigation" aria-label="Primary">
           <ul>
@@ -134,7 +135,7 @@
             <div class="askjamie-hero-copy">
               <!-- Replace plain text brand with logo image for improved brand fidelity -->
               <a href="#top" aria-label="AskJamie™ home" class="askjamie-logo">
-                <img src="assets/img/AskJamie%20TitleCreamBlueBackdropBlueGrayLeft%20Square%201024.png" alt="AskJamie™ logo" width="200" height="auto" class="img-fluid" />
+                <img src="assets/img/AskJamie%20TitleCreamBlueBackdropBlueGrayLeft%20Square%201024.png" alt="AskJamie™ logo" width="200" height="auto" class="img-fluid" decoding="async">
               </a>
               <h1 id="hero-title">Your friendly AI helpdesk.</h1>
               <p class="hero-subtitle">
@@ -165,7 +166,7 @@
             </div>
             <div class="askjamie-hero-visual">
               <!-- Use the official AskJamie avatar instead of a grey placeholder -->
-              <img src="assets/img/AskJamie%20TitleMidLeftAvatarTallShadowLeftCompCreamGrayBackdropBlueTanLeft%20Square%201024.png" alt="AskJamie™ avatar illustration" class="askjamie-avatar" width="520" height="520" loading="lazy" />
+              <img src="assets/img/AskJamie%20TitleMidLeftAvatarTallShadowLeftCompCreamGrayBackdropBlueTanLeft%20Square%201024.png" alt="AskJamie™ avatar illustration" class="askjamie-avatar" width="520" height="520" loading="lazy" decoding="async">
             </div>
           </div>
         </div>
@@ -197,7 +198,7 @@
                   alt="Builders FirstSource BrandGuard™ GPT milestone illustration"
                   width="300"
                   height="300"
-                  loading="lazy" />
+                  loading="lazy" decoding="async">
             </a>
             <figcaption class="latest-submenu">
               <a>View this milestone →</a>
@@ -276,7 +277,17 @@
         </div>
       </div>
       <div class="container footer-meta">
-        <p>© <span id="current-year-askjamie"></span> AskJamie™. All rights reserved.</p>
+        <p class="footer-built-with">
+          Built with
+          <a class="footer-replit-link"
+             href="https://replit.com/refer/overkillhillp3/"
+             target="_blank"
+             rel="noopener noreferrer">Replit</a>
+        </p>
+        <p class="footer-copyright">©
+          <span id="current-year-askjamie"></span>
+          AskJamie™. All rights reserved.
+        </p>
       </div>
     </footer>
     <script src="assets/js/app.js"></script>

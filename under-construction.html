@@ -16,7 +16,7 @@
        METADATA: Primary Title & Description
        ======================================== -->
     <title>AskJamie™ — Under Construction</title>
-    <meta name="description" content="This part of the AskJamie™ helpdesk is under construction while the broader ecosystem comes together. Explore the main AskJamie™ page and GPT for real conversation, tradeoff-mapping, and decision support." />
+    <meta name="description" content="This part of the AskJamie™ helpdesk is under construction. Explore the main AskJamie™ site for what's already live across the OKHP³ ecosystem." />
     <meta name="keywords" content="AskJamie, AI helpdesk, OverKill Hill P³, under construction, helpdesk development, ecosystem building, AI" />
     <meta name="author" content="OverKill Hill P³™" />
     <meta name="copyright" content="© 2025 AskJamie™. All rights reserved." />
@@ -36,7 +36,7 @@
        METADATA: Open Graph (Social Sharing)
        ======================================== -->
     <meta property="og:title" content="AskJamie™ — Under Construction" />
-    <meta property="og:description" content="This part of the AskJamie™ helpdesk is under construction while the broader ecosystem comes together." />
+    <meta property="og:description" content="This part of the AskJamie™ helpdesk is under construction. Explore the main AskJamie™ site for what's already live across the OKHP³ ecosystem." />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://askjamie.bot/under-construction.html" />
     <meta property="og:image" content="https://askjamie.bot/assets/img/AskJamie%20AvatarTallLeft%20Square%201024.png" />
@@ -52,7 +52,7 @@
        ======================================== -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="AskJamie™ — Under Construction" />
-    <meta name="twitter:description" content="This part of the AskJamie™ helpdesk is under construction while the broader ecosystem comes together." />
+    <meta name="twitter:description" content="This part of the AskJamie™ helpdesk is under construction. Explore the main AskJamie™ site for what's already live across the OKHP³ ecosystem." />
     <meta name="twitter:image" content="https://askjamie.bot/assets/img/AskJamie%20AvatarTallLeft%20Square%201024.png" />
     <meta name="twitter:image:alt" content="AskJamie™ avatar waving beside an under construction sign" />
     <meta name="twitter:creator" content="@OverKillHillP3" />
@@ -78,6 +78,7 @@
     <link rel="stylesheet" href="assets/css/theme.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin />
         <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Open+Sans:wght@400;600&family=Kalam:wght@400&display=swap" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Open+Sans:wght@400;600&family=Kalam:wght@400&display=swap" media="print" onload="this.media='all'" />
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Open+Sans:wght@400;600&family=Kalam:wght@400&display=swap" /></noscript>
@@ -88,7 +89,7 @@
     <a href="#main" class="skip-link">Skip to content</a>
     <header class="site-header" id="top">
       <div class="container">
-        <div class="logo"><a href="/" aria-label="AskJamie™ Home"><img src="assets/img/AskJamie%20AvatarTallLeft%20Square%201024.png" alt="AskJamie™ avatar" width="40" height="40" /></a></div>
+        <div class="logo"><a href="/" aria-label="AskJamie™ Home"><img src="assets/img/AskJamie%20AvatarTallLeft%20Square%201024.png" alt="AskJamie™ avatar" width="40" height="40" decoding="async"></a></div>
 
         <nav class="primary-nav" id="navigation" aria-label="Primary">
           <ul>
@@ -143,8 +144,7 @@
                 class="askjamie-under-img"
                 loading="lazy"
                 width="1536"
-                height="768"
-              />
+                height="768" decoding="async">
             </div>
 
             <div class="askjamie-hero-copy">
@@ -245,7 +245,17 @@
         </div>
       </div>
       <div class="container footer-meta">
-        <p>© <span id="current-year-askjamie"></span> AskJamie™. All rights reserved.</p>
+        <p class="footer-built-with">
+          Built with
+          <a class="footer-replit-link"
+             href="https://replit.com/refer/overkillhillp3/"
+             target="_blank"
+             rel="noopener noreferrer">Replit</a>
+        </p>
+        <p class="footer-copyright">©
+          <span id="current-year-askjamie"></span>
+          AskJamie™. All rights reserved.
+        </p>
       </div>
     </footer>
     <script src="assets/js/app.js"></script>

@@ -32,9 +32,17 @@ EXCLUDE_DIRS = {".git", ".local", "attached_assets", "tools", "node_modules"}
 EXCLUDE_FILES = {"404.html", "under-construction.html"}
 
 STRIP_TAGS = {"script", "style", "nav", "header", "footer", "noscript", "svg"}
+# NOTE: do NOT add layout-decorator classes here (e.g. `askjamie-paper`,
+# `brand-stripes`, `site-specials`) — those classes wrap the actual page
+# content on AskJamie pages; stripping them produces empty body excerpts.
 STRIP_CLASSES_CONTAINS = {"site-header", "site-footer", "primary-nav", "skip-link",
-                          "construction-overlay", "site-specials", "brand-stripes",
-                          "askjamie-paper"}
+                          "construction-overlay"}
+
+# HTML5 void elements never receive a `handle_endtag` from html.parser, so we
+# must NOT push them onto the tag stack — otherwise a later `</a>` etc. will
+# pop the wrong entry and leave a strip-zone permanently unclosed.
+VOID_TAGS = {"area", "base", "br", "col", "embed", "hr", "img", "input",
+             "link", "meta", "param", "source", "track", "wbr"}
 
 
 class TextExtractor(HTMLParser):
@@ -80,6 +88,11 @@ class TextExtractor(HTMLParser):
             self._stack.append((tag, True))
             return
 
+        # Void elements never close — don't push them onto the stack or
+        # subsequent `handle_endtag` calls will pop the wrong entry.
+        if tag in VOID_TAGS:
+            return
+
         self._stack.append((tag, False))
 
         # Heading collection (only if we're not inside a strip zone)
@@ -96,11 +109,17 @@ class TextExtractor(HTMLParser):
             self._capture_title = False
             return
 
-        # Pop matching stack entry
-        if self._stack:
-            popped_tag, was_skip = self._stack.pop()
-            if was_skip:
-                self._skip_depth = max(0, self._skip_depth - 1)
+        # Pop the nearest matching stack entry — and pop everything above it
+        # too (those are unclosed tags that never received their own end tag,
+        # such as paragraphs in HTML5 where `</p>` is optional).
+        for i in range(len(self._stack) - 1, -1, -1):
+            if self._stack[i][0] == tag:
+                removed = self._stack[i:]
+                del self._stack[i:]
+                for _, was_skip in removed:
+                    if was_skip:
+                        self._skip_depth = max(0, self._skip_depth - 1)
+                break
 
         # Finalize a heading
         if self._cur_heading_tag == tag and self._cur_heading_buf is not None:

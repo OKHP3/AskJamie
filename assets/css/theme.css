@@ -1162,6 +1162,127 @@ body:not(.glee-main):not(.askjamie-main) .latest-pill {
   color: var(--color-muted);
 }
 
+/* Footer meta row — "Built with Replit" left, copyright centered */
+.site-footer .footer-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.5rem;
+  border-top: 1px solid rgba(107, 114, 128, 0.45);
+  margin-top: 2rem;
+  padding: 0.9rem 0;
+  font-size: 0.85rem;
+  color: var(--color-muted);
+}
+
+.site-footer .footer-meta p {
+  margin: 0;
+}
+
+.site-footer .footer-built-with {
+  flex: 0 0 auto;
+  text-align: left;
+}
+
+.site-footer .footer-copyright {
+  flex: 1 1 auto;
+  text-align: center;
+}
+
+/* Spacer so the centered copyright stays optically centered when the
+   "Built with Replit" badge takes up space on the left. */
+.site-footer .footer-meta::after {
+  content: "";
+  flex: 0 0 auto;
+  display: block;
+  /* Roughly the visual width of the "Built with Replit" badge so the
+     copyright stays optically centred on wide viewports. */
+  min-width: 8rem;
+}
+
+.site-footer .footer-replit-link {
+  color: #f26207;          /* Replit brand orange */
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.site-footer .footer-replit-link:hover,
+.site-footer .footer-replit-link:focus-visible {
+  color: #ff7a2a;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+@media (max-width: 640px) {
+  .site-footer .footer-meta {
+    justify-content: center;
+    text-align: center;
+  }
+  .site-footer .footer-built-with,
+  .site-footer .footer-copyright {
+    flex: 1 1 100%;
+    text-align: center;
+  }
+  .site-footer .footer-meta::after {
+    display: none;
+  }
+}
+
+/* BrandGuard hub — All cases grid (v0.5) */
+.brandguard-cases-grid {
+  margin-top: 1.5rem;
+}
+
+.brandguard-case-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+.brandguard-case-card:hover,
+.brandguard-case-card:focus-visible {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.10);
+  border-color: var(--color-accent, #c46a2c);
+  text-decoration: none;
+}
+
+.brandguard-case-card img {
+  display: block;
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.6);
+  padding: 4px;
+}
+
+.brandguard-case-card h3 {
+  margin: 0.25rem 0 0;
+  font-size: 1.05rem;
+}
+
+.brandguard-case-card .case-id {
+  margin: 0;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+  font-weight: 600;
+}
+
+.brandguard-case-card p:not(.case-id) {
+  margin: 0.35rem 0 0;
+  font-size: 0.92rem;
+  color: var(--color-text);
+  opacity: 0.85;
+}
+
 
 /* ===== SCROLL REVEAL ===================================================== */
 
