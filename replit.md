@@ -16,8 +16,15 @@ A static marketing and documentation website for **AskJamie™**, an AI persona 
 ```
 /                     # Root: index.html, 404.html, under-construction.html
 assets/
-  css/theme.css        # Main stylesheet (3600+ lines, multi-brand theming + cross-site sync utilities)
-  js/app.js            # Main JS (scroll reveals, theme toggles, reading progress, sticky TOC, lazy-loads search.js)
+  css/theme.css        # Main stylesheet — reorganised v0.4 into 4 stable tiers:
+                       #   1. GLOBAL   (21 sections, ~2420 lines)
+                       #   2. OKH      ( 3 sections, ~271 lines)
+                       #   3. GLEE     ( 9 sections, ~745 lines)
+                       #   4. ASKJAMIE ( 5 sections, ~570 lines)
+                       # SECTION INDEX at top of file lists every section + line range
+  js/app.js            # Main JS (search loader, reading progress, sticky TOC, mobile nav,
+                       # theme toggle, scroll reveal, smooth anchor scroll, construction overlay)
+  js/analytics.js      # GA4 gtag bootstrap — replaces the 25 identical inline blocks (v0.4)
   js/search.js         # Internal site search — modal UI, keyboard nav, lazy-loaded
   js/mermaid-init.js   # Mermaid v11 ESM diagram initialization (external file, no inline scripts)
   data/search-index.json  # Pre-built static search index (~100 KB, ~25 KB gzipped)
@@ -25,6 +32,7 @@ assets/
   img/favicons/        # Full favicon set (ico, 16/32/48px PNG, SVG, android-chrome, apple-touch)
 tools/
   build-search-index.py   # Regenerates assets/data/search-index.json from all .html files
+  restructure-theme.py    # Deterministic theme.css reorganiser (GLOBAL→OKH→GLEE→ASKJAMIE)
 about/                 # About page
 contact/               # Contact page
 legal/                 # Legal pages
@@ -35,6 +43,26 @@ lens-system/           # Portfolio case studies
   professional-portfolio/
   resume-representative/
 ```
+
+## Three-Site CSS/JS Sync Workflow (v0.4)
+
+`theme.css`, `app.js`, `analytics.js`, `search.js`, and `mermaid-init.js`
+are the **shared** front-end source of truth for three sister sites:
+
+| Site                      | Domain               | Body class       |
+| ------------------------- | -------------------- | ---------------- |
+| OverKill Hill P³          | overkillhill.com     | (none — default) |
+| Glee-fully Tools          | glee-fully.tools     | `.glee-main`     |
+| AskJamie                  | askjamie.bot         | `.askjamie-main` |
+
+Brand differences are expressed entirely through CSS body-class scoping
+(`.glee-main .foo {}`, `.askjamie-main .bar {}`, `body:not(...)` for OKH).
+No brand-specific JS exists.
+
+**Update workflow:** edit any one repo, then paste the changed file into
+the other two repos so all three stay in lock-step.  Section ordering in
+`theme.css` is stable (GLOBAL → OKH → GLEE → ASKJAMIE) so diffs land in
+predictable regions.
 
 ## Development Server
 
@@ -99,6 +127,31 @@ Documented for future cleanup work. None of these are bugs in the current ship; 
 - 17 pages have meta descriptions > 165 chars (will truncate in SERPs). Longest is `lego` at 299 chars.
 - 2 pages have titles > 70 chars: `enterprise-sleuth` (80) and `okhp3-brandguard/index` (75).
 
+## CSS / JS Restructure (v0.4 — 2026-05-02)
+
+`assets/css/theme.css` was reorganised from a chronological "newest at the
+bottom" layout into four stable tiers (GLOBAL → OKH → GLEE → ASKJAMIE).
+Every section now has exactly one home and a SECTION INDEX comment at the
+top of the file lists each section's source-line range.
+
+`assets/js/app.js` was reorganised into self-initializing IIFEs followed
+by a single DOM-ready bootstrap.  A redundant `DOMContentLoaded` handler
+whose target element didn't exist yet was removed (it was causing a
+latent dark→light theme flash on subsite navigation).
+
+Inline-content best-practice audit re-ran clean:
+- **0** `<style>` blocks across all 25 HTML files
+- **0** `style="..."` attributes across all 25 HTML files
+- **0** real inline `<script>` blocks — the 25 identical Google Analytics
+  `gtag()` configs were moved to `assets/js/analytics.js` and pages now
+  load it via `<script defer src="/assets/js/analytics.js"></script>`.
+- 26 JSON-LD blocks intentionally remain inline — Google's structured-data
+  spec requires `<script type="application/ld+json">` to be in-page.
+
+Backups: `assets/css/theme.css.bak` (original) and
+`assets/css/theme.css.pre-reorder.bak` (pre-v0.4 working file) are kept
+in the tree but excluded from any future commits.
+
 ## Known Gaps (require manual action)
 
 - **OG images:** All pages use a square 1024×1024 avatar PNG as OG image. The gold standard recommends 1200×630 landscape. A purpose-built landscape OG image would improve social card display.
@@ -106,3 +159,5 @@ Documented for future cleanup work. None of these are bugs in the current ship; 
 - **BreadcrumbList schema:** Recommended for all inner pages for rich results.
 - **Search Console submission:** `sitemap.xml` should be submitted to Google Search Console and Bing Webmaster Tools.
 - **`llms.txt`:** Not yet present — emerging convention for LLM crawler guidance.
+- **Sister-site sync:** v0.4 changes (`theme.css`, `app.js`, `analytics.js`)
+  must still be copied into the OverKill Hill and Glee-fully repos.
