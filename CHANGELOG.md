@@ -6,14 +6,82 @@ All notable changes to the **AskJamie™** public repository are recorded here.
 
 ### Planned
 - Expand Lens System with additional BrandGuard™ case studies
-- Add JSON-LD Article schema to all BrandGuard case study pages
 - Create landscape (1200×630) OG images for optimal social card display
-- Add BreadcrumbList schema to all inner pages
-- Tighten 17 over-length meta descriptions and 2 over-length titles
-- Add "More BrandGuard cases" grid to BrandGuard hub + each case (resolves 4 orphaned cases)
-- Surface the 12 unused Company Logos on the BrandGuard hub
-- Add `llms.txt` for LLM crawler guidance
 - Audit and prune the ~85 unused brand image variants
+
+## [v0.5 — 2026-05-02] — Showpiece pass
+
+### Added
+- **Built-with-Replit footer credit** on every page (25 / 25). Left-aligned
+  "Built with **Replit**" badge in brand orange (`#f26207`, hover `#ff7a2a`)
+  pointing at the OverKill Hill P³ Replit referral link
+  (`https://replit.com/refer/overkillhillp3/`); copyright stays optically
+  centred via a flex-row layout with a same-width spacer on the opposite
+  side.
+- **`llms.txt`** at the project root — the emerging convention for guiding
+  LLM crawlers / AI agents.  Points at every canonical URL in the site
+  (core pages, Lens System GPTs, all 13 BrandGuard case studies).
+- **Article JSON-LD** on every BrandGuard case study page (13 pages):
+  headline, description, image, `datePublished` / `dateModified`,
+  publisher / author, `inLanguage`, `mainEntityOfPage`.
+- **BreadcrumbList JSON-LD** on every inner page (22 pages — all except
+  homepage, 404, and under-construction).
+- **`<link rel="preconnect" href="https://www.googletagmanager.com">`**
+  added on all 25 pages so the GA4 handshake starts in parallel with the
+  fonts handshake.
+- **All 13 BrandGuard cases grid** on the BrandGuard hub
+  (`lens-system/okhp3-brandguard/`).  Resolves the 4 previously
+  orphaned cases (`coca-cola`, `dollar-general`, `lego`, `mathews-archery`)
+  and surfaces all 12 previously-unused `Company Logos/*.png` assets.
+
+### Changed
+- **21 over-length meta descriptions tightened** to ≤165 chars (longest was
+  `lego` at 299 → 148).  Mirrored to `og:description` and
+  `twitter:description` on every page.
+- **2 over-length titles tightened** to ≤70 chars (`enterprise-sleuth`
+  80 → 70; `okhp3-brandguard/index` 75 → 64).  Mirrored to `og:title` and
+  `twitter:title`.
+- **78 `<img>` elements** gained `decoding="async"`; 7 below-the-fold
+  images gained `loading="lazy"` (the first 2 images per page — usually
+  the LCP candidates — were intentionally left eager).
+- **`sitemap.xml`** rewritten with `<lastmod>2026-05-02</lastmod>` on every
+  URL (the original sitemap had no `<lastmod>` tags at all).
+
+### Fixed
+- **`tools/build-search-index.py`** — body excerpts were silently empty for
+  every page in the index because of two bugs:
+  1. `STRIP_CLASSES_CONTAINS` included `askjamie-paper`, `brand-stripes`
+     and `site-specials` — but those classes wrap the actual page
+     content, not chrome.  Removed.
+  2. The HTML tag stack was being polluted by void elements
+     (`<img>`, `<br>`, `<input>`, …) that never receive a matching
+     `handle_endtag`, so a later `</a>` would pop the wrong entry and
+     leave the site `<header>` strip-zone permanently open.  Fixed by
+     adding a `VOID_TAGS` set that's never pushed, plus a
+     pop-the-nearest-match end-tag handler that also cleans up any
+     intervening unclosed tags (e.g. HTML5 optional `</p>`).
+
+  Result: the index went from 7.7 KB / 0 body chars → 100.6 KB / 79,965
+  body chars across 23 pages.  Internal site search is now actually
+  searchable.
+- **`mathews-archery` canonical URL** — fixed a path-case typo
+  (`okhp3-BrandGuard` → `okhp3-brandguard`).
+
+### Tooling
+- **`tools/enhance-pages.py`** — new idempotent bulk editor for
+  site-wide passes (footer markup, preconnects, image attribute polish,
+  meta-description / title rewrites, BreadcrumbList JSON-LD,
+  Article JSON-LD, canonical typo fixes).  Re-runnable safely.
+
+### Verified
+- Inline-content audit: 0 `<style>` blocks, 0 `style=""` attributes,
+  0 real inline `<script>` blocks (61 `application/ld+json` blocks
+  intentionally remain inline per Google's structured-data spec).
+- HTTP smoke test: every key URL returns 200
+  (`/`, `/lens-system/okhp3-brandguard/`, all CSS/JS/data assets,
+  `/llms.txt`, `/sitemap.xml`).
+- Visual: BrandGuard cases grid renders cleanly with all 13 logos in a
+  responsive 4-up grid.
 
 ## [v0.4 — 2026-05-02]
 

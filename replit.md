@@ -152,12 +152,46 @@ Backups: `assets/css/theme.css.bak` (original) and
 `assets/css/theme.css.pre-reorder.bak` (pre-v0.4 working file) are kept
 in the tree but excluded from any future commits.
 
+## Showpiece Pass (v0.5 — 2026-05-02)
+
+A site-wide enhancement pass to maximize value as a "showpiece" GitHub
+Pages site:
+
+- **Built-with-Replit footer credit** added to every page (matching the
+  orange Replit link styling on `overkillhill.com`).  Layout is a flex
+  row with the badge left-aligned and the © line optically centred.
+  Referral target: `https://replit.com/refer/overkillhillp3/`.
+- **`llms.txt`** added at the root for LLM crawler guidance.
+- **Article JSON-LD** added to all 13 BrandGuard case studies.
+- **BreadcrumbList JSON-LD** added to all 22 eligible inner pages
+  (everything except homepage, 404, under-construction).
+- **GTM preconnect** added to all 25 pages.
+- **All 13 BrandGuard cases grid** added to the BrandGuard hub —
+  resolves 4 previously orphaned cases (`coca-cola`, `dollar-general`,
+  `lego`, `mathews-archery`) and surfaces all 12 previously-unused
+  `Company Logos/*.png` assets.
+- **Image attribute polish** — 78 imgs got `decoding="async"`,
+  7 below-the-fold imgs got `loading="lazy"` (first-2 left eager for
+  LCP).
+- **21 over-length meta descriptions** tightened to ≤165 chars.
+- **2 over-length titles** tightened to ≤70 chars.
+- **`sitemap.xml`** rewritten with `<lastmod>` tags on every URL.
+- **Search index bugfix** — `tools/build-search-index.py` was producing
+  0-byte body excerpts for every page because (a) `STRIP_CLASSES_CONTAINS`
+  was stripping the `askjamie-paper` content wrapper, and (b) HTML5 void
+  elements (`<img>`, `<br>`, …) were polluting the parser's tag stack.
+  Fixed both; index is now 100.6 KB with 79,965 body chars.
+- **`mathews-archery` canonical typo** fixed.
+
+`tools/enhance-pages.py` is the new idempotent bulk-edit tool that
+applied most of the above.  Safe to re-run any time.
+
 ## Known Gaps (require manual action)
 
 - **OG images:** All pages use a square 1024×1024 avatar PNG as OG image. The gold standard recommends 1200×630 landscape. A purpose-built landscape OG image would improve social card display.
-- **JSON-LD on inner pages:** Homepage has WebSite + Organization schema. BrandGuard™ case study pages (articles) would benefit from `Article` schema with `datePublished`/`dateModified`.
-- **BreadcrumbList schema:** Recommended for all inner pages for rich results.
 - **Search Console submission:** `sitemap.xml` should be submitted to Google Search Console and Bing Webmaster Tools.
-- **`llms.txt`:** Not yet present — emerging convention for LLM crawler guidance.
-- **Sister-site sync:** v0.4 changes (`theme.css`, `app.js`, `analytics.js`)
-  must still be copied into the OverKill Hill and Glee-fully repos.
+- **Sister-site sync:** v0.4 + v0.5 changes (`theme.css`, `app.js`,
+  `analytics.js`, `tools/build-search-index.py`) must still be copied into
+  the OverKill Hill and Glee-fully repos for visual + tooling parity.
+  AskJamie also adds a fresh `llms.txt` whose URL list will need to be
+  swapped per-site if those repos want their own.
