@@ -1,6 +1,19 @@
 // Shared scripts for OverKill Hill P³ + subsites
 
 // ──────────────────────────────────────────────────────────────
+// Lazy-load the site search module on every page
+// ──────────────────────────────────────────────────────────────
+(function loadSiteSearch() {
+  if (window.__askjamieSearchLoaded) return;
+  window.__askjamieSearchLoaded = true;
+  var s = document.createElement("script");
+  s.src = "/assets/js/search.js";
+  s.defer = true;
+  document.head.appendChild(s);
+})();
+
+
+// ──────────────────────────────────────────────────────────────
 // Reading progress bar
 // ──────────────────────────────────────────────────────────────
 (function () {
