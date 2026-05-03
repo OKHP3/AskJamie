@@ -8,9 +8,10 @@ This roadmap outlines the near-term public direction for the **AskJamie™** rep
   re-run on every meaningful HTML change
 
 ## Next
-- Add `datePublished` / `dateModified` to the `Article` JSON-LD blocks
-  on the 13 BrandGuard case pages (the blocks themselves shipped v0.5)
 - Create 1200×630 landscape OG images for all pages (currently square 1024×1024)
+- Review `tools/image-usage-report.md` and prune unreferenced brand image
+  variants once cross-checked against off-repo uses (sister sites,
+  social cards, marketing materials)
 - Submit `sitemap.xml` to Google Search Console and Bing Webmaster Tools
 - Mirror v0.7 changes (`theme.css`, `tools/audit-site.py`,
   hero-actions wrap) into the OverKill Hill and Glee-fully repos

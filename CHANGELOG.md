@@ -4,6 +4,19 @@ All notable changes to the **AskJamie™** public repository are recorded here.
 
 ## [Unreleased]
 
+### Changed
+- Bumped `dateModified` to `2026-05-03` in the `Article` JSON-LD on all
+  13 BrandGuard case pages (they were materially updated today by the
+  v0.7 demo-notice + theme-color sweep).
+
+### Added (image audit)
+- `tools/image-usage-report.md` — generated report cross-referencing
+  every file under `assets/img/` against every HTML / CSS / JS / JSON /
+  MD / XML / webmanifest in the repo. Result: 120 image files on disk,
+  45 referenced, **75 unreferenced**. Report-only — no files removed,
+  pending cross-check against off-repo uses (sister sites, social
+  cards, marketing materials).
+
 ### Added (Phase 13 — template library)
 - `/assets/templates/` directory with **9 templates**, one per Page Type:
   `template--homepage.html`, `template--interior-single.html`,
