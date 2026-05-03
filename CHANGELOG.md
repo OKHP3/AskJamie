@@ -4,6 +4,15 @@ All notable changes to the **AskJamie™** public repository are recorded here.
 
 ## [Unreleased]
 
+### Added (auditor preventive guards)
+- `tools/audit-site.py` — two new per-page checks. **Duplicate id**
+  scan flags any `id="..."` that appears more than once on a single
+  page (would break anchor navigation, `querySelector`, and
+  screen-reader landmarks). **Broken in-page anchor** scan flags any
+  `href="#foo"` whose target `id="foo"` does not exist on the same
+  page. Both checks currently pass clean across all 26 pages — added
+  proactively to catch future regressions.
+
 ### Added (Mermaid affiliate referral)
 - `universe/index.html` — added a centered referral note directly under
   the Mermaid universe diagram: *"Diagram rendered with Mermaid.js.

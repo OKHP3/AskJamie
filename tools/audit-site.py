@@ -19,6 +19,10 @@ Per-page checks actually emitted as issues:
   * theme-color resolves to the AskJamie brand teal (#2c5e6f)
   * any page embedding a Mermaid diagram carries the OKH affiliate
     referral link (mermaidchart.cello.so) styled with `mermaid-referral-link`
+  * no duplicate `id="..."` attributes within a single page (would
+    break anchor navigation and JS lookups)
+  * every in-page anchor link (`href="#foo"`) resolves to a real
+    `id="foo"` on the same page
 
 Cross-file reconciliation (best-effort; failures are reported as issues
 rather than crashing the run):
@@ -172,6 +176,23 @@ def audit_page(path: Path) -> List[str]:
                 "Mermaid diagram present but missing `mermaid-referral-link` "
                 "class (hot-pink styling)"
             )
+
+    # duplicate-id scan — duplicate ids break anchor navigation, JS
+    # querySelector calls, and screen-reader landmark announcements
+    from collections import Counter
+    all_ids = re.findall(r'\sid="([^"]+)"', src)
+    for dup_id, count in Counter(all_ids).items():
+        if count > 1:
+            issues.append(f'Duplicate id="{dup_id}" appears {count} times')
+
+    # in-page anchor sanity — every href="#foo" must point to a real
+    # id="foo" on the same page (skip "#" alone and "#main" since main
+    # may be added by skip-link landmark patterns at runtime)
+    id_set = set(all_ids)
+    anchors = re.findall(r'href="#([^"]+)"', src)
+    for anchor in set(anchors):
+        if anchor and anchor not in id_set:
+            issues.append(f'In-page anchor href="#{anchor}" has no matching id')
 
     # quick theme-color check
     m = re.search(r'<meta\s+name="theme-color"\s+content="([^"]+)"', src)
