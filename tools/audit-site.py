@@ -23,6 +23,14 @@ Per-page checks actually emitted as issues:
     break anchor navigation and JS lookups)
   * every in-page anchor link (`href="#foo"`) resolves to a real
     `id="foo"` on the same page
+  * og:image URL (when it points to askjamie.bot) resolves to a file
+    that actually exists on disk (URL-decoded to handle %20 etc.)
+
+Cross-file / repo-wide checks:
+  * no leftover backup / OS-junk files (.bak, .orig, .swp, .DS_Store, ~)
+    in production directories
+  * search-index.json mtime is newer than every public HTML file
+    (catches stale indexes after content edits)
 
 Cross-file reconciliation (best-effort; failures are reported as issues
 rather than crashing the run):
@@ -40,6 +48,7 @@ import argparse
 import json
 import re
 import sys
+import urllib.parse
 from html.parser import HTMLParser
 from pathlib import Path
 from typing import Dict, List, Tuple
@@ -194,6 +203,17 @@ def audit_page(path: Path) -> List[str]:
         if anchor and anchor not in id_set:
             issues.append(f'In-page anchor href="#{anchor}" has no matching id')
 
+    # og:image existence — when og:image points to askjamie.bot, the
+    # decoded path must resolve to a real file on disk. Catches social
+    # cards that would 404 when shared on LinkedIn/X/etc.
+    og_img = re.search(r'<meta[^>]*property="og:image"[^>]*content="([^"]+)"', src)
+    if og_img:
+        url = og_img.group(1)
+        if url.startswith("https://askjamie.bot"):
+            decoded = urllib.parse.unquote(url.replace("https://askjamie.bot", ""))
+            if not (ROOT / decoded.lstrip("/")).exists():
+                issues.append(f"og:image file does not exist on disk: {decoded}")
+
     # quick theme-color check
     m = re.search(r'<meta\s+name="theme-color"\s+content="([^"]+)"', src)
     if m and m.group(1).lower() != EXPECTED_THEME_COLOR:
@@ -296,6 +316,40 @@ def reconcile_sitemap(html_files: List[Path]) -> Tuple[List[str], List[str], Lis
     return in_sitemap_missing_disk, on_disk_missing_sitemap, []
 
 
+CRUFT_PATTERNS = ("*.bak", "*.orig", "*.swp", "*.swo", ".DS_Store", "Thumbs.db", "*~")
+
+
+def scan_repo_cruft() -> List[str]:
+    """Find leftover backup / OS-junk files in production directories."""
+    issues: List[str] = []
+    for pattern in CRUFT_PATTERNS:
+        for p in ROOT.rglob(pattern):
+            if any(part in EXCLUDE_DIRS for part in p.parts):
+                continue
+            issues.append(f"Repo cruft (delete me): {p.relative_to(ROOT).as_posix()}")
+    return issues
+
+
+def check_search_index_freshness(html_files: List[Path]) -> List[str]:
+    """Report any HTML file modified after search-index.json was built."""
+    idx = ROOT / "assets/data/search-index.json"
+    if not idx.exists():
+        return []  # missing-index is already caught by reconcile_search_index
+    idx_mtime = idx.stat().st_mtime
+    stale: List[str] = []
+    for p in html_files:
+        if p.stat().st_mtime > idx_mtime:
+            stale.append(p.relative_to(ROOT).as_posix())
+    if not stale:
+        return []
+    head = stale[:5]
+    suffix = "" if len(stale) <= 5 else f" (and {len(stale)-5} more)"
+    return [
+        "search-index.json is stale — rebuild with `python3 tools/build-search-index.py`. "
+        f"Pages newer than the index: {', '.join(head)}{suffix}"
+    ]
+
+
 def reconcile_search_index(html_files: List[Path]) -> List[str]:
     idx = ROOT / "assets/data/search-index.json"
     if not idx.exists():
@@ -391,9 +445,13 @@ def main() -> int:
 
     sitemap_missing_disk, disk_missing_sitemap, sitemap_errors = reconcile_sitemap(html_files)
     search_issues = reconcile_search_index(html_files)
+    search_issues.extend(check_search_index_freshness(html_files))
+    cruft_issues = scan_repo_cruft()
     if sitemap_errors:
         # Surface sitemap parse errors as issues against sitemap.xml itself.
         per_page["sitemap.xml"] = per_page.get("sitemap.xml", []) + sitemap_errors
+    if cruft_issues:
+        per_page["(repo cruft)"] = cruft_issues
 
     report = render_report(per_page, sitemap_missing_disk, disk_missing_sitemap, search_issues)
     out = ROOT / args.report
@@ -403,6 +461,7 @@ def main() -> int:
 
     total = sum(len(v) for v in per_page.values()) + len(sitemap_missing_disk) + \
             len(disk_missing_sitemap) + len(search_issues)
+    # cruft was already added into per_page above, so it's already in the sum
     print(f"Total issues found: {total}")
     return 0
 

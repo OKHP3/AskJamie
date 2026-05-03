@@ -4,14 +4,34 @@ All notable changes to the **AskJamie™** public repository are recorded here.
 
 ## [Unreleased]
 
+### Removed (repo cruft)
+- Deleted `assets/css/theme.css.bak` and
+  `assets/css/theme.css.pre-reorder.bak` — leftover safety copies from
+  the v0.4 theme restructure (May 2). 90 KB each, no longer referenced.
+
+### Changed (search index rebuilt)
+- Regenerated `assets/data/search-index.json` so it reflects today's
+  edits to the 13 BrandGuard case pages and `universe/index.html`.
+  33 pages indexed, 128.6 KB.
+
 ### Added (auditor preventive guards)
-- `tools/audit-site.py` — two new per-page checks. **Duplicate id**
-  scan flags any `id="..."` that appears more than once on a single
-  page (would break anchor navigation, `querySelector`, and
-  screen-reader landmarks). **Broken in-page anchor** scan flags any
-  `href="#foo"` whose target `id="foo"` does not exist on the same
-  page. Both checks currently pass clean across all 26 pages — added
-  proactively to catch future regressions.
+- `tools/audit-site.py` — five new checks total:
+  * **Duplicate id** — flags any `id="..."` appearing more than once
+    on a single page (breaks anchor nav, `querySelector`, screen-reader
+    landmarks).
+  * **Broken in-page anchor** — flags any `href="#foo"` whose target
+    `id="foo"` does not exist on the same page.
+  * **og:image existence** — when `og:image` points to askjamie.bot,
+    the URL-decoded path must resolve to a real file on disk. Catches
+    social cards that would 404 when shared on LinkedIn / X / Slack.
+  * **Repo cruft scan** — flags `.bak`, `.orig`, `.swp`, `.DS_Store`,
+    `Thumbs.db`, and `~` files anywhere in production directories.
+    Caught the two stale `theme.css.*.bak` files this round.
+  * **Search-index freshness** — flags any HTML file modified after
+    `search-index.json` was last built, with a prompt to rebuild.
+    Catches the exact drift we hit this round (13 case pages newer
+    than the index).
+  All five pass clean on the current repo.
 
 ### Added (Mermaid affiliate referral)
 - `universe/index.html` — added a centered referral note directly under
