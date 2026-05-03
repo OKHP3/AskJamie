@@ -4,6 +4,19 @@ All notable changes to the **AskJamie™** public repository are recorded here.
 
 ## [Unreleased]
 
+### Added
+- **Dedicated `/search/` page** matching the OverKill Hill pattern: hero
+  banner, big input, live result count, category-filter chips (counts per
+  section), and large result cards with category pill, URL crumb, title,
+  and snippet with highlighted matches. Reads the existing
+  `/assets/data/search-index.json` (no re-indexing required) — the
+  existing modal/overlay search continues to work site-wide.
+- New `assets/js/search-page.js` (page logic only; coexists with the
+  overlay's `search.js`) and AskJamie-themed `.search-page` styles
+  appended to `theme.css`.
+- `/search/` added to `sitemap.xml` (priority 0.7, weekly).
+- Deep-linkable `?q=...` query param.
+
 ### Planned
 - Expand Lens System with additional BrandGuard™ case studies
 - Create landscape (1200×630) OG images for optimal social card display

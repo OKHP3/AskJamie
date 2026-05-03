@@ -153,8 +153,16 @@
         (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.isContentEditable) &&
         t.id !== "site-search-input";
 
+      // On the dedicated /search/ page, defer to the page's own input —
+      // don't pop the overlay on top of it.
+      var onSearchPage = document.body.classList.contains("search-page");
+
       // Cmd/Ctrl + K = open
       if ((e.metaKey || e.ctrlKey) && (e.key === "k" || e.key === "K")) {
+        if (onSearchPage) {
+          var pageInput = document.getElementById("search-page-input");
+          if (pageInput) { e.preventDefault(); try { pageInput.focus(); } catch (_) {} return; }
+        }
         e.preventDefault();
         openModal();
         return;
@@ -163,6 +171,10 @@
       // "/" alone = open (when not typing, and no other overlay is active)
       if (e.key === "/" && !isTyping && !e.metaKey && !e.ctrlKey && !e.altKey) {
         if (isAnotherOverlayOpen()) return;
+        if (onSearchPage) {
+          var pageInput2 = document.getElementById("search-page-input");
+          if (pageInput2) { e.preventDefault(); try { pageInput2.focus(); } catch (_) {} return; }
+        }
         if (!modal || modal.hasAttribute("hidden")) {
           e.preventDefault();
           openModal();
