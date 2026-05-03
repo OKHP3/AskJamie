@@ -1,0 +1,319 @@
+# PHASE 13 — PAGE TEMPLATE INVENTORY & GENERATION
+
+## Final Action | Execute after Phase 12 is complete
+
+-----
+
+## OBJECTIVE
+
+Catalog every HTML page in the AskJamie.bot project. For each page, determine whether a structural template already exists in `/assets/templates/`. If one does not exist, create it. By the end of this phase, every page type on the site must have a corresponding template file stored in `/assets/templates/` — stripped of all specific content but retaining full structural, CSS, and metadata scaffolding.
+
+-----
+
+## STEP 13.1 — BUILD THE COMPLETE PAGE INVENTORY
+
+Crawl the entire project directory tree. List every `.html` file found, regardless of depth. For each file, record:
+
+|#  |File Path (relative to root)                                             |Page Title                 |Page Type        |Template Exists?|
+|---|-------------------------------------------------------------------------|---------------------------|-----------------|----------------|
+|1  |`index.html`                                                             |Homepage                   |`homepage`       |?               |
+|2  |`about/index.html`                                                       |About                      |`interior-single`|?               |
+|3  |`contact/index.html`                                                     |Contact                    |`interior-form`  |?               |
+|4  |`legal/index.html`                                                       |Legal                      |`interior-single`|?               |
+|5  |`universe/index.html`                                                    |OKHP³™ Universe            |`interior-single`|?               |
+|6  |`404.html`                                                               |404 Error                  |`error`          |?               |
+|7  |`under-construction.html`                                                |Under Construction         |`holding`        |?               |
+|8  |`lens-system/index.html`                                                 |Lens System Hub            |`hub`            |?               |
+|9  |`lens-system/resume-representative/index.html`                           |Lens 01                    |`lens-detail`    |?               |
+|10 |`lens-system/professional-portfolio/index.html`                          |Lens 02                    |`lens-detail`    |?               |
+|11 |`lens-system/enterprise-sleuth/index.html`                               |Lens 03                    |`lens-detail`    |?               |
+|12 |`lens-system/okhp3-brandguard/index.html`                                |BrandGuard Hub             |`hub`            |?               |
+|13 |`lens-system/okhp3-brandguard/bfs-framing-intelligent-futures/index.html`|BrandGuard Case Study — BFS|`case-study`     |?               |
+|[+]|[any additional .html files discovered]                                  |…                          |…                |?               |
+
+Add rows for every additional `.html` file found during the crawl. Do not skip any file, including files inside `attached_assets/`, `tools/`, or any subdirectory not listed above.
+
+Assign each page one of these **Page Type** labels based on its structural pattern:
+
+|Page Type Label  |Description                                                                           |
+|-----------------|--------------------------------------------------------------------------------------|
+|`homepage`       |Full-width hero + multi-section layout with “Today’s Special” banner active           |
+|`interior-single`|Standard inner page: hero/intro block + one or more prose/content sections, no sidebar|
+|`interior-form`  |Inner page with a form as the primary interactive element                             |
+|`hub`            |Directory/index page listing child items as cards in a grid                           |
+|`lens-detail`    |Lens System individual lens page: lens metadata, use cases, CTA                       |
+|`case-study`     |BrandGuard or similar artifact with narrative, imagery, embedded GPT or link          |
+|`error`          |HTTP error page (404, 500, etc.)                                                      |
+|`holding`        |Under-construction or coming-soon placeholder                                         |
+|`utility`        |Any page that doesn’t fit the above (llms.txt landing, etc.)                          |
+
+-----
+
+## STEP 13.2 — AUDIT EXISTING TEMPLATES
+
+Check whether `/assets/templates/` currently exists. If it does not exist, create the directory.
+
+Scan `/assets/templates/` for any existing `.html` files. For each file found, determine which Page Type it covers by reading its structure. Update the inventory table’s “Template Exists?” column for each match found. A template counts as existing only if it:
+
+- Is an `.html` file (not a `.md` or `.txt` description)
+- Contains the full `<head>` block with proper metadata placeholders
+- Contains the site header with navigation
+- Contains the site footer
+- Has been stripped of page-specific body content (replaced with structured placeholders, not just blank space)
+
+If a file in `/assets/templates/` does not meet all four criteria, it does not count as a valid template — note it as “EXISTS BUT INVALID” and include it in the generation queue for replacement.
+
+-----
+
+## STEP 13.3 — GENERATE MISSING TEMPLATES
+
+For every Page Type that does not have a valid template, generate one now.
+
+### Template Generation Rules
+
+**Rule 1 — Source of truth**
+Base each template on the actual production page of that type. Do not invent structure from scratch. Read the real page, strip its specific content, and save the result as the template. The template must accurately reflect what the production page actually looks like structurally, not what you think it should look like.
+
+**Rule 2 — What to strip**
+Remove all of the following from the page copy when creating the template:
+
+- All specific body text (headlines, paragraphs, list items, card content)
+- All specific image `src` paths (replace with placeholder values — see Rule 5)
+- All specific link `href` values that point to content-specific targets (keep structural nav hrefs intact)
+- All page-specific JSON-LD structured data content (keep the schema type stub, clear the values)
+- All specific page titles and meta descriptions (replace with placeholder tokens — see Rule 4)
+
+**Rule 3 — What to preserve**
+Keep all of the following intact:
+
+- Complete `<head>` metadata block structure (all meta tag names and attributes, just with placeholder values)
+- All CSS class names, exactly as they appear in the source
+- All structural HTML elements and their nesting (`<section>`, `<article>`, `<div class="container">`, `<header>`, `<footer>`, `<nav>`, etc.)
+- The site navigation with all links intact (nav is not page-specific)
+- The site footer with all links intact
+- The “Today’s Special” banner markup (with its link cleared to `#` and text replaced with a placeholder)
+- All `aria-` attributes (filled with placeholder values where they referenced specific text)
+- All `id` attributes (these define page structure and must be preserved)
+- All `data-` attributes
+- All `<script>` tags at the bottom of `<body>` (they’re structural, not content)
+- All `<link>` tags in `<head>`
+
+**Rule 4 — Placeholder token format**
+Use double-bracket tokens for all replaceable content. Examples:
+
+```
+[[PAGE-TITLE]]
+[[PAGE-DESCRIPTION]]
+[[PAGE-URL]]
+[[OG-IMAGE-URL]]
+[[SECTION-HEADING]]
+[[BODY-COPY]]
+[[CTA-LABEL]]
+[[CTA-URL]]
+[[CARD-TITLE]]
+[[CARD-BODY]]
+[[IMAGE-SRC]]
+[[IMAGE-ALT]]
+[[ARTICLE-TITLE]]
+[[ARTICLE-BODY]]
+[[LENS-NUMBER]]
+[[LENS-NAME]]
+[[LENS-TAGLINE]]
+[[CASE-STUDY-BRAND]]
+[[GPT-URL]]
+[[STRUCTURED-DATA-VALUE]]
+```
+
+Use the most specific token name that describes the content’s purpose. Do not use generic tokens like `[[CONTENT]]` for everything — a card title and a hero headline should have different token names.
+
+**Rule 5 — Image placeholders**
+Replace all specific image `src` values with the token `[[IMAGE-SRC]]` and all `alt` values with `[[IMAGE-ALT]]`. Keep `width` and `height` attributes intact so layout doesn’t break during template use. Example:
+
+```html
+<!-- BEFORE (production) -->
+<img src="assets/img/AskJamie AvatarTallLeft Square 1024.png" alt="AskJamie™ avatar" width="40" height="40">
+
+<!-- AFTER (template) -->
+<img src="[[IMAGE-SRC]]" alt="[[IMAGE-ALT]]" width="40" height="40">
+```
+
+**Exception**: The nav logo and footer logo image paths may be left as their real values since they are shared infrastructure, not page-specific content.
+
+**Rule 6 — Comment every placeholder block**
+Above each section that contains placeholder tokens, add an HTML comment explaining what the section is for. Example:
+
+```html
+<!-- ================================================
+  TEMPLATE SECTION: Hero
+  Purpose: Primary above-the-fold intro for this page type.
+  Required fields: [[PAGE-TITLE]], [[HERO-SUBTITLE]], [[HERO-TAGLINE]], [[CTA-LABEL]], [[CTA-URL]], [[IMAGE-SRC]], [[IMAGE-ALT]]
+  Optional fields: [[SITE-STATUS-MESSAGE]] (only if page is in early-access state)
+================================================ -->
+```
+
+**Rule 7 — Template header block**
+At the very top of each template file, before `<!DOCTYPE html>`, add an HTML comment block:
+
+```html
+<!--
+  ============================================================
+  ASKJAMIE™ PAGE TEMPLATE
+  ============================================================
+  Template Type  : [[PAGE-TYPE-LABEL]]
+  Source Page    : [[SOURCE-PAGE-PATH]]
+  Template Path  : /assets/templates/[[TEMPLATE-FILENAME]]
+  Generated      : [[GENERATION-DATE]]
+  Generator      : Replit Agent — AskJamie Full-Site Audit
+  ============================================================
+  USAGE INSTRUCTIONS:
+  1. Copy this file to the appropriate directory and rename it index.html
+  2. Search for all [[ ]] tokens and replace with real content
+  3. Update the <link rel="canonical"> to the new page's URL
+  4. Update all Open Graph og:url and og:title meta tags
+  5. Update the JSON-LD structured data values
+  6. Add page-specific JavaScript if needed (do not remove existing script tags)
+  7. Remove this comment block before publishing
+  ============================================================
+-->
+```
+
+Replace all `[[...]]` tokens in the header block with their real values at generation time.
+
+-----
+
+## STEP 13.4 — TEMPLATE FILENAME CONVENTION
+
+Save all generated templates using this filename pattern:
+
+```
+/assets/templates/template--[page-type-label].html
+```
+
+Examples:
+
+```
+/assets/templates/template--homepage.html
+/assets/templates/template--interior-single.html
+/assets/templates/template--interior-form.html
+/assets/templates/template--hub.html
+/assets/templates/template--lens-detail.html
+/assets/templates/template--case-study.html
+/assets/templates/template--error.html
+/assets/templates/template--holding.html
+/assets/templates/template--utility.html
+```
+
+If multiple source pages share the same Page Type label (e.g., Lens 01, 02, and 03 are all `lens-detail`), generate only **one** template for that type, based on the most complete/representative source page among them. Do not create separate `template--lens-detail-01.html`, `template--lens-detail-02.html`, etc. — one template per structural type is the rule.
+
+-----
+
+## STEP 13.5 — GENERATE THE TEMPLATE INDEX
+
+Create a single file at `/assets/templates/INDEX.md` that serves as the master reference for all templates. Format it as follows:
+
+```markdown
+# AskJamie™ Template Library
+## /assets/templates/
+
+Generated: [date]
+Total templates: [count]
+
+---
+
+## Available Templates
+
+### template--homepage.html
+- **Page type**: `homepage`
+- **Source page**: `index.html`
+- **Use for**: The root index page. Full-width hero, multi-section layout, "Today's Special" banner.
+- **Required tokens**: [[PAGE-TITLE]], [[PAGE-DESCRIPTION]], [[PAGE-URL]], ...
+- **Optional tokens**: [[SITE-STATUS-MESSAGE]], ...
+
+### template--interior-single.html
+- **Page type**: `interior-single`
+- **Source page**: `about/index.html`
+- **Use for**: Standard interior pages with no sidebar and no form (About, Legal, Universe, etc.)
+- **Required tokens**: ...
+- **Optional tokens**: ...
+
+[repeat for each template]
+
+---
+
+## Token Reference
+
+| Token | Description | Required in |
+|---|---|---|
+| [[PAGE-TITLE]] | Full browser tab title | All |
+| [[PAGE-DESCRIPTION]] | Meta description (150–160 chars) | All |
+| [[PAGE-URL]] | Canonical URL for this page | All |
+| [[OG-IMAGE-URL]] | Open Graph image full URL | All |
+| [[SECTION-HEADING]] | H2 or H3 heading for a content section | Most |
+| [[BODY-COPY]] | Paragraph content for a content section | Most |
+| [[CTA-LABEL]] | Button or link text | Where applicable |
+| [[CTA-URL]] | Button or link href | Where applicable |
+| [[LENS-NUMBER]] | Two-digit lens number (01, 02, etc.) | lens-detail |
+| [[LENS-NAME]] | Lens display name | lens-detail |
+| [[CASE-STUDY-BRAND]] | Brand name for BrandGuard case study | case-study |
+| [[GPT-URL]] | URL to the live GPT | case-study, lens-detail |
+[add all tokens actually used]
+
+---
+
+## How to Use a Template
+
+1. Copy the desired template file to the target directory and rename it `index.html`.
+2. Open the file and use Find & Replace to locate all `[[` tokens.
+3. Replace each token with real content appropriate to the page.
+4. Update the `<link rel="canonical">` href.
+5. Update `og:url`, `og:title`, `og:description`, `og:image` meta tags.
+6. Update the JSON-LD structured data block with real values.
+7. Remove the template header comment block at the top of the file.
+8. Add any page-specific CSS classes or JS as needed without modifying shared files.
+9. Test on mobile and desktop before committing.
+
+---
+
+## Adding a New Template
+
+If a new page type is introduced that doesn't match any existing template:
+1. Build the page using the closest existing template as a starting point.
+2. Once the page is production-ready, create a stripped template from it using the rules in Phase 13.
+3. Add the new template to this index.
+4. Commit both the new page and new template together.
+```
+
+-----
+
+## STEP 13.6 — COMMIT
+
+After all templates are generated and `INDEX.md` is written, make a final git commit:
+
+```
+feat: Phase 13 — template library generated for all page types
+
+- Created /assets/templates/ directory
+- Generated [N] templates covering [N] page types
+- Created /assets/templates/INDEX.md with full token reference
+- All templates follow [[DOUBLE-BRACKET]] token convention
+- Template header blocks document source page, type, and usage instructions
+```
+
+-----
+
+## PHASE 13 COMPLETION CRITERIA
+
+Phase 13 is complete when ALL of the following are true:
+
+- [ ] `/assets/templates/` directory exists
+- [ ] Every Page Type identified in the inventory has exactly one valid template file
+- [ ] Every template file has the full header comment block
+- [ ] Every template file has section-level HTML comments above each placeholder region
+- [ ] Every content-specific value in every template has been replaced with a `[[TOKEN]]`
+- [ ] `/assets/templates/INDEX.md` exists and lists all templates with their token inventories
+- [ ] A git commit has been made with the changes
+- [ ] The inventory table in the Audit Report (`AUDIT-REPORT.md`) has been updated with a Phase 13 summary row
+
+-----
+
+**THIS IS THE FINAL PHASE. WHEN PHASE 13 IS COMPLETE, THE SESSION IS DONE.**

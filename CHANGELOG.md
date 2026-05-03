@@ -4,6 +4,28 @@ All notable changes to the **AskJamie™** public repository are recorded here.
 
 ## [Unreleased]
 
+### Added (Phase 13 — template library)
+- `/assets/templates/` directory with **9 templates**, one per Page Type:
+  `template--homepage.html`, `template--interior-single.html`,
+  `template--interior-form.html`, `template--hub.html`,
+  `template--lens-detail.html`, `template--case-study.html`,
+  `template--error.html`, `template--holding.html`,
+  `template--utility.html`. Each follows the Phase 13 rules:
+  full-fidelity copy of the representative production page with
+  page-specific content swapped to `[[DOUBLE-BRACKET]]` tokens, a
+  template header comment block at the top, and section-level comments
+  above every `<section>` inside `<main>`.
+- `tools/generate-templates.py` — deterministic generator. Tokenises
+  meta tags (title, description, OG, Twitter, canonical), clears
+  JSON-LD bodies to a placeholder, replaces hero/section/card
+  text with named tokens, and tokenises non-shared images (nav and
+  footer logos preserved as Rule 5 exceptions).
+- `/assets/templates/INDEX.md` — full Page-Type → template mapping
+  for all 26 HTML files, plus token reference table and
+  "Adding a New Template" workflow.
+- `tools/audit-site.py` — `templates/` added to `EXCLUDE_DIRS` so the
+  auditor skips token-bearing template files.
+
 ### Planned
 - Expand Lens System with additional BrandGuard™ case studies
 - Create landscape (1200×630) OG images for optimal social card display
