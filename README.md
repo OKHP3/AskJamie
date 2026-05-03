@@ -13,7 +13,7 @@ The site documents the AskJamie™ Lens System: a public-facing portfolio of GPT
 - **Lens System** — a modular portfolio of AI case studies and GPT prototypes, each solving a real-world problem
 - **BrandGuard™ Series** — custom GPT proofs-of-concept demonstrating how brands can own their AI voice before drift defines it (LEGO, Starbucks, Builders FirstSource, Brooks Running, Ping, and more)
 - **Enterprise Sleuth™** — a working demo and recipe pack for building in-house AI investigator tools
-- **Resume Representative** — an AI-assisted professional portfolio tool
+- **Résumé Representative** — an AI-assisted professional portfolio tool
 
 ## Why It Matters
 

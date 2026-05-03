@@ -8,7 +8,50 @@ All notable changes to the **AskJamie™** public repository are recorded here.
 - Expand Lens System with additional BrandGuard™ case studies
 - Create landscape (1200×630) OG images for optimal social card display
 - Audit and prune the ~85 unused brand image variants
-- Mirror v0.6 shared-asset changes into OverKill Hill and Glee-fully repos
+- Mirror v0.7 shared-asset changes (`theme.css`, `tools/audit-site.py`)
+  into OverKill Hill and Glee-fully repos
+
+## [v0.7 — 2026-05-03] — Audit-tooling, BG demo notice, hero CTA cluster
+
+See `AUDIT-ASKJAMIE-FINAL.md` at the repo root for the full v2.0 cycle
+write-up.
+
+### Added
+- **`tools/audit-site.py`** — reproducible static-site auditor. Walks
+  every `.html` file in the repo and reports per-page issues
+  (title/description length, missing canonical, missing OG fields,
+  image alt/width/height, `target=_blank` links missing
+  `rel="noopener noreferrer"`, known placeholders, wrong `theme-color`),
+  plus sitemap ↔ disk and search-index ↔ disk reconciliation.
+  Writes `tools/audit-report.md`. Current run: **0 issues**.
+- **Reusable BrandGuard™ demo notice block** injected above `</main>`
+  on all 13 BrandGuard case-study pages, plus `.brandguard-demo-notice`
+  CSS in the ASKJAMIE tier of `theme.css`. The notice clarifies the
+  case is a public-information demonstration, not an endorsement, and
+  links to `/legal/`.
+- **Multi-CTA homepage hero cluster** — replaces the single
+  "Open Résumé Representative" button with three buttons:
+  Explore the Lens System (primary), See BrandGuard™ in action,
+  Talk with Jamie. Hero-actions container is now `flex-wrap` so the
+  cluster stacks on narrow viewports.
+- **`AUDIT-ASKJAMIE-FINAL.md`** — v2.0 cycle deliverable.
+
+### Fixed
+- **Four broken internal links** in the BrandGuard hub
+  ("Part of the AskJamie portfolio" section) repaired:
+  `/resume-representative/`, `/professional-portfolio/`,
+  `/enterprise-sleuth/`, and `/bfs-framing-intelligent-futures/` all
+  pointed at non-existent root-level paths. Now correctly prefixed
+  with `/lens-system/` (and `/lens-system/okhp3-brandguard/` for BFS).
+- **Site-wide `theme-color` sweep** — 16 pages had dark-template
+  leftovers (`#0f172a`, `#111827`, `#1e40af`, `#1f2937`, `#c46a2c`)
+  or brand-of-the-page colors (`#006241` Starbucks, `#d4002a` Coca-Cola,
+  `#2d6f7e` LVMH). All now resolve to the AskJamie brand teal `#2c5e6f`
+  for consistent address-bar tinting.
+- **"Discount Tires" → "Discount Tire"** typo fix in
+  `universe/index.html` Mermaid diagram (label `BRG10`).
+- **README** — "Resume Representative" → "Résumé Representative" for
+  spelling consistency with the on-site copy.
 
 ## [v0.6 — 2026-05-03] — Search + full-site audit pass
 

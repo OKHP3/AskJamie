@@ -4472,3 +4472,53 @@ html:has(
   inset: 0;
   background: transparent;
 }
+
+/* ==========================================================================
+ * ASKJAMIE — BRANDGUARD DEMO NOTICE (v0.7 audit)
+ * Reusable disclaimer block injected at the bottom of every BrandGuard
+ * case-study page. Lives just above the footer so it’s visible without
+ * being aggressive.
+ * ========================================================================== */
+.brandguard-demo-notice {
+  max-width: 960px;
+  margin: 2rem auto 3rem;
+  padding: 1.25rem 1.5rem;
+  border: 1px solid var(--brand-teal-300, #b6d2d8);
+  border-left: 4px solid var(--brand-teal-700, #2c5e6f);
+  border-radius: 8px;
+  background: rgba(245, 239, 225, 0.55);
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: var(--text-primary, #2a2a2a);
+}
+.brandguard-demo-notice__label {
+  margin: 0 0 0.4rem 0;
+  font-family: "Baloo 2", system-ui, sans-serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--brand-teal-700, #2c5e6f);
+}
+.brandguard-demo-notice p {
+  margin: 0;
+}
+.brandguard-demo-notice p + p {
+  margin-top: 0.5rem;
+}
+.brandguard-demo-notice a {
+  color: var(--brand-teal-700, #2c5e6f);
+  text-decoration: underline;
+}
+
+/* ==========================================================================
+ * ASKJAMIE — HERO ACTIONS multi-CTA cluster (v0.7 audit)
+ * The homepage hero now has more than one CTA; let the cluster wrap on
+ * narrow screens without losing alignment.
+ * ========================================================================== */
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}

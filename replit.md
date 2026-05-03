@@ -31,7 +31,11 @@ assets/
   img/                 # Brand assets, avatars, case study images
   img/favicons/        # Full favicon set (ico, 16/32/48px PNG, SVG, android-chrome, apple-touch)
 tools/
+  audit-site.py           # Static-site auditor (v0.7) — per-page checks +
+                          # sitemap/search-index reconciliation. Writes
+                          # tools/audit-report.md. Current run: 0 issues.
   build-search-index.py   # Regenerates assets/data/search-index.json from all .html files
+  enhance-pages.py        # Bulk-edit tool for site-wide HTML enhancements (v0.5)
   restructure-theme.py    # Deterministic theme.css reorganiser (GLOBAL→OKH→GLEE→ASKJAMIE)
 about/                 # About page
 contact/               # Contact page
@@ -190,8 +194,54 @@ applied most of the above.  Safe to re-run any time.
 
 - **OG images:** All pages use a square 1024×1024 avatar PNG as OG image. The gold standard recommends 1200×630 landscape. A purpose-built landscape OG image would improve social card display.
 - **Search Console submission:** `sitemap.xml` should be submitted to Google Search Console and Bing Webmaster Tools.
-- **Sister-site sync:** v0.4 + v0.5 changes (`theme.css`, `app.js`,
-  `analytics.js`, `tools/build-search-index.py`) must still be copied into
-  the OverKill Hill and Glee-fully repos for visual + tooling parity.
-  AskJamie also adds a fresh `llms.txt` whose URL list will need to be
-  swapped per-site if those repos want their own.
+- **Sister-site sync:** v0.4 + v0.5 + v0.6 + v0.7 changes (`theme.css`,
+  `app.js`, `analytics.js`, `tools/build-search-index.py`,
+  `tools/audit-site.py`) must still be copied into the OverKill Hill
+  and Glee-fully repos for visual + tooling parity. AskJamie also adds
+  a fresh `llms.txt` whose URL list will need to be swapped per-site if
+  those repos want their own.
+
+## Audit & Quality Gates (v0.7 — 2026-05-03)
+
+`tools/audit-site.py` is the repo's reproducible quality gate.
+
+```
+python3 tools/audit-site.py            # writes tools/audit-report.md
+python3 tools/audit-site.py --quiet    # same, no per-page console output
+```
+
+It walks every `.html` file in the repo (excluding `.local/`,
+`attached_assets/`, `.cache/`, `node_modules/`, `.git/`) and checks:
+
+- title length (≤70), description length (≤165), missing description
+- exactly one `<h1>`, missing canonical, missing OG fields
+- every `<img>` has `alt`, `width`, `height`
+- every external `target="_blank"` link has `rel="noopener noreferrer"`
+- known placeholders (`ASK-JAMIE-GPT-ID-HERE`, old SearchAction
+  `?s={…}` target, generic `YOUR-…` strings)
+- `theme-color` resolves to the AskJamie brand teal `#2c5e6f`
+- sitemap ↔ on-disk pages reconciliation
+- search-index ↔ on-disk pages reconciliation
+
+**Run-it-after rule:** any HTML edit, any new page, any sitemap or
+search-index change. Current state: **0 issues across 26 HTML files.**
+
+## Latest Audit Cycle (v0.7 — 2026-05-03)
+
+See `AUDIT-ASKJAMIE-FINAL.md` for the full v2.0 cycle write-up. Quick
+summary of what changed since v0.6:
+
+- New `tools/audit-site.py` (above).
+- Reusable `.brandguard-demo-notice` block injected on all 13
+  BrandGuard case pages, with matching CSS in the ASKJAMIE tier of
+  `theme.css`. Each notice links to `/legal/`.
+- Homepage hero CTA cluster expanded from 1 button to 3
+  (Lens System / BrandGuard / Contact) with `flex-wrap` so it stacks
+  on mobile.
+- Four broken internal links repaired in the BrandGuard hub
+  ("Part of the AskJamie portfolio" cards).
+- Site-wide `theme-color` sweep: 16 pages had dark-template or
+  brand-of-the-page values; all now resolve to the brand teal.
+- "Discount Tires" → "Discount Tire" typo fix in the universe Mermaid.
+- Documentation refresh: this file, `CHANGELOG.md` (v0.7),
+  `ROADMAP.md`, `README.md` ("Resume" → "Résumé").
