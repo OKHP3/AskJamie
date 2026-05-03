@@ -27,6 +27,7 @@ deep links.
 - [Lens System overview](https://askjamie.bot/lens-system/) — four disciplined ways of seeing & expressing a story through one architected AI persona.
 - [Contact](https://askjamie.bot/contact/) — direct contact for project inquiries, collaboration, and professional engagements.
 - [Legal](https://askjamie.bot/legal/) — terms, privacy, and trademark notices.
+- [Search](https://askjamie.bot/search/) — internal full-text search across every page, BrandGuard™ case, and service.
 
 ## Lens System — purpose-built GPTs
 
