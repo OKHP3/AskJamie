@@ -4,23 +4,94 @@ All notable changes to the **AskJamie™** public repository are recorded here.
 
 ## [Unreleased]
 
-### Added
-- **Dedicated `/search/` page** matching the OverKill Hill pattern: hero
-  banner, big input, live result count, category-filter chips (counts per
-  section), and large result cards with category pill, URL crumb, title,
-  and snippet with highlighted matches. Reads the existing
-  `/assets/data/search-index.json` (no re-indexing required) — the
-  existing modal/overlay search continues to work site-wide.
-- New `assets/js/search-page.js` (page logic only; coexists with the
-  overlay's `search.js`) and AskJamie-themed `.search-page` styles
-  appended to `theme.css`.
-- `/search/` added to `sitemap.xml` (priority 0.7, weekly).
-- Deep-linkable `?q=...` query param.
-
 ### Planned
 - Expand Lens System with additional BrandGuard™ case studies
 - Create landscape (1200×630) OG images for optimal social card display
 - Audit and prune the ~85 unused brand image variants
+- Mirror v0.6 shared-asset changes into OverKill Hill and Glee-fully repos
+
+## [v0.6 — 2026-05-03] — Search + full-site audit pass
+
+See `AUDIT-REPORT.md` at the repo root for the full per-issue breakdown.
+
+### Added
+- **Dedicated `/search/` page** matching the OverKill Hill pattern: hero
+  banner, big input, live result count, category-filter chips, and large
+  result cards with category pill, URL crumb, title, and snippet with
+  highlighted matches. Reads the existing
+  `/assets/data/search-index.json` (no re-indexing required); the existing
+  modal/overlay search continues to work site-wide.
+- New `assets/js/search-page.js` (page logic only; coexists with the
+  overlay's `search.js`), `.search-page` styles appended to `theme.css`,
+  and `/search/` added to `sitemap.xml`.
+- Deep-linkable `?q=...` query param on the search page.
+- **`#fit` "Where it fits" section** on the homepage — three-card grid
+  positioning AskJamie™ alongside OverKill Hill P³™ and Glee-fully PT™.
+  Resolves a long-standing dead nav anchor.
+- **Expanded `about/index.html`** — three new card-grid sections
+  ("Who Jamie is", "What AskJamie™ is not", "Who this is for") in the
+  established brand voice. Page now matches the depth of `lens-system/`.
+- **Expanded `legal/index.html`** — added Trademarks, BrandGuard™
+  disclaimer (public-data only / not impersonation), Privacy (GA4 only,
+  no first-party cookies), and Terms-of-use sections. Stamped
+  "Last updated: 2026-05-03".
+- **`.btn-disabled` CSS** for non-interactive "Coming soon" CTAs.
+
+### Fixed
+- **JSON-LD `SearchAction` lie repaired site-wide.** 18 pages declared
+  `target: https://askjamie.bot/?s={search_term_string}` — a pattern the
+  site never implemented. Rewritten to point at the new `/search/` page
+  with the correct `?q=` parameter.
+- **`index.html`** "View this milestone" anchor was missing `href` —
+  now points at the BFS BrandGuard case study.
+- **Two placeholder GPT URLs** (`ASK-JAMIE-GPT-ID-HERE`) in
+  `lens-system/index.html` and `under-construction.html` converted to
+  non-link "Coming soon" buttons (`role="link"`, `aria-disabled="true"`).
+- **Defer/aria shortcut fix on the dedicated search page** — global
+  `/` and `Cmd+K` now focus the page input on `/search/` instead of
+  popping the overlay on top of it.
+- **Highlight token ordering** in `search-page.js` — sort tokens
+  longest-first so a shorter token doesn't match inside the `<mark>`
+  tag of a longer one (e.g. "brand" inside "brandguard").
+- **`P3` → `P³`** in keyword metas across 6 pages. Body copy already
+  used the correct superscript.
+
+### Removed
+- **Dead Ko-fi overlay-widget script** removed from 8 pages — the
+  `kofiWidgetOverlay.draw(...)` config call was never present, so the
+  third-party download had no visible effect. Ko-fi link in the footer
+  Connect column remains.
+- **Unused `mermaid-init.js` script tags** removed from 22 pages that
+  have no `<pre class="mermaid">` blocks. Now loaded only on
+  `universe/index.html` (the one page with a real diagram).
+
+### Security
+- **`rel="noopener noreferrer"`** on every external `target="_blank"`
+  link site-wide (**101 occurrences** — initial `sed` pass caught 34 in
+  the footer Connect column; a broader Perl regex pass caught the
+  remaining 67 inside the 13 BrandGuard case-study pages and a few
+  others). `noreferrer` blocks referrer leakage and implies `noopener`.
+
+### Accessibility
+- "Coming soon" CTA semantics fixed on `lens-system/index.html` and
+  `under-construction.html`. Original draft used a
+  `<span role="link" aria-disabled="true">` (announces interactive link
+  semantics on a non-interactive element). Replaced with the correct
+  `<button type="button" disabled aria-disabled="true">` so screen
+  readers announce a real disabled control.
+
+### PWA / manifest
+- **`site.webmanifest` colors** corrected from a leftover dark-mode
+  template (`#111827` / `#020617`) to the actual brand palette
+  (`theme_color: #2c5e6f` muted teal, `background_color: #f5efe1` cream).
+  PWA splash will no longer flash black on install.
+
+### Tooling
+- **Search index rebuilt** (`tools/build-search-index.py`) to capture
+  the new `#fit` section and the expanded About / Legal copy.
+  Now 101.7 KB / 24 pages.
+- **`sitemap.xml` `<lastmod>`** bumped to 2026-05-03 on every page that
+  changed.
 
 ## [v0.5 — 2026-05-02] — Showpiece pass
 

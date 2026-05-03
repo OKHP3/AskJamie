@@ -4451,3 +4451,24 @@ html:has(
   .search-page .ajs-result-title { font-size: 1rem; }
   .search-page .ajs-result-snippet { font-size: 0.88rem; }
 }
+
+/* ==========================================================================
+ * ASKJAMIE — DISABLED BUTTON STATE (v0.6 audit)
+ * Used for "coming soon" CTAs that look like buttons but are not links.
+ * Renders as a span with role="link" + aria-disabled="true".
+ * ========================================================================== */
+.btn.btn-disabled,
+.btn[aria-disabled="true"] {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
+  filter: grayscale(0.2);
+  position: relative;
+}
+.btn.btn-disabled::after,
+.btn[aria-disabled="true"]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: transparent;
+}

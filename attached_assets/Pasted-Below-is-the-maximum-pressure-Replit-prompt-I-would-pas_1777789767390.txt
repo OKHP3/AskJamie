@@ -1,0 +1,761 @@
+Below is the maximum-pressure Replit prompt I would paste directly into Replit Agent.
+
+I grounded it against the live homepage, which still presents AskJamie as an early-access helpdesk with unfinished walkthroughs and build-log positioning, plus the repo/Notion architecture showing four canonical lenses and the broader BrandGuard stack.  ￼  ￼ The repo’s own replit.md says this is a static HTML/CSS/JS site with Mermaid, shared cross-site CSS/JS, search, SEO hardening, known OG-image gaps, Search Console gaps, and sister-site sync gaps.  ￼
+
+# ASKJAMIE.BOT FINAL MAXIMUM REPLIT AUDIT + REBUILD PROMPT
+You are Replit Agent operating on the AskJamie™ website/codebase.
+This is the final unlimited-token improvement window. Do not treat this as a small patch. Treat this as a full-site audit, correction, optimization, polish pass, documentation pass, QA pass, SEO pass, accessibility pass, brand-alignment pass, and deployment-readiness pass.
+The goal is simple:
+Make `https://askjamie.bot/` the best possible static website it can be within the current project architecture.
+Do not do cosmetic tinkering only. Do not stop after obvious fixes. Do not preserve defects because “the site works.” Hunt for every gap, inconsistency, broken path, shallow page, weak call-to-action, underused asset, metadata flaw, accessibility failure, SEO weakness, content mismatch, structural inefficiency, or deployment risk. Fix what can be fixed. Document what cannot be fixed.
+---
+## 0. SOURCE LINKS TO USE
+Use these as the operating context and source-of-truth constellation:
+- Live site: `https://askjamie.bot/`
+- GitHub repo: `https://github.com/OKHP3/AskJamie`
+- Replit project: `https://replit.com/t/askjamie/repls/AskJamie`
+- Notion hub: `https://www.notion.so/overkillhill/AskJamie-2cc812e0ced480198efcce3b53e65e54`
+- Notion build-context page: `https://www.notion.so/overkillhill/AskJamie-Behind-the-Curtains-439ee2143c5d4790b9368f6cfc59d4aa`
+If you cannot directly access a private Notion or Replit URL, still preserve those URLs in documentation and use the visible repo/site content as the implementation source. Do not hallucinate private content. Where source content is unavailable, create a clear placeholder note in the audit report.
+---
+## 1. STRATEGIC OBJECTIVE
+AskJamie™ is not merely a cute static page.
+It is the public-facing AI helpdesk persona under the OverKill Hill P³™ stack. It should communicate:
+- Calm, vintage-tech helpdesk confidence.
+- “Bring the messy context; get calm, diagram-ready answers.”
+- AskJamie as a practical thinking partner for decisions, workflows, tradeoffs, systems questions, and AI-assisted interpretation.
+- AskJamie as an Interpretive Lens System, not a random set of tools.
+- Four primary lenses:
+  - AJ01 — Résumé Representative
+  - AJ02 — Professional Portfolio
+  - AJ03 — Enterprise Sleuth
+  - AJ04 — OKHP³ BrandGuard™
+- AJ04 as the BrandGuard™ chassis.
+- BrandGuard™ spin-offs:
+  - BRG00 — Builders FirstSource
+  - BRG01 — LEGO
+  - BRG02 — Starbucks
+  - BRG03 — Brooks Running
+  - BRG04 — Ping
+  - BRG05 — Costco
+  - BRG06 — Hershey
+  - BRG07 — LVMH
+  - BRG08 — Dollar General
+  - BRG09 — Coca-Cola
+  - BRG10 — Discount Tire / Discount Tires
+  - BRG11 — Scheels
+  - Additional existing repo pages such as Mathews Archery must be reconciled and not orphaned.
+- BFS: Framing Intelligent Futures as the flagship/first serious BrandGuard example.
+- AskJamie’s public-safe framing:
+  - Demonstration, not impersonation.
+  - Public-information-based where brand examples are concerned.
+  - Brand interpretation, not official representation.
+  - Clear disclaimers where necessary.
+The finished site should feel like a polished public showroom with visible workshop personality, not a half-finished brochure.
+---
+## 2. NON-NEGOTIABLE TECHNICAL CONSTRAINTS
+Do not recklessly change the architecture unless absolutely necessary.
+Current intended stack:
+- Static HTML5
+- CSS3 using `assets/css/theme.css`
+- Vanilla JavaScript using `assets/js/app.js`
+- Existing static search via `assets/js/search.js` and `assets/data/search-index.json`
+- Mermaid initialization through `assets/js/mermaid-init.js`
+- Analytics through `assets/js/analytics.js`
+- Static GitHub Pages style deployment
+- No required build system for runtime
+- Python helper tools are acceptable for audits/generation
+- Keep GitHub Pages compatibility
+- Keep Replit preview compatibility
+Do not introduce React, Next.js, Astro, Vite, Tailwind, a database, server-side routing, or a heavyweight framework unless you first determine that the existing structure is fundamentally unsalvageable. It probably is salvageable. Improve it in place.
+Do not remove the visual brand personality. Improve the execution.
+Do not break sister-site shared CSS/JS assumptions unless you clearly document why.
+---
+## 3. OPERATING MODE
+Work in phases. Complete as many as possible.
+For every phase:
+1. Inspect current files.
+2. Identify defects.
+3. Fix defects.
+4. Re-run validation.
+5. Document what changed.
+6. Continue.
+Do not ask me for permission between phases. This is a maximum-token, maximum-output run.
+When uncertain, make the practical architectural call. Prefer forward progress over indecision.
+---
+# PHASE 1 — BASELINE INVENTORY
+Audit the entire repository.
+Create or update a durable audit artifact, preferably:
+`AUDIT-ASKJAMIE-FINAL.md`
+Include:
+- Repository structure.
+- All HTML pages found.
+- All CSS files.
+- All JS files.
+- All image assets.
+- All data files.
+- All tool scripts.
+- All docs/governance files.
+- Sitemap entries.
+- Search index entries.
+- Pages missing from sitemap.
+- Sitemap URLs missing local files.
+- Local pages not linked anywhere.
+- Local pages with weak inbound links.
+- Assets not referenced anywhere.
+- Assets referenced but missing.
+- Duplicate assets.
+- Oversized assets.
+- Possible broken internal links.
+- Possible broken external links.
+- Current title/description/canonical for every page.
+- Current OG image for every page.
+- Current JSON-LD/schema blocks for every page.
+- Pages with under-construction gates.
+- Pages that still contain placeholder URLs, placeholder GPT IDs, fake links, or TODO copy.
+Use scripts where appropriate. Do not manually eyeball what can be computed.
+---
+# PHASE 2 — RUN FULL STATIC SITE CRAWL
+Write or improve a site audit script if one does not exist.
+Suggested output:
+`tools/audit-site.py`
+It should inspect all `.html` files and produce a report covering:
+- Internal link graph.
+- Broken relative links.
+- Broken anchor links.
+- Duplicate IDs.
+- Missing H1.
+- Multiple H1s, unless intentional and documented.
+- Bad heading order.
+- Missing title.
+- Duplicate title.
+- Overlong title > 60–70 chars.
+- Missing description.
+- Overlong description > 155–165 chars.
+- Duplicate descriptions.
+- Missing canonical.
+- Canonical mismatch.
+- Missing OG tags.
+- Missing Twitter tags.
+- Missing JSON-LD where expected.
+- Images missing alt.
+- Images missing width/height.
+- Below-the-fold images missing lazy loading.
+- Above-the-fold hero/LCP images incorrectly lazy-loaded.
+- External links missing `rel="noopener noreferrer"` when `target="_blank"`.
+- Email links.
+- Empty anchors.
+- Buttons without accessible names.
+- Forms without labels.
+- Placeholder links.
+- Placeholder copy.
+- `#` links that should not be `#`.
+- Pages excluded from search unintentionally.
+- Search index freshness.
+Make the audit script runnable from Replit.
+Run it and save results.
+---
+# PHASE 3 — INFORMATION ARCHITECTURE RECONCILIATION
+Reconcile the public site with the Notion/project intent.
+The site should clearly expose the following architecture:
+## Public IA
+- Home
+- Lens System
+  - AJ01 — Résumé Representative
+  - AJ02 — Professional Portfolio
+  - AJ03 — Enterprise Sleuth
+  - AJ04 — OKHP³ BrandGuard™
+    - BFS / Builders FirstSource
+    - LEGO
+    - Starbucks
+    - Brooks Running
+    - Ping
+    - Costco
+    - Hershey
+    - LVMH
+    - Dollar General
+    - Coca-Cola
+    - Discount Tire / Discount Tires
+    - Scheels
+    - Mathews Archery, if present in repo
+- About
+- OKHP³ Universe
+- Contact
+- Legal
+- Behind the Curtains / Build Log, if appropriate as a public page or clearly linked from About
+Audit current navigation and footer. Fix:
+- Missing pages.
+- Pages buried too deeply.
+- Orphaned case studies.
+- Inconsistent labels.
+- Inconsistent slugs.
+- Mismatched “Discount Tire” vs “Discount Tires”.
+- Mismatched “OKHP3” vs “OKHP³”.
+- Mismatched “AskJamie” vs “AskJamie™”.
+- Any page that exists but is not discoverable through navigation, search, sitemap, or a reasonable hub page.
+- Any hub page that fails to surface its children.
+The Lens System page should not look like a dead-end conceptual essay. It must act as a live directory and explanation layer.
+The BrandGuard hub must surface every BrandGuard case card, even if some are labeled “prototype,” “case study,” “concept demo,” “coming soon,” or “public-information demonstration.”
+---
+# PHASE 4 — HOMEPAGE SHOWPIECE REBUILD
+Audit and improve `index.html`.
+The homepage should immediately answer:
+1. What is AskJamie?
+2. Who is it for?
+3. What can I do here?
+4. What is the Lens System?
+5. What is BrandGuard?
+6. What is the newest/flagship case?
+7. Where should I click first?
+8. Why should I trust this?
+9. How do I contact or hire/engage the creator?
+10. What is still in progress?
+Current homepage issues to look for and fix:
+- The page may feel too thin compared with the actual Lens/BrandGuard architecture.
+- “Where it fits” may appear in navigation but not have a matching section.
+- “Open Résumé Representative” may be the only obvious CTA, which underrepresents the site.
+- Early-access language should be useful, not self-handicapping.
+- The BFS block should be clear and legally careful.
+- Add stronger “choose your lens” section.
+- Add stronger “what you can ask Jamie for” section.
+- Add stronger “from messy context to decision-ready clarity” section.
+- Add stronger BrandGuard teaser section.
+- Add concise public-safe disclaimer for brand examples.
+- Add stronger CTA cluster:
+  - Explore Lens System
+  - Open Résumé Representative
+  - Explore BrandGuard
+  - Contact / Work with AskJamie
+  - Read Behind the Curtains, if public
+Write copy in the AskJamie voice:
+- Calm.
+- Useful.
+- Slightly witty.
+- Vintage helpdesk vibe.
+- Not fake corporate sludge.
+- Not overhyped AI-bro copy.
+- Not too cute.
+- Practical.
+- Human.
+- Direct.
+Avoid em-dash overuse. Prefer commas, semicolons, periods, and clean sentence structure.
+---
+# PHASE 5 — LENS SYSTEM DEEPENING
+Audit and improve `/lens-system/`.
+The Lens System page should serve three purposes:
+1. Explain the concept.
+2. Route users to each lens.
+3. Establish the difference between AskJamie, Glee-fully, and OverKill Hill P³.
+Fix or improve:
+- Placeholder GPT link such as `ASK-JAMIE-GPT-ID-HERE`.
+- Any under-construction overlay that blocks too aggressively.
+- Page intro clarity.
+- Lens cards.
+- Routing cards.
+- CTAs.
+- Internal anchor nav.
+- Visual hierarchy.
+- Any missing page links.
+- Any stale copy saying “not ecosystem” without enough practical explanation.
+- Any weak contrast.
+- Any card-grid imbalance.
+Each lens should have:
+- ID.
+- Name.
+- Plain-English purpose.
+- Primary user problem.
+- Best-fit input.
+- Expected output.
+- Boundary/what it is not.
+- CTA to lens page.
+- Status label: live, prototype, draft, coming soon, etc.
+---
+# PHASE 6 — INDIVIDUAL LENS PAGE AUDIT
+Audit and improve:
+- `/lens-system/resume-representative/`
+- `/lens-system/professional-portfolio/`
+- `/lens-system/enterprise-sleuth/`
+- `/lens-system/okhp3-brandguard/`
+For each page:
+- Confirm title/meta/canonical/schema.
+- Confirm navigation and footer consistency.
+- Confirm it clearly states what the lens does.
+- Add “Use this when…” bullets.
+- Add “Bring this context…” bullets.
+- Add “You will get…” bullets.
+- Add “Not for…” boundaries.
+- Add example prompts or example use cases.
+- Add CTA back to Lens System.
+- Add CTA to relevant next lens where appropriate.
+- Add status/prototype disclaimer where needed.
+- Ensure the page does not imply live embedded GPT functionality unless that exists.
+- If a GPT URL exists, use it. If not, remove fake links and replace with “Coming soon” or “Contact for access.”
+Do not leave placeholder GPT URLs anywhere.
+---
+# PHASE 7 — BRANDGUARD SYSTEM AUDIT + REBUILD
+BrandGuard is strategically important. Treat it as a showpiece.
+Audit and improve:
+- `/lens-system/okhp3-brandguard/`
+- All BrandGuard child case pages.
+Expected child cases include, based on repo/content:
+- BFS / Builders FirstSource
+- LEGO
+- Starbucks
+- Brooks Running
+- Ping
+- Costco
+- Hershey
+- LVMH
+- Dollar General
+- Coca-Cola
+- Discount Tire / Discount Tires
+- Scheels
+- Mathews Archery, if present
+For BrandGuard hub:
+- Explain BrandGuard in plain terms.
+- Position it as brand-fidelity AI demonstration and guardrail thinking.
+- State clearly that these are not official brand tools unless explicitly said.
+- State that public-information case studies are demonstrations, not impersonation.
+- Surface every child case in a card grid.
+- Include logos/assets where available.
+- Include “status” for each case.
+- Include “public demo,” “concept build,” “flagship case,” etc.
+- Include a “why this matters” section:
+  - AI becomes a brand front door.
+  - If brands do not define their voice in AI contexts, drift defines it for them.
+  - BrandGuard demonstrates deliberate AI voice governance.
+- Include a practical CTA:
+  - “Explore the BFS flagship.”
+  - “Review BrandGuard cases.”
+  - “Contact for a BrandGuard build.”
+  - “Read legal/disclaimer.”
+For each BrandGuard child page:
+- Confirm brand name spelling.
+- Confirm legal/disclaimer language.
+- Confirm no false official affiliation.
+- Confirm no trademark abuse beyond nominative descriptive use.
+- Confirm metadata and schema.
+- Confirm correct logo/image references.
+- Confirm readable page hierarchy.
+- Confirm backlink to BrandGuard hub.
+- Confirm inclusion in sitemap and search.
+- Add related case cards or next/previous navigation.
+- Add a consistent “BrandGuard Demo Notice” component.
+Create a reusable CSS pattern if needed.
+---
+# PHASE 8 — CONTENT TONE + COPY EDITING PASS
+Perform a full-site copy pass.
+Correct:
+- Typos.
+- Awkward line breaks.
+- Overlong sentences.
+- Stale placeholder language.
+- Overused words.
+- Inconsistent product names.
+- Overuse of “AI persona,” “clarity,” “confidence,” “calm” where it becomes repetitive.
+- Phrases that sound too generic.
+- Claims that are too grand.
+- Claims that need disclaimers.
+- Any internal notes visible to users.
+- Any “coming soon” language that should become a useful explanation instead.
+Brand voice target:
+- “Friendly AI helpdesk”
+- “Vintage tech guy who actually listens”
+- “Messy context in, diagram-ready clarity out”
+- “Calm under pressure”
+- “Structured thinking without mystification”
+- “Public-safe, brand-aware, practical”
+Do not turn it into sterile SaaS copy.
+Do not turn it into carnival-barker AI hype.
+---
+# PHASE 9 — DESIGN SYSTEM + CSS AUDIT
+Audit `assets/css/theme.css`.
+Preserve the stated shared structure if present:
+- GLOBAL
+- OKH
+- GLEE
+- ASKJAMIE
+Audit for:
+- Dead selectors.
+- Duplicate selectors.
+- Overly specific selectors.
+- Conflicting rules.
+- Unused classes.
+- Missing mobile states.
+- Missing focus states.
+- Contrast issues.
+- Inconsistent spacing.
+- Inconsistent card sizing.
+- Inconsistent button styling.
+- Header/footer drift.
+- Mobile navigation defects.
+- Search modal defects.
+- Construction overlay defects.
+- Mermaid styling issues.
+- BrandGuard card grid issues.
+- Image overflow issues.
+- Long-word wrapping.
+- Reduced-motion support.
+- Print behavior, if present.
+- Dark/light theme correctness.
+Fix as much as possible.
+Add section comments only where helpful.
+Do not bloat CSS with random one-off patches when a reusable component class is better.
+---
+# PHASE 10 — JAVASCRIPT AUDIT
+Audit:
+- `assets/js/app.js`
+- `assets/js/search.js`
+- `assets/js/analytics.js`
+- `assets/js/mermaid-init.js`
+Check:
+- Console errors.
+- DOM selectors for missing elements.
+- Null reference risks.
+- Multiple DOMContentLoaded collisions.
+- Theme toggle behavior.
+- Current-year injection.
+- Mobile nav behavior.
+- Search keyboard shortcuts.
+- Search modal accessibility.
+- Search index lazy loading.
+- Search scoring.
+- Overlay dismiss persistence.
+- Smooth scroll.
+- Reveal-on-scroll behavior.
+- Reduced motion support.
+- Mermaid initialization failure handling.
+- Analytics failure isolation.
+Fix defects.
+Do not add heavy dependencies.
+If there are no unit tests, create lightweight validation scripts instead.
+---
+# PHASE 11 — SEARCH INDEX AUDIT
+Audit internal site search.
+Confirm:
+- All intended pages are indexed.
+- 404 and under-construction pages are excluded.
+- BrandGuard child pages are indexed.
+- Page titles/descriptions/headings are captured.
+- Body excerpts are non-empty.
+- Search works for:
+  - “resume”
+  - “portfolio”
+  - “enterprise”
+  - “sleuth”
+  - “brandguard”
+  - “BFS”
+  - “Builders FirstSource”
+  - “LEGO”
+  - “Starbucks”
+  - “Coca-Cola”
+  - “Discount Tire”
+  - “Scheels”
+  - “Mathews”
+  - “AskJamie”
+- Search has accessible keyboard behavior.
+- Search results have useful snippets.
+Regenerate `assets/data/search-index.json` after all content changes.
+If `tools/build-search-index.py` needs improvement, improve it.
+---
+# PHASE 12 — SEO + METADATA HARDENING
+For every public page:
+- Unique title.
+- Title preferably ≤ 60–70 chars.
+- Unique meta description.
+- Description preferably ≤ 155–165 chars.
+- Correct canonical.
+- Correct OG URL.
+- Correct OG title.
+- Correct OG description.
+- Correct OG image.
+- Correct OG image alt.
+- Correct Twitter card tags.
+- Correct robots.
+- Correct language.
+- Correct favicon links.
+- Correct manifest link.
+- Correct schema/JSON-LD.
+- Correct breadcrumb schema for inner pages.
+- Article schema where pages are effectively case studies/articles.
+- Organization/WebSite schema on home as appropriate.
+- No conflicting canonical URLs.
+- No accidental `noindex`.
+- No old domain references unless intentional.
+- No localhost/Replit preview references in public metadata.
+- No placeholder GPT IDs.
+Known gap to fix if possible:
+- OG images should ideally be 1200×630 landscape rather than all pages using square 1024×1024 avatar art.
+- If suitable 1200×630 assets exist, wire them in.
+- If not, create a documented TODO and generate a required asset list.
+Do not invent binary image assets unless the project tooling/assets support it. But if existing wide images can serve as OG images, use them.
+---
+# PHASE 13 — ACCESSIBILITY AUDIT
+Audit against WCAG practical basics.
+Fix:
+- Missing alt text.
+- Empty or misleading alt text.
+- Bad heading order.
+- Poor color contrast.
+- Focus traps.
+- Missing focus-visible styles.
+- Keyboard-inaccessible nav.
+- Keyboard-inaccessible search.
+- Keyboard-inaccessible construction overlay.
+- Buttons without type.
+- Links that should be buttons.
+- Buttons that should be links.
+- Ambiguous link text like “click here.”
+- Images used as links without accessible names.
+- Submenus not accessible.
+- Reduced-motion preference ignored.
+- Hidden text patterns misused.
+- Skip-link behavior.
+- Landmarks.
+Make the site navigable by keyboard.
+---
+# PHASE 14 — PERFORMANCE AUDIT
+Optimize without wrecking the visual design.
+Check:
+- Large images.
+- Above-the-fold LCP image.
+- Lazy loading.
+- Width/height attributes.
+- Font loading.
+- Render-blocking CSS.
+- Third-party scripts.
+- Ko-fi widget impact.
+- Google Analytics impact.
+- Mermaid loaded on pages without diagrams.
+- Search JS lazy loading.
+- Search index size.
+- Unused image assets.
+- Unused CSS/JS.
+- Caching assumptions.
+- Preconnect/preload correctness.
+- Mobile payload.
+Fix low-risk issues.
+Do not delete brand assets unless clearly unused and safely backed up. Prefer documentation over destructive cleanup when uncertain.
+---
+# PHASE 15 — LEGAL + TRUST HYGIENE
+Audit legal pages and disclaimers.
+Ensure the site clearly states:
+- AskJamie is an OverKill Hill P³ project.
+- BrandGuard case studies are not official brand properties unless explicitly stated.
+- Trademarks belong to their owners.
+- Public-information demos are for interpretive/prototype purposes.
+- Contact route is clear.
+- No misleading affiliation claims.
+- No claim that AskJamie is officially representing Builders FirstSource, LEGO, Starbucks, etc.
+- BFS page language is especially careful.
+Check:
+- `/legal/`
+- Footer links.
+- BrandGuard pages.
+- BFS page.
+- Any case-study disclaimer.
+Add a reusable disclaimer block where needed.
+---
+# PHASE 16 — SITEMAP, ROBOTS, LLMS.TXT, MANIFEST
+Audit and fix:
+- `sitemap.xml`
+- `robots.txt`
+- `llms.txt`
+- `site.webmanifest`
+- `CNAME`
+Confirm:
+- Every public page in sitemap exists.
+- Every important public page is in sitemap.
+- `lastmod` values are reasonable.
+- No draft/404/under-construction pages are listed unless intentional.
+- `robots.txt` points to sitemap.
+- `llms.txt` accurately describes the site and key pages.
+- Manifest name/short_name/theme/icons are correct.
+- CNAME is correct for `askjamie.bot`.
+---
+# PHASE 17 — DOCUMENTATION + GOVERNANCE PASS
+Audit and update:
+- `README.md`
+- `replit.md`
+- `CHANGELOG.md`
+- `ROADMAP.md`
+- `CONTRIBUTING.md`, if present
+- `SECURITY.md`, if present
+- Any AGENTS/instruction file, if present
+The documentation should reflect the actual current state after your changes.
+`README.md` should include:
+- What AskJamie is.
+- Site map.
+- Local development.
+- Static search regeneration.
+- Deployment.
+- Brand/legal notes.
+- Current status.
+- Useful links.
+`replit.md` should include:
+- Project overview.
+- Current architecture.
+- File layout.
+- How to run.
+- How to audit.
+- How to rebuild search index.
+- Known gaps after this pass.
+- What changed in this final improvement pass.
+`CHANGELOG.md` should record this final audit/rebuild pass.
+`ROADMAP.md` should distinguish:
+- Done now.
+- Needs external assets.
+- Needs human/legal review.
+- Needs Search Console/Bing submission.
+- Needs future GPT URL insertion.
+- Needs sister-site sync.
+---
+# PHASE 18 — CREATE QUALITY GATES
+Add or improve lightweight quality scripts.
+Possible scripts:
+- `tools/audit-site.py`
+- `tools/check-links.py`
+- `tools/check-metadata.py`
+- `tools/check-accessibility-basics.py`
+- `tools/check-assets.py`
+- `tools/build-search-index.py`
+A single comprehensive script is acceptable if cleaner.
+Add a documented command sequence in `README.md` / `replit.md`, such as:
+- Run local server.
+- Run audit.
+- Build search index.
+- Validate sitemap.
+- Review audit report.
+Do not require Node if Python can handle it.
+Do not add fragile dependencies unless necessary.
+---
+# PHASE 19 — LIVE/PREVIEW QA CHECKLIST
+After changes, perform a practical QA sweep.
+Test pages in local/Replit preview:
+- Home
+- Lens System
+- Each AJ lens
+- BrandGuard hub
+- BFS BrandGuard page
+- At least 3 other BrandGuard pages
+- About
+- Universe
+- Contact
+- Legal
+- 404
+Test:
+- Header nav.
+- Footer nav.
+- Mobile nav.
+- Search open/close.
+- Search results.
+- Keyboard nav.
+- Construction overlay dismissal.
+- Theme/current-year behavior.
+- External links.
+- Mailto.
+- Image loading.
+- No console errors.
+- No missing CSS/JS.
+- No broken internal links.
+- No placeholder URLs.
+---
+# PHASE 20 — FINAL DELIVERABLES
+When complete, produce a final summary in Replit with:
+## Changed
+List files changed, grouped by:
+- HTML/content
+- CSS
+- JS
+- data/search
+- tools/scripts
+- docs
+- sitemap/robots/manifest/llms
+## Fixed
+List defects fixed.
+## Verified
+List commands/scripts run and results.
+## Remaining Human Tasks
+List things Replit cannot finish without human input, for example:
+- Submit sitemap to Google Search Console.
+- Submit sitemap to Bing Webmaster Tools.
+- Provide final 1200×630 OG art if not available.
+- Replace placeholder GPT URLs with live Custom GPT URLs if still unavailable.
+- Legal review of BrandGuard demos.
+- Sync shared CSS/JS to OverKill Hill and Glee-fully repos if required.
+- Publish/deploy from Replit/GitHub if not automatically deployed.
+## Risk Notes
+Call out anything that might affect:
+- SEO
+- legal/trademark safety
+- public brand perception
+- broken links
+- deployment
+- performance
+- accessibility
+---
+# SPECIFIC DEFECTS TO CHECK IMMEDIATELY
+Start by checking these likely defects:
+1. Homepage nav includes “Where it fits” but the homepage may not have `id="fit"`.
+2. Lens System page may contain placeholder GPT URL `ASK-JAMIE-GPT-ID-HERE`.
+3. Some pages may still have aggressive under-construction overlays.
+4. BrandGuard hub must surface every child page, not only BFS.
+5. Some BrandGuard child pages may be orphaned or barely linked.
+6. `Discount Tire` vs `Discount Tires` naming may be inconsistent.
+7. Mathews Archery may exist in repo but not in Notion catalog; reconcile as an additional BrandGuard case or document why it is separate.
+8. OG images may all use square 1024 assets rather than better landscape assets.
+9. Search index may need regeneration after edits.
+10. Sitemap must be regenerated after route changes.
+11. `README.md` may be too compressed and not reflect the full final site.
+12. `replit.md` may contain old known gaps that this pass should resolve or update.
+13. Footer/navigation should route users to the real architecture, not just generic pages.
+14. Legal disclaimers should be present wherever brand-specific demos appear.
+15. External links with `target="_blank"` should include secure `rel`.
+16. Images should have dimensions, alt text, and correct loading behavior.
+17. JSON-LD should not contain stale URLs, placeholder names, or false claims.
+18. No public page should imply an official relationship with a brand unless explicitly true.
+19. No page should imply ChatGPT Custom GPT embedding exists unless it actually exists.
+20. No hidden or orphaned valuable page should remain unreachable.
+---
+# CONTENT IMPROVEMENT DIRECTION
+Use this wording logic throughout the site where useful:
+## AskJamie positioning
+AskJamie™ is a friendly AI helpdesk for messy thinking moments: decisions, workflows, systems questions, brand interpretation, professional narrative, and “what should I do next?” problems.
+## Lens System positioning
+The Lens System is how AskJamie keeps one consistent voice while serving different use cases. Each lens is a disciplined way of interpreting a situation, not a random tool bolted onto a menu.
+## BrandGuard positioning
+BrandGuard™ explores how a brand can show up intentionally in AI-mediated conversations. The case studies are public-information demonstrations unless otherwise noted. The purpose is brand fidelity, not impersonation.
+## BFS positioning
+BFS: Framing Intelligent Futures is the flagship BrandGuard example. Be especially careful to describe it as a strategic/public-information demonstration unless there is explicit authorization language in the repo.
+## Build-log positioning
+The site can keep the “drawers still being labeled” personality, but it should feel intentionally transparent, not unfinished.
+---
+# QUALITY BAR
+Do not stop at “good enough.”
+The site should be:
+- navigable
+- coherent
+- brand-consistent
+- searchable
+- indexable
+- fast
+- accessible
+- legally safer
+- internally linked
+- documented
+- maintainable
+- ready to show publicly
+- useful to a first-time visitor
+- useful to a returning visitor
+- credible as part of OverKill Hill P³
+When faced with a tradeoff, prioritize:
+1. No broken public experience.
+2. No misleading legal/brand claims.
+3. Clear site architecture.
+4. Strong homepage routing.
+5. BrandGuard showcase quality.
+6. Search/SEO/accessibility.
+7. Maintainable static architecture.
+8.
+ Visual polish.
+Now perform the full audit and improvement pass.
