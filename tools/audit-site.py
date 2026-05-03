@@ -17,6 +17,8 @@ Per-page checks actually emitted as issues:
   * known placeholder strings (ASK-JAMIE-GPT-ID-HERE, the old SearchAction
     target ?s={search_term_string}, generic YOUR-...)
   * theme-color resolves to the AskJamie brand teal (#2c5e6f)
+  * any page embedding a Mermaid diagram carries the OKH affiliate
+    referral link (mermaidchart.cello.so) styled with `mermaid-referral-link`
 
 Cross-file reconciliation (best-effort; failures are reported as issues
 rather than crashing the run):
@@ -155,6 +157,21 @@ def audit_page(path: Path) -> List[str]:
             issues.append(f"{label}: `{needle}` present")
     if BARE_NOOPENER.search(src):
         issues.append('Bare rel="noopener" without noreferrer present')
+
+    # Mermaid referral-link policy: any page that embeds a Mermaid diagram
+    # must carry the OKH affiliate link (mermaidchart.cello.so) styled with
+    # `mermaid-referral-link`. See replit.md "Mermaid pages" section.
+    if re.search(r'<pre[^>]*class="[^"]*\bmermaid\b', src):
+        if "mermaidchart.cello.so" not in src:
+            issues.append(
+                "Mermaid diagram present but missing referral link "
+                "(https://mermaidchart.cello.so/UhVlNtC2MlS)"
+            )
+        if "mermaid-referral-link" not in src:
+            issues.append(
+                "Mermaid diagram present but missing `mermaid-referral-link` "
+                "class (hot-pink styling)"
+            )
 
     # quick theme-color check
     m = re.search(r'<meta\s+name="theme-color"\s+content="([^"]+)"', src)

@@ -68,6 +68,36 @@ the other two repos so all three stay in lock-step.  Section ordering in
 `theme.css` is stable (GLOBAL → OKH → GLEE → ASKJAMIE) so diffs land in
 predictable regions.
 
+## Mermaid pages — affiliate referral convention (2026-05-03)
+
+Any AskJamie page that embeds a Mermaid diagram (i.e. contains
+`<pre class="mermaid">`) **must** also include an OKH affiliate
+referral link directly under the diagram. This is enforced by
+`tools/audit-site.py` — the auditor flags any Mermaid page missing
+either the link or the styling class.
+
+**Required markup** (place directly inside the same `<figure>`, after
+the diagram and any captions):
+
+```html
+<p class="mermaid-referral-note">
+    Diagram rendered with Mermaid.js.
+    <a href="https://mermaidchart.cello.so/UhVlNtC2MlS"
+       class="mermaid-referral-link"
+       target="_blank" rel="noopener noreferrer">Try Mermaid.AI &#8594;</a>
+    if you want to explore the syntax yourself.
+</p>
+```
+
+- **Affiliate URL:** `https://mermaidchart.cello.so/UhVlNtC2MlS`
+  (Jamie's paid-referral link — do not change)
+- **Color:** Mermaid hot pink **#FF3670** (hover **#ff6b95**) — defined
+  by `a.mermaid-referral-link` in the ASKJAMIE tier of `theme.css`
+- **Reference page:** `overkillhill.com/writings/first-diagram-is-a-liar`
+  uses the identical pattern across the OKH site
+- **Currently used on:** `universe/index.html` (only Mermaid page on
+  the site as of 2026-05-03)
+
 ## Development Server
 
 - **Workflow:** "Start application"

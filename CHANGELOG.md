@@ -4,6 +4,28 @@ All notable changes to the **AskJamie™** public repository are recorded here.
 
 ## [Unreleased]
 
+### Added (Mermaid affiliate referral)
+- `universe/index.html` — added a centered referral note directly under
+  the Mermaid universe diagram: *"Diagram rendered with Mermaid.js.
+  **Try Mermaid.AI →** if you want to explore the syntax yourself."*
+  The link points to the OKH affiliate URL
+  `https://mermaidchart.cello.so/UhVlNtC2MlS`, opens in a new tab with
+  `noopener noreferrer`, and is styled in the official Mermaid hot pink
+  **#FF3670** (hover **#ff6b95**) — matching the OverKill Hill
+  reference page (`writings/first-diagram-is-a-liar`).
+- `assets/css/theme.css` — new reusable `.mermaid-referral-note` and
+  `a.mermaid-referral-link` rules so the same pattern works on any
+  future AskJamie page that embeds Mermaid.
+- `tools/audit-site.py` — new per-page check: any page containing
+  `<pre class="mermaid">` must also carry the `mermaidchart.cello.so`
+  link **and** the `mermaid-referral-link` class. Prevents future
+  Mermaid pages from shipping without the affiliate link.
+
+### Added (llms.txt sync)
+- `llms.txt` — added the `/search/` page entry. It was already in
+  `sitemap.xml` but missing from `llms.txt` (caught by a sitemap ↔
+  llms diff during a final pre-push sweep).
+
 ### Changed
 - Bumped `dateModified` to `2026-05-03` in the `Article` JSON-LD on all
   13 BrandGuard case pages (they were materially updated today by the
