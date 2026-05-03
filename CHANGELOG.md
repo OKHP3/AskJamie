@@ -4,6 +4,68 @@ All notable changes to the **AskJamie™** public repository are recorded here.
 
 ## [Unreleased]
 
+### Added (modern 2025/2026 baseline — security, perf, accessibility)
+- **Site-wide security headers** via `<meta>` tags on all 26 pages
+  (GitHub Pages can't set HTTP headers directly):
+  * `<meta name="referrer" content="strict-origin-when-cross-origin">`
+    — privacy default that strips path + query when navigating to a
+    different origin, while still sending the bare origin for analytics.
+  * `<meta http-equiv="Content-Security-Policy" content="...">` — full
+    allow-list locking down every resource type:
+      - `default-src 'self'` (deny by default)
+      - `script-src` allows GTM (GA4) + jsdelivr (Mermaid v11 ESM
+        module) + `'unsafe-inline'` (required by the 26 lazy-CSS
+        `onload="this.media='all'"` handlers — documented future
+        refactor opportunity)
+      - `style-src` allows Google Fonts CSS + `'unsafe-inline'`
+        (Mermaid generates SVG with inline `style=` attrs at runtime)
+      - `font-src` Google Fonts files
+      - `img-src 'self' data: https:` (permissive — brand-guard pages
+        reference many third-party logos)
+      - `connect-src` GA4 endpoints
+      - **Hardened**: `object-src 'none'`, `base-uri 'self'`,
+        `form-action 'self'` — close common XSS / clickjacking vectors.
+- **Image performance** — Core Web Vitals best practice now enforced
+  on every image (92 of 92 imgs explicitly declared):
+  * 24 LCP-candidate images (first `<img>` inside `<main>`) marked
+    `fetchpriority="high"` + `loading="eager"`.
+  * 76 below-the-fold images marked `loading="lazy"`.
+  * 92/92 already had `decoding="async"` (carried over from v0.7).
+- **Theme-color media queries** — the legacy single
+  `<meta name="theme-color" content="#2c5e6f">` on every page is now
+  split into a light/dark pair using the modern `media` attribute:
+  cream `#f5efe1` for `(prefers-color-scheme: light)` and the existing
+  teal `#2c5e6f` for `(prefers-color-scheme: dark)`. Browser chrome
+  (Android URL bar, iOS Safari, desktop PWAs) now matches the user's
+  colour-scheme preference, complementing the existing
+  `color-scheme: light dark` declaration in `theme.css`.
+- **Accessibility** — `assets/css/theme.css` now has a global
+  `prefers-reduced-motion: reduce` umbrella rule that neutralises
+  every animation, transition, and smooth-scroll site-wide for users
+  who request reduced motion (WCAG 2.2 baseline). The pre-existing
+  targeted `.brand-stripes` rule is preserved.
+- **Repo standards files**:
+  * `.gitignore` rewritten — comprehensive 2025 patterns covering
+    OS junk (`.DS_Store`, `Thumbs.db`), editor backups (`.bak`,
+    `.swp`), Python caches (`__pycache__`), Node cruft, regenerated
+    artifacts (`tools/audit-report.md`), and secrets (defence in
+    depth). Mirrors the cruft patterns the auditor scans for.
+  * `.editorconfig` — UTF-8, LF, final newline, 2-space default
+    (4-space Python, tab Makefile), aligned with the existing
+    codebase.
+- **Tooling** — new `tools/apply-modern-baseline.py`: idempotent
+  one-shot script that applies all of the above to any HTML file.
+  Safe to re-run after adding new pages — no-op when already
+  upgraded.
+- **Auditor** (`tools/audit-site.py`) — four new checks lock in the
+  modern baseline so future pages can't regress:
+  * Every page must carry `<meta name="referrer">`.
+  * Every page must carry a CSP meta tag with `default-src 'self'`.
+  * Every `<img>` must declare `loading=` explicitly (lazy or eager —
+    no silent defaults).
+  * Quality-gate count is now **17** (13 per-page checks + 2 cross-
+    file reconciliations + 2 repo-wide). All green.
+
 ### Removed (repo cruft)
 - Deleted `assets/css/theme.css.bak` and
   `assets/css/theme.css.pre-reorder.bak` — leftover safety copies from

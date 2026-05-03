@@ -6,6 +6,8 @@
          ======================================== -->
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://www.googletagmanager.com; object-src 'none'; base-uri 'self'; form-action 'self'" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="language" content="English" />
 
@@ -56,7 +58,8 @@
     <!-- ========================================
          METADATA: Color Scheme & Theme
          ======================================== -->
-    <meta name="theme-color" content="#2c5e6f" />
+    <meta name="theme-color" content="#f5efe1" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#2c5e6f" media="(prefers-color-scheme: dark)" />
     <meta name="color-scheme" content="light dark" />
 
     <meta name="mobile-web-app-capable" content="yes" />
@@ -164,7 +167,7 @@
           alt="AskJamie™ avatar with construction hat and 'Under Construction' sign"
           class="construction-overlay__image"
           width="1536"
-          height="768" decoding="async">
+          height="768" decoding="async" loading="lazy">
 
         <p class="construction-overlay__copy">
           ⚠️ This OKHP³ BrandGuard™ page is still being wired up 🔌. Sections may move,
@@ -187,7 +190,7 @@
 
     <header class="site-header" id="top">
       <div class="container">
-        <div class="logo"><a href="/" aria-label="AskJamie™ Home"><img src="/assets/img/AskJamie%20AvatarTallLeft%20Square%201024.png" alt="AskJamie™ avatar" width="40" height="40" decoding="async"></a></div>
+        <div class="logo"><a href="/" aria-label="AskJamie™ Home"><img src="/assets/img/AskJamie%20AvatarTallLeft%20Square%201024.png" alt="AskJamie™ avatar" width="40" height="40" decoding="async" loading="lazy"></a></div>
 
         <nav class="primary-nav" id="navigation" aria-label="Primary">
           <ul>
@@ -235,7 +238,7 @@
             <div class="askjamie-hero-copy">
               <p class="eyebrow askjamie-breadcrumb">
                 <a href="/#top" aria-label="AskJamie™ home" class="askjamie-logo askjamie-logo--crumb">
-                  <img src="/assets/img/AskJamie%20TitleCreamBlueBackdropBlueGrayLeft%20Square%201024.png" alt="AskJamie™ logo" width="160" height="auto" decoding="async" loading="lazy"></a>
+                  <img src="/assets/img/AskJamie%20TitleCreamBlueBackdropBlueGrayLeft%20Square%201024.png" alt="AskJamie™ logo" width="160" height="auto" decoding="async" loading="lazy" fetchpriority="high"></a>
                 <span class="breadcrumb-separator">·</span>
                 <span class="breadcrumb-label">GPT‑BRG01: LEGO — OKHP³ BrandGuard™</span>
               </p>

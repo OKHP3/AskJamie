@@ -31,9 +31,14 @@ assets/
   img/                 # Brand assets, avatars, case study images
   img/favicons/        # Full favicon set (ico, 16/32/48px PNG, SVG, android-chrome, apple-touch)
 tools/
-  audit-site.py           # Static-site auditor (v0.7) — per-page checks +
-                          # sitemap/search-index reconciliation. Writes
-                          # tools/audit-report.md. Current run: 0 issues.
+  audit-site.py           # Static-site auditor (v0.8) — 17 quality gates:
+                          # 13 per-page + 2 cross-file reconciliations +
+                          # 2 repo-wide. Writes tools/audit-report.md.
+                          # Current run: 0 issues.
+  apply-modern-baseline.py # Idempotent 2025/2026 baseline applier:
+                          # injects security meta tags (referrer + CSP),
+                          # adds loading=lazy/eager + fetchpriority=high
+                          # to every <img>. Safe to re-run on new pages.
   build-search-index.py   # Regenerates assets/data/search-index.json from all .html files
   enhance-pages.py        # Bulk-edit tool for site-wide HTML enhancements (v0.5)
   restructure-theme.py    # Deterministic theme.css reorganiser (GLOBAL→OKH→GLEE→ASKJAMIE)

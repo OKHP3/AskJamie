@@ -1024,11 +1024,27 @@ body:not(.glee-main):not(.askjamie-main) .latest-pill {
   }
 }
 
-/* Respect reduced-motion preferences */
+/* Respect reduced-motion preferences (WCAG 2.2 baseline, 2025/2026).
+   The targeted .brand-stripes rule below is preserved for clarity, but
+   the global guard at the bottom of this block neutralises all
+   animations, transitions, and smooth-scroll for users who request it.
+   This is the modern best-practice umbrella rule. */
 @media (prefers-reduced-motion: reduce) {
   .brand-stripes {
     animation: none;
     background-position: 0 0;
+  }
+
+  /* Global umbrella: neutralise motion across the entire site.
+     `!important` is intentional — it must beat per-component animation
+     declarations so user-agent accessibility preferences win. */
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
   }
 }
 

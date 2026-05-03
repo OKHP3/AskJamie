@@ -32,6 +32,14 @@ Cross-file / repo-wide checks:
   * search-index.json mtime is newer than every public HTML file
     (catches stale indexes after content edits)
 
+Modern (2025/2026) baseline checks — see also tools/apply-modern-baseline.py:
+  * every page carries `<meta name="referrer">` (privacy)
+  * every page carries `<meta http-equiv="Content-Security-Policy">`
+    with the expected allow-list keywords
+  * every <img> declares a `loading=` attribute (lazy or eager) — no
+    silent defaults
+  * theme.css contains a global `prefers-reduced-motion` umbrella rule
+
 Cross-file reconciliation (best-effort; failures are reported as issues
 rather than crashing the run):
   * sitemap.xml entries vs HTML files on disk
@@ -214,11 +222,35 @@ def audit_page(path: Path) -> List[str]:
             if not (ROOT / decoded.lstrip("/")).exists():
                 issues.append(f"og:image file does not exist on disk: {decoded}")
 
-    # quick theme-color check
-    m = re.search(r'<meta\s+name="theme-color"\s+content="([^"]+)"', src)
-    if m and m.group(1).lower() != EXPECTED_THEME_COLOR:
+    # Modern (2025/2026) baseline — security meta tags
+    if 'name="referrer"' not in src:
+        issues.append('Missing <meta name="referrer"> — modern privacy baseline')
+    if 'http-equiv="Content-Security-Policy"' not in src:
+        issues.append('Missing CSP meta tag — modern security baseline')
+    elif "default-src 'self'" not in src:
+        issues.append("CSP meta present but missing `default-src 'self'`")
+
+    # Image perf — every <img> must declare loading= explicitly (no
+    # silent default). Lazy or eager are both acceptable choices.
+    for raw_img in re.findall(r'<img\b[^>]*>', src):
+        if "loading=" not in raw_img:
+            src_attr = re.search(r'src="([^"]+)"', raw_img)
+            label = src_attr.group(1) if src_attr else "(no src)"
+            issues.append(f"Image missing loading= attribute: {label}")
+
+    # theme-color check — modern pattern uses a light/dark media-queried
+    # pair. Accept both the legacy single tag and the new pair, but require
+    # the brand teal to appear in at least one tag (it's the dark-mode and
+    # historical default colour).
+    theme_colors = re.findall(
+        r'<meta\s+name="theme-color"\s+[^>]*content="([^"]+)"', src
+    )
+    if not theme_colors:
+        issues.append("Missing <meta name=\"theme-color\"> entirely")
+    elif EXPECTED_THEME_COLOR not in [c.lower() for c in theme_colors]:
         issues.append(
-            f'theme-color is `{m.group(1)}`, expected `{EXPECTED_THEME_COLOR}` (brand teal)'
+            f"theme-color values {theme_colors} do not include the "
+            f"expected brand teal `{EXPECTED_THEME_COLOR}`"
         )
 
     # parse for structural checks

@@ -4,8 +4,8 @@ This roadmap outlines the near-term public direction for the **AskJamie™** rep
 
 ## Current
 - BrandGuard™ case study series — ongoing documentation
-- Quality gates: `tools/audit-site.py` runs clean (0 issues at v0.7);
-  re-run on every meaningful HTML change
+- Quality gates: `tools/audit-site.py` v0.8 runs clean (0 issues across
+  17 quality gates); re-run on every meaningful HTML change
 
 ## Next
 - Create 1200×630 landscape OG images for all pages (currently square 1024×1024)
@@ -13,9 +13,19 @@ This roadmap outlines the near-term public direction for the **AskJamie™** rep
   variants once cross-checked against off-repo uses (sister sites,
   social cards, marketing materials)
 - Submit `sitemap.xml` to Google Search Console and Bing Webmaster Tools
-- Mirror v0.7 changes (`theme.css`, `tools/audit-site.py`,
-  hero-actions wrap) into the OverKill Hill and Glee-fully repos
+- Mirror v0.8 changes (modern baseline: CSP/referrer meta, image
+  loading attrs, prefers-reduced-motion umbrella, expanded auditor)
+  into the OverKill Hill and Glee-fully repos
 - Expand Lens System with new BrandGuard™ case studies
+- **CSP hardening (future)** — refactor the 26 lazy-CSS
+  `onload="this.media='all'"` inline handlers into an
+  `assets/js/lazy-css.js` helper so `script-src 'unsafe-inline'` can be
+  dropped from the CSP. Low-risk but touches every page.
+- **Self-hosted fonts (privacy + perf)** — currently loads Baloo 2,
+  Open Sans, and Kalam from `fonts.googleapis.com` /
+  `fonts.gstatic.com`. Self-hosting under `assets/fonts/` would remove
+  the third-party privacy boundary, eliminate two extra DNS lookups,
+  and let the CSP drop those external `style-src` / `font-src` entries.
 
 ## Later
 - Publish a dedicated "How AskJamie Works" deep-dive page
