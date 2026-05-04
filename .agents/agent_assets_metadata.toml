@@ -12,3 +12,9 @@ id = "CGqgj81X4-GGym3bGtyFh"
 uri = "file://askjamie-replit-theme-guide.md"
 type = "text"
 title = "AskJamie™ — Replit App Theme Guide (updated)"
+
+[[outputs]]
+id = "jXQSlFlHl7ZVCfq5xCTMM"
+uri = "file://assets/templates/TEMPLATE-SYSTEM-PROMPT.md"
+type = "text"
+title = "Page Template Library — Build Prompt"
