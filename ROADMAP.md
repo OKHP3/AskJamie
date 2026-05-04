@@ -4,12 +4,12 @@ This roadmap outlines the near-term public direction for the **AskJamie™** rep
 
 ## Current
 - BrandGuard™ case study series — ongoing documentation
-- Quality gates: `tools/audit-site.py` v0.8 runs clean (0 issues across
+- Quality gates: `scripts/audit-site.py` v0.8 runs clean (0 issues across
   17 quality gates); re-run on every meaningful HTML change
 
 ## Next
 - Create 1200×630 landscape OG images for all pages (currently square 1024×1024)
-- Review `tools/image-usage-report.md` and prune unreferenced brand image
+- Review `scripts/image-usage-report.md` and prune unreferenced brand image
   variants once cross-checked against off-repo uses (sister sites,
   social cards, marketing materials)
 - Submit `sitemap.xml` to Google Search Console and Bing Webmaster Tools

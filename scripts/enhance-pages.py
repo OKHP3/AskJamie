@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-tools/enhance-pages.py — v0.5 site-wide enhancement pass
+scripts/enhance-pages.py — v0.5 site-wide enhancement pass
 
 Idempotent.  Re-running on already-enhanced files is a no-op.
 

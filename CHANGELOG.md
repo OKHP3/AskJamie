@@ -4,6 +4,20 @@ All notable changes to the **AskJamie™** public repository are recorded here.
 
 ## [Unreleased]
 
+### Changed (repo structure)
+- **Renamed `tools/` → `scripts/`** — aligns naming with the convention
+  used across all three OKHP³ sites (OverKill Hill, Glee-fully Tools,
+  AskJamie™). All internal self-references within each script updated.
+  All documentation (replit.md, ROADMAP.md, CHANGELOG.md, INDEX.md,
+  .gitignore, TEMPLATE-SYSTEM-PROMPT.md) updated in place. Auditor
+  confirmed 0 issues after rename.
+- **Created `assets/docs/`** — new subfolder under `assets/` for generated
+  documentation assets (image usage reports, cross-reference files, and
+  any other non-page reference documents produced by scripts).
+- **Updated `assets/templates/TEMPLATE-SYSTEM-PROMPT.md`** — now references
+  `scripts/` (not `tools/`) and includes Step 9 (create `assets/docs/`),
+  reflecting current AskJamie™ structure as the canonical reference.
+
 ### Added (modern 2025/2026 baseline — security, perf, accessibility)
 - **Site-wide security headers** via `<meta>` tags on all 26 pages
   (GitHub Pages can't set HTTP headers directly):
@@ -48,16 +62,16 @@ All notable changes to the **AskJamie™** public repository are recorded here.
   * `.gitignore` rewritten — comprehensive 2025 patterns covering
     OS junk (`.DS_Store`, `Thumbs.db`), editor backups (`.bak`,
     `.swp`), Python caches (`__pycache__`), Node cruft, regenerated
-    artifacts (`tools/audit-report.md`), and secrets (defence in
+    artifacts (`scripts/audit-report.md`), and secrets (defence in
     depth). Mirrors the cruft patterns the auditor scans for.
   * `.editorconfig` — UTF-8, LF, final newline, 2-space default
     (4-space Python, tab Makefile), aligned with the existing
     codebase.
-- **Tooling** — new `tools/apply-modern-baseline.py`: idempotent
+- **Tooling** — new `scripts/apply-modern-baseline.py`: idempotent
   one-shot script that applies all of the above to any HTML file.
   Safe to re-run after adding new pages — no-op when already
   upgraded.
-- **Auditor** (`tools/audit-site.py`) — four new checks lock in the
+- **Auditor** (`scripts/audit-site.py`) — four new checks lock in the
   modern baseline so future pages can't regress:
   * Every page must carry `<meta name="referrer">`.
   * Every page must carry a CSP meta tag with `default-src 'self'`.
@@ -91,7 +105,7 @@ All notable changes to the **AskJamie™** public repository are recorded here.
   first page and serve all subsequent navigations from cache.
 
 ### Removed (repo cruft — detritus audit)
-- **`tools/__pycache__/`** — Python bytecode cache; auto-regenerated on
+- **`scripts/__pycache__/`** — Python bytecode cache; auto-regenerated on
   every `python3` run. Already covered by `.gitignore`.
 - **`askjamie-replit-theme.json`** and **`askjamie-replit-theme-guide.md`** —
   Replit IDE "Manage app themes" panel artifacts from v0.2. Zero
@@ -99,14 +113,14 @@ All notable changes to the **AskJamie™** public repository are recorded here.
   site's own `theme.css`.
 - **`AUDIT-REPORT.md`** (root) — v1.0 historical audit snapshot (May 3
   morning). All findings closed. The live regenerated output is
-  `tools/audit-report.md`; root copy was stale redundancy.
+  `scripts/audit-report.md`; root copy was stale redundancy.
 - **`AUDIT-ASKJAMIE-FINAL.md`** (root) — v2.0 "Maximum Replit Audit
   Prompt" snapshot (May 3). All findings closed; no ongoing use.
-- **`tools/restructure-theme.py`** — One-shot theme.css section-reorder
+- **`scripts/restructure-theme.py`** — One-shot theme.css section-reorder
   script (v0.4). Its own docstring states *"Re-running…will fail"*.
   Migration was completed, the `.bak` safety copies were deleted in the
   same round; the script can never run again safely.
-- **`tools/generate-templates.py`** — One-shot Phase 13 template
+- **`scripts/generate-templates.py`** — One-shot Phase 13 template
   generator. All 9 template files in `assets/templates/` were written
   and are manually maintained going forward; re-running would overwrite
   those edits. The 10 "references" were all `Generator:` header
@@ -121,7 +135,7 @@ All notable changes to the **AskJamie™** public repository are recorded here.
   33 pages indexed, 128.6 KB.
 
 ### Added (auditor preventive guards)
-- `tools/audit-site.py` — five new checks total:
+- `scripts/audit-site.py` — five new checks total:
   * **Duplicate id** — flags any `id="..."` appearing more than once
     on a single page (breaks anchor nav, `querySelector`, screen-reader
     landmarks).
@@ -151,7 +165,7 @@ All notable changes to the **AskJamie™** public repository are recorded here.
 - `assets/css/theme.css` — new reusable `.mermaid-referral-note` and
   `a.mermaid-referral-link` rules so the same pattern works on any
   future AskJamie page that embeds Mermaid.
-- `tools/audit-site.py` — new per-page check: any page containing
+- `scripts/audit-site.py` — new per-page check: any page containing
   `<pre class="mermaid">` must also carry the `mermaidchart.cello.so`
   link **and** the `mermaid-referral-link` class. Prevents future
   Mermaid pages from shipping without the affiliate link.
@@ -167,7 +181,7 @@ All notable changes to the **AskJamie™** public repository are recorded here.
   v0.7 demo-notice + theme-color sweep).
 
 ### Added (image audit)
-- `tools/image-usage-report.md` — generated report cross-referencing
+- `scripts/image-usage-report.md` — generated report cross-referencing
   every file under `assets/img/` against every HTML / CSS / JS / JSON /
   MD / XML / webmanifest in the repo. Result: 120 image files on disk,
   45 referenced, **75 unreferenced**. Report-only — no files removed,
@@ -185,7 +199,7 @@ All notable changes to the **AskJamie™** public repository are recorded here.
   page-specific content swapped to `[[DOUBLE-BRACKET]]` tokens, a
   template header comment block at the top, and section-level comments
   above every `<section>` inside `<main>`.
-- `tools/generate-templates.py` — deterministic generator. Tokenises
+- `scripts/generate-templates.py` — deterministic generator. Tokenises
   meta tags (title, description, OG, Twitter, canonical), clears
   JSON-LD bodies to a placeholder, replaces hero/section/card
   text with named tokens, and tokenises non-shared images (nav and
@@ -193,14 +207,14 @@ All notable changes to the **AskJamie™** public repository are recorded here.
 - `/assets/templates/INDEX.md` — full Page-Type → template mapping
   for all 26 HTML files, plus token reference table and
   "Adding a New Template" workflow.
-- `tools/audit-site.py` — `templates/` added to `EXCLUDE_DIRS` so the
+- `scripts/audit-site.py` — `templates/` added to `EXCLUDE_DIRS` so the
   auditor skips token-bearing template files.
 
 ### Planned
 - Expand Lens System with additional BrandGuard™ case studies
 - Create landscape (1200×630) OG images for optimal social card display
 - Audit and prune the ~85 unused brand image variants
-- Mirror v0.7 shared-asset changes (`theme.css`, `tools/audit-site.py`)
+- Mirror v0.7 shared-asset changes (`theme.css`, `scripts/audit-site.py`)
   into OverKill Hill and Glee-fully repos
 
 ## [v0.7 — 2026-05-03] — Audit-tooling, BG demo notice, hero CTA cluster
@@ -209,13 +223,13 @@ See `AUDIT-ASKJAMIE-FINAL.md` at the repo root for the full v2.0 cycle
 write-up.
 
 ### Added
-- **`tools/audit-site.py`** — reproducible static-site auditor. Walks
+- **`scripts/audit-site.py`** — reproducible static-site auditor. Walks
   every `.html` file in the repo and reports per-page issues
   (title/description length, missing canonical, missing OG fields,
   image alt/width/height, `target=_blank` links missing
   `rel="noopener noreferrer"`, known placeholders, wrong `theme-color`),
   plus sitemap ↔ disk and search-index ↔ disk reconciliation.
-  Writes `tools/audit-report.md`. Current run: **0 issues**.
+  Writes `scripts/audit-report.md`. Current run: **0 issues**.
 - **Reusable BrandGuard™ demo notice block** injected above `</main>`
   on all 13 BrandGuard case-study pages, plus `.brandguard-demo-notice`
   CSS in the ASKJAMIE tier of `theme.css`. The notice clarifies the
@@ -322,7 +336,7 @@ See `AUDIT-REPORT.md` at the repo root for the full per-issue breakdown.
   PWA splash will no longer flash black on install.
 
 ### Tooling
-- **Search index rebuilt** (`tools/build-search-index.py`) to capture
+- **Search index rebuilt** (`scripts/build-search-index.py`) to capture
   the new `#fit` section and the expanded About / Legal copy.
   Now 101.7 KB / 24 pages.
 - **`sitemap.xml` `<lastmod>`** bumped to 2026-05-03 on every page that
@@ -367,7 +381,7 @@ See `AUDIT-REPORT.md` at the repo root for the full per-issue breakdown.
   URL (the original sitemap had no `<lastmod>` tags at all).
 
 ### Fixed
-- **`tools/build-search-index.py`** — body excerpts were silently empty for
+- **`scripts/build-search-index.py`** — body excerpts were silently empty for
   every page in the index because of two bugs:
   1. `STRIP_CLASSES_CONTAINS` included `askjamie-paper`, `brand-stripes`
      and `site-specials` — but those classes wrap the actual page
@@ -387,7 +401,7 @@ See `AUDIT-REPORT.md` at the repo root for the full per-issue breakdown.
   (`okhp3-BrandGuard` → `okhp3-brandguard`).
 
 ### Tooling
-- **`tools/enhance-pages.py`** — new idempotent bulk editor for
+- **`scripts/enhance-pages.py`** — new idempotent bulk editor for
   site-wide passes (footer markup, preconnects, image attribute polish,
   meta-description / title rewrites, BreadcrumbList JSON-LD,
   Article JSON-LD, canonical typo fixes).  Re-runnable safely.
@@ -420,7 +434,7 @@ See `AUDIT-REPORT.md` at the repo root for the full per-issue breakdown.
   - Brace counts verified preserved (593 opens / 594 closes — identical to
     pre-reorganise file).  No visual regression — homepage, BrandGuard case,
     About, and Universe screenshots all pixel-equivalent.
-- **`tools/restructure-theme.py`** — deterministic rebuild tool: reads
+- **`scripts/restructure-theme.py`** — deterministic rebuild tool: reads
   `assets/css/theme.css.bak`, slices verbatim by an explicit section map,
   reassembles in tier order with banners + TOC, and refuses to write if the
   brace count drifts.  Re-runnable any time the canonical order needs
@@ -455,7 +469,7 @@ See `AUDIT-REPORT.md` at the repo root for the full per-issue breakdown.
 
 ### Added
 - **Internal site search** — zero-dependency, static, client-side search engine
-  - `tools/build-search-index.py` — extracts title / description / h1 / h2-h3 / body excerpts from every `.html` file into a single JSON index
+  - `scripts/build-search-index.py` — extracts title / description / h1 / h2-h3 / body excerpts from every `.html` file into a single JSON index
   - `assets/data/search-index.json` — 23 pages, ~100 KB raw / ~25 KB gzipped
   - `assets/js/search.js` — modal UI, live results, keyboard navigation (`/` or `⌘K`, `↑↓`, `Enter`, `Esc`), match-term highlighting
   - Search trigger button injected into `.site-header` on every page

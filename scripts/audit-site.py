@@ -32,7 +32,7 @@ Cross-file / repo-wide checks:
   * search-index.json mtime is newer than every public HTML file
     (catches stale indexes after content edits)
 
-Modern (2025/2026) baseline checks — see also tools/apply-modern-baseline.py:
+Modern (2025/2026) baseline checks — see also scripts/apply-modern-baseline.py:
   * every page carries `<meta name="referrer">` (privacy)
   * every page carries `<meta http-equiv="Content-Security-Policy">`
     with the expected allow-list keywords
@@ -46,9 +46,9 @@ rather than crashing the run):
   * search-index.json entries vs HTML files on disk
 
 Usage:
-    python3 tools/audit-site.py
-    python3 tools/audit-site.py --report tools/audit-report.md
-    python3 tools/audit-site.py --quiet
+    python3 scripts/audit-site.py
+    python3 scripts/audit-site.py --report scripts/audit-report.md
+    python3 scripts/audit-site.py --quiet
 """
 from __future__ import annotations
 
@@ -377,7 +377,7 @@ def check_search_index_freshness(html_files: List[Path]) -> List[str]:
     head = stale[:5]
     suffix = "" if len(stale) <= 5 else f" (and {len(stale)-5} more)"
     return [
-        "search-index.json is stale — rebuild with `python3 tools/build-search-index.py`. "
+        "search-index.json is stale — rebuild with `python3 scripts/build-search-index.py`. "
         f"Pages newer than the index: {', '.join(head)}{suffix}"
     ]
 
@@ -459,7 +459,7 @@ def render_report(per_page: Dict[str, List[str]],
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--report", default="tools/audit-report.md",
+    parser.add_argument("--report", default="scripts/audit-report.md",
                         help="Path to write the Markdown report.")
     parser.add_argument("--quiet", action="store_true",
                         help="Suppress per-page console output.")

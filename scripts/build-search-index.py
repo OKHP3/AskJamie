@@ -14,7 +14,7 @@ attached_assets / .git / .local trees), extracts:
 
 Writes assets/data/search-index.json - a compact array of page records.
 
-Run from repo root:  python3 tools/build-search-index.py
+Run from repo root:  python3 scripts/build-search-index.py
 """
 
 import json

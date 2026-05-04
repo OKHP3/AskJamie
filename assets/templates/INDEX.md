@@ -187,7 +187,7 @@ All tokens used by the generator. Each template file contains a subset.
 8. Add any page-specific CSS classes or JS as needed without modifying
    shared files (`/assets/css/theme.css`, `/assets/js/app.js`).
 9. Test on mobile and desktop.
-10. Run `python3 tools/audit-site.py` and `python3 tools/build-search-index.py`
+10. Run `python3 scripts/audit-site.py` and `python3 scripts/build-search-index.py`
     before committing.
 
 ---
@@ -205,5 +205,5 @@ If a new page type is introduced that doesn't match any existing template:
 4. Add a subsection to Available Templates and rows to the Token Reference.
 5. Commit the new page, the new template, and the updated INDEX together.
 
-Excluded from `python3 tools/audit-site.py` via the `templates/`
+Excluded from `python3 scripts/audit-site.py` via the `templates/`
 exclusion in `EXCLUDE_DIRS` (added v0.7).
