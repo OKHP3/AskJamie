@@ -1,9 +1,9 @@
 # AskJamie™ Template Library
 ## /assets/templates/
 
-Generated: 2026-05-03
+Created: 2026-05-03
 Total templates: 9
-Generator: `tools/generate-templates.py`
+Maintained: manually (templates are hand-edited source-of-truth files)
 
 ---
 
@@ -196,25 +196,14 @@ All tokens used by the generator. Each template file contains a subset.
 
 If a new page type is introduced that doesn't match any existing template:
 
-1. Build the page using the closest existing template as a starting point.
-2. Once the page is production-ready, add a row to the `SOURCES` list in
-   `tools/generate-templates.py` pointing at the new representative page.
-3. Re-run `python3 tools/generate-templates.py` to regenerate **all**
-   templates (idempotent — existing ones don't drift).
-4. Update this `INDEX.md` with the new template's row + token notes.
+1. Build the new page using the closest existing template as a starting point.
+2. Once the page is production-ready, manually create a new template file
+   from it: copy the production page, apply the tokenisation rules, add the
+   header comment block, and add TEMPLATE SECTION comments above each
+   `<section>` inside `<main>`.
+3. Add a row to the Page Inventory table in this INDEX.md.
+4. Add a subsection to Available Templates and rows to the Token Reference.
 5. Commit the new page, the new template, and the updated INDEX together.
 
----
-
-## Regeneration
-
-Templates are generated mechanically and may be regenerated at any time
-without losing custom edits — there are none to lose. The source pages
-*are* the source of truth.
-
-```sh
-python3 tools/generate-templates.py
-```
-
 Excluded from `python3 tools/audit-site.py` via the `templates/`
-exclusion (added to `EXCLUDE_DIRS` in v0.7).
+exclusion in `EXCLUDE_DIRS` (added v0.7).
