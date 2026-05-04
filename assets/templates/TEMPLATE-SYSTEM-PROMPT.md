@@ -305,12 +305,12 @@ in INDEX.md.
 
 ---
 
-## Step 8 — Exclude `scripts/audit-report.md` from version control
+## Step 8 — Exclude `assets/docs/audit-report.md` from version control
 
 Open `.gitignore`. Add:
 
 ```
-scripts/audit-report.md
+assets/docs/audit-report.md
 ```
 
 (The audit report is regenerated on every run — it should not be committed.)
@@ -339,7 +339,7 @@ scripts. It is not served as web content.
 - `assets/templates/` is not listed as a source of pages in the auditor.
 - INDEX.md total template count matches the actual file count.
 - `assets/docs/` exists.
-- `scripts/audit-report.md` is in `.gitignore`.
+- `assets/docs/audit-report.md` is in `.gitignore`.
 
 ---
 

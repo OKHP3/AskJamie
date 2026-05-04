@@ -47,7 +47,7 @@ rather than crashing the run):
 
 Usage:
     python3 scripts/audit-site.py
-    python3 scripts/audit-site.py --report scripts/audit-report.md
+    python3 scripts/audit-site.py --report assets/docs/audit-report.md
     python3 scripts/audit-site.py --quiet
 """
 from __future__ import annotations
@@ -459,7 +459,7 @@ def render_report(per_page: Dict[str, List[str]],
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--report", default="scripts/audit-report.md",
+    parser.add_argument("--report", default="assets/docs/audit-report.md",
                         help="Path to write the Markdown report.")
     parser.add_argument("--quiet", action="store_true",
                         help="Suppress per-page console output.")

@@ -62,7 +62,7 @@ All notable changes to the **AskJamie™** public repository are recorded here.
   * `.gitignore` rewritten — comprehensive 2025 patterns covering
     OS junk (`.DS_Store`, `Thumbs.db`), editor backups (`.bak`,
     `.swp`), Python caches (`__pycache__`), Node cruft, regenerated
-    artifacts (`scripts/audit-report.md`), and secrets (defence in
+    artifacts (`assets/docs/audit-report.md`), and secrets (defence in
     depth). Mirrors the cruft patterns the auditor scans for.
   * `.editorconfig` — UTF-8, LF, final newline, 2-space default
     (4-space Python, tab Makefile), aligned with the existing
@@ -113,7 +113,7 @@ All notable changes to the **AskJamie™** public repository are recorded here.
   site's own `theme.css`.
 - **`AUDIT-REPORT.md`** (root) — v1.0 historical audit snapshot (May 3
   morning). All findings closed. The live regenerated output is
-  `scripts/audit-report.md`; root copy was stale redundancy.
+  `assets/docs/audit-report.md`; root copy was stale redundancy.
 - **`AUDIT-ASKJAMIE-FINAL.md`** (root) — v2.0 "Maximum Replit Audit
   Prompt" snapshot (May 3). All findings closed; no ongoing use.
 - **`scripts/restructure-theme.py`** — One-shot theme.css section-reorder
@@ -181,7 +181,7 @@ All notable changes to the **AskJamie™** public repository are recorded here.
   v0.7 demo-notice + theme-color sweep).
 
 ### Added (image audit)
-- `scripts/image-usage-report.md` — generated report cross-referencing
+- `assets/docs/image-usage-report.md` — generated report cross-referencing
   every file under `assets/img/` against every HTML / CSS / JS / JSON /
   MD / XML / webmanifest in the repo. Result: 120 image files on disk,
   45 referenced, **75 unreferenced**. Report-only — no files removed,
@@ -229,7 +229,7 @@ write-up.
   image alt/width/height, `target=_blank` links missing
   `rel="noopener noreferrer"`, known placeholders, wrong `theme-color`),
   plus sitemap ↔ disk and search-index ↔ disk reconciliation.
-  Writes `scripts/audit-report.md`. Current run: **0 issues**.
+  Writes `assets/docs/audit-report.md`. Current run: **0 issues**.
 - **Reusable BrandGuard™ demo notice block** injected above `</main>`
   on all 13 BrandGuard case-study pages, plus `.brandguard-demo-notice`
   CSS in the ASKJAMIE tier of `theme.css`. The notice clarifies the

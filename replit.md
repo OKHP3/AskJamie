@@ -36,11 +36,13 @@ assets/
   data/search-index.json  # Pre-built static search index (~100 KB, ~25 KB gzipped)
   img/                 # Brand assets, avatars, case study images
   img/favicons/        # Full favicon set (ico, 16/32/48px PNG, SVG, android-chrome, apple-touch)
-  docs/                # Documentation assets (image usage reports, generated references)
+  docs/                # Generated documentation assets:
+                       #   audit-report.md       — written by scripts/audit-site.py (gitignored)
+                       #   image-usage-report.md — img cross-reference (pending ROADMAP prune task)
 scripts/
   audit-site.py           # Static-site auditor (v0.8) — 17 quality gates:
                           # 13 per-page + 2 cross-file reconciliations +
-                          # 2 repo-wide. Writes scripts/audit-report.md.
+                          # 2 repo-wide. Writes assets/docs/audit-report.md.
                           # Current run: 0 issues (post v0.9 consolidation).
   apply-modern-baseline.py # Idempotent 2025/2026 baseline applier:
                           # injects security meta tags (referrer + CSP),
@@ -49,8 +51,6 @@ scripts/
   build-search-index.py   # Regenerates assets/data/search-index.json from all .html files
   enhance-pages.py        # Bulk-edit tool for new-page additions: BreadcrumbList
                           # JSON-LD injection, decoding="async", meta trimming (v0.5)
-  image-usage-report.md  # Generated cross-reference: every img in assets/img/ vs every
-                          # HTML/CSS/JS/JSON file. Pending ROADMAP: review + prune.
 about/                 # About page
 contact/               # Contact page
 legal/                 # Legal pages
@@ -250,7 +250,7 @@ applied most of the above.  Safe to re-run any time.
 `scripts/audit-site.py` is the repo's reproducible quality gate.
 
 ```
-python3 scripts/audit-site.py            # writes scripts/audit-report.md
+python3 scripts/audit-site.py            # writes assets/docs/audit-report.md
 python3 scripts/audit-site.py --quiet    # same, no per-page console output
 ```
 

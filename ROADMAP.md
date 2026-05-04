@@ -9,7 +9,7 @@ This roadmap outlines the near-term public direction for the **AskJamie™** rep
 
 ## Next
 - Create 1200×630 landscape OG images for all pages (currently square 1024×1024)
-- Review `scripts/image-usage-report.md` and prune unreferenced brand image
+- Review `assets/docs/image-usage-report.md` and prune unreferenced brand image
   variants once cross-checked against off-repo uses (sister sites,
   social cards, marketing materials)
 - Submit `sitemap.xml` to Google Search Console and Bing Webmaster Tools
