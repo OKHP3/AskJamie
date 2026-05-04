@@ -46,8 +46,10 @@ tools/
                           # adds loading=lazy/eager + fetchpriority=high
                           # to every <img>. Safe to re-run on new pages.
   build-search-index.py   # Regenerates assets/data/search-index.json from all .html files
-  enhance-pages.py        # Bulk-edit tool for site-wide HTML enhancements (v0.5)
-  restructure-theme.py    # Deterministic theme.css reorganiser (GLOBAL→OKH→GLEE→ASKJAMIE)
+  enhance-pages.py        # Bulk-edit tool for new-page additions: BreadcrumbList
+                          # JSON-LD injection, decoding="async", meta trimming (v0.5)
+  image-usage-report.md  # Generated cross-reference: every img in assets/img/ vs every
+                          # HTML/CSS/JS/JSON file. Pending ROADMAP: review + prune.
 about/                 # About page
 contact/               # Contact page
 legal/                 # Legal pages

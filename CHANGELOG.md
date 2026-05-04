@@ -90,7 +90,27 @@ All notable changes to the **AskJamie™** public repository are recorded here.
   With one `app.js`, browsers cache the entire feature set after the
   first page and serve all subsequent navigations from cache.
 
-### Removed (repo cruft)
+### Removed (repo cruft — detritus audit)
+- **`tools/__pycache__/`** — Python bytecode cache; auto-regenerated on
+  every `python3` run. Already covered by `.gitignore`.
+- **`askjamie-replit-theme.json`** and **`askjamie-replit-theme-guide.md`** —
+  Replit IDE "Manage app themes" panel artifacts from v0.2. Zero
+  references in codebase; not served to the website; superseded by the
+  site's own `theme.css`.
+- **`AUDIT-REPORT.md`** (root) — v1.0 historical audit snapshot (May 3
+  morning). All findings closed. The live regenerated output is
+  `tools/audit-report.md`; root copy was stale redundancy.
+- **`AUDIT-ASKJAMIE-FINAL.md`** (root) — v2.0 "Maximum Replit Audit
+  Prompt" snapshot (May 3). All findings closed; no ongoing use.
+- **`tools/restructure-theme.py`** — One-shot theme.css section-reorder
+  script (v0.4). Its own docstring states *"Re-running…will fail"*.
+  Migration was completed, the `.bak` safety copies were deleted in the
+  same round; the script can never run again safely.
+- **`tools/generate-templates.py`** — One-shot Phase 13 template
+  generator. All 9 template files in `assets/templates/` were written
+  and are manually maintained going forward; re-running would overwrite
+  those edits. The 10 "references" were all `Generator:` header
+  comments inside the template files themselves.
 - Deleted `assets/css/theme.css.bak` and
   `assets/css/theme.css.pre-reorder.bak` — leftover safety copies from
   the v0.4 theme restructure (May 2). 90 KB each, no longer referenced.
