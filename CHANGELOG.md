@@ -66,6 +66,30 @@ All notable changes to the **AskJamie™** public repository are recorded here.
   * Quality-gate count is now **17** (13 per-page checks + 2 cross-
     file reconciliations + 2 repo-wide). All green.
 
+### Changed (JavaScript consolidation — v0.9)
+- **`assets/js/app.js`** is now the single JS entry point for all 26
+  pages. Three previously separate files have been merged into it:
+  * **`analytics.js`** → §0 of `app.js`: 4-line GA4 `gtag` bootstrap
+    runs at the top of the module, same timing as before (`defer`).
+  * **`search.js`** → §1a of `app.js`: full site-search modal
+    (lazy index fetch, keyboard shortcuts, focus trap, highlighting).
+    Previously dynamically injected via `loadSiteSearch()` IIFE — that
+    loader is removed; the module now parses with the rest of `app.js`.
+  * **`search-page.js`** → §1b of `app.js`: dedicated `/search/` page
+    logic (category chips, URL `?q=` sync, result cards). Self-gates on
+    `.search-page` body class — no-op on every other page.
+- **`assets/js/` now contains 2 files** (down from 5):
+  `app.js` (39 KB) and `mermaid-init.js` (702 B, universe page only).
+- **All 26 HTML pages updated**: removed the now-redundant
+  `<script defer src="/assets/js/analytics.js">` tag. `search/index.html`
+  also had its `<script src="/assets/js/search-page.js" defer>` tag and
+  the associated stale comment removed.
+- **Net effect**: each page now makes **2 fewer JS network requests**
+  (analytics.js + search.js were both fetched on every page-load; the
+  lazy-loaded search.js was a deferred round-trip on first interaction).
+  With one `app.js`, browsers cache the entire feature set after the
+  first page and serve all subsequent navigations from cache.
+
 ### Removed (repo cruft)
 - Deleted `assets/css/theme.css.bak` and
   `assets/css/theme.css.pre-reorder.bak` — leftover safety copies from

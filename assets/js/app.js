@@ -5,40 +5,758 @@
      - AskJamie             (askjamie.bot)
 
    STRUCTURE
-     1. GLOBAL — self-initializing modules (run on script parse)
-        1a. Site-search lazy loader
-        1b. Reading progress bar
-        1c. Sticky TOC scroll-follow
-     2. GLOBAL — DOM-ready bootstrap (mobile nav, theme, year stamps,
-                 scroll reveal, smooth anchor scroll, under-construction overlay)
+     0. ANALYTICS      — GA4 gtag bootstrap (runs immediately on parse)
+     1. GLOBAL         — self-initializing modules
+        1a. Site search — modal overlay (keyboard shortcuts, lazy index)
+        1b. Site search — dedicated /search/ page (category chips, URL sync)
+        1c. Reading progress bar
+        1d. Sticky TOC scroll-follow
+     2. GLOBAL         — DOM-ready bootstrap (mobile nav, theme, year stamps,
+                        scroll reveal, smooth anchor scroll,
+                        under-construction overlay)
 
    No brand-specific JS lives here.  Brand differences are expressed entirely
    through CSS body classes (`.askjamie-main`, `.glee-main`) which the
-   scripts below read at runtime to choose the right behaviour
-   (e.g. theme toggle is suppressed on subsites; under-construction overlay
-   is gated by `.construction-overlay` presence; sticky TOC is gated by
-   `#toc-widget` presence).
+   scripts below read at runtime to choose the right behaviour.
 */
+
+/* ======================================================================
+   0. ANALYTICS — GA4 gtag bootstrap
+   Replaces the separate analytics.js file.  Runs immediately on script
+   parse (same timing as the former `defer` analytics.js tag) so the
+   dataLayer queue is ready before the async gtag.js library resolves.
+   The gtag.js CDN tag stays in each page's <head> as a separate
+   `<script async>` — it must be fetched directly from GTM's CDN.
+   ====================================================================== */
+window.dataLayer = window.dataLayer || [];
+function gtag() { dataLayer.push(arguments); }
+gtag('js', new Date());
+gtag('config', 'G-MT9Y10YY0G');
 
 /* ======================================================================
    1. GLOBAL — self-initializing modules
    ====================================================================== */
 
-/* ── 1a. Site-search lazy loader ─────────────────────────────────────────
-   Pulls /assets/js/search.js into <head> exactly once per page.  The
-   search module gates itself on a `.search-trigger` element so it's a
-   no-op on pages that don't render a trigger.
+/* ── 1a. Site search — modal overlay ────────────────────────────────────
+   Zero-dependency, static, client-side.
+   - Loads /assets/data/search-index.json on first interaction (lazy).
+   - Injects a search button into .site-header and a modal into <body>.
+   - Keyboard: "/" or Cmd/Ctrl+K opens, ↑↓ navigates, Enter opens, Esc closes.
+   - Highlights matched terms in result snippets.
 */
-(function loadSiteSearch() {
-  if (window.__askjamieSearchLoaded) return;
-  window.__askjamieSearchLoaded = true;
-  var s = document.createElement("script");
-  s.src = "/assets/js/search.js";
-  s.defer = true;
-  document.head.appendChild(s);
+(function () {
+  "use strict";
+
+  var INDEX_URL = "/assets/data/search-index.json";
+  var MAX_RESULTS = 10;
+  var SNIPPET_RADIUS = 80; // chars on either side of a match
+
+  var indexPromise = null;
+  var indexCache = null;
+  var modal, input, resultsList, statusEl, openButton;
+  var currentResults = [];
+  var selectedIndex = -1;
+
+  // ────────────────────────────────────────────────────────────
+  // Bootstrap
+  // ────────────────────────────────────────────────────────────
+  function init() {
+    injectButton();
+    injectModal();
+    bindGlobalShortcuts();
+  }
+
+  function injectButton() {
+    var header = document.querySelector(".site-header .container");
+    if (!header) return;
+
+    openButton = document.createElement("button");
+    openButton.type = "button";
+    openButton.className = "site-search-trigger";
+    openButton.setAttribute("aria-label", "Open search");
+    openButton.setAttribute("aria-haspopup", "dialog");
+    openButton.innerHTML =
+      '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">' +
+      '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>' +
+      '<span class="site-search-trigger-label">Search</span>' +
+      '<kbd class="site-search-trigger-kbd" aria-hidden="true">/</kbd>';
+    openButton.addEventListener("click", openModal);
+
+    // Insert before the nav-toggle so it sits at the right side of the header
+    var navToggle = header.querySelector(".nav-toggle");
+    if (navToggle) {
+      header.insertBefore(openButton, navToggle);
+    } else {
+      header.appendChild(openButton);
+    }
+  }
+
+  function injectModal() {
+    modal = document.createElement("div");
+    modal.className = "site-search-modal";
+    modal.setAttribute("role", "dialog");
+    modal.setAttribute("aria-modal", "true");
+    modal.setAttribute("aria-labelledby", "site-search-title");
+    modal.setAttribute("hidden", "");
+
+    modal.innerHTML =
+      '<div class="site-search-scrim" data-search-close></div>' +
+      '<div class="site-search-panel">' +
+        '<div class="site-search-inputrow">' +
+          '<svg class="site-search-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+            '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>' +
+          '<input type="search" id="site-search-input" class="site-search-input" ' +
+            'placeholder="Search AskJamie\u2122 \u2014 pages, BrandGuard cases, services\u2026" ' +
+            'autocomplete="off" autocapitalize="off" spellcheck="false" ' +
+            'aria-label="Search the site" aria-controls="site-search-results" />' +
+          '<button type="button" class="site-search-close" aria-label="Close search" data-search-close>' +
+            '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">' +
+            '<path d="M6 6 18 18M18 6 6 18"/></svg>' +
+          '</button>' +
+        '</div>' +
+        '<div class="site-search-status" id="site-search-status" aria-live="polite">' +
+          '<span class="site-search-hint">Press <kbd>/</kbd> to focus, <kbd>Esc</kbd> to close. Use <kbd>\u2191</kbd><kbd>\u2193</kbd> to navigate.</span>' +
+        '</div>' +
+        '<ul class="site-search-results" id="site-search-results" role="listbox" aria-label="Search results"></ul>' +
+        '<div class="site-search-footer">' +
+          '<span id="site-search-title" class="site-search-title">AskJamie\u2122 Site Search</span>' +
+          '<span class="site-search-credit">Static index \u00b7 no tracking</span>' +
+        '</div>' +
+      '</div>';
+
+    document.body.appendChild(modal);
+
+    input = modal.querySelector("#site-search-input");
+    resultsList = modal.querySelector("#site-search-results");
+    statusEl = modal.querySelector("#site-search-status");
+
+    // Closers
+    modal.querySelectorAll("[data-search-close]").forEach(function (el) {
+      el.addEventListener("click", closeModal);
+    });
+
+    // Live search
+    input.addEventListener("input", function () {
+      runSearch(input.value);
+    });
+
+    // Keyboard navigation inside modal
+    input.addEventListener("keydown", function (e) {
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        moveSelection(1);
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        moveSelection(-1);
+      } else if (e.key === "Enter") {
+        if (selectedIndex >= 0 && currentResults[selectedIndex]) {
+          e.preventDefault();
+          window.location.href = currentResults[selectedIndex].url;
+        }
+      } else if (e.key === "Escape") {
+        e.preventDefault();
+        closeModal();
+      }
+    });
+
+    // Focus trap: keep Tab/Shift-Tab inside the modal
+    modal.addEventListener("keydown", function (e) {
+      if (e.key !== "Tab") return;
+      var focusables = modal.querySelectorAll(
+        'a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      );
+      if (focusables.length === 0) return;
+      var first = focusables[0];
+      var last = focusables[focusables.length - 1];
+      var active = document.activeElement;
+      if (e.shiftKey) {
+        if (active === first || !modal.contains(active)) {
+          e.preventDefault();
+          last.focus();
+        }
+      } else {
+        if (active === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    });
+  }
+
+  function bindGlobalShortcuts() {
+    document.addEventListener("keydown", function (e) {
+      // Skip if user is typing in an input/textarea (unless that input is OUR search input)
+      var t = e.target;
+      var isTyping =
+        t &&
+        (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.isContentEditable) &&
+        t.id !== "site-search-input";
+
+      // On the dedicated /search/ page, defer to the page's own input —
+      // don't pop the overlay on top of it.
+      var onSearchPage = document.body.classList.contains("search-page");
+
+      // Cmd/Ctrl + K = open
+      if ((e.metaKey || e.ctrlKey) && (e.key === "k" || e.key === "K")) {
+        if (onSearchPage) {
+          var pageInput = document.getElementById("search-page-input");
+          if (pageInput) { e.preventDefault(); try { pageInput.focus(); } catch (_) {} return; }
+        }
+        e.preventDefault();
+        openModal();
+        return;
+      }
+
+      // "/" alone = open (when not typing, and no other overlay is active)
+      if (e.key === "/" && !isTyping && !e.metaKey && !e.ctrlKey && !e.altKey) {
+        if (isAnotherOverlayOpen()) return;
+        if (onSearchPage) {
+          var pageInput2 = document.getElementById("search-page-input");
+          if (pageInput2) { e.preventDefault(); try { pageInput2.focus(); } catch (_) {} return; }
+        }
+        if (!modal || modal.hasAttribute("hidden")) {
+          e.preventDefault();
+          openModal();
+        }
+      }
+    });
+  }
+
+  // Detect any other site-level modal/overlay that's currently visible,
+  // so the search shortcut doesn't fight with it (e.g. construction overlay).
+  function isAnotherOverlayOpen() {
+    var overlay = document.querySelector(".construction-overlay");
+    if (overlay && !overlay.hasAttribute("hidden")) {
+      var dismissed = document.body.classList.contains("construction-dismissed");
+      if (!dismissed) return true;
+    }
+    return false;
+  }
+
+  // ────────────────────────────────────────────────────────────
+  // Modal open/close
+  // ────────────────────────────────────────────────────────────
+  function openModal() {
+    if (!modal) return;
+    modal.removeAttribute("hidden");
+    document.body.classList.add("site-search-open");
+    // Focus a tick later so the browser actually moves caret
+    setTimeout(function () {
+      input.focus();
+      input.select();
+    }, 30);
+    ensureIndex().then(function () {
+      if (input.value) runSearch(input.value);
+    });
+  }
+
+  function closeModal() {
+    if (!modal) return;
+    modal.setAttribute("hidden", "");
+    document.body.classList.remove("site-search-open");
+    if (openButton) openButton.focus();
+  }
+
+  // ────────────────────────────────────────────────────────────
+  // Index loading
+  // ────────────────────────────────────────────────────────────
+  function ensureIndex() {
+    if (indexCache) return Promise.resolve(indexCache);
+    if (indexPromise) return indexPromise;
+
+    setStatus('<span class="site-search-hint">Loading index\u2026</span>');
+    indexPromise = fetch(INDEX_URL, { credentials: "same-origin" })
+      .then(function (r) {
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        return r.json();
+      })
+      .then(function (data) {
+        indexCache = data;
+        // Prepare lowercased fields once for fast matching
+        indexCache.pages.forEach(function (p) {
+          p._titleL = (p.title || "").toLowerCase();
+          p._descL = (p.description || "").toLowerCase();
+          p._h1L = (p.h1 || "").toLowerCase();
+          p._headingsL = (p.headings || []).map(function (h) { return h.toLowerCase(); });
+          p._bodyL = (p.body || "").toLowerCase();
+          p._sectionL = (p.section || "").toLowerCase();
+        });
+        setStatus(
+          '<span class="site-search-hint">Indexed ' +
+            indexCache.count +
+            ' pages \u00b7 start typing to search.</span>'
+        );
+        return indexCache;
+      })
+      .catch(function (err) {
+        indexPromise = null;
+        setStatus(
+          '<span class="site-search-hint site-search-hint--error">Could not load search index (' +
+            err.message +
+            ').</span>'
+        );
+        throw err;
+      });
+    return indexPromise;
+  }
+
+  // ────────────────────────────────────────────────────────────
+  // Search
+  // ────────────────────────────────────────────────────────────
+  function runSearch(query) {
+    selectedIndex = -1;
+    currentResults = [];
+
+    var q = (query || "").trim().toLowerCase();
+    if (!q) {
+      resultsList.innerHTML = "";
+      setStatus(
+        '<span class="site-search-hint">Press <kbd>/</kbd> to focus, <kbd>Esc</kbd> to close. Use <kbd>\u2191</kbd><kbd>\u2193</kbd> to navigate.</span>'
+      );
+      return;
+    }
+
+    if (!indexCache) {
+      // Index will trigger us again once loaded
+      return;
+    }
+
+    var tokens = q.split(/\s+/).filter(Boolean);
+    var phrase = tokens.length > 1 ? q : null;
+
+    var scored = [];
+    for (var i = 0; i < indexCache.pages.length; i++) {
+      var p = indexCache.pages[i];
+      var score = scorePage(p, tokens, phrase);
+      if (score > 0) {
+        scored.push({ page: p, score: score });
+      }
+    }
+
+    scored.sort(function (a, b) { return b.score - a.score; });
+    scored = scored.slice(0, MAX_RESULTS);
+
+    currentResults = scored.map(function (s) { return s.page; });
+    renderResults(scored, tokens);
+
+    if (scored.length === 0) {
+      setStatus(
+        '<span class="site-search-hint">No matches for \u201c' +
+          escapeHtml(query) +
+          '\u201d. Try a shorter or different term.</span>'
+      );
+    } else {
+      setStatus(
+        '<span class="site-search-hint">' +
+          scored.length +
+          ' result' +
+          (scored.length === 1 ? '' : 's') +
+          ' for \u201c' +
+          escapeHtml(query) +
+          '\u201d</span>'
+      );
+    }
+  }
+
+  function scorePage(p, tokens, phrase) {
+    var score = 0;
+    var allTokensInTitle = true;
+    var allTokensInBody = true;
+
+    for (var i = 0; i < tokens.length; i++) {
+      var t = tokens[i];
+      var inTitle = p._titleL.indexOf(t) >= 0;
+      var inH1 = p._h1L.indexOf(t) >= 0;
+      var inDesc = p._descL.indexOf(t) >= 0;
+      var inSection = p._sectionL.indexOf(t) >= 0;
+      var inHeadings = p._headingsL.some(function (h) { return h.indexOf(t) >= 0; });
+      var inBody = p._bodyL.indexOf(t) >= 0;
+
+      if (inTitle) score += 10;
+      else allTokensInTitle = false;
+
+      if (inH1) score += 8;
+      if (inDesc) score += 5;
+      if (inSection) score += 3;
+      if (inHeadings) score += 4;
+      if (inBody) score += 1;
+      else allTokensInBody = false;
+
+      // Token MUST appear somewhere or we drop the page entirely
+      if (!inTitle && !inH1 && !inDesc && !inSection && !inHeadings && !inBody) {
+        return 0;
+      }
+    }
+
+    if (allTokensInTitle) score += 8;
+    if (phrase) {
+      if (p._titleL.indexOf(phrase) >= 0) score += 12;
+      if (p._h1L.indexOf(phrase) >= 0) score += 6;
+      if (p._descL.indexOf(phrase) >= 0) score += 4;
+      if (p._bodyL.indexOf(phrase) >= 0) score += 2;
+    }
+
+    // Slight boost for shorter URLs (top-of-tree pages tend to be more important)
+    var depth = (p.url.match(/\//g) || []).length;
+    score += Math.max(0, 4 - depth);
+
+    return score;
+  }
+
+  function renderResults(scored, tokens) {
+    var html = "";
+    for (var i = 0; i < scored.length; i++) {
+      var p = scored[i].page;
+      var snippet = makeSnippet(p, tokens);
+      html +=
+        '<li class="site-search-result" role="option" data-idx="' + i + '" id="ssr-' + i + '">' +
+          '<a href="' + escapeAttr(p.url) + '" class="site-search-result-link">' +
+            '<div class="site-search-result-head">' +
+              '<span class="site-search-result-section">' + escapeHtml(p.section || '') + '</span>' +
+              '<span class="site-search-result-url">' + escapeHtml(p.url) + '</span>' +
+            '</div>' +
+            '<div class="site-search-result-title">' + highlight(p.title, tokens) + '</div>' +
+            (snippet ? '<div class="site-search-result-snippet">' + snippet + '</div>' : '') +
+          '</a>' +
+        '</li>';
+    }
+    resultsList.innerHTML = html;
+
+    // Hover = select
+    Array.prototype.forEach.call(resultsList.querySelectorAll(".site-search-result"), function (li, idx) {
+      li.addEventListener("mouseenter", function () { setSelection(idx); });
+    });
+  }
+
+  function makeSnippet(p, tokens) {
+    var source = p.description || p.body || "";
+    if (!source) return "";
+
+    var lower = source.toLowerCase();
+    var pos = -1;
+    for (var i = 0; i < tokens.length; i++) {
+      var idx = lower.indexOf(tokens[i]);
+      if (idx >= 0 && (pos < 0 || idx < pos)) pos = idx;
+    }
+    if (pos < 0) {
+      // No body match — use the description verbatim
+      var d = source.slice(0, SNIPPET_RADIUS * 2);
+      return highlight(d + (source.length > d.length ? "\u2026" : ""), tokens);
+    }
+
+    var start = Math.max(0, pos - SNIPPET_RADIUS);
+    var end = Math.min(source.length, pos + SNIPPET_RADIUS * 2);
+    var snip = (start > 0 ? "\u2026" : "") + source.slice(start, end) + (end < source.length ? "\u2026" : "");
+    return highlight(snip, tokens);
+  }
+
+  function highlight(text, tokens) {
+    var safe = escapeHtml(text);
+    if (!tokens || !tokens.length) return safe;
+    // Sort tokens longest first to avoid nested-replacement collisions
+    var sorted = tokens.slice().sort(function (a, b) { return b.length - a.length; });
+    sorted.forEach(function (t) {
+      if (!t) return;
+      var re = new RegExp("(" + escapeRegex(t) + ")", "ig");
+      safe = safe.replace(re, '<mark class="site-search-mark">$1</mark>');
+    });
+    return safe;
+  }
+
+  // ────────────────────────────────────────────────────────────
+  // Keyboard selection
+  // ────────────────────────────────────────────────────────────
+  function moveSelection(delta) {
+    if (currentResults.length === 0) return;
+    var next = selectedIndex + delta;
+    if (next < 0) next = currentResults.length - 1;
+    if (next >= currentResults.length) next = 0;
+    setSelection(next);
+  }
+
+  function setSelection(idx) {
+    var prev = resultsList.querySelector(".site-search-result.is-selected");
+    if (prev) prev.classList.remove("is-selected");
+    selectedIndex = idx;
+    var li = resultsList.querySelector('.site-search-result[data-idx="' + idx + '"]');
+    if (li) {
+      li.classList.add("is-selected");
+      input.setAttribute("aria-activedescendant", "ssr-" + idx);
+      // Keep the selected item visible in the scroll viewport
+      if (li.scrollIntoView) li.scrollIntoView({ block: "nearest" });
+    }
+  }
+
+  function setStatus(html) {
+    if (statusEl) statusEl.innerHTML = html;
+  }
+
+  // ────────────────────────────────────────────────────────────
+  // Helpers
+  // ────────────────────────────────────────────────────────────
+  function escapeHtml(s) {
+    return String(s == null ? "" : s)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+  function escapeAttr(s) { return escapeHtml(s); }
+  function escapeRegex(s) { return String(s).replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); }
+
+  // ────────────────────────────────────────────────────────────
+  // Boot
+  // ────────────────────────────────────────────────────────────
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
 })();
 
-/* ── 1b. Reading progress bar ────────────────────────────────────────────
+/* ── 1b. Site search — dedicated /search/ page ───────────────────────────
+   Mirrors the OverKill Hill pattern: hero + big input + category chips +
+   result cards.  Gates itself on `.search-page` body class so it is a
+   no-op on every other page.  Coexists with the overlay above — they share
+   the same index but own entirely different DOM.
+*/
+(function () {
+  "use strict";
+
+  if (!document.body.classList.contains("search-page")) return;
+
+  var INDEX_URL = "/assets/data/search-index.json";
+
+  // -------- index loader (cached) --------
+  var _indexPromise = null;
+  function loadIndex() {
+    if (_indexPromise) return _indexPromise;
+    _indexPromise = fetch(INDEX_URL, { credentials: "same-origin" })
+      .then(function (r) {
+        if (!r.ok) throw new Error("Index fetch failed: " + r.status);
+        return r.json();
+      })
+      .then(function (d) {
+        // Accept either OKH shape {entries:[...]} or AskJamie shape {pages:[...]}
+        var raw = Array.isArray(d.entries) ? d.entries
+                : Array.isArray(d.pages)   ? d.pages
+                : [];
+        // Normalize so renderer can rely on `category` and consistent strings.
+        return raw.map(function (e) {
+          return {
+            url:         e.url || "",
+            title:       e.title || e.h1 || e.url || "",
+            description: e.description || "",
+            category:    e.category || e.section || "Page",
+            headings:    Array.isArray(e.headings) ? e.headings : [],
+            body:        e.body || ""
+          };
+        }).filter(function (e) { return e.url && e.title; });
+      })
+      .catch(function (err) {
+        console.warn("[askjamie-search] index load failed:", err);
+        return [];
+      });
+    return _indexPromise;
+  }
+
+  // -------- scoring --------
+  function tokenize(q) {
+    return q.toLowerCase().split(/[^a-z0-9'-]+/i).filter(function (t) { return t.length >= 2; });
+  }
+  function scoreEntry(entry, tokens) {
+    if (!tokens.length) return 0;
+    var title    = (entry.title || "").toLowerCase();
+    var desc     = (entry.description || "").toLowerCase();
+    var headings = (entry.headings || []).join(" ").toLowerCase();
+    var body     = (entry.body || "").toLowerCase();
+    var url      = (entry.url || "").toLowerCase();
+
+    var score = 0, allHit = true;
+    for (var i = 0; i < tokens.length; i++) {
+      var t = tokens[i], hit = 0;
+      if (title.indexOf(t)    !== -1) hit += 8;
+      if (headings.indexOf(t) !== -1) hit += 5;
+      if (desc.indexOf(t)     !== -1) hit += 4;
+      if (body.indexOf(t)     !== -1) hit += 2;
+      if (url.indexOf(t)      !== -1) hit += 1;
+      if (hit === 0) allHit = false;
+      score += hit;
+    }
+    var phrase = tokens.join(" ");
+    if (phrase.length > 2) {
+      if (title.indexOf(phrase) !== -1) score += 10;
+      if (desc.indexOf(phrase)  !== -1) score += 6;
+      if (body.indexOf(phrase)  !== -1) score += 4;
+    }
+    return allHit ? score : score * 0.4;
+  }
+  function searchEntries(entries, q, limit) {
+    var tokens = tokenize(q);
+    if (!tokens.length) return [];
+    var scored = [];
+    for (var i = 0; i < entries.length; i++) {
+      var s = scoreEntry(entries[i], tokens);
+      if (s > 0) scored.push([s, entries[i]]);
+    }
+    scored.sort(function (a, b) { return b[0] - a[0]; });
+    return scored.slice(0, limit || 60).map(function (p) { return { score: p[0], entry: p[1] }; });
+  }
+
+  // -------- snippet + highlight --------
+  function escapeHtml(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;" })[c];
+    });
+  }
+  function escapeRegex(s) { return String(s).replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); }
+  function snippetFor(entry, tokens, length) {
+    var body = entry.body || entry.description || "";
+    if (!body) return "";
+    var lower = body.toLowerCase(), bestIdx = -1;
+    for (var i = 0; i < tokens.length; i++) {
+      var idx = lower.indexOf(tokens[i]);
+      if (idx !== -1 && (bestIdx === -1 || idx < bestIdx)) bestIdx = idx;
+    }
+    var start = 0, len = length || 220;
+    if (bestIdx > 80) start = Math.max(0, bestIdx - 60);
+    var snip = body.slice(start, start + len);
+    if (start > 0) snip = "\u2026" + snip;
+    if (start + len < body.length) snip += "\u2026";
+    return snip;
+  }
+  function highlight(text, tokens) {
+    var html = escapeHtml(text);
+    if (!tokens.length) return html;
+    // Sort tokens longest-first so a shorter token doesn't match inside the
+    // <mark> tag of a longer one (e.g. "brand" inside "brandguard").
+    var ordered = tokens.slice().sort(function (a, b) { return b.length - a.length; });
+    var pattern = ordered.map(escapeRegex).filter(Boolean).join("|");
+    if (!pattern) return html;
+    return html.replace(new RegExp("(" + pattern + ")", "gi"), "<mark>$1</mark>");
+  }
+
+  function renderResultHtml(result, tokens) {
+    var e = result.entry;
+    var snip = snippetFor(e, tokens, 220);
+    return (
+      '<div class="ajs-result-meta">' +
+        '<span class="ajs-result-cat">' + escapeHtml(e.category || "Page") + "</span>" +
+        '<span class="ajs-result-url">' + escapeHtml(e.url) + "</span>" +
+      "</div>" +
+      '<h3 class="ajs-result-title">' + highlight(e.title || e.url, tokens) + "</h3>" +
+      (snip ? '<p class="ajs-result-snippet">' + highlight(snip, tokens) + "</p>" : "")
+    );
+  }
+
+  // -------- page wiring --------
+  var input = document.getElementById("search-page-input");
+  var list  = document.getElementById("search-results");
+  var stats = document.getElementById("search-stats");
+  var cats  = document.getElementById("search-categories");
+  if (!input || !list) return;
+
+  var entries = [];
+  var activeCategory = "all";
+
+  function readQ() {
+    try { return new URL(window.location.href).searchParams.get("q") || ""; }
+    catch (e) { return ""; }
+  }
+  function writeQ(q) {
+    try {
+      var url = new URL(window.location.href);
+      if (q) url.searchParams.set("q", q); else url.searchParams.delete("q");
+      window.history.replaceState({}, "", url.toString());
+    } catch (e) { /* ignore */ }
+  }
+
+  function render() {
+    var q = input.value.trim();
+    writeQ(q);
+    if (!q) {
+      list.innerHTML = "";
+      if (stats) stats.textContent = entries.length
+        ? "Type to search " + entries.length + " indexed entries."
+        : "Loading index\u2026";
+      return;
+    }
+    var tokens = tokenize(q);
+    var results = searchEntries(entries, q, 60);
+    if (activeCategory !== "all") {
+      results = results.filter(function (r) {
+        return (r.entry.category || "").toLowerCase() === activeCategory.toLowerCase();
+      });
+    }
+    if (!results.length) {
+      list.innerHTML =
+        '<div class="search-empty-state"><p>No matches for <strong>' +
+        escapeHtml(q) + "</strong>" +
+        (activeCategory !== "all" ? ' in <em>' + escapeHtml(activeCategory) + "</em>" : "") +
+        ".</p></div>";
+      if (stats) stats.textContent = "0 results";
+      return;
+    }
+    if (stats) {
+      stats.textContent = results.length + " result" + (results.length === 1 ? "" : "s") +
+        " for \u201c" + q + "\u201d";
+    }
+    list.innerHTML = results.map(function (r) {
+      return '<a class="ajs-result" href="' + escapeHtml(r.entry.url) + '">' +
+             renderResultHtml(r, tokens) + "</a>";
+    }).join("");
+  }
+
+  function buildCategoryChips() {
+    if (!cats) return;
+    var counts = {};
+    for (var i = 0; i < entries.length; i++) {
+      var c = entries[i].category || "Page";
+      counts[c] = (counts[c] || 0) + 1;
+    }
+    var ordered = ["all"].concat(Object.keys(counts).sort());
+    cats.innerHTML = ordered.map(function (c) {
+      var label = (c === "all")
+        ? "All (" + entries.length + ")"
+        : c + " (" + counts[c] + ")";
+      var pressed = (c === activeCategory) ? "true" : "false";
+      return '<button type="button" data-cat="' + escapeHtml(c) +
+             '" aria-pressed="' + pressed + '">' + escapeHtml(label) + "</button>";
+    }).join("");
+    cats.querySelectorAll("button").forEach(function (b) {
+      b.addEventListener("click", function () {
+        activeCategory = b.getAttribute("data-cat") || "all";
+        cats.querySelectorAll("button").forEach(function (x) {
+          x.setAttribute("aria-pressed", x === b ? "true" : "false");
+        });
+        render();
+      });
+    });
+  }
+
+  loadIndex().then(function (d) {
+    entries = d;
+    buildCategoryChips();
+    var initial = readQ();
+    if (initial) input.value = initial;
+    try { input.focus(); } catch (e) { /* ignore */ }
+    render();
+  });
+
+  input.addEventListener("input", render);
+  input.addEventListener("keydown", function (ev) {
+    if (ev.key === "Enter") {
+      var first = list.querySelector("a.ajs-result");
+      if (first) { ev.preventDefault(); window.location.href = first.getAttribute("href"); }
+    } else if (ev.key === "Escape") {
+      input.value = "";
+      render();
+    }
+  });
+})();
+
+/* ── 1c. Reading progress bar ────────────────────────────────────────────
    Drives the width of #reading-progress as the user scrolls.  No-op on
    pages that don't render the bar.
 */
@@ -61,7 +779,7 @@
   );
 })();
 
-/* ── 1c. Sticky TOC scroll-follow ────────────────────────────────────────
+/* ── 1d. Sticky TOC scroll-follow ────────────────────────────────────────
    Smooth-lerp scroll-following for #toc-widget on wide viewports
    (≥1024px).  Stays inside the article column and stops above the
    footer.  No-op on narrow screens or pages without a TOC widget.
@@ -238,8 +956,8 @@ document.addEventListener("DOMContentLoaded", () => {
       window.location.pathname;
     const storageKey = `glee-wip-dismissed:${wipKey}`;
 
-    // Hide helper — set both `hidden` (the CSS hook in theme.css L1832 keys
-    // off `.construction-overlay[hidden]`) and `aria-hidden` (so AT users
+    // Hide helper — set both `hidden` (the CSS hook in theme.css keys off
+    // `.construction-overlay[hidden]`) and `aria-hidden` (so AT users
     // also see the overlay as removed from the accessibility tree).
     const hideOverlay = () => {
       body.classList.add("construction-dismissed");

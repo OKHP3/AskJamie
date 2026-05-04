@@ -22,10 +22,16 @@ assets/
                        #   3. GLEE     ( 9 sections, ~745 lines)
                        #   4. ASKJAMIE ( 5 sections, ~570 lines)
                        # SECTION INDEX at top of file lists every section + line range
-  js/app.js            # Main JS (search loader, reading progress, sticky TOC, mobile nav,
-                       # theme toggle, scroll reveal, smooth anchor scroll, construction overlay)
-  js/analytics.js      # GA4 gtag bootstrap — replaces the 25 identical inline blocks (v0.4)
-  js/search.js         # Internal site search — modal UI, keyboard nav, lazy-loaded
+  js/app.js            # Single consolidated JS file (v0.9) — all four modules in one:
+                       #   §0 Analytics   — GA4 gtag bootstrap (inline, replaces analytics.js)
+                       #   §1a Search     — modal overlay, keyboard nav, lazy index fetch
+                       #                    (inline, replaces search.js)
+                       #   §1b Search pg  — dedicated /search/ page logic, category chips
+                       #                    (inline, replaces search-page.js)
+                       #   §1c–§1d        — reading progress bar, sticky TOC scroll-follow
+                       #   §2             — mobile nav, theme toggle, year stamps,
+                       #                    scroll reveal, smooth anchor scroll,
+                       #                    under-construction overlay
   js/mermaid-init.js   # Mermaid v11 ESM diagram initialization (external file, no inline scripts)
   data/search-index.json  # Pre-built static search index (~100 KB, ~25 KB gzipped)
   img/                 # Brand assets, avatars, case study images
@@ -34,7 +40,7 @@ tools/
   audit-site.py           # Static-site auditor (v0.8) — 17 quality gates:
                           # 13 per-page + 2 cross-file reconciliations +
                           # 2 repo-wide. Writes tools/audit-report.md.
-                          # Current run: 0 issues.
+                          # Current run: 0 issues (post v0.9 consolidation).
   apply-modern-baseline.py # Idempotent 2025/2026 baseline applier:
                           # injects security meta tags (referrer + CSP),
                           # adds loading=lazy/eager + fetchpriority=high
