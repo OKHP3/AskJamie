@@ -270,10 +270,42 @@ It walks every `.html` file in the repo (excluding `.local/`,
 **Run-it-after rule:** any HTML edit, any new page, any sitemap or
 search-index change. Current state: **0 issues across 26 HTML files.**
 
-## Latest Audit Cycle (v0.7 — 2026-05-03)
+## Latest Audit Cycle (v0.8 — 2026-05-12)
 
-See `AUDIT-ASKJAMIE-FINAL.md` for the full v2.0 cycle write-up. Quick
-summary of what changed since v0.6:
+See `AUDIT-STANDARDS-REPORT.md` for the full 7-domain Standards &
+Consistency Audit write-up.  61 checks across 26 pages.
+37 PASS · 14 FIXED · 10 FLAGGED.  Auditor at 0 issues on close.
+
+Key fixes applied:
+
+- **GTM async script** moved from end of `<body>` to `<head>` on all
+  26 pages (was a silent analytics measurement gap since launch).
+- **8 deprecated meta tag types** removed from 22–25 pages each:
+  `X-UA-Compatible`, `name="language"`, `name="revisit-after"`,
+  `name="googlebot"`, `name="bingbot"`, `apple-mobile-web-app-capable`,
+  `apple-mobile-web-app-status-bar-style`, `mobile-web-app-capable`.
+- **`legal/index.html`** was missing its `<head>` opening tag — fixed.
+- **5 page titles** trimmed or expanded to fit the 30–60 char window
+  (`search`, `enterprise-sleuth`, `okhp3-brandguard`, `resume-rep`, `404`).
+- **Root-relative path consistency** enforced on all 3 root-level pages
+  (`index.html`, `404.html`, `under-construction.html`) — 29 asset
+  `href`/`src` paths + 36 nav `href` values converted.
+- **`index.html` nav** converted from relative to root-relative hrefs.
+- **Search index** rebuilt (128.5 KB, 33 pages).
+
+Flagged for owner action (see report):
+1. `<link rel="preload">` for `theme.css` (LCP improvement)
+2. OG image 1024×1024 → commission 1200×630 landscape
+3. Organization JSON-LD `sameAs` — add social profile URLs
+4. Page-specific OG images for case studies
+5. GA custom event tracking (outbound links, CTAs, scroll depth)
+6. GA disclosure in `legal/index.html` (GDPR/CCPA best practice)
+7. BrandGuard hub relative case-study links → root-relative
+8. CSS token refactor (32 spec tokens missing — planned refactor)
+9. `!important` specificity debt — 9 avoidable instances
+10. Unused CSS detection — requires browser Coverage tool
+
+## Previous Audit Cycle (v0.7 — 2026-05-03)
 
 - New `scripts/audit-site.py` (above).
 - Reusable `.brandguard-demo-notice` block injected on all 13
