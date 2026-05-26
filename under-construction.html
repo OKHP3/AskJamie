@@ -71,6 +71,7 @@
     <!-- ========================================
        STYLESHEETS & FONTS
        ======================================== -->
+    <link rel="preload" href="/assets/css/theme.css" as="style" />
     <link rel="stylesheet" href="/assets/css/theme.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -100,7 +101,6 @@
               <a href="/about/">About</a>
               <ul class="submenu">
                 <li><a href="/universe/">OKHP³™ Universe</a></li>
-                <li><a href="/about/">About AskJamie™</a></li>
                 <li><a href="/contact/">Contact</a></li>
                 <li><a href="/legal/">Legal</a></li>
               </ul>
@@ -139,9 +139,8 @@
                 src="/assets/img/AskJamie%20AvatarTallLeftBackdropCreamTanLeftUnderConstruction%20Wide%201536.png"
                 alt="AskJamie avatar waving beside an under construction sign"
                 class="askjamie-under-img"
-                loading="lazy"
                 width="1536"
-                height="768" decoding="async" fetchpriority="high">
+                height="768" decoding="async" loading="eager" fetchpriority="high">
             </div>
 
             <div class="askjamie-hero-copy">

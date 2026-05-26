@@ -69,6 +69,7 @@
         <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Open+Sans:wght@400;600&family=Kalam:wght@400&display=swap" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Open+Sans:wght@400;600&family=Kalam:wght@400&display=swap" media="print" onload="this.media='all'" />
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Open+Sans:wght@400;600&family=Kalam:wght@400&display=swap" /></noscript>
+    <link rel="preload" href="/assets/css/theme.css" as="style" />
     <link rel="stylesheet" href="/assets/css/theme.css" />
 
       <!-- BreadcrumbList JSON-LD (v0.5) -->
@@ -98,36 +99,6 @@
   <body class="askjamie-main" data-theme="light">
     <a href="#main" class="skip-link">Skip to content</a>
 
-    <!-- 🔧 AskJamie “under construction” gate -->
-    <div class="construction-overlay"
-         data-wip-key="lens-system">
-      <div class="construction-overlay__card">
-        <img
-          src="/assets/img/AskJamie%20AvatarTallLeftBackdropCreamTanLeftUnderConstruction%20Wide%201536.png"
-          alt="AskJamie™ avatar with construction hat and 'Under Construction' sign"
-          class="construction-overlay__image"
-          width="1536"
-          height="768" decoding="async" loading="lazy">
-
-        <p class="construction-overlay__copy">
-          ⚠️ This Interpretive Lens System page is still being wired up 🔌. Sections may move,
-          links may change, and some flows aren’t ready yet — but you’re welcome
-          to explore the work‑in‑progress.
-        </p>
-
-        <div class="construction-overlay__actions">
-          <button
-            type="button"
-            class="btn btn-primary construction-overlay__dismiss"
-            data-wip-dismiss
-          >
-            I'll be careful — as I explore the construction zone 🚧
-          </button>
-        </div>
-      </div>
-    </div>
-    <!-- 🔧 end under‑construction gate -->
-
     <header class="site-header" id="top">
       <div class="container">
         <div class="logo"><a href="/" aria-label="AskJamie™ Home"><img src="/assets/img/AskJamie%20AvatarTallLeft%20Square%201024.png" alt="AskJamie™ avatar" width="40" height="40" decoding="async" loading="lazy"></a></div>
@@ -144,7 +115,6 @@
               <a href="/about/">About</a>
               <ul class="submenu">
                 <li><a href="/universe/">OKHP³™ Universe</a></li>
-                <li><a href="/about/">About AskJamie™</a></li>
                 <li><a href="/contact/">Contact</a></li>
                 <li><a href="/legal/">Legal</a></li>
               </ul>
@@ -168,6 +138,37 @@
     </header>
 
     <main id="main">
+
+<!-- 🔧 AskJamie “under construction” gate -->
+    <div class="construction-overlay"
+         data-wip-key="lens-system">
+      <div class="construction-overlay__card">
+        <img
+          src="/assets/img/AskJamie%20AvatarTallLeftBackdropCreamTanLeftUnderConstruction%20Wide%201536.png"
+          alt="AskJamie™ avatar with construction hat and 'Under Construction' sign"
+          class="construction-overlay__image"
+          width="1536"
+          height="768" decoding="async" loading="eager" fetchpriority="high">
+
+        <p class="construction-overlay__copy">
+          ⚠️ This Interpretive Lens System page is still being wired up 🔌. Sections may move,
+          links may change, and some flows aren’t ready yet — but you’re welcome
+          to explore the work‑in‑progress.
+        </p>
+
+        <div class="construction-overlay__actions">
+          <button
+            type="button"
+            class="btn btn-primary construction-overlay__dismiss"
+            data-wip-dismiss
+          >
+            I'll be careful — as I explore the construction zone 🚧
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- 🔧 end under‑construction gate -->
+
       <!-- HERO -->
       <section class="hero askjamie-hero" aria-labelledby="hero-title">
         <div class="brand-stripes brand-stripes--jamie" aria-hidden="true"></div>
