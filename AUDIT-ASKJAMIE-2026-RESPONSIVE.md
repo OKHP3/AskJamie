@@ -1,39 +1,56 @@
 # AskJamie™ Responsive QA Report
-*Task #1 — 2026-05-26*
 
-## Summary
+## Latest Run — 2026-05-26 (Playwright live-browser, Task #3)
 
-| Check mode | Pages | Viewports | Total checks | Issues |
-|------------|-------|-----------|--------------|--------|
-| Static HTML analysis (10 checks × page × viewport) | 24 | 8 | 192 | **0** |
-| Full Playwright browser run | Pending (Chromium install requires system libs unavailable in sandbox) | 8 | — | Pending |
+| Metric | Value |
+|--------|-------|
+| Run date | 2026-05-26 |
+| Mode | **Playwright** (live Chromium headless — MODE A) |
+| Pages checked | 24 |
+| Viewports checked | 8 |
+| Total checks | 192 |
+| **Passing** | **192** |
+| **Failing** | **0** |
 
-**All 192 static checks pass across all 24 public pages at all 8 viewport widths.**
-No horizontal-overflow risks, no broken construction overlays, no missing viewport
-meta, no malformed nav structure, no missing footer search links found.
+**All 192 live-browser checks pass.** No horizontal overflow, no console errors,
+no broken eager images, no 404s on critical assets across all 24 pages at all 8 viewports.
 
 ---
 
-## How to run the full Playwright browser checks
+## Issues Found and Fixed (this run)
 
-The `scripts/responsive-qa.mjs` script will automatically use Playwright when
-available, and falls back to static analysis otherwise.
+### 1. Horizontal overflow — `/lens-system/okhp3-brandguard/coca-cola/` (all viewports)
+
+**Root cause:** A bare `<pre><code>` system-prompt block with long unbroken lines had no
+overflow handling. The `.code-drop pre` CSS rule (which has `overflow-x: auto`) applies
+only to elements inside `.code-drop` wrappers; the bare `<pre>` was unstyled.
+
+**Fix:** Added a global `pre {}` rule in `assets/css/theme.css` (after line 165):
+```css
+pre {
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+```
+This is the only page currently using a bare `<pre><code>` block, but the rule now
+protects any future pages that use the same pattern.
+
+---
+
+## How to Re-run
 
 ```bash
-npm install -D playwright
-npx playwright install chromium
 node scripts/responsive-qa.mjs --base=http://localhost:5000
 ```
 
 Results are written to `assets/docs/responsive-qa/results.json`.
 Screenshots are saved to `assets/docs/responsive-qa/screenshots/` **only for
-failing page/viewport combinations** (keeping the output clean on a passing run).
+failing page/viewport combinations** (none on a clean run).
 
 ---
 
 ## Viewport Coverage
-
-All 8 viewports tested against all 24 public pages:
 
 | Viewport | Width | Height | Target device class |
 |----------|-------|--------|---------------------|
@@ -48,26 +65,22 @@ All 8 viewports tested against all 24 public pages:
 
 ---
 
-## Static Analysis: Checks Run Per Page
+## Live-Browser Checks Per Page/Viewport
 
-Ten structural checks are applied to every page at every viewport:
-
-| # | Check | Result |
+| # | Check | Method |
 |---|-------|--------|
-| 1 | `name="viewport"` meta present | ✅ All 24 |
-| 2 | `construction-overlay` absent | ✅ All 24 |
-| 3 | Single `<h1>` per page | ✅ All 24 |
-| 4 | All `<img>` have `alt` attribute | ✅ All 24 |
-| 5 | All `<img>` have `width` attribute (CLS prevention) | ✅ All 24 |
-| 6 | Footer `/search/` link present (except `/search/` itself) | ✅ All 23 applicable |
-| 7 | Copyright year `2026` static fallback in year span | ✅ All 24 |
-| 8 | No `/search/` link in primary nav submenu | ✅ All 24 |
-| 9 | Skip link (`class="skip-link"`) present | ✅ All 24 |
-| 10 | `/assets/js/app.js` script tag present | ✅ All 24 |
+| 1 | No horizontal overflow | `scrollWidth > innerWidth` in-page eval |
+| 2 | No JS console errors | `page.on('console')` — `type === 'error'` |
+| 3 | No broken eager images | `img.complete && img.naturalWidth > 0` for all `loading != 'lazy'` imgs |
+| 4 | No 404 on `.css`/`.js`/`.json` assets | `page.on('response')` — status 404 |
+
+*Note: `ERR_FAILED` console messages are excluded from check #2 — they are testing
+artifacts from the harness blocking external resources (Google Fonts, GA, GTM) so
+local-asset checks are not affected by network unavailability.*
 
 ---
 
-## Pages Checked (24 public pages)
+## Pages Checked (24 public pages) — all PASS
 
 - `/` — Homepage
 - `/about/`
@@ -96,36 +109,71 @@ Ten structural checks are applied to every page at every viewport:
 
 ---
 
-## CSS Grid Fix Applied (Task #1, Step 8)
+## Script Architecture (as of Task #3)
 
-The `.grid-3` breakpoint was restructured to fix tablet layout:
+`scripts/responsive-qa.mjs` operates in two modes:
 
-| Viewport | Before | After |
-|----------|--------|-------|
-| > 1024 px | 3 columns (auto-fill) | 3 columns (auto-fill) — unchanged |
-| 769–1024 px | 1 column (too aggressive) | **2 columns** |
-| ≤ 768 px | 1 column | 1 column — unchanged |
+**MODE A — Playwright (when available):**
+- Creates **8 persistent browser contexts** (one per viewport) at startup — reused
+  across all 24 pages (eliminates 184 redundant context-creation calls vs. old approach)
+- Blocks external resources via `page.route()` so local-asset checks aren't affected
+  by CDN/analytics unavailability in the dev environment
+- Wait strategy: `domcontentloaded` (fast) + `page.waitForFunction` to confirm
+  eager images have decoded before the broken-image check runs
+- All 8 viewports navigate in parallel per page; pages processed sequentially to
+  avoid overwhelming the Python HTTP dev server
 
-Duplicate `.grid { display: grid; gap: 1.75rem; }` declaration also removed from
-`assets/css/theme.css`. **Sister-site sync note:** both changes must be manually
-applied to `overkillhill.com` and `glee-fully.tools` CSS files.
+**MODE B — Static lint (Playwright not available):**
+- 10 structural HTML checks per page, applied uniformly to all 8 viewport rows
+- Checks: viewport meta, construction overlay, single h1, img alt/width, footer
+  search link, year fallback, nav structure, skip link, app.js presence
+- Clearly flagged as `static-lint` in results — not confused with live-browser data
 
 ---
 
-## Footer Search Link Fix Applied (Task #1, Step 6 — corrected)
+## Infrastructure Notes (first-time setup)
 
-Initial bulk-edit inserted `/search/` into the **header submenu** instead of
-the **footer Navigation column** due to regex matching the first occurrence of
-the legal link (which appears in both locations). Corrected pass:
+Playwright Chromium requires system libraries not present in the base Nix environment.
+Installed via `installSystemDependencies()`:
 
-- Removed 28 incorrect header-submenu insertions
-- Added `/search/` → "Site Search" correctly to the footer Navigation column
-  on all 28 applicable pages
-- Verified: no `/search/` link in `<nav class="primary-nav">` on any page ✅
+```
+glib nss nspr atk cups libdrm dbus expat fontconfig freetype libxkbcommon
+xorg.libxcb xorg.libX11 xorg.libXcomposite xorg.libXdamage xorg.libXext
+xorg.libXfixes xorg.libXrandr xorg.libxshmfence xorg.libXau xorg.libXdmcp
+mesa libgbm alsa-lib pango cairo
+```
+
+npm devDependency: `playwright` (in `node_modules/playwright`)
+Chromium binary: `.cache/ms-playwright/chromium_headless_shell-1223/`
+
+---
+
+## Previous Run — 2026-05-26 (Static lint, Task #1)
+
+| Check mode | Pages | Viewports | Total checks | Issues |
+|------------|-------|-----------|--------------|--------|
+| Static HTML analysis (10 checks × page × viewport) | 24 | 8 | 192 | **0** |
+
+All 192 static checks passed. Full details in earlier version of this file.
+
+### Static checks that passed (Task #1)
+
+| # | Check | Result |
+|---|-------|--------|
+| 1 | `name="viewport"` meta present | ✅ All 24 |
+| 2 | `construction-overlay` absent | ✅ All 24 |
+| 3 | Single `<h1>` per page | ✅ All 24 |
+| 4 | All `<img>` have `alt` attribute | ✅ All 24 |
+| 5 | All `<img>` have `width` attribute (CLS prevention) | ✅ All 24 |
+| 6 | Footer `/search/` link present (except `/search/` itself) | ✅ All 23 applicable |
+| 7 | Copyright year `2026` static fallback | ✅ All 24 |
+| 8 | No `/search/` link in primary nav | ✅ All 24 |
+| 9 | Skip link present | ✅ All 24 |
+| 10 | `/assets/js/app.js` script tag present | ✅ All 24 |
 
 ---
 
 ## Machine-readable results
 
-`assets/docs/responsive-qa/results.json` — full static analysis output
-(24 pages × 8 viewports = 192 checks).
+`assets/docs/responsive-qa/results.json` — full output from latest run
+(24 pages × 8 viewports = 192 checks, mode: playwright).

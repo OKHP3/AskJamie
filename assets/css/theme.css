@@ -163,6 +163,12 @@ img {
   display: block;
 }
 
+pre {
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
 a {
   color: inherit;
   text-decoration: none;

@@ -97,42 +97,69 @@ async function runWithPlaywright() {
     return null; // chromium binary not available — fall back to MODE B
   }
 
-  const results = [];
-  let totalFails = 0;
+  // Create one persistent context+page per viewport (8 total) so we never pay
+  // context-creation overhead more than once.  External resources (fonts, GA,
+  // GTM) are blocked so domcontentloaded fires quickly on every page.
+  const EXTERNAL_BLOCK = /fonts\.(gstatic|googleapis)\.com|google-analytics\.com|googletagmanager\.com|cdn\.jsdelivr\.net/;
+
+  const workers = await Promise.all(VIEWPORTS.map(async vp => {
+    const ctx  = await browser.newContext({ viewport: { width: vp.width, height: vp.height } });
+    const page = await ctx.newPage();
+    await page.route('**/*', (route) => {
+      if (EXTERNAL_BLOCK.test(route.request().url())) return route.abort();
+      return route.continue();
+    });
+    return { vp, ctx, page, consoleErrors: [], failed404s: [] };
+  }));
+
+  // Attach persistent event listeners.
+  // ERR_FAILED console messages come from our own route-blocking of external
+  // resources (fonts, GA, GTM) — they are testing artifacts, not real errors.
+  for (const w of workers) {
+    w.page.on('console', msg => {
+      if (msg.type() === 'error' && !msg.text().includes('ERR_FAILED'))
+        w.consoleErrors.push(msg.text());
+    });
+    w.page.on('response', resp => {
+      if (resp.status() === 404 && resp.url().match(/\.(css|js|json)$/)) w.failed404s.push(resp.url());
+    });
+  }
+
+  const allResults = [];
+  let totalFails   = 0;
 
   for (const path of PUBLIC_PATHS) {
-    for (const vp of VIEWPORTS) {
-      const url     = BASE_URL + path;
-      const context = await browser.newContext({ viewport: { width: vp.width, height: vp.height } });
-      const page    = await context.newPage();
+    const url = BASE_URL + path;
 
-      const consoleErrors = [];
-      page.on('console', msg => { if (msg.type() === 'error') consoleErrors.push(msg.text()); });
+    // Clear per-page accumulators
+    for (const w of workers) { w.consoleErrors.length = 0; w.failed404s.length = 0; }
 
-      const failed404s = [];
-      page.on('response', resp => {
-        if (resp.status() === 404 && resp.url().match(/\.(css|js|json)$/)) {
-          failed404s.push(resp.url());
-        }
-      });
-
+    // Navigate all 8 viewports in parallel
+    const vpResults = await Promise.all(workers.map(async ({ vp, page, consoleErrors, failed404s }) => {
       try {
-        await page.goto(url, { waitUntil: 'networkidle', timeout: 15000 });
+        await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 20000 });
       } catch (err) {
-        results.push({ url, viewport: vp.name, mode: 'playwright', pass: false,
-                       errors: ['navigation timeout: ' + err.message] });
-        totalFails++;
-        await context.close();
-        continue;
+        return { url, viewport: vp.name, width: vp.width, height: vp.height,
+                 mode: 'playwright', pass: false,
+                 errors: ['navigation timeout: ' + err.message.split('\n')[0]] };
       }
 
       const overflow = await page.evaluate(() =>
         document.documentElement.scrollWidth > window.innerWidth
       );
 
+      // Wait for eager images to finish loading (avoids domcontentloaded timing race).
+      // Lazy images are intentionally deferred until scroll — skip them.
+      await page.waitForFunction(
+        () => Array.from(document.querySelectorAll('img'))
+          .filter(i => i.loading !== 'lazy')
+          .every(i => i.complete),
+        { timeout: 5000 }
+      ).catch(() => {}); // If some eager imgs never load, we still capture them below
+
       const brokenImages = await page.evaluate(() =>
         Array.from(document.querySelectorAll('img'))
-          .filter(i => !i.complete || i.naturalWidth === 0)
+          .filter(i => i.loading !== 'lazy' && (!i.complete || i.naturalWidth === 0))
           .map(i => i.src)
       );
 
@@ -145,20 +172,29 @@ async function runWithPlaywright() {
 
       const pass = errors.length === 0;
       if (!pass) {
-        totalFails++;
         const ssFile = `${path.replace(/\//g, '_')}_${vp.name}.png`;
         await page.screenshot({ path: resolve(SCREENSHOTS_DIR, ssFile) });
-        console.log(`  FAIL  ${vp.name.padEnd(14)} ${path}`);
-        errors.forEach(e => console.log(`         → ${e}`));
       }
+      return { url, viewport: vp.name, width: vp.width, height: vp.height,
+               mode: 'playwright', pass, errors };
+    }));
 
-      results.push({ url, viewport: vp.name, width: vp.width, height: vp.height,
-                     mode: 'playwright', pass, errors });
-      await context.close();
+    const fails = vpResults.filter(r => !r.pass);
+    if (fails.length > 0) {
+      fails.forEach(r => {
+        console.log(`  FAIL  ${r.viewport.padEnd(14)} ${path}`);
+        r.errors.forEach(e => console.log(`         → ${e}`));
+      });
     }
     process.stdout.write(`  done  ${path}\n`);
+
+    for (const row of vpResults) {
+      allResults.push(row);
+      if (!row.pass) totalFails++;
+    }
   }
 
+  for (const { ctx } of workers) await ctx.close();
   await browser.close();
 
   const report = {
@@ -167,14 +203,14 @@ async function runWithPlaywright() {
     base_url: BASE_URL,
     pages_checked: PUBLIC_PATHS.length,
     viewports_checked: VIEWPORTS.length,
-    total_checks: results.length,
-    passing_checks: results.filter(r => r.pass).length,
+    total_checks: allResults.length,
+    passing_checks: allResults.filter(r => r.pass).length,
     failing_checks: totalFails,
-    results,
+    results: allResults,
   };
   writeFileSync(RESULTS_FILE, JSON.stringify(report, null, 2));
 
-  console.log(`\nTotal: ${results.length} checks — ${totalFails} failures`);
+  console.log(`\nTotal: ${allResults.length} checks — ${totalFails} failures`);
   console.log(`Results: ${RESULTS_FILE}`);
   return report;
 }
