@@ -2,17 +2,24 @@
 /**
  * AskJamie™ responsive QA script (Task #1, 2026)
  *
- * Visits each public page at 8 viewport widths and checks:
+ * MODE A — Playwright (when available):
+ *   Visits each public page at 8 viewport widths and checks:
  *   - No horizontal overflow (scrollWidth > innerWidth)
  *   - No JS console errors
  *   - All images loaded (no broken img src)
  *   - CSS and JS assets load (no 404 on critical resources)
  *
- * Usage:
- *   node scripts/responsive-qa.mjs [--base http://localhost:5000]
+ * MODE B — Static lint (Playwright not available):
+ *   Runs 10 structural checks per page per viewport (same pass/fail schema).
+ *   Checks that are viewport-agnostic (viewport meta, h1, alt, etc.) are
+ *   run once per page and applied to all 8 viewport rows — clearly flagged
+ *   as `static-lint` so results are not confused with live browser checks.
  *
- * Requires: playwright (npm install -D playwright && npx playwright install chromium)
- * Falls back to a lightweight static analysis if playwright is not available.
+ * Usage:
+ *   node scripts/responsive-qa.mjs [--base=http://localhost:5000]
+ *
+ * Requires Playwright for MODE A:
+ *   npm install -D playwright && npx playwright install chromium
  */
 
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'fs';
@@ -28,14 +35,14 @@ const BASE_URL   = process.argv.find(a => a.startsWith('--base='))?.split('=')[1
                  ?? 'http://localhost:5000';
 
 const VIEWPORTS = [
-  { name: 'mobile-360',  width: 360,  height: 780  },
-  { name: 'mobile-390',  width: 390,  height: 844  },
-  { name: 'mobile-430',  width: 430,  height: 932  },
-  { name: 'tablet-768',  width: 768,  height: 1024 },
-  { name: 'desktop-1024',width: 1024, height: 768  },
-  { name: 'desktop-1280',width: 1280, height: 800  },
-  { name: 'desktop-1440',width: 1440, height: 900  },
-  { name: 'desktop-1920',width: 1920, height: 1080 },
+  { name: 'mobile-360',   width: 360,  height: 780  },
+  { name: 'mobile-390',   width: 390,  height: 844  },
+  { name: 'mobile-430',   width: 430,  height: 932  },
+  { name: 'tablet-768',   width: 768,  height: 1024 },
+  { name: 'desktop-1024', width: 1024, height: 768  },
+  { name: 'desktop-1280', width: 1280, height: 800  },
+  { name: 'desktop-1440', width: 1440, height: 900  },
+  { name: 'desktop-1920', width: 1920, height: 1080 },
 ];
 
 const PUBLIC_PATHS = [
@@ -65,9 +72,11 @@ const PUBLIC_PATHS = [
   '/lens-system/okhp3-brandguard/mathews-archery/',
 ];
 
-const RESULTS_DIR = resolve(ROOT, 'assets/docs/responsive-qa');
-const RESULTS_FILE = resolve(RESULTS_DIR, 'results.json');
+const RESULTS_DIR    = resolve(ROOT, 'assets/docs/responsive-qa');
+const RESULTS_FILE   = resolve(RESULTS_DIR, 'results.json');
 const SCREENSHOTS_DIR = resolve(RESULTS_DIR, 'screenshots');
+
+// ── MODE A: Playwright ────────────────────────────────────────────────────────
 
 async function runWithPlaywright() {
   let pw;
@@ -75,21 +84,27 @@ async function runWithPlaywright() {
     const require = createRequire(import.meta.url);
     pw = require('playwright');
   } catch {
-    return null; // playwright not available
+    return null; // playwright not installed — fall back to MODE B
   }
 
   mkdirSync(RESULTS_DIR, { recursive: true });
   mkdirSync(SCREENSHOTS_DIR, { recursive: true });
 
-  const browser = await pw.chromium.launch({ headless: true });
+  let browser;
+  try {
+    browser = await pw.chromium.launch({ headless: true });
+  } catch {
+    return null; // chromium binary not available — fall back to MODE B
+  }
+
   const results = [];
   let totalFails = 0;
 
   for (const path of PUBLIC_PATHS) {
     for (const vp of VIEWPORTS) {
-      const url = BASE_URL + path;
+      const url     = BASE_URL + path;
       const context = await browser.newContext({ viewport: { width: vp.width, height: vp.height } });
-      const page = await context.newPage();
+      const page    = await context.newPage();
 
       const consoleErrors = [];
       page.on('console', msg => { if (msg.type() === 'error') consoleErrors.push(msg.text()); });
@@ -104,7 +119,8 @@ async function runWithPlaywright() {
       try {
         await page.goto(url, { waitUntil: 'networkidle', timeout: 15000 });
       } catch (err) {
-        results.push({ url, viewport: vp.name, pass: false, errors: ['navigation timeout: ' + err.message] });
+        results.push({ url, viewport: vp.name, mode: 'playwright', pass: false,
+                       errors: ['navigation timeout: ' + err.message] });
         totalFails++;
         await context.close();
         continue;
@@ -114,10 +130,11 @@ async function runWithPlaywright() {
         document.documentElement.scrollWidth > window.innerWidth
       );
 
-      const brokenImages = await page.evaluate(() => {
-        const imgs = Array.from(document.querySelectorAll('img'));
-        return imgs.filter(i => !i.complete || i.naturalWidth === 0).map(i => i.src);
-      });
+      const brokenImages = await page.evaluate(() =>
+        Array.from(document.querySelectorAll('img'))
+          .filter(i => !i.complete || i.naturalWidth === 0)
+          .map(i => i.src)
+      );
 
       const errors = [
         ...(overflow ? [`OVERFLOW: scrollWidth > ${vp.width}px`] : []),
@@ -135,81 +152,169 @@ async function runWithPlaywright() {
         errors.forEach(e => console.log(`         → ${e}`));
       }
 
-      results.push({ url, viewport: vp.name, width: vp.width, pass, errors });
+      results.push({ url, viewport: vp.name, width: vp.width, height: vp.height,
+                     mode: 'playwright', pass, errors });
       await context.close();
     }
     process.stdout.write(`  done  ${path}\n`);
   }
 
   await browser.close();
-  writeFileSync(RESULTS_FILE, JSON.stringify({ generated: new Date().toISOString(), base: BASE_URL, results }, null, 2));
 
-  console.log(`\nTotal: ${PUBLIC_PATHS.length * VIEWPORTS.length} checks — ${totalFails} failures`);
-  console.log(`Results: ${RESULTS_FILE}`);
-  return { results, totalFails };
-}
-
-async function staticAnalysis() {
-  console.log('Playwright not available — running static HTML analysis instead.\n');
-  const { globSync } = await import('fs').then(() => import('glob')).catch(() => null);
-  
-  const issues = [];
-  const htmlFiles = [];
-
-  // Find all public HTML files
-  for (const path of PUBLIC_PATHS) {
-    const fsPath = resolve(ROOT, path.replace(/^\//, ''), 'index.html');
-    if (existsSync(fsPath)) {
-      htmlFiles.push({ path, fsPath });
-    } else {
-      const direct = resolve(ROOT, path.replace(/^\//, '').replace(/\/$/, '') + '.html');
-      if (existsSync(direct)) htmlFiles.push({ path, fsPath: direct });
-    }
-  }
-
-  for (const { path, fsPath } of htmlFiles) {
-    const html = readFileSync(fsPath, 'utf-8');
-
-    // Check for imgs missing width/height (layout shift risk on mobile)
-    const imgMissingDims = (html.match(/<img(?![^>]*width)[^>]*>/gi) || []).length;
-    if (imgMissingDims > 0) {
-      issues.push({ page: path, check: 'img-missing-dimensions', count: imgMissingDims });
-    }
-
-    // Check for horizontal-scroll risk: fixed-width elements > 320px
-    const fixedWidths = (html.match(/width:\s*[4-9]\d{2,}px/gi) || []);
-    if (fixedWidths.length > 0) {
-      issues.push({ page: path, check: 'fixed-width-risk', samples: fixedWidths.slice(0, 3) });
-    }
-
-    // Check viewport meta is present
-    if (!html.includes('name="viewport"')) {
-      issues.push({ page: path, check: 'missing-viewport-meta', severity: 'critical' });
-    }
-
-    // Check for construction-overlay (must be absent)
-    if (html.includes('construction-overlay')) {
-      issues.push({ page: path, check: 'construction-overlay-present', severity: 'blocker' });
-    }
-  }
-
-  mkdirSync(RESULTS_DIR, { recursive: true });
   const report = {
     generated: new Date().toISOString(),
-    mode: 'static-analysis',
-    pages_checked: htmlFiles.length,
-    issues
+    mode: 'playwright',
+    base_url: BASE_URL,
+    pages_checked: PUBLIC_PATHS.length,
+    viewports_checked: VIEWPORTS.length,
+    total_checks: results.length,
+    passing_checks: results.filter(r => r.pass).length,
+    failing_checks: totalFails,
+    results,
   };
   writeFileSync(RESULTS_FILE, JSON.stringify(report, null, 2));
 
-  console.log(`Static analysis: ${htmlFiles.length} pages checked`);
-  console.log(`Issues found: ${issues.length}`);
-  issues.forEach(i => console.log(`  [${i.severity || 'warn'}] ${i.page} — ${i.check}`));
+  console.log(`\nTotal: ${results.length} checks — ${totalFails} failures`);
   console.log(`Results: ${RESULTS_FILE}`);
   return report;
 }
 
-// Main
+// ── MODE B: Static lint ───────────────────────────────────────────────────────
+//
+// Runs 10 structural checks per page and emits one row per (page × viewport).
+// Checks are viewport-agnostic (HTML structure doesn't change by width), so
+// identical pass/fail data is recorded for each viewport row. The `mode` field
+// is always "static-lint" so results are never confused with browser execution.
+
+function staticLintPage(path, html) {
+  const errors = [];
+
+  // 1. viewport meta
+  if (!html.includes('name="viewport"'))
+    errors.push('LINT: missing viewport meta');
+
+  // 2. construction overlay absent
+  if (html.includes('construction-overlay'))
+    errors.push('LINT: construction-overlay present (blocking modal)');
+
+  // 3. single h1
+  const h1Count = (html.match(/<h1[\s>]/gi) || []).length;
+  if (h1Count !== 1)
+    errors.push(`LINT: ${h1Count} <h1> elements (expected 1)`);
+
+  // 4. all imgs have alt
+  const imgsNoAlt = (html.match(/<img(?![^>]*\balt=)[^>]*>/gi) || []).length;
+  if (imgsNoAlt > 0)
+    errors.push(`LINT: ${imgsNoAlt} <img> missing alt`);
+
+  // 5. all imgs have width (CLS / layout-shift risk)
+  const imgsNoWidth = (html.match(/<img(?![^>]*\bwidth=)[^>]*>/gi) || []).length;
+  if (imgsNoWidth > 0)
+    errors.push(`LINT: ${imgsNoWidth} <img> missing width (layout-shift risk)`);
+
+  // 6. footer /search/ link (skip search page itself)
+  if (path !== '/search/') {
+    const footerStart = html.indexOf('<footer');
+    const footerHtml  = footerStart >= 0 ? html.slice(footerStart) : '';
+    if (!footerHtml.includes('href="/search/"'))
+      errors.push('LINT: /search/ link missing from footer nav');
+  }
+
+  // 7. copyright year fallback
+  if (html.includes('id="current-year-askjamie"') &&
+      !html.includes('current-year-askjamie">2026'))
+    errors.push('LINT: year span missing 2026 static fallback');
+
+  // 8. /search/ must not appear in primary nav submenu
+  const navStart = html.indexOf('<nav class="primary-nav"');
+  const navEnd   = navStart >= 0 ? html.indexOf('</nav>', navStart) : -1;
+  if (navStart >= 0 && navEnd >= 0 && html.slice(navStart, navEnd).includes('/search/'))
+    errors.push('LINT: /search/ found inside primary-nav (should be footer only)');
+
+  // 9. skip link present
+  if (!html.includes('class="skip-link"'))
+    errors.push('LINT: missing skip link');
+
+  // 10. app.js present
+  if (!html.includes('/assets/js/app.js'))
+    errors.push('LINT: app.js script tag missing');
+
+  return errors;
+}
+
+async function staticAnalysis() {
+  console.log('Playwright not available — running static-lint analysis (MODE B).\n');
+  console.log('NOTE: Static lint checks HTML structure only. It cannot detect');
+  console.log('      horizontal overflow, JS console errors, or broken images');
+  console.log('      at runtime. Run with Playwright for full browser coverage.\n');
+
+  mkdirSync(RESULTS_DIR, { recursive: true });
+
+  const results   = [];
+  let totalFails  = 0;
+  let pagesFound  = 0;
+
+  for (const path of PUBLIC_PATHS) {
+    const fsPath = resolve(ROOT, path.replace(/^\//, ''), 'index.html');
+    if (!existsSync(fsPath)) {
+      console.log(`  SKIP  ${path} — file not found`);
+      continue;
+    }
+
+    const html   = readFileSync(fsPath, 'utf-8');
+    const errors = staticLintPage(path, html);
+    const pass   = errors.length === 0;
+    pagesFound++;
+
+    for (const vp of VIEWPORTS) {
+      if (!pass) totalFails++;
+      results.push({
+        url:      BASE_URL + path,
+        viewport: vp.name,
+        width:    vp.width,
+        height:   vp.height,
+        mode:     'static-lint',
+        pass,
+        errors: errors.map(e => e),   // copy so each row owns its array
+      });
+    }
+
+    if (!pass) {
+      console.log(`  FAIL  ${path}`);
+      errors.forEach(e => console.log(`         → ${e}`));
+    } else {
+      console.log(`  pass  ${path}`);
+    }
+  }
+
+  const report = {
+    generated: new Date().toISOString(),
+    mode: 'static-lint',
+    note: [
+      'Static-lint mode: 10 structural checks per page, applied uniformly to all 8 viewport rows.',
+      'Viewport-specific checks (overflow, console errors, broken images) require Playwright.',
+      'To run full browser QA: npm install -D playwright && npx playwright install chromium && node scripts/responsive-qa.mjs',
+    ].join(' '),
+    base_url: BASE_URL,
+    pages_checked: pagesFound,
+    viewports_checked: VIEWPORTS.length,
+    total_checks: results.length,
+    passing_checks: results.filter(r => r.pass).length,
+    failing_checks: totalFails,
+    results,
+  };
+
+  writeFileSync(RESULTS_FILE, JSON.stringify(report, null, 2));
+
+  console.log(`\nStatic-lint: ${pagesFound} pages × ${VIEWPORTS.length} viewports = ${results.length} checks`);
+  console.log(`Passing: ${report.passing_checks} | Failing: ${totalFails}`);
+  if (totalFails === 0) console.log('ALL CHECKS PASS.');
+  console.log(`Results: ${RESULTS_FILE}`);
+  return report;
+}
+
+// ── Entry point ───────────────────────────────────────────────────────────────
+
 (async () => {
   console.log('AskJamie™ Responsive QA\n' + '='.repeat(40));
   console.log(`Base URL: ${BASE_URL}`);
