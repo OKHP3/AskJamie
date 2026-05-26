@@ -1,6 +1,1358 @@
 {
-  "generated": "2026-05-26T20:53:25.400139",
+  "generated": "2026-05-26T21:02:25.696750",
   "mode": "static-analysis",
-  "pages_checked": 14,
-  "issues": []
+  "note": "Full Playwright run requires: npm install -D playwright && npx playwright install chromium",
+  "base_url": "https://askjamie.bot",
+  "pages_checked": 24,
+  "viewports_checked": 8,
+  "total_checks": 192,
+  "passing_checks": 192,
+  "failing_checks": 0,
+  "issues_by_page": {},
+  "checks": [
+    {
+      "page": "/",
+      "viewport": "mobile-360",
+      "width_px": 360,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/",
+      "viewport": "mobile-390",
+      "width_px": 390,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/",
+      "viewport": "mobile-430",
+      "width_px": 430,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/",
+      "viewport": "tablet-768",
+      "width_px": 768,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/",
+      "viewport": "desktop-1024",
+      "width_px": 1024,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/",
+      "viewport": "desktop-1280",
+      "width_px": 1280,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/",
+      "viewport": "desktop-1440",
+      "width_px": 1440,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/",
+      "viewport": "desktop-1920",
+      "width_px": 1920,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/about/",
+      "viewport": "mobile-360",
+      "width_px": 360,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/about/",
+      "viewport": "mobile-390",
+      "width_px": 390,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/about/",
+      "viewport": "mobile-430",
+      "width_px": 430,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/about/",
+      "viewport": "tablet-768",
+      "width_px": 768,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/about/",
+      "viewport": "desktop-1024",
+      "width_px": 1024,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/about/",
+      "viewport": "desktop-1280",
+      "width_px": 1280,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/about/",
+      "viewport": "desktop-1440",
+      "width_px": 1440,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/about/",
+      "viewport": "desktop-1920",
+      "width_px": 1920,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/contact/",
+      "viewport": "mobile-360",
+      "width_px": 360,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/contact/",
+      "viewport": "mobile-390",
+      "width_px": 390,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/contact/",
+      "viewport": "mobile-430",
+      "width_px": 430,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/contact/",
+      "viewport": "tablet-768",
+      "width_px": 768,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/contact/",
+      "viewport": "desktop-1024",
+      "width_px": 1024,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/contact/",
+      "viewport": "desktop-1280",
+      "width_px": 1280,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/contact/",
+      "viewport": "desktop-1440",
+      "width_px": 1440,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/contact/",
+      "viewport": "desktop-1920",
+      "width_px": 1920,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/legal/",
+      "viewport": "mobile-360",
+      "width_px": 360,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/legal/",
+      "viewport": "mobile-390",
+      "width_px": 390,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/legal/",
+      "viewport": "mobile-430",
+      "width_px": 430,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/legal/",
+      "viewport": "tablet-768",
+      "width_px": 768,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/legal/",
+      "viewport": "desktop-1024",
+      "width_px": 1024,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/legal/",
+      "viewport": "desktop-1280",
+      "width_px": 1280,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/legal/",
+      "viewport": "desktop-1440",
+      "width_px": 1440,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/legal/",
+      "viewport": "desktop-1920",
+      "width_px": 1920,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/universe/",
+      "viewport": "mobile-360",
+      "width_px": 360,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/universe/",
+      "viewport": "mobile-390",
+      "width_px": 390,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/universe/",
+      "viewport": "mobile-430",
+      "width_px": 430,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/universe/",
+      "viewport": "tablet-768",
+      "width_px": 768,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/universe/",
+      "viewport": "desktop-1024",
+      "width_px": 1024,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/universe/",
+      "viewport": "desktop-1280",
+      "width_px": 1280,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/universe/",
+      "viewport": "desktop-1440",
+      "width_px": 1440,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/universe/",
+      "viewport": "desktop-1920",
+      "width_px": 1920,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/search/",
+      "viewport": "mobile-360",
+      "width_px": 360,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/search/",
+      "viewport": "mobile-390",
+      "width_px": 390,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/search/",
+      "viewport": "mobile-430",
+      "width_px": 430,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/search/",
+      "viewport": "tablet-768",
+      "width_px": 768,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/search/",
+      "viewport": "desktop-1024",
+      "width_px": 1024,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/search/",
+      "viewport": "desktop-1280",
+      "width_px": 1280,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/search/",
+      "viewport": "desktop-1440",
+      "width_px": 1440,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/search/",
+      "viewport": "desktop-1920",
+      "width_px": 1920,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/",
+      "viewport": "mobile-360",
+      "width_px": 360,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/",
+      "viewport": "mobile-390",
+      "width_px": 390,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/",
+      "viewport": "mobile-430",
+      "width_px": 430,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/",
+      "viewport": "tablet-768",
+      "width_px": 768,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/",
+      "viewport": "desktop-1024",
+      "width_px": 1024,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/",
+      "viewport": "desktop-1280",
+      "width_px": 1280,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/",
+      "viewport": "desktop-1440",
+      "width_px": 1440,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/",
+      "viewport": "desktop-1920",
+      "width_px": 1920,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/resume-representative/",
+      "viewport": "mobile-360",
+      "width_px": 360,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/resume-representative/",
+      "viewport": "mobile-390",
+      "width_px": 390,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/resume-representative/",
+      "viewport": "mobile-430",
+      "width_px": 430,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/resume-representative/",
+      "viewport": "tablet-768",
+      "width_px": 768,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/resume-representative/",
+      "viewport": "desktop-1024",
+      "width_px": 1024,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/resume-representative/",
+      "viewport": "desktop-1280",
+      "width_px": 1280,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/resume-representative/",
+      "viewport": "desktop-1440",
+      "width_px": 1440,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/resume-representative/",
+      "viewport": "desktop-1920",
+      "width_px": 1920,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/professional-portfolio/",
+      "viewport": "mobile-360",
+      "width_px": 360,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/professional-portfolio/",
+      "viewport": "mobile-390",
+      "width_px": 390,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/professional-portfolio/",
+      "viewport": "mobile-430",
+      "width_px": 430,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/professional-portfolio/",
+      "viewport": "tablet-768",
+      "width_px": 768,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/professional-portfolio/",
+      "viewport": "desktop-1024",
+      "width_px": 1024,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/professional-portfolio/",
+      "viewport": "desktop-1280",
+      "width_px": 1280,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/professional-portfolio/",
+      "viewport": "desktop-1440",
+      "width_px": 1440,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/professional-portfolio/",
+      "viewport": "desktop-1920",
+      "width_px": 1920,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/enterprise-sleuth/",
+      "viewport": "mobile-360",
+      "width_px": 360,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/enterprise-sleuth/",
+      "viewport": "mobile-390",
+      "width_px": 390,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/enterprise-sleuth/",
+      "viewport": "mobile-430",
+      "width_px": 430,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/enterprise-sleuth/",
+      "viewport": "tablet-768",
+      "width_px": 768,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/enterprise-sleuth/",
+      "viewport": "desktop-1024",
+      "width_px": 1024,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/enterprise-sleuth/",
+      "viewport": "desktop-1280",
+      "width_px": 1280,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/enterprise-sleuth/",
+      "viewport": "desktop-1440",
+      "width_px": 1440,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/enterprise-sleuth/",
+      "viewport": "desktop-1920",
+      "width_px": 1920,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/",
+      "viewport": "mobile-360",
+      "width_px": 360,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/",
+      "viewport": "mobile-390",
+      "width_px": 390,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/",
+      "viewport": "mobile-430",
+      "width_px": 430,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/",
+      "viewport": "tablet-768",
+      "width_px": 768,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/",
+      "viewport": "desktop-1024",
+      "width_px": 1024,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/",
+      "viewport": "desktop-1280",
+      "width_px": 1280,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/",
+      "viewport": "desktop-1440",
+      "width_px": 1440,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/",
+      "viewport": "desktop-1920",
+      "width_px": 1920,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/bfs-framing-intelligent-futures/",
+      "viewport": "mobile-360",
+      "width_px": 360,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/bfs-framing-intelligent-futures/",
+      "viewport": "mobile-390",
+      "width_px": 390,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/bfs-framing-intelligent-futures/",
+      "viewport": "mobile-430",
+      "width_px": 430,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/bfs-framing-intelligent-futures/",
+      "viewport": "tablet-768",
+      "width_px": 768,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/bfs-framing-intelligent-futures/",
+      "viewport": "desktop-1024",
+      "width_px": 1024,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/bfs-framing-intelligent-futures/",
+      "viewport": "desktop-1280",
+      "width_px": 1280,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/bfs-framing-intelligent-futures/",
+      "viewport": "desktop-1440",
+      "width_px": 1440,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/bfs-framing-intelligent-futures/",
+      "viewport": "desktop-1920",
+      "width_px": 1920,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/lego/",
+      "viewport": "mobile-360",
+      "width_px": 360,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/lego/",
+      "viewport": "mobile-390",
+      "width_px": 390,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/lego/",
+      "viewport": "mobile-430",
+      "width_px": 430,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/lego/",
+      "viewport": "tablet-768",
+      "width_px": 768,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/lego/",
+      "viewport": "desktop-1024",
+      "width_px": 1024,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/lego/",
+      "viewport": "desktop-1280",
+      "width_px": 1280,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/lego/",
+      "viewport": "desktop-1440",
+      "width_px": 1440,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/lego/",
+      "viewport": "desktop-1920",
+      "width_px": 1920,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/starbucks/",
+      "viewport": "mobile-360",
+      "width_px": 360,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/starbucks/",
+      "viewport": "mobile-390",
+      "width_px": 390,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/starbucks/",
+      "viewport": "mobile-430",
+      "width_px": 430,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/starbucks/",
+      "viewport": "tablet-768",
+      "width_px": 768,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/starbucks/",
+      "viewport": "desktop-1024",
+      "width_px": 1024,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/starbucks/",
+      "viewport": "desktop-1280",
+      "width_px": 1280,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/starbucks/",
+      "viewport": "desktop-1440",
+      "width_px": 1440,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/starbucks/",
+      "viewport": "desktop-1920",
+      "width_px": 1920,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/brooks-running/",
+      "viewport": "mobile-360",
+      "width_px": 360,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/brooks-running/",
+      "viewport": "mobile-390",
+      "width_px": 390,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/brooks-running/",
+      "viewport": "mobile-430",
+      "width_px": 430,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/brooks-running/",
+      "viewport": "tablet-768",
+      "width_px": 768,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/brooks-running/",
+      "viewport": "desktop-1024",
+      "width_px": 1024,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/brooks-running/",
+      "viewport": "desktop-1280",
+      "width_px": 1280,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/brooks-running/",
+      "viewport": "desktop-1440",
+      "width_px": 1440,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/brooks-running/",
+      "viewport": "desktop-1920",
+      "width_px": 1920,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/ping/",
+      "viewport": "mobile-360",
+      "width_px": 360,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/ping/",
+      "viewport": "mobile-390",
+      "width_px": 390,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/ping/",
+      "viewport": "mobile-430",
+      "width_px": 430,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/ping/",
+      "viewport": "tablet-768",
+      "width_px": 768,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/ping/",
+      "viewport": "desktop-1024",
+      "width_px": 1024,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/ping/",
+      "viewport": "desktop-1280",
+      "width_px": 1280,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/ping/",
+      "viewport": "desktop-1440",
+      "width_px": 1440,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/ping/",
+      "viewport": "desktop-1920",
+      "width_px": 1920,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/costco/",
+      "viewport": "mobile-360",
+      "width_px": 360,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/costco/",
+      "viewport": "mobile-390",
+      "width_px": 390,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/costco/",
+      "viewport": "mobile-430",
+      "width_px": 430,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/costco/",
+      "viewport": "tablet-768",
+      "width_px": 768,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/costco/",
+      "viewport": "desktop-1024",
+      "width_px": 1024,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/costco/",
+      "viewport": "desktop-1280",
+      "width_px": 1280,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/costco/",
+      "viewport": "desktop-1440",
+      "width_px": 1440,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/costco/",
+      "viewport": "desktop-1920",
+      "width_px": 1920,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/hershey/",
+      "viewport": "mobile-360",
+      "width_px": 360,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/hershey/",
+      "viewport": "mobile-390",
+      "width_px": 390,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/hershey/",
+      "viewport": "mobile-430",
+      "width_px": 430,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/hershey/",
+      "viewport": "tablet-768",
+      "width_px": 768,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/hershey/",
+      "viewport": "desktop-1024",
+      "width_px": 1024,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/hershey/",
+      "viewport": "desktop-1280",
+      "width_px": 1280,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/hershey/",
+      "viewport": "desktop-1440",
+      "width_px": 1440,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/hershey/",
+      "viewport": "desktop-1920",
+      "width_px": 1920,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/lvmh/",
+      "viewport": "mobile-360",
+      "width_px": 360,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/lvmh/",
+      "viewport": "mobile-390",
+      "width_px": 390,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/lvmh/",
+      "viewport": "mobile-430",
+      "width_px": 430,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/lvmh/",
+      "viewport": "tablet-768",
+      "width_px": 768,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/lvmh/",
+      "viewport": "desktop-1024",
+      "width_px": 1024,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/lvmh/",
+      "viewport": "desktop-1280",
+      "width_px": 1280,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/lvmh/",
+      "viewport": "desktop-1440",
+      "width_px": 1440,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/lvmh/",
+      "viewport": "desktop-1920",
+      "width_px": 1920,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/dollar-general/",
+      "viewport": "mobile-360",
+      "width_px": 360,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/dollar-general/",
+      "viewport": "mobile-390",
+      "width_px": 390,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/dollar-general/",
+      "viewport": "mobile-430",
+      "width_px": 430,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/dollar-general/",
+      "viewport": "tablet-768",
+      "width_px": 768,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/dollar-general/",
+      "viewport": "desktop-1024",
+      "width_px": 1024,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/dollar-general/",
+      "viewport": "desktop-1280",
+      "width_px": 1280,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/dollar-general/",
+      "viewport": "desktop-1440",
+      "width_px": 1440,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/dollar-general/",
+      "viewport": "desktop-1920",
+      "width_px": 1920,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/coca-cola/",
+      "viewport": "mobile-360",
+      "width_px": 360,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/coca-cola/",
+      "viewport": "mobile-390",
+      "width_px": 390,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/coca-cola/",
+      "viewport": "mobile-430",
+      "width_px": 430,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/coca-cola/",
+      "viewport": "tablet-768",
+      "width_px": 768,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/coca-cola/",
+      "viewport": "desktop-1024",
+      "width_px": 1024,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/coca-cola/",
+      "viewport": "desktop-1280",
+      "width_px": 1280,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/coca-cola/",
+      "viewport": "desktop-1440",
+      "width_px": 1440,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/coca-cola/",
+      "viewport": "desktop-1920",
+      "width_px": 1920,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/discount-tire/",
+      "viewport": "mobile-360",
+      "width_px": 360,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/discount-tire/",
+      "viewport": "mobile-390",
+      "width_px": 390,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/discount-tire/",
+      "viewport": "mobile-430",
+      "width_px": 430,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/discount-tire/",
+      "viewport": "tablet-768",
+      "width_px": 768,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/discount-tire/",
+      "viewport": "desktop-1024",
+      "width_px": 1024,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/discount-tire/",
+      "viewport": "desktop-1280",
+      "width_px": 1280,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/discount-tire/",
+      "viewport": "desktop-1440",
+      "width_px": 1440,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/discount-tire/",
+      "viewport": "desktop-1920",
+      "width_px": 1920,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/scheels/",
+      "viewport": "mobile-360",
+      "width_px": 360,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/scheels/",
+      "viewport": "mobile-390",
+      "width_px": 390,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/scheels/",
+      "viewport": "mobile-430",
+      "width_px": 430,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/scheels/",
+      "viewport": "tablet-768",
+      "width_px": 768,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/scheels/",
+      "viewport": "desktop-1024",
+      "width_px": 1024,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/scheels/",
+      "viewport": "desktop-1280",
+      "width_px": 1280,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/scheels/",
+      "viewport": "desktop-1440",
+      "width_px": 1440,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/scheels/",
+      "viewport": "desktop-1920",
+      "width_px": 1920,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/mathews-archery/",
+      "viewport": "mobile-360",
+      "width_px": 360,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/mathews-archery/",
+      "viewport": "mobile-390",
+      "width_px": 390,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/mathews-archery/",
+      "viewport": "mobile-430",
+      "width_px": 430,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/mathews-archery/",
+      "viewport": "tablet-768",
+      "width_px": 768,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/mathews-archery/",
+      "viewport": "desktop-1024",
+      "width_px": 1024,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/mathews-archery/",
+      "viewport": "desktop-1280",
+      "width_px": 1280,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/mathews-archery/",
+      "viewport": "desktop-1440",
+      "width_px": 1440,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "page": "/lens-system/okhp3-brandguard/mathews-archery/",
+      "viewport": "desktop-1920",
+      "width_px": 1920,
+      "pass": true,
+      "errors": []
+    }
+  ]
 }
