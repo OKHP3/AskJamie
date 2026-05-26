@@ -268,4 +268,47 @@ copied to sister repos (they contain AskJamie-specific content or URLs):
 
 ---
 
+## 6 · Execution log — Task #4 (2026-05-26)
+
+### OverKill Hill (`overkillhill.com` → `OKHP3/OverKill-Hill`)
+
+Both patches applied programmatically to a local clone of the repo.
+
+**CSS** — `assets/css/theme.css`
+- ✅ Duplicate `.grid` block removed (was two identical `display:grid;gap:1.75rem` blocks)
+- ✅ `.grid-3` breakpoints updated: single `max-width:1024px → 1fr` rule replaced with
+  tablet band (`769–1024px → 2 cols`) + mobile rule (`≤768px → 1 col`)
+- JS syntax check: **PASS** (Node `--check`)
+
+**JS** — `assets/js/app.js`
+- ✅ `_gtag_event()` wrapper + `cta_click`/`outbound_click`/`contact_click` listeners inserted
+  before closing `});` of `DOMContentLoaded`
+- ✅ `search_open` event wired in `open()` function (OKH search module)
+- ✅ `search_submit` event wired in `render()` function (OKH search module)
+- Construction overlay code **retained** (OKH still uses it for Glee WIP pages)
+- JS syntax check: **PASS** (`node --check`)
+
+**Patched files saved** in this repo for owner reference:
+- `assets/docs/sister-site-sync/okh/theme.css` — ready to copy
+- `assets/docs/sister-site-sync/okh/app.js` — ready to copy
+- `assets/docs/sister-site-sync/okh/theme.css.patch` — unified diff
+- `assets/docs/sister-site-sync/okh/app.js.patch` — unified diff
+
+**To apply:** copy the two patched files into the `OKHP3/OverKill-Hill` repo,
+commit, and deploy. The unified diffs can also be applied with `git apply`.
+
+---
+
+### Glee-fully Tools (`glee-fully.tools` → `OKHP3/Glee-fullyTools`)
+
+The `OKHP3/Glee-fullyTools` GitHub repo was cloned but contains **no files**
+beyond the `.git` directory. There are no `assets/css/theme.css` or
+`assets/js/app.js` to patch. The Glee site's front-end files appear to live
+elsewhere (possibly in a separate deployment pipeline or are not yet committed).
+
+**No changes possible** until the Glee front-end files are committed to the repo.
+When they are, apply the same patches documented in §§ 1–2 above.
+
+---
+
 *Generated: 2026-05-26 — AskJamie™ Task #4 (sister-site sync)*

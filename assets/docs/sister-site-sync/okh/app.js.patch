@@ -1,0 +1,79 @@
+diff --git a/assets/js/app.js b/assets/js/app.js
+index 218a4ca..242d586 100644
+--- a/assets/js/app.js
++++ b/assets/js/app.js
+@@ -178,6 +178,58 @@ document.addEventListener("DOMContentLoaded", () => {
+       });
+     }
+   }
++  // ── GA4 custom event tracking ─────────────────────────────────────────────
++  // Guard: all calls wrapped in _gtag_event() which checks typeof gtag.
++  // Events: cta_click | outbound_click | contact_click |
++  //         mermaid_affiliate_click | search_open | search_submit
++  // (search_open / search_submit are fired from the search module below.)
++  function _gtag_event(name, params) {
++    if (typeof gtag === "function") gtag("event", name, params);
++  }
++  // Expose so the search module can call it.
++  window._gtag_event = _gtag_event;
++
++  // Primary CTA clicks
++  document.querySelectorAll(".btn-primary, .btn").forEach(function (el) {
++    el.addEventListener("click", function () {
++      _gtag_event("cta_click", {
++        event_category: "engagement",
++        event_label: (el.textContent || "").trim().slice(0, 80),
++        link_url: el.getAttribute("href") || ""
++      });
++    });
++  });
++
++  // Outbound link clicks (target=_blank)
++  document.querySelectorAll("a[target='_blank']").forEach(function (el) {
++    var href = el.getAttribute("href") || "";
++    var label = href.indexOf("ko-fi.com")     !== -1 ? "ko-fi"
++               : href.indexOf("fiverr.com")   !== -1 ? "fiverr"
++               : href.indexOf("chatgpt.com")  !== -1 ? "chatgpt_gpt"
++               : href.indexOf("mermaidchart") !== -1 ? "mermaid_affiliate"
++               : href.indexOf("linkedin.com") !== -1 ? "linkedin"
++               : href.indexOf("youtube.com")  !== -1 ? "youtube"
++               : href.indexOf("facebook.com") !== -1 ? "facebook"
++               : "outbound";
++    var eventName = label === "mermaid_affiliate" ? "mermaid_affiliate_click" : "outbound_click";
++    el.addEventListener("click", function () {
++      _gtag_event(eventName, {
++        event_category: "engagement",
++        event_label: label,
++        link_url: href
++      });
++    });
++  });
++
++  // Mailto contact clicks
++  document.querySelectorAll("a[href^='mailto:']").forEach(function (el) {
++    el.addEventListener("click", function () {
++      _gtag_event("contact_click", {
++        event_category: "engagement",
++        event_label: el.getAttribute("href") || ""
++      });
++    });
++  });
+ 
+ });
+ 
+@@ -430,6 +482,7 @@ document.addEventListener("DOMContentLoaded", () => {
+       lastFocus = document.activeElement;
+       overlay.dataset.open = "true";
+       document.documentElement.style.overflow = "hidden";
++      if (typeof window._gtag_event === "function") window._gtag_event("search_open", { event_category: "search" });
+       loadIndex().then((d) => { entries = d; renderEmpty(); });
+       setTimeout(() => input.focus(), 30);
+     }
+@@ -466,6 +519,7 @@ document.addEventListener("DOMContentLoaded", () => {
+     function render() {
+       const q = input.value.trim();
+       if (!q) { renderEmpty(); currentResults = []; lastTokens = []; return; }
++      if (typeof window._gtag_event === "function") window._gtag_event("search_submit", { event_category: "search", event_label: q.length + " chars" });
+       lastTokens     = tokenize(q);
+       currentResults = search(entries, q, 12);
+       if (!currentResults.length) {

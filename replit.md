@@ -238,13 +238,14 @@ applied most of the above.  Safe to re-run any time.
 
 - **OG images:** All pages use a square 1024×1024 avatar PNG as OG image. The gold standard recommends 1200×630 landscape. A purpose-built landscape OG image would improve social card display.
 - **Search Console submission:** `sitemap.xml` should be submitted to Google Search Console and Bing Webmaster Tools.
-- **Sister-site sync:** v0.9 patches documented in `SISTER-SITE-SYNC.md`
-  (Task #4, 2026-05-26). Exact copy-paste diffs for `theme.css` (.grid dedup,
-  .grid-3 tablet fix) and `app.js` (GA events block, search_open/search_submit
-  wiring, isAnotherOverlayOpen stub) with per-site verification checklist.
-  Apply manually to `overkillhill.com` and `glee-fully.tools` repos.
-  Older v0.4–v0.7 changes (`analytics.js`, `scripts/build-search-index.py`,
-  `scripts/audit-site.py`) still need to be copied for full tooling parity.
+- **Sister-site sync:** v0.9 patches applied to OKH (`OKHP3/OverKill-Hill`
+  cloned and patched — Task #4, 2026-05-26). Patched files ready to commit:
+  `assets/docs/sister-site-sync/okh/theme.css` and `app.js`. Unified patch
+  files at `assets/docs/sister-site-sync/okh/*.patch`. See `SISTER-SITE-SYNC.md`
+  for full details and verification checklist. Glee (`OKHP3/Glee-fullyTools`)
+  repo was empty — no CSS/JS to patch; apply when files are committed there.
+  Older tooling scripts (`audit-site.py`, `build-search-index.py`) still need
+  a separate sync pass (see Task #5).
 
 ## Audit & Quality Gates (v0.7 — 2026-05-03)
 

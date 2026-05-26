@@ -1,0 +1,37 @@
+diff --git a/assets/css/theme.css b/assets/css/theme.css
+index 62b5397..eb4b449 100644
+--- a/assets/css/theme.css
++++ b/assets/css/theme.css
+@@ -301,20 +301,23 @@ button {
+   gap: 1.75rem;
+ }
+ 
+-/* ===== UTILS & LAYOUT ==================================================== */
+-
+-.grid {
+-  display: grid;
+-  gap: 1.75rem;
+-}
++/* ===== UTILS & LAYOUT ===================================================== */
+ 
+-/* Define .grid-3 once.  Use a smaller minimum size so a column can shrink on phones. */
++/* Define .grid-3 once.  Uses auto-fill with a min of 220px so columns shrink
++   gracefully before the explicit breakpoints kick in. */
+ .grid-3 {
+   grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr));
+ }
+ 
+-/* Collapse to a single column sooner (tablet + phone). */
+-@media (max-width: 1024px) {
++/* Tablet (769-1024px): show 2 columns. */
++@media (max-width: 1024px) and (min-width: 769px) {
++  .grid-3 {
++    grid-template-columns: repeat(2, 1fr);
++  }
++}
++
++/* Mobile (<=768px): collapse to 1 column. */
++@media (max-width: 768px) {
+   .grid-3 {
+     grid-template-columns: 1fr;
+   }
