@@ -238,12 +238,13 @@ applied most of the above.  Safe to re-run any time.
 
 - **OG images:** All pages use a square 1024×1024 avatar PNG as OG image. The gold standard recommends 1200×630 landscape. A purpose-built landscape OG image would improve social card display.
 - **Search Console submission:** `sitemap.xml` should be submitted to Google Search Console and Bing Webmaster Tools.
-- **Sister-site sync:** v0.4 + v0.5 + v0.6 + v0.7 changes (`theme.css`,
-  `app.js`, `analytics.js`, `scripts/build-search-index.py`,
-  `scripts/audit-site.py`) must still be copied into the OverKill Hill
-  and Glee-fully repos for visual + tooling parity. AskJamie also adds
-  a fresh `llms.txt` whose URL list will need to be swapped per-site if
-  those repos want their own.
+- **Sister-site sync:** v0.9 patches documented in `SISTER-SITE-SYNC.md`
+  (Task #4, 2026-05-26). Exact copy-paste diffs for `theme.css` (.grid dedup,
+  .grid-3 tablet fix) and `app.js` (GA events block, search_open/search_submit
+  wiring, isAnotherOverlayOpen stub) with per-site verification checklist.
+  Apply manually to `overkillhill.com` and `glee-fully.tools` repos.
+  Older v0.4–v0.7 changes (`analytics.js`, `scripts/build-search-index.py`,
+  `scripts/audit-site.py`) still need to be copied for full tooling parity.
 
 ## Audit & Quality Gates (v0.7 — 2026-05-03)
 
@@ -362,7 +363,7 @@ All events are guarded by `typeof gtag === 'function'` via `window._gtag_event()
 1. Commission 1200×630 OG images — see `assets/docs/og-image-requirements.md`
 2. Run full Playwright QA: `npm install -D playwright && npx playwright install chromium && node scripts/responsive-qa.mjs`
 3. Submit sitemap to Google Search Console and Bing Webmaster Tools
-4. Sync `theme.css` and `app.js` changes to sister sites (`overkillhill.com`, `glee-fully.tools`)
+4. Sync `theme.css` and `app.js` changes to sister sites — see `SISTER-SITE-SYNC.md` ✅ (guide created Task #4)
 5. Verify GA4 events in DebugView post-deployment
 6. Add Notion catalog entry for BRG12 Mathews Archery if missing
 
@@ -370,3 +371,4 @@ All events are guarded by `typeof gtag === 'function'` via `window._gtag_event()
 
 - ✅ GA custom event tracking (item 5 from v0.8 flagged list)
 - ✅ BrandGuard hub relative case-study links → root-relative (item 7)
+- ✅ Sister-site sync guide created (Task #4) — `SISTER-SITE-SYNC.md`
