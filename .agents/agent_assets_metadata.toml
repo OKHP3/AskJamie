@@ -1,5 +1,34 @@
 uploads = []
-generated = []
+
+[[generated]]
+id = "yxg0ST2FdR28D0uuq9_07"
+uri = "file://assets/img/og/og-homepage-1200x630.png"
+type = "image"
+title = "homepage OG card"
+
+[[generated]]
+id = "o0R3WnKmvlvjkMJ3mqAH8"
+uri = "file://assets/img/og/og-lens-system-1200x630.png"
+type = "image"
+title = "lens system OG card"
+
+[[generated]]
+id = "pBOJk0RUykvRqb6iC52sM"
+uri = "file://assets/img/og/og-brandguard-hub-1200x630.png"
+type = "image"
+title = "BrandGuard hub OG card"
+
+[[generated]]
+id = "aTM6LF9U9vlXxZ6OfSh3o"
+uri = "file://assets/img/og/og-bfs01-1200x630.png"
+type = "image"
+title = "BFS case study OG card"
+
+[[generated]]
+id = "tK8S65TdKvvgix8zACmEA"
+uri = "file://assets/img/og/og-contact-1200x630.png"
+type = "image"
+title = "contact OG card"
 
 [[outputs]]
 id = "uzXkx6Oj7m819VTWK0-3A"
