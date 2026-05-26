@@ -4,6 +4,46 @@ All notable changes to the **AskJamie™** public repository are recorded here.
 
 ## [Unreleased]
 
+## [0.9] — 2026-05-26 — Site Polish & Responsive QA (Task #1)
+
+### Removed
+- **Construction overlays** stripped from all 6 Lens System pages
+  (`lens-system/`, `enterprise-sleuth/`, `okhp3-brandguard/`, `lego/`,
+  `professional-portfolio/`, `resume-representative/`). Blocking modals
+  no longer appear on publicly-linked, content-rich pages.
+- **Construction-overlay dismiss logic** removed from `assets/js/app.js`
+  (DOMContentLoaded bootstrap). `isAnotherOverlayOpen()` retained as a no-op stub.
+- **Duplicate `.grid` declaration** removed from `assets/css/theme.css`.
+
+### Fixed
+- **BFS legal copy** (`index.html`): "built exclusively for Builders FirstSource"
+  changed to "A public-information BrandGuard™ case study focused on Builders
+  FirstSource."
+- **Copyright year static fallback**: all 33 HTML files now contain `2026` as
+  default text in `#current-year-askjamie` span.
+- **`.grid-3` tablet breakpoint**: 2 columns at 769–1024 px (tablet),
+  1 column at ≤768 px (mobile). Sister-site sync required.
+
+### Added
+- **GA4 custom event tracking** (`app.js`): `cta_click`, `outbound_click`,
+  `contact_click`, `mermaid_affiliate_click`, `search_open`, `search_submit`.
+  All guarded by `typeof gtag === "function"`.
+- **Contact page inquiry paths** (`contact/index.html`): six labeled cards with
+  subject-line tags (`[BrandGuard]`, `[Resume Representative]`,
+  `[Professional Portfolio]`, `[Enterprise Sleuth]`,
+  `[Architecture]`, `[Collaboration]`).
+- **Footer `/search/` link** on all 28 applicable pages.
+- **`scripts/responsive-qa.mjs`**: Playwright + static-fallback QA script
+  (24 pages × 8 viewports).
+- **`assets/docs/og-image-requirements.md`**: spec for 1200×630 OG images.
+- **`AUDIT-ASKJAMIE-2026-RESPONSIVE.md`** and
+  **`AUDIT-ASKJAMIE-2026-REPLIT-FIXES.md`**: QA results + full fix log.
+
+### Updated
+- Search index rebuilt: 33 pages, 130.5 KB.
+- Site auditor: 0 issues at close (26 HTML pages).
+
+
 ### Changed (repo structure)
 - **Renamed `tools/` → `scripts/`** — aligns naming with the convention
   used across all three OKHP³ sites (OverKill Hill, Glee-fully Tools,

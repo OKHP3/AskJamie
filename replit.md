@@ -321,3 +321,52 @@ Flagged for owner action (see report):
 - "Discount Tires" → "Discount Tire" typo fix in the universe Mermaid.
 - Documentation refresh: this file, `CHANGELOG.md` (v0.7),
   `ROADMAP.md`, `README.md` ("Resume" → "Résumé").
+
+## Task #1 Polish Pass (v0.9 — 2026-05-26)
+
+See `AUDIT-ASKJAMIE-2026-REPLIT-FIXES.md` for the full fix log, deferred
+items, and Notion sync notes.
+
+### Changes applied
+
+- **Construction overlays removed** from all 6 Lens System pages. No more
+  blocking modals on publicly-linked, content-rich pages.
+- **BFS legal copy** fixed on `index.html`: removed implied exclusivity.
+- **Copyright year static fallback** (`2026`) added to all 33 HTML files.
+- **GA4 custom events** added to `assets/js/app.js` (see table below).
+- **Contact page** expanded with 6 labeled inquiry-path cards and subject-line
+  tags.
+- **Footer `/search/` link** added to all 28 applicable pages.
+- **`scripts/responsive-qa.mjs`** created (Playwright + static fallback).
+- **CSS `.grid-3` breakpoint** fixed: 2 cols at 769–1024 px (was 1 col).
+- **Duplicate `.grid` declaration** removed from `theme.css`.
+- **`assets/docs/og-image-requirements.md`** created.
+- **Search index** rebuilt: 33 pages, 130.5 KB.
+- **Site auditor**: 0 issues at close.
+
+### GA4 event names (v0.9)
+
+| Event name | Trigger |
+|------------|---------|
+| `cta_click` | Any `.btn-primary` or `.btn` click; `event_label` = button text |
+| `outbound_click` | Any `target="_blank"` link; `event_label` = partner slug |
+| `contact_click` | Any `mailto:` link click |
+| `mermaid_affiliate_click` | MermaidChart affiliate link specifically |
+| `search_open` | Search modal opened |
+| `search_submit` | Search query executed (label = char count, not raw text) |
+
+All events are guarded by `typeof gtag === 'function'` via `window._gtag_event()`.
+
+### Owner action items (from this pass)
+
+1. Commission 1200×630 OG images — see `assets/docs/og-image-requirements.md`
+2. Run full Playwright QA: `npm install -D playwright && npx playwright install chromium && node scripts/responsive-qa.mjs`
+3. Submit sitemap to Google Search Console and Bing Webmaster Tools
+4. Sync `theme.css` and `app.js` changes to sister sites (`overkillhill.com`, `glee-fully.tools`)
+5. Verify GA4 events in DebugView post-deployment
+6. Add Notion catalog entry for BRG12 Mathews Archery if missing
+
+### Previous owner action items resolved
+
+- ✅ GA custom event tracking (item 5 from v0.8 flagged list)
+- ✅ BrandGuard hub relative case-study links → root-relative (item 7)

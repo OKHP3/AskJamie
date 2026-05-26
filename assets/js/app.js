@@ -225,11 +225,8 @@ gtag('config', 'G-MT9Y10YY0G');
   // Detect any other site-level modal/overlay that's currently visible,
   // so the search shortcut doesn't fight with it (e.g. construction overlay).
   function isAnotherOverlayOpen() {
-    var overlay = document.querySelector(".construction-overlay");
-    if (overlay && !overlay.hasAttribute("hidden")) {
-      var dismissed = document.body.classList.contains("construction-dismissed");
-      if (!dismissed) return true;
-    }
+    // Construction overlays have been removed from all pages (Task #1, 2026-05).
+    // This guard remains in case future modals are added.
     return false;
   }
 
@@ -240,6 +237,7 @@ gtag('config', 'G-MT9Y10YY0G');
     if (!modal) return;
     modal.removeAttribute("hidden");
     document.body.classList.add("site-search-open");
+    if (typeof window._gtag_event === "function") window._gtag_event("search_open", { event_category: "search" });
     // Focus a tick later so the browser actually moves caret
     setTimeout(function () {
       input.focus();
@@ -321,6 +319,7 @@ gtag('config', 'G-MT9Y10YY0G');
       return;
     }
 
+    if (typeof window._gtag_event === "function") window._gtag_event("search_submit", { event_category: "search", event_label: q.length + " chars" });
     var tokens = q.split(/\s+/).filter(Boolean);
     var phrase = tokens.length > 1 ? q : null;
 
@@ -945,49 +944,56 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // ── Under-construction overlay (Glee + AskJamie work-in-progress) ────
-  // Gate: per-page `data-wip-key` lets the user dismiss only one page at
-  // a time.  Click the scrim or any [data-wip-dismiss] to dismiss.
-  const constructionOverlay = document.querySelector(".construction-overlay");
-
-  if (constructionOverlay) {
-    const wipKey =
-      constructionOverlay.getAttribute("data-wip-key") ||
-      window.location.pathname;
-    const storageKey = `glee-wip-dismissed:${wipKey}`;
-
-    // Hide helper — set both `hidden` (the CSS hook in theme.css keys off
-    // `.construction-overlay[hidden]`) and `aria-hidden` (so AT users
-    // also see the overlay as removed from the accessibility tree).
-    const hideOverlay = () => {
-      body.classList.add("construction-dismissed");
-      constructionOverlay.setAttribute("hidden", "true");
-      constructionOverlay.setAttribute("aria-hidden", "true");
-    };
-
-    if (localStorage.getItem(storageKey) === "true") {
-      hideOverlay();
-    } else {
-      const dismissButtons = constructionOverlay.querySelectorAll(
-        "[data-wip-dismiss]"
-      );
-
-      dismissButtons.forEach((btn) => {
-        btn.addEventListener("click", () => {
-          hideOverlay();
-          localStorage.setItem(storageKey, "true");
-        });
-      });
-
-      // Clicking the dark scrim (outside the card) also dismisses.
-      constructionOverlay.addEventListener("click", (event) => {
-        if (event.target === constructionOverlay) {
-          const primaryDismiss = constructionOverlay.querySelector(
-            "[data-wip-dismiss]"
-          );
-          if (primaryDismiss) primaryDismiss.click();
-        }
-      });
-    }
+  // ── GA4 custom event tracking ─────────────────────────────────────────────
+  // Guard: all calls wrapped in _gtag_event() which checks typeof gtag.
+  // Events: cta_click | outbound_click | contact_click |
+  //         mermaid_affiliate_click | search_open | search_submit
+  // (search_open / search_submit are fired from §1a search module below.)
+  function _gtag_event(name, params) {
+    if (typeof gtag === "function") gtag("event", name, params);
   }
+  // Expose so §1a search module can call it.
+  window._gtag_event = _gtag_event;
+
+  // Primary CTA clicks
+  document.querySelectorAll(".btn-primary, .btn").forEach(function (el) {
+    el.addEventListener("click", function () {
+      _gtag_event("cta_click", {
+        event_category: "engagement",
+        event_label: (el.textContent || "").trim().slice(0, 80),
+        link_url: el.getAttribute("href") || ""
+      });
+    });
+  });
+
+  // Outbound link clicks (target=_blank)
+  document.querySelectorAll("a[target='_blank']").forEach(function (el) {
+    var href = el.getAttribute("href") || "";
+    var label = href.indexOf("ko-fi.com")     !== -1 ? "ko-fi"
+               : href.indexOf("fiverr.com")   !== -1 ? "fiverr"
+               : href.indexOf("chatgpt.com")  !== -1 ? "chatgpt_gpt"
+               : href.indexOf("mermaidchart") !== -1 ? "mermaid_affiliate"
+               : href.indexOf("linkedin.com") !== -1 ? "linkedin"
+               : href.indexOf("youtube.com")  !== -1 ? "youtube"
+               : href.indexOf("facebook.com") !== -1 ? "facebook"
+               : "outbound";
+    var eventName = label === "mermaid_affiliate" ? "mermaid_affiliate_click" : "outbound_click";
+    el.addEventListener("click", function () {
+      _gtag_event(eventName, {
+        event_category: "engagement",
+        event_label: label,
+        link_url: href
+      });
+    });
+  });
+
+  // Mailto contact clicks
+  document.querySelectorAll("a[href^='mailto:']").forEach(function (el) {
+    el.addEventListener("click", function () {
+      _gtag_event("contact_click", {
+        event_category: "engagement",
+        event_label: el.getAttribute("href") || ""
+      });
+    });
+  });
 });
