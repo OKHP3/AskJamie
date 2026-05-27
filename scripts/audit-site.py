@@ -9,6 +9,11 @@ Per-page checks actually emitted as issues:
   * <title> length (<=70) and presence
   * <meta name="description"> length (<=165) and presence
   * exactly one <h1>
+  * heading level order — no level may jump by more than 1 going
+    deeper (e.g. h3 after h1 is a violation; h1 after h3 is fine).
+    Headings inside <footer> are excluded because the footer uses a
+    well-validated h3/h4 pattern that does not reflect the page's
+    content outline.
   * canonical link presence
   * required Open Graph fields: og:title, og:description, og:image, og:url
   * <html lang="..."> presence
@@ -94,6 +99,9 @@ class PageParser(HTMLParser):
         self._in_title = False
         self.h1_count = 0
         self._in_h1 = False
+        # heading-order tracking (footer headings excluded)
+        self.headings: List[int] = []   # ordered heading levels outside <footer>
+        self._in_footer: int = 0        # nesting depth inside <footer>
         self.metas: Dict[str, str] = {}
         self.canonical = ""
         self.images: List[Dict[str, str]] = []
@@ -112,6 +120,13 @@ class PageParser(HTMLParser):
         elif tag == "h1":
             self.h1_count += 1
             self._in_h1 = True
+            if self._in_footer == 0:
+                self.headings.append(1)
+        elif tag == "footer":
+            self._in_footer += 1
+        elif tag in ("h2", "h3", "h4", "h5", "h6"):
+            if self._in_footer == 0:
+                self.headings.append(int(tag[1]))
         elif tag == "meta":
             key = a.get("name") or a.get("property") or a.get("http-equiv")
             if key:
@@ -142,6 +157,8 @@ class PageParser(HTMLParser):
             self._in_title = False
         elif tag == "h1":
             self._in_h1 = False
+        elif tag == "footer":
+            self._in_footer = max(0, self._in_footer - 1)
         elif tag == "script" and self._jsonld_collect:
             self._jsonld_collect = False
             blob = "".join(self._jsonld_buf).strip()
@@ -280,6 +297,18 @@ def audit_page(path: Path) -> List[str]:
         issues.append("No <h1> found")
     elif p.h1_count > 1:
         issues.append(f"{p.h1_count} <h1> elements (should be 1)")
+
+    # Heading order — no heading may jump more than one level deeper.
+    # Going back up (e.g. h3 → h1) is always allowed.
+    # Footer headings are already excluded by PageParser.
+    _prev_level = 0
+    for _level in p.headings:
+        if _prev_level > 0 and _level > _prev_level + 1:
+            issues.append(
+                f"Heading order: h{_level} follows h{_prev_level} "
+                f"(skips level — footer headings excluded)"
+            )
+        _prev_level = _level
 
     if not p.canonical:
         issues.append("Missing canonical link")
