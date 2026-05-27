@@ -2,29 +2,41 @@
 """
 Build the static search index for overkillhill.com.
 
-STAGED COPY -- ready to drop into the OKHP3/OverKill-Hill repo.
+STAGED COPY — ready to drop into the OKHP3/OverKill-Hill repo.
+Source: AskJamie scripts/build-search-index.py (2026-05-27).
 
-Per-site constants that were changed from the AskJamie original:
-  - SITE_URL               changed to https://overkillhill.com
-  - strip_brand_suffix()   suffixes changed to OKH brand name variants
-  - derive_section()       section_map updated to OKH top-level URL segments
+Per-site constants changed from the AskJamie original (everything else
+is verbatim):
+  - SITE_URL                  "https://askjamie.bot"  →  "https://overkillhill.com"
+  - strip_brand_suffix()      AskJamie suffix list  →  OKH suffix list
+  - derive_section()          AskJamie section map  →  OKH section map
+  - Docstring site name       updated
 
 VERIFY before first run:
   1. Confirm SITE_URL matches the deployed domain exactly.
-  2. Open a few OKH page <title> tags and check what brand suffix they use
-     (e.g. " -- OverKill Hill P3(tm)" or " | OverKill Hill P3"). Update
-     strip_brand_suffix() to match exactly.
-  3. Confirm the section_map covers all top-level directories in the OKH repo.
+  2. Open several OKH page <title> tags and check the exact brand suffix
+     used (e.g. " — OverKill Hill P3" or " | OverKill Hill"). Update
+     strip_brand_suffix() if the suffix strings differ.
+  3. Confirm derive_section() covers all top-level directories in the OKH repo.
      Add or rename entries as needed.
   4. Run:  python3 scripts/build-search-index.py
      Verify: Pages indexed > 0, file size > 0 KB.
   5. Run:  python3 scripts/audit-site.py --quiet
      Target: 0 issues (search-index reconciliation gate).
 
-All other logic (TextExtractor parser, STRIP_TAGS, STRIP_CLASSES_CONTAINS,
-VOID_TAGS, MAX_BODY cap, output format) is site-agnostic and was copied verbatim.
+Walks every .html file in the repo (excluding 404, under-construction, and the
+attached_assets / .git / .local trees), extracts:
+    - canonical URL (from <link rel="canonical"> if present, else derived from path)
+    - title (from <title>, with brand suffix stripped)
+    - meta description
+    - section label (Home / Lens System / Writings / About / etc.)
+    - H1
+    - All H2 and H3 headings
+    - Body text (visible content only - nav/header/footer/scripts/styles stripped)
 
-Source: AskJamie scripts/build-search-index.py (2026-05-27)
+Writes assets/data/search-index.json - a compact array of page records.
+
+Run from repo root:  python3 scripts/build-search-index.py
 """
 
 import json
@@ -35,31 +47,23 @@ from datetime import datetime, timezone
 from html.parser import HTMLParser
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-# ---------------------------------------------------------------------------
-# PER-SITE CONSTANTS  <-- edit these when copying to a new sister site
-# ---------------------------------------------------------------------------
-
-SITE_URL  = "https://overkillhill.com"
+SITE_URL = "https://overkillhill.com"
 INDEX_OUT = os.path.join(REPO_ROOT, "assets", "data", "search-index.json")
 
-# ---------------------------------------------------------------------------
-# SITE-AGNOSTIC CONSTANTS (copy verbatim across all sister sites)
-# ---------------------------------------------------------------------------
-
 EXCLUDE_DIRS = {".git", ".local", "attached_assets", "tools", "node_modules",
-                "templates"}
+                "templates"}  # assets/templates/ = developer scaffolding, never public pages
 EXCLUDE_FILES = {"404.html", "under-construction.html"}
 
 STRIP_TAGS = {"script", "style", "nav", "header", "footer", "noscript", "svg"}
-# Do NOT add layout-decorator classes here -- they wrap actual page content
-# and stripping them produces empty body excerpts.
+# NOTE: do NOT add layout-decorator classes here (e.g. `askjamie-paper`,
+# `brand-stripes`, `site-specials`) — those classes wrap the actual page
+# content on AskJamie pages; stripping them produces empty body excerpts.
 STRIP_CLASSES_CONTAINS = {"site-header", "site-footer", "primary-nav", "skip-link",
                           "construction-overlay"}
 
-# HTML5 void elements never receive a handle_endtag from html.parser.
-# Do not push them onto the tag stack or subsequent </a> etc. will pop
-# the wrong entry and leave a strip-zone permanently unclosed.
+# HTML5 void elements never receive a `handle_endtag` from html.parser, so we
+# must NOT push them onto the tag stack — otherwise a later `</a>` etc. will
+# pop the wrong entry and leave a strip-zone permanently unclosed.
 VOID_TAGS = {"area", "base", "br", "col", "embed", "hr", "img", "input",
              "link", "meta", "param", "source", "track", "wbr"}
 
@@ -69,18 +73,18 @@ class TextExtractor(HTMLParser):
 
     def __init__(self):
         super().__init__(convert_charrefs=True)
-        self.title       = ""
+        self.title = ""
         self.description = ""
-        self.canonical   = ""
-        self.h1          = ""
-        self.headings    = []   # h2/h3 strings
+        self.canonical = ""
+        self.h1 = ""
+        self.headings = []  # h2/h3 strings
         self.body_chunks = []
 
-        self._capture_title    = False
-        self._stack            = []   # tag stack
-        self._skip_depth       = 0    # >0 means inside a strip-zone
-        self._cur_heading_buf  = None
-        self._cur_heading_tag  = None
+        self._capture_title = False
+        self._stack = []  # tag stack
+        self._skip_depth = 0  # >0 means we're inside a strip-zone
+        self._cur_heading_buf = None  # if collecting heading text
+        self._cur_heading_tag = None
 
     def handle_starttag(self, tag, attrs):
         attrs_d = dict(attrs)
@@ -107,13 +111,14 @@ class TextExtractor(HTMLParser):
             self._stack.append((tag, True))
             return
 
-        # Void elements never close -- do not push onto the stack.
+        # Void elements never close — don't push them onto the stack or
+        # subsequent `handle_endtag` calls will pop the wrong entry.
         if tag in VOID_TAGS:
             return
 
         self._stack.append((tag, False))
 
-        # Heading collection (only outside strip zones)
+        # Heading collection (only if we're not inside a strip zone)
         if self._skip_depth == 0:
             if tag == "h1" and not self.h1:
                 self._cur_heading_buf = []
@@ -127,8 +132,9 @@ class TextExtractor(HTMLParser):
             self._capture_title = False
             return
 
-        # Pop the nearest matching stack entry (and everything above it
-        # for unclosed tags that never received their own end tag).
+        # Pop the nearest matching stack entry — and pop everything above it
+        # too (those are unclosed tags that never received their own end tag,
+        # such as paragraphs in HTML5 where `</p>` is optional).
         for i in range(len(self._stack) - 1, -1, -1):
             if self._stack[i][0] == tag:
                 removed = self._stack[i:]
@@ -146,6 +152,7 @@ class TextExtractor(HTMLParser):
                     self.h1 = text
                 else:
                     self.headings.append(text)
+                # Headings also count as body content for matching
                 self.body_chunks.append(text)
             self._cur_heading_buf = None
             self._cur_heading_tag = None
@@ -158,6 +165,7 @@ class TextExtractor(HTMLParser):
             return
         if self._cur_heading_buf is not None:
             self._cur_heading_buf.append(data)
+        # Always add to body too (so headings are searchable from the body field)
         self.body_chunks.append(data)
 
 
@@ -177,16 +185,11 @@ def derive_url_from_path(rel_path: str) -> str:
     return "/" + p if p and not p.startswith("/") else (p or "/")
 
 
-# ---------------------------------------------------------------------------
-# PER-SITE FUNCTIONS  <-- review and update when copying to a new sister site
-# ---------------------------------------------------------------------------
-
 def derive_section(url_path: str) -> str:
-    """Friendly section label for grouping search results.
+    """Friendly section label for grouping results.
 
     VERIFY: check the OKH repo's top-level directories and update this map
-    to reflect the actual site structure. Add any missing sections and remove
-    any that do not exist on the OKH site.
+    to reflect the actual site structure.
     """
     if url_path == "/":
         return "Home"
@@ -195,13 +198,12 @@ def derive_section(url_path: str) -> str:
         return "Home"
 
     section_map = {
-        "about":      "About",
-        "contact":    "Contact",
-        "legal":      "Legal",
-        "writings":   "Writings",
+        "about": "About",
+        "contact": "Contact",
+        "legal": "Legal",
+        "writings": "Writings",
+        "universe": "Universe",
         "lens-system": "Lens System",
-        "universe":   "Universe",
-        "tools":      "Tools",
     }
 
     if parts[0] in section_map:
@@ -210,39 +212,30 @@ def derive_section(url_path: str) -> str:
         # Lens System sub-sections
         if parts[0] == "lens-system":
             if parts[1] == "okhp3-brandguard":
-                return "Lens System - BrandGuard"
+                return "Lens System · BrandGuard"
             return "Lens System"
-        return section_map[parts[0]]
-
-    return "General"
+    return "Lens System"
 
 
 def strip_brand_suffix(title: str) -> str:
     """Drop the trailing site brand from the page title for cleaner display.
 
     VERIFY: open several OKH page <title> tags and confirm the exact suffix
-    strings used. Common patterns:
-      " -- OverKill Hill P3(tm)"  (en-dash variant)
-      " | OverKill Hill P3"
-    Update this list to match exactly what the OKH pages produce.
+    strings used. Update this list to match exactly what the OKH pages produce.
     """
     title = normalize_text(title)
     for suffix in (
-        " -- OverKill Hill P3(tm)",
-        " | OverKill Hill P3(tm)",
-        " -- OverKill Hill P3",
+        " — OverKill Hill P3™",
+        " | OverKill Hill P3™",
+        " — OverKill Hill P3",
         " | OverKill Hill P3",
-        " -- OverKill Hill",
+        " — OverKill Hill",
         " | OverKill Hill",
     ):
         if title.endswith(suffix):
             return title[: -len(suffix)].strip()
     return title
 
-
-# ---------------------------------------------------------------------------
-# SITE-AGNOSTIC PROCESSING (copy verbatim across all sister sites)
-# ---------------------------------------------------------------------------
 
 def process_file(rel_path: str) -> dict | None:
     full = os.path.join(REPO_ROOT, rel_path)
@@ -263,6 +256,7 @@ def process_file(rel_path: str) -> dict | None:
     body = normalize_text(" ".join(parser.body_chunks))
 
     # Trim body to a reasonable size (the index is downloaded by every visitor).
+    # 4000 chars per page × 23 pages ≈ 92 KB pre-gzip, ~25 KB gzipped. Acceptable.
     MAX_BODY = 4000
     if len(body) > MAX_BODY:
         body = body[:MAX_BODY]
@@ -270,19 +264,20 @@ def process_file(rel_path: str) -> dict | None:
     url_path = derive_url_from_path(rel_path)
 
     return {
-        "url":         url_path,
-        "title":       title_clean or rel_path,
+        "url": url_path,
+        "title": title_clean or rel_path,
         "description": parser.description,
-        "section":     derive_section(url_path),
-        "h1":          parser.h1,
-        "headings":    parser.headings[:20],
-        "body":        body,
+        "section": derive_section(url_path),
+        "h1": parser.h1,
+        "headings": parser.headings[:20],  # cap
+        "body": body,
     }
 
 
 def main():
     pages = []
     for dirpath, dirnames, filenames in os.walk(REPO_ROOT):
+        # Prune excluded dirs in-place
         dirnames[:] = [d for d in dirnames if d not in EXCLUDE_DIRS and not d.startswith(".")]
         for fn in filenames:
             if not fn.endswith(".html"):
@@ -290,18 +285,19 @@ def main():
             if fn in EXCLUDE_FILES:
                 continue
             full = os.path.join(dirpath, fn)
-            rel  = os.path.relpath(full, REPO_ROOT)
+            rel = os.path.relpath(full, REPO_ROOT)
             page = process_file(rel)
             if page:
                 pages.append(page)
 
+    # Sort by URL for stable output
     pages.sort(key=lambda p: p["url"])
 
     out = {
         "generated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "site":      SITE_URL,
-        "count":     len(pages),
-        "pages":     pages,
+        "site": SITE_URL,
+        "count": len(pages),
+        "pages": pages,
     }
 
     os.makedirs(os.path.dirname(INDEX_OUT), exist_ok=True)
@@ -309,7 +305,7 @@ def main():
         json.dump(out, f, ensure_ascii=False, separators=(",", ":"))
 
     size_kb = os.path.getsize(INDEX_OUT) / 1024
-    print(f"Wrote {INDEX_OUT}")
+    print(f"✓ Wrote {INDEX_OUT}")
     print(f"  Pages indexed: {len(pages)}")
     print(f"  File size:     {size_kb:.1f} KB")
 
