@@ -46,6 +46,25 @@ const VIEWPORTS = [
   { name: 'desktop-1920', width: 1920, height: 1080 },
 ];
 
+// PUBLIC_PATHS — exhaustive list of pages that exist on the live site.
+//
+// INTENTIONALLY EXCLUDED — developer scaffolding only, never deployed as
+// public URLs. Do NOT add any of these paths here:
+//
+//   assets/templates/template--case-study.html
+//   assets/templates/template--error.html
+//   assets/templates/template--holding.html
+//   assets/templates/template--homepage.html
+//   assets/templates/template--hub.html
+//   assets/templates/template--interior-form.html
+//   assets/templates/template--interior-single.html
+//   assets/templates/template--lens-detail.html
+//   assets/templates/template--utility.html
+//
+// These files are developer scaffolding (copy-paste starters for new pages).
+// They contain placeholder tokens (e.g. [[PAGE-TITLE]]) that would produce
+// false lint failures, and they have no canonical URL on the live site.
+// Keep them out of this list permanently.
 const PUBLIC_PATHS = [
   '/',
   '/about/',
@@ -74,6 +93,15 @@ const PUBLIC_PATHS = [
   '/404.html',
   '/under-construction.html',
 ];
+
+// Guard: catch any accidental addition of template paths at startup.
+// Templates live in assets/templates/ and are never public pages.
+const _badPaths = PUBLIC_PATHS.filter(p => p.startsWith('/assets/templates'));
+if (_badPaths.length > 0) {
+  console.error('ERROR: PUBLIC_PATHS contains template scaffolding paths — remove them:');
+  _badPaths.forEach(p => console.error('  ', p));
+  process.exit(1);
+}
 
 const RESULTS_DIR    = resolve(ROOT, 'assets/docs/responsive-qa');
 const RESULTS_FILE   = resolve(RESULTS_DIR, 'results.json');

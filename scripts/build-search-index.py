@@ -28,7 +28,8 @@ REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SITE_URL = "https://askjamie.bot"
 INDEX_OUT = os.path.join(REPO_ROOT, "assets", "data", "search-index.json")
 
-EXCLUDE_DIRS = {".git", ".local", "attached_assets", "tools", "node_modules"}
+EXCLUDE_DIRS = {".git", ".local", "attached_assets", "tools", "node_modules",
+                "templates"}  # assets/templates/ = developer scaffolding, never public pages
 EXCLUDE_FILES = {"404.html", "under-construction.html"}
 
 STRIP_TAGS = {"script", "style", "nav", "header", "footer", "noscript", "svg"}
