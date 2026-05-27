@@ -48,6 +48,78 @@ uri = "file://assets/img/og/og-aj03-sleuth-1200x630.png"
 type = "image"
 title = "og aj03 sleuth banner"
 
+[[generated]]
+id = "GsvsVYDlpOdEbpXDuiJz_"
+uri = "file://assets/img/og/og-brg01-lego-1200x630.png"
+type = "image"
+title = "og brg01 lego brandguard"
+
+[[generated]]
+id = "gIp7StnpwQUvITR9_s10q"
+uri = "file://assets/img/og/og-brg02-starbucks-1200x630.png"
+type = "image"
+title = "og brg02 starbucks brandguard"
+
+[[generated]]
+id = "oXLn3tStvPB12XBgeDJwa"
+uri = "file://assets/img/og/og-brg03-brooks-running-1200x630.png"
+type = "image"
+title = "og brg03 brooks running brandguard"
+
+[[generated]]
+id = "0iGsiEaLdzUQBuzWmffDQ"
+uri = "file://assets/img/og/og-brg04-ping-1200x630.png"
+type = "image"
+title = "og brg04 ping brandguard"
+
+[[generated]]
+id = "nmBqRg9uLXlmuqyAcz3Bu"
+uri = "file://assets/img/og/og-brg05-costco-1200x630.png"
+type = "image"
+title = "og brg05 costco brandguard"
+
+[[generated]]
+id = "wUCL02vYdtpD5e8dEtY8z"
+uri = "file://assets/img/og/og-brg06-hershey-1200x630.png"
+type = "image"
+title = "og brg06 hershey brandguard"
+
+[[generated]]
+id = "gEmhCW8r2PxMV4BXXzW3m"
+uri = "file://assets/img/og/og-brg07-lvmh-1200x630.png"
+type = "image"
+title = "og brg07 lvmh brandguard"
+
+[[generated]]
+id = "WPLXtxzKMurvErode6xQB"
+uri = "file://assets/img/og/og-brg08-dollar-general-1200x630.png"
+type = "image"
+title = "og brg08 dollar general brandguard"
+
+[[generated]]
+id = "Zo52YLbZv49U0RwHyy4JN"
+uri = "file://assets/img/og/og-brg09-coca-cola-1200x630.png"
+type = "image"
+title = "og brg09 coca cola brandguard"
+
+[[generated]]
+id = "ae0RN5O-ilrf0veUQQ31X"
+uri = "file://assets/img/og/og-brg10-discount-tire-1200x630.png"
+type = "image"
+title = "og brg10 discount tire brandguard"
+
+[[generated]]
+id = "f3OjO7On-g9cRw2qPs_7N"
+uri = "file://assets/img/og/og-brg11-scheels-1200x630.png"
+type = "image"
+title = "og brg11 scheels brandguard"
+
+[[generated]]
+id = "5RuMusNGCaqww5-BhHxTj"
+uri = "file://assets/img/og/og-brg12-mathews-archery-1200x630.png"
+type = "image"
+title = "og brg12 mathews archery brandguard"
+
 [[outputs]]
 id = "uzXkx6Oj7m819VTWK0-3A"
 uri = "file://askjamie-replit-theme.json"
