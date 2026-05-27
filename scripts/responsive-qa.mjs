@@ -71,6 +71,8 @@ const PUBLIC_PATHS = [
   '/lens-system/okhp3-brandguard/discount-tire/',
   '/lens-system/okhp3-brandguard/scheels/',
   '/lens-system/okhp3-brandguard/mathews-archery/',
+  '/404.html',
+  '/under-construction.html',
 ];
 
 const RESULTS_DIR    = resolve(ROOT, 'assets/docs/responsive-qa');
@@ -293,7 +295,9 @@ async function staticAnalysis() {
   let pagesFound  = 0;
 
   for (const path of PUBLIC_PATHS) {
-    const fsPath = resolve(ROOT, path.replace(/^\//, ''), 'index.html');
+    const fsPath = path.endsWith('.html')
+      ? resolve(ROOT, path.replace(/^\//, ''))
+      : resolve(ROOT, path.replace(/^\//, ''), 'index.html');
     if (!existsSync(fsPath)) {
       console.log(`  SKIP  ${path} — file not found`);
       continue;
