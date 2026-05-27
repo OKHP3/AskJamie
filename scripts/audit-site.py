@@ -188,7 +188,7 @@ PLACEHOLDER_PATTERNS = [
 BARE_NOOPENER = re.compile(r'\brel="noopener"(?!\s*noreferrer)')
 
 # Link text patterns that are bare/generic and fail WCAG 2.4.4.
-# aria-label overrides visible text, so labelled arrows are safe.
+# aria-label overrides visible text, so labeled arrows are safe.
 BARE_LINK_TEXTS = frozenset({
     "read more", "click here", "here", "→",
     "↑", "↓", "←", "↗", "↘",
@@ -225,7 +225,7 @@ def audit_page(path: Path) -> List[str]:
 
     # Bare / generic link text — fails WCAG 2.4.4 (Link Purpose)
     # aria-label (if present) is used as the accessible label,
-    # which means labelled navigation arrows are not flagged.
+    # which means labeled navigation arrows are not flagged.
     for _lm in re.finditer(r'<a\b([^>]*)>(.*?)</a>', src,
                            re.DOTALL | re.IGNORECASE):
         _attrs = _lm.group(1)

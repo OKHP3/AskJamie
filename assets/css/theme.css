@@ -503,7 +503,7 @@ button {
   padding: 0.25rem 0;
 }
 
-/* Desktop dropdown behaviour */
+/* Desktop dropdown behavior */
 @media (min-width: 768px) {
   .primary-nav .has-submenu > .submenu {
     position: absolute;
