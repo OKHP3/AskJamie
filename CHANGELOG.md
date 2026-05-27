@@ -4,6 +4,55 @@ All notable changes to the **AskJamie™** public repository are recorded here.
 
 ## [Unreleased]
 
+## [1.1] — 2026-05-27 — Accessibility & semantic polish (Task #15)
+
+### Changed
+- **BrandGuard hub case-study grid** (`lens-system/okhp3-brandguard/index.html`) —
+  converted `<div class="grid grid-3 brandguard-cases-grid">` to a `<ul>` with
+  each of the 13 case-study cards wrapped in `<li>`. Screen readers now announce
+  "list, 13 items" and navigate by card; visual layout unchanged.
+- **Universe Mermaid scroll wrapper** (`universe/index.html`) — wrapped the
+  `<div class="mermaid">` block in `<div class="mermaid-scroll-wrap">` to prevent
+  page-wide horizontal overflow on 360–768 px viewports.
+- **Search page heading order** (`search/index.html`) — added
+  `<h2 class="sr-only">Search results</h2>` between the `<h1>` and the results
+  area to close the h1→h3 (footer) skip that was unique to the search page.
+- **`assets/css/theme.css`** — `.brandguard-cases-grid` gains `list-style:none;
+  padding:0;` plus `>li{display:flex}` and `>li>.brandguard-case-card{flex:1}` so
+  the flex-grid layout is visually unchanged. Added `.mermaid-scroll-wrap
+  {overflow-x:auto; -webkit-overflow-scrolling:touch}`.
+
+### Validated
+- `python3 scripts/audit-site.py --quiet` → 0 issues (26 HTML pages)
+- `node scripts/responsive-qa.mjs --static` → 208/208 pass
+- Heading-order audit script → no skips across all 26 pages
+- No generic link text ("read more", "click here") found anywhere
+
+---
+
+## [1.0] — 2026-05-27 — CTA hierarchy, Ko-fi callout, BFS ToC nav (Task #12)
+
+### Changed
+- **Homepage CTA hierarchy** (`index.html`) — primary CTA is now the BrandGuard™
+  button (`btn-primary`); Lens System button demoted to `btn-secondary`. Aligns
+  the homepage hierarchy with the site's strongest portfolio signal.
+- **BrandGuard demo notice order** — on all 13 BrandGuard case pages the demo
+  notice block now appears at the top of `<main>` (before the hero), ensuring it
+  is the first thing a visitor sees on every case study.
+
+### Added
+- **Ko-fi callout section** (`index.html`) — new "Support the work" section on
+  the homepage with a Ko-fi CTA linking to `https://ko-fi.com/overkillhillp3`.
+- **BFS page in-page navigation** (`bfs-framing-intelligent-futures/index.html`)
+  — table-of-contents nav block at the top linking to all 5 major content sections,
+  plus back-to-top anchor links at the close of each section.
+
+### Validated
+- `python3 scripts/audit-site.py --quiet` → 0 issues (26 HTML pages)
+- `node scripts/responsive-qa.mjs --static` → 208/208 pass
+
+---
+
 ## [0.9] — 2026-05-26 — Site Polish & Responsive QA (Task #1)
 
 ### Removed

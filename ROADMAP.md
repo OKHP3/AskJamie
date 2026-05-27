@@ -4,37 +4,55 @@ This roadmap outlines the near-term public direction for the **AskJamie™** rep
 
 ## Current
 - BrandGuard™ case study series — ongoing documentation
-- Quality gates: `scripts/audit-site.py` v0.8 runs clean (0 issues across
-  17 quality gates); re-run on every meaningful HTML change
+- Quality gates: `scripts/audit-site.py` runs clean (0 issues across 33 pages);
+  re-run on every meaningful HTML change
+- Responsive QA: `node scripts/responsive-qa.mjs --static` → 208/208 pass;
+  run full Playwright pass after each major round of edits
 
 ## Next
-- Create 1200×630 landscape OG images for all pages (currently square 1024×1024)
-- Review `assets/docs/image-usage-report.md` and prune unreferenced brand image
-  variants once cross-checked against off-repo uses (sister sites,
-  social cards, marketing materials)
-- Submit `sitemap.xml` to Google Search Console and Bing Webmaster Tools
-- Mirror v0.8 changes (modern baseline: CSP/referrer meta, image
-  loading attrs, prefers-reduced-motion umbrella, expanded auditor)
-  into the OverKill Hill and Glee-fully repos
-- Expand Lens System with new BrandGuard™ case studies
-- **CSP hardening (future)** — refactor the 26 lazy-CSS
-  `onload="this.media='all'"` inline handlers into an
-  `assets/js/lazy-css.js` helper so `script-src 'unsafe-inline'` can be
-  dropped from the CSP. Low-risk but touches every page.
-- **Self-hosted fonts (privacy + perf)** — currently loads Baloo 2,
-  Open Sans, and Kalam from `fonts.googleapis.com` /
-  `fonts.gstatic.com`. Self-hosting under `assets/fonts/` would remove
-  the third-party privacy boundary, eliminate two extra DNS lookups,
-  and let the CSP drop those external `style-src` / `font-src` entries.
+- **OG images** — commission 1200×630 landscape social-card images for the
+  3 Lens System GPT pages and 12 BrandGuard case studies (currently square
+  1024×1024 for all). See `assets/docs/og-image-requirements.md`.
+- **Submit sitemap** to Google Search Console and Bing Webmaster Tools.
+- **Heading-order auditor** (Task #17) — add automated h1→h2→h3 skip detection
+  to `scripts/audit-site.py` so regressions are caught at CI time.
+- **Generic-link-text auditor** (Task #18) — extend the auditor to flag bare
+  "read more" / "click here" link text across all pages.
+- **Sister-site sync** (Task #5) — document the `audit-site.py` and
+  `build-search-index.py` sync workflow for the OverKill Hill and
+  Glee-fully repos; apply `theme.css` / `app.js` patches.
+- **Developer template fixes** (Tasks #10, #13) — add the 9 `assets/templates/`
+  files to the QA exclusion list; apply Phase 1 baseline fixes to them.
+- **CSP hardening** — refactor the `onload="this.media='all'"` lazy-CSS inline
+  handlers into `assets/js/lazy-css.js` so `script-src 'unsafe-inline'` can
+  be dropped. Low-risk but touches every page.
+- **Self-hosted fonts** — move Baloo 2, Open Sans, and Kalam from
+  `fonts.googleapis.com` to `assets/fonts/` to eliminate the third-party
+  privacy boundary and two extra DNS lookups.
+- **Expand Lens System** with additional BrandGuard™ case studies.
 
 ## Later
 - Publish a dedicated "How AskJamie Works" deep-dive page
 - Cross-link more explicitly between AskJamie, overkillhill.com, and glee-fully.tools
 - Evaluate adding a public prompt library or recipe section
 - Add progressive web app install flow (PWA manifest + service worker)
-- Audit and prune the ~85 unused brand image variants
+- Audit and prune the ~75 unused brand image variants (see `assets/docs/image-usage-report.md`)
+- GA disclosure section in `legal/index.html` (GDPR/CCPA best practice)
+- Organization JSON-LD `sameAs` — add social profile URLs (LinkedIn, X, Facebook, YouTube)
 
 ## Shipped
+- **v1.1 (2026-05-27)** — Accessibility & semantic polish: BrandGuard hub
+  grid → semantic `<ul>`, Universe Mermaid scroll wrapper, search page
+  heading-order fix. 208/208 QA, 0 audit issues.
+- **v1.0 (2026-05-27)** — CTA hierarchy (BrandGuard primary), Ko-fi callout
+  on homepage, BFS in-page ToC nav, BrandGuard demo notice reordered to
+  top of all 13 case pages. 208/208 QA, 0 audit issues.
+- **v0.9 (2026-05-26)** — Construction overlays removed, BFS legal copy fixed,
+  copyright year fallback, GA4 custom events, contact inquiry cards, footer
+  `/search/` link, `grid-3` tablet breakpoint fix, responsive QA script.
+- **v0.8 (2026-05-12)** — GTM moved to `<head>`, deprecated meta tags removed
+  (8 types × 22–25 pages), `legal/index.html` head-tag fix, 5 titles trimmed,
+  root-relative path enforcement, search index rebuilt (128.5 KB, 33 pages).
 - **v0.7 (2026-05-03)** — Audit tooling, BrandGuard demo notice on all
   13 case pages, multi-CTA homepage hero, site-wide theme-color sweep,
   4 broken portfolio links fixed. See `AUDIT-ASKJAMIE-FINAL.md`.
