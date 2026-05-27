@@ -560,7 +560,36 @@ the repo.
 
 ---
 
-## 7 · Execution log — Task #4 (2026-05-26)
+## 7 · Execution log
+
+### Task #21 — Tooling scripts staged (2026-05-27)
+
+Three OKH-adapted copies of the tooling scripts have been staged in
+`assets/docs/sister-site-sync/okh/` alongside the existing CSS/JS patches.
+The OKH sync package is now complete.
+
+| File staged | Per-site changes applied |
+|-------------|--------------------------|
+| `okh/audit-site.py` | `EXPECTED_THEME_COLOR = "#c46a2c"` (OKH rust-orange); `EXPECTED_BG_COLOR = "#2a2320"` (OKH espresso) |
+| `okh/build-search-index.py` | `SITE_URL = "https://overkillhill.com"`; OKH brand suffixes in `strip_brand_suffix()`; OKH section map in `derive_section()` |
+| `okh/apply-modern-baseline.py` | `THEME_COLOR_LEGACY_RE` matches `#c46a2c`; `THEME_COLOR_PAIR` light=`#f6f2ee` / dark=`#c46a2c` |
+
+**VERIFY before dropping into the OKH repo:**
+
+1. Open any OKH HTML page and check `name="theme-color"`. If the content value
+   is not `#c46a2c`, update `EXPECTED_THEME_COLOR` in `audit-site.py` and
+   `THEME_COLOR_LEGACY_RE` in `apply-modern-baseline.py` to match.
+2. Check OKH page `<title>` tags for the exact brand suffix used. Update
+   `strip_brand_suffix()` in `build-search-index.py` if the suffix strings differ.
+3. Confirm the `derive_section()` map covers all top-level OKH directories.
+4. Run each script once and verify 0 issues on the second run (idempotency check).
+
+All other logic (HTML parsing, CSP, image attributes, sitemap/index
+reconciliation) is verbatim from the AskJamie originals.
+
+---
+
+### Task #4 — CSS and JS patches applied (2026-05-26)
 
 ### OverKill Hill (`overkillhill.com` → `OKHP3/OverKill-Hill`)
 
