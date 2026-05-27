@@ -43,7 +43,7 @@ This roadmap outlines the near-term public direction for the **AskJamie™** rep
 ## Shipped
 - **v1.2 (2026-05-27)** — Documentation refresh: README expanded, ROADMAP
   updated, `llms.txt` Last-Updated field, CHANGELOG consolidated, portfolio-fit
-  audit document (`AUDIT-ASKJAMIE-PORTFOLIO-FIT.md`) written, auditor `.agents`
+  audit document (`assets/docs/audit-askjamie-portfolio-fit.md`) written, auditor `.agents`
   exclusion fix. 0 audit issues.
 - **v1.1 (2026-05-27)** — Accessibility & semantic polish: BrandGuard hub
   grid → semantic `<ul>`, Universe Mermaid scroll wrapper, search page

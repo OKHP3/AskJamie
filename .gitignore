@@ -79,3 +79,13 @@ secrets.json
 .tmp/
 .scratch/
 assets/docs/responsive-qa/results.json
+
+# ---------- Alternate spellings / additional baseline entries ----------
+attached-assets/
+_unused/
+unused/
+test-results/
+playwright-report/
+coverage/
+.next/
+.vite/

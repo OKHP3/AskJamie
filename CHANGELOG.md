@@ -18,7 +18,7 @@ All notable changes to the **AskJamie™** public repository are recorded here.
   comprehensively; [1.1] and [1.2] entries added.
 
 ### Added
-- **`AUDIT-ASKJAMIE-PORTFOLIO-FIT.md`** — structured per-page portfolio-fit
+- **`assets/docs/audit-askjamie-portfolio-fit.md`** — structured per-page portfolio-fit
   audit of all 25 public pages. Each page assessed across five dimensions:
   Portfolio Role, Strength, Weakness, Risk, Required Fix. Summary scorecard:
   19 portfolio-ready · 5 partial · 0 fails. Prioritised remediation list
@@ -151,8 +151,8 @@ Ko-fi callout, and BFS deep-content navigation.
 - **`scripts/responsive-qa.mjs`**: Playwright + static-fallback QA script
   (24 pages × 8 viewports).
 - **`assets/docs/og-image-requirements.md`**: spec for 1200×630 OG images.
-- **`AUDIT-ASKJAMIE-2026-RESPONSIVE.md`** and
-  **`AUDIT-ASKJAMIE-2026-REPLIT-FIXES.md`**: QA results + full fix log.
+- **`assets/docs/audit-askjamie-2026-responsive.md`** and
+  **`assets/docs/audit-askjamie-2026-replit-fixes.md`**: QA results + full fix log.
 
 ### Updated
 - Search index rebuilt: 33 pages, 130.5 KB.

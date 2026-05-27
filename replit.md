@@ -241,11 +241,11 @@ applied most of the above.  Safe to re-run any time.
 - **Sister-site sync:** v0.9 patches applied to OKH (`OKHP3/OverKill-Hill`
   cloned and patched — Task #4, 2026-05-26). Patched files ready to commit:
   `assets/docs/sister-site-sync/okh/theme.css` and `app.js`. Unified patch
-  files at `assets/docs/sister-site-sync/okh/*.patch`. See `SISTER-SITE-SYNC.md`
+  files at `assets/docs/sister-site-sync/okh/*.patch`. See `assets/docs/sister-site-sync.md`
   for full details and verification checklist. Glee (`OKHP3/Glee-fullyTools`)
   repo was empty — no CSS/JS to patch; apply when files are committed there.
   Tooling scripts (`audit-site.py`, `build-search-index.py`, `apply-modern-baseline.py`)
-  documented in `SISTER-SITE-SYNC.md` § 6 (Task #5, 2026-05-27). Per-site constants
+  documented in `assets/docs/sister-site-sync.md` § 6 (Task #5, 2026-05-27). Per-site constants
   to edit: `EXPECTED_THEME_COLOR`, `SITE_URL`, `strip_brand_suffix()` suffixes,
   `THEME_COLOR_LEGACY_RE`. All other logic is safe to copy verbatim.
 
@@ -276,7 +276,7 @@ search-index change. Current state: **0 issues across 26 HTML files.**
 
 ## Latest Audit Cycle (v0.8 — 2026-05-12)
 
-See `AUDIT-STANDARDS-REPORT.md` for the full 7-domain Standards &
+See `assets/docs/audit-standards-report.md` for the full 7-domain Standards &
 Consistency Audit write-up.  61 checks across 26 pages.
 37 PASS · 14 FIXED · 10 FLAGGED.  Auditor at 0 issues on close.
 
@@ -328,7 +328,7 @@ Flagged for owner action (see report):
 
 ## Task #1 Polish Pass (v0.9 — 2026-05-26)
 
-See `AUDIT-ASKJAMIE-2026-REPLIT-FIXES.md` for the full fix log, deferred
+See `assets/docs/audit-askjamie-2026-replit-fixes.md` for the full fix log, deferred
 items, and Notion sync notes.
 
 ### Changes applied
@@ -366,7 +366,7 @@ All events are guarded by `typeof gtag === 'function'` via `window._gtag_event()
 1. Commission 1200×630 OG images — see `assets/docs/og-image-requirements.md`
 2. Run full Playwright QA: `npm install -D playwright && npx playwright install chromium && node scripts/responsive-qa.mjs`
 3. Submit sitemap to Google Search Console and Bing Webmaster Tools
-4. Sync `theme.css` and `app.js` changes to sister sites — see `SISTER-SITE-SYNC.md` ✅ (guide created Task #4)
+4. Sync `theme.css` and `app.js` changes to sister sites — see `assets/docs/sister-site-sync.md` ✅ (guide created Task #4)
 5. Verify GA4 events in DebugView post-deployment
 6. Add Notion catalog entry for BRG12 Mathews Archery if missing
 
@@ -374,4 +374,4 @@ All events are guarded by `typeof gtag === 'function'` via `window._gtag_event()
 
 - ✅ GA custom event tracking (item 5 from v0.8 flagged list)
 - ✅ BrandGuard hub relative case-study links → root-relative (item 7)
-- ✅ Sister-site sync guide created (Task #4) — `SISTER-SITE-SYNC.md`
+- ✅ Sister-site sync guide created (Task #4) — `assets/docs/sister-site-sync.md`
