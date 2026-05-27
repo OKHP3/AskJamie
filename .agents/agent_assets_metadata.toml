@@ -30,6 +30,24 @@ uri = "file://assets/img/og/og-contact-1200x630.png"
 type = "image"
 title = "contact OG card"
 
+[[generated]]
+id = "1cDRGKGEvLNf8JccfIE9Y"
+uri = "file://assets/img/og/og-aj01-resume-rep-1200x630.png"
+type = "image"
+title = "og aj01 resume rep banner"
+
+[[generated]]
+id = "TKNsqipSGpxSMfHZJUds_"
+uri = "file://assets/img/og/og-aj02-portfolio-1200x630.png"
+type = "image"
+title = "og aj02 portfolio banner"
+
+[[generated]]
+id = "Bf9pH1JCqZdrS2bL4XwW2"
+uri = "file://assets/img/og/og-aj03-sleuth-1200x630.png"
+type = "image"
+title = "og aj03 sleuth banner"
+
 [[outputs]]
 id = "uzXkx6Oj7m819VTWK0-3A"
 uri = "file://askjamie-replit-theme.json"
