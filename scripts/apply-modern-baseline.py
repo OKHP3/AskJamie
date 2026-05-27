@@ -66,7 +66,7 @@ VIEWPORT_RE = re.compile(
 )
 
 # theme-color: split a single legacy tag into a light/dark media-queried
-# pair so the browser chrome matches the user's colour-scheme preference
+# pair so the browser chrome matches the user's color-scheme preference
 # (modern baseline; the site already declares `color-scheme: light dark`).
 # Light = cream surface, Dark = muted teal — matches existing brand palette.
 THEME_COLOR_LEGACY_RE = re.compile(

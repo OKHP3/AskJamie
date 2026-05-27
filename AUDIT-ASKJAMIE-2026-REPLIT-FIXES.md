@@ -61,7 +61,7 @@ with `typeof gtag === 'function'`. Events added:
 | `search_submit` | Search query run (§1a `runSearch()`, fires only when index is loaded) |
 
 Ko-fi, Fiverr, ChatGPT GPT, LinkedIn, YouTube, Facebook outbound links are
-labelled specifically via the `event_label` field in `outbound_click`.
+labeled specifically via the `event_label` field in `outbound_click`.
 
 ### Step 5 — Contact page upgrade (contact/index.html)
 

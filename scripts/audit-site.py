@@ -241,7 +241,7 @@ def audit_page(path: Path) -> List[str]:
     # theme-color check — modern pattern uses a light/dark media-queried
     # pair. Accept both the legacy single tag and the new pair, but require
     # the brand teal to appear in at least one tag (it's the dark-mode and
-    # historical default colour).
+    # historical default color).
     theme_colors = re.findall(
         r'<meta\s+name="theme-color"\s+[^>]*content="([^"]+)"', src
     )

@@ -206,7 +206,7 @@ Ko-fi callout, and BFS deep-content navigation.
   cream `#f5efe1` for `(prefers-color-scheme: light)` and the existing
   teal `#2c5e6f` for `(prefers-color-scheme: dark)`. Browser chrome
   (Android URL bar, iOS Safari, desktop PWAs) now matches the user's
-  colour-scheme preference, complementing the existing
+  color-scheme preference, complementing the existing
   `color-scheme: light dark` declaration in `theme.css`.
 - **Accessibility** — `assets/css/theme.css` now has a global
   `prefers-reduced-motion: reduce` umbrella rule that neutralises
@@ -217,7 +217,7 @@ Ko-fi callout, and BFS deep-content navigation.
   * `.gitignore` rewritten — comprehensive 2025 patterns covering
     OS junk (`.DS_Store`, `Thumbs.db`), editor backups (`.bak`,
     `.swp`), Python caches (`__pycache__`), Node cruft, regenerated
-    artifacts (`assets/docs/audit-report.md`), and secrets (defence in
+    artifacts (`assets/docs/audit-report.md`), and secrets (defense in
     depth). Mirrors the cruft patterns the auditor scans for.
   * `.editorconfig` — UTF-8, LF, final newline, 2-space default
     (4-space Python, tab Makefile), aligned with the existing

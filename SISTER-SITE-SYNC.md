@@ -293,7 +293,7 @@ EXPECTED_THEME_COLOR = "#2c5e6f"   # AskJamie muted teal
 EXPECTED_BG_COLOR    = "#f5efe1"   # AskJamie cream
 ```
 
-Replace with the target site's brand colours. The auditor checks that at least
+Replace with the target site's brand colors. The auditor checks that at least
 one `<meta name="theme-color">` tag resolves to `EXPECTED_THEME_COLOR`, so this
 **must** match the dark-mode (or single) `theme-color` declared in the site's
 HTML.
@@ -545,7 +545,7 @@ the repo.
 - **If the sister site has not yet applied the v0.9 `app.js` consolidation:**
   keep `analytics.js` as-is until the consolidation is done. The two approaches
   are mutually exclusive — do not mix an unconsolidated `analytics.js` with the
-  consolidated `app.js` or GA4 will initialise twice.
+  consolidated `app.js` or GA4 will initialize twice.
 
 ---
 

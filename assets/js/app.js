@@ -17,7 +17,7 @@
 
    No brand-specific JS lives here.  Brand differences are expressed entirely
    through CSS body classes (`.askjamie-main`, `.glee-main`) which the
-   scripts below read at runtime to choose the right behaviour.
+   scripts below read at runtime to choose the right behavior.
 */
 
 /* ======================================================================
