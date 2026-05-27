@@ -2,287 +2,220 @@
 
 **Audit date:** 2026-05-27
 **Auditor:** Main agent (Task #16)
-**Scope:** All 26 public HTML pages evaluated against seven portfolio-fit criteria.
+**Scope:** 25 public HTML pages evaluated for portfolio readiness.
 **Validators at close:** `audit-site.py` → 0 issues · `responsive-qa.mjs --static` → 208/208 pass
 
----
+Each page is assessed across five dimensions:
 
-## Criteria
+| Field | What it captures |
+|-------|-----------------|
+| **Portfolio Role** | What job this page does in the overall portfolio story |
+| **Strength** | What it does particularly well right now |
+| **Weakness** | The most significant gap vs. portfolio-grade standard |
+| **Risk** | What a recruiter, client, or press visitor might notice negatively |
+| **Required Fix** | The single highest-leverage remediation |
 
-| # | Criterion | What "PASS" looks like |
-|---|-----------|------------------------|
-| P1 | **Purpose clarity** | A visitor can state the page's job in one sentence within 5 seconds |
-| P2 | **Content completeness** | No placeholders, stub sections, or "coming soon" body copy |
-| P3 | **CTA presence** | At least one actionable next step visible above the fold or at section end |
-| P4 | **Visual hierarchy** | h1 → h2 → h3 order respected; no heading skips; scannable structure |
-| P5 | **Navigation consistency** | Primary nav + footer nav present and correct; skip link present |
-| P6 | **SEO / meta quality** | Title ≤ 60 chars, description ≤ 165 chars, canonical set, OG image resolves |
-| P7 | **Technical baseline** | 0 audit issues; all images have alt/width/height/loading; CSP + referrer meta |
-
-Rating scale: ✅ Pass · ⚠️ Partial · ❌ Fail · — Not applicable
+Rating: ✅ Portfolio-ready · ⚠️ Partial — one gap · ❌ Needs work
 
 ---
 
-## Core pages (7)
+## Core Pages
 
-### `/` — Homepage
+### `/` — Homepage ✅
 
-| Criterion | Rating | Notes |
-|-----------|--------|-------|
-| P1 Purpose clarity | ✅ | Hero copy lands AskJamie™ as "thinking partner" immediately |
-| P2 Content completeness | ✅ | All sections populated; Ko-fi callout added (v1.0) |
-| P3 CTA presence | ✅ | BrandGuard™ (primary) + Lens System (secondary) + Contact cluster |
-| P4 Visual hierarchy | ✅ | h1 hero → h2 section headers throughout |
-| P5 Nav consistency | ✅ | Primary nav + footer nav + skip link present |
-| P6 SEO / meta | ✅ | Title 28 chars · desc 132 chars · canonical set |
-| P7 Technical baseline | ✅ | 0 audit issues |
-
-**Summary:** The strongest page on the site. CTA hierarchy was corrected in v1.0 (BrandGuard now primary). No gaps.
+| | |
+|---|---|
+| **Portfolio Role** | First impression and routing hub — must communicate what AskJamie is and direct visitors to the strongest portfolio content |
+| **Strength** | CTA hierarchy corrected (v1.0): BrandGuard™ is now primary, Lens System secondary. Ko-fi callout adds a credible creator economy signal. Hero copy lands within 5 seconds. |
+| **Weakness** | The `#fit` "Where it fits" section uses a three-card grid explaining the ecosystem but has no outbound links in the cards themselves — reads as content, not navigation. |
+| **Risk** | Low. A visitor who reads the hero and clicks the primary CTA lands on BrandGuard — the strongest piece of work. |
+| **Required Fix** | Link each `#fit` card to its corresponding site (`overkillhill.com`, `glee-fully.tools`, and `/lens-system/`) so the ecosystem positioning is actionable. |
 
 ---
 
-### `/about/` — About
+### `/about/` — About ⚠️
 
-| Criterion | Rating | Notes |
-|-----------|--------|-------|
-| P1 Purpose clarity | ✅ | "The strategic layer behind the stack" — immediately clear |
-| P2 Content completeness | ✅ | Three card-grid sections; Who Jamie is / What it's not / Who it's for |
-| P3 CTA presence | ⚠️ | No explicit CTA at page bottom; visitor reads to the end and stalls |
-| P4 Visual hierarchy | ✅ | h1 → h2 (× 4) → h3 (× 9 cards); correct order |
-| P5 Nav consistency | ✅ | Full nav + footer + skip link |
-| P6 SEO / meta | ✅ | Title 44 chars · desc 149 chars |
-| P7 Technical baseline | ✅ | 0 audit issues |
-
-**Summary:** Solid page. Gap: no bottom CTA. Recommended addition: a "Explore the Lens System →" or "Contact Jamie →" button at the close of the last section.
+| | |
+|---|---|
+| **Portfolio Role** | Depth page for visitors who want to understand Jamie's positioning, scope, and voice before engaging |
+| **Strength** | Three card-grid sections ("Who Jamie is", "What AskJamie™ is not", "Who it's for") are well-written, specific, and differentiate the persona clearly. |
+| **Weakness** | No CTA at page end. A visitor who reads all three sections arrives at a dead end with no prompted next step. |
+| **Risk** | A recruiter or client reading the full About page has to self-navigate to the portfolio — momentum lost. |
+| **Required Fix** | Add a "Explore the Lens System →" `btn-secondary` link at the close of the last section (see Task #19). |
 
 ---
 
-### `/universe/` — OKHP³ Universe
+### `/universe/` — OKHP³ Universe ⚠️
 
-| Criterion | Rating | Notes |
-|-----------|--------|-------|
-| P1 Purpose clarity | ✅ | Visual map concept stated in hero copy |
-| P2 Content completeness | ✅ | Mermaid diagram + supporting prose |
-| P3 CTA presence | ⚠️ | Mermaid affiliate link present; no next-step CTA toward Lens System or contact |
-| P4 Visual hierarchy | ✅ | h1 → h2; diagram is labeled; heading order correct |
-| P5 Nav consistency | ✅ | Full nav + footer + skip link |
-| P6 SEO / meta | ✅ | Title 38 chars · desc 155 chars |
-| P7 Technical baseline | ✅ | Mermaid scroll wrapper added (v1.1); 0 audit issues |
-
-**Summary:** Unique page — the ecosystem map is a differentiator. Gap: no outbound CTA at page close to pull visitors deeper into the portfolio.
+| | |
+|---|---|
+| **Portfolio Role** | Shows the scope of the OKHP³ ecosystem — that AskJamie is part of a deliberate, multi-brand architecture, not a one-off project |
+| **Strength** | The Mermaid ecosystem diagram is a unique differentiator — no other portfolio page in this space has one. Mermaid scroll wrapper added (v1.1) makes it mobile-safe. |
+| **Weakness** | No CTA after the diagram. The Mermaid affiliate link is present but it points visitors *away* from the portfolio with no return path offered. |
+| **Risk** | Visitors who came via the diagram (search, share) see nothing that pulls them into the case studies. |
+| **Required Fix** | Add a "See the Lens System portfolio →" CTA below the Mermaid referral note (see Task #19). |
 
 ---
 
-### `/contact/` — Contact
+### `/contact/` — Contact ✅
 
-| Criterion | Rating | Notes |
-|-----------|--------|-------|
-| P1 Purpose clarity | ✅ | Six labeled inquiry-path cards make intent explicit |
-| P2 Content completeness | ✅ | All six cards complete with subject-line tags (v0.9) |
-| P3 CTA presence | ✅ | Each card includes a direct mailto: CTA |
-| P4 Visual hierarchy | ✅ | h1 → h2 (card group header) → h3 (card titles) |
-| P5 Nav consistency | ✅ | Full nav + footer + skip link |
-| P6 SEO / meta | ✅ | Title within limit · desc within limit |
-| P7 Technical baseline | ✅ | 0 audit issues |
-
-**Summary:** One of the most portfolio-ready pages after v0.9 expansion. No gaps.
+| | |
+|---|---|
+| **Portfolio Role** | Conversion page — where interested visitors become actual leads |
+| **Strength** | Six labeled inquiry-path cards (v0.9) with subject-line tags make intent explicit and lower friction. Each card's `mailto:` CTA has a pre-filled subject. |
+| **Weakness** | No social proof or reassurance copy near the CTA — nothing like "typically responds within 24 hours" or a one-line credibility signal. |
+| **Risk** | Low. The page is functional and warm. |
+| **Required Fix** | Consider adding one sentence of response-time or engagement context under the page h1. Low urgency. |
 
 ---
 
-### `/legal/` — Legal
+### `/legal/` — Legal ✅
 
-| Criterion | Rating | Notes |
-|-----------|--------|-------|
-| P1 Purpose clarity | ✅ | Terms, privacy, trademarks, BrandGuard disclaimer all labeled |
-| P2 Content completeness | ✅ | All four sections populated; "Last updated: 2026-05-03" present |
-| P3 CTA presence | — | Legal pages typically have no CTA; acceptable |
-| P4 Visual hierarchy | ✅ | h1 → h2 (sections) → h3 (subsections) |
-| P5 Nav consistency | ✅ | Full nav + footer (no /search/ link in footer — correct per QA rule) |
-| P6 SEO / meta | ✅ | Title and desc within limits |
-| P7 Technical baseline | ✅ | 0 audit issues |
-
-**Summary:** Functions correctly as a reference page. Flagged for future: GA disclosure paragraph (GDPR/CCPA best practice) — low urgency.
+| | |
+|---|---|
+| **Portfolio Role** | Trust signal — shows the site takes intellectual property, privacy, and the BrandGuard™ demonstration ethics seriously |
+| **Strength** | BrandGuard™ disclaimer is explicit and well-written ("public-source-only material; not impersonation"). Trademarks, Privacy, and Terms sections all present. |
+| **Weakness** | No GA disclosure paragraph (GDPR/CCPA best practice — flagged since v0.8). |
+| **Risk** | Low for most visitors. A privacy-focused recruiter or EU client may notice the absence. |
+| **Required Fix** | Add a short "Analytics" subsection noting GA4 usage, no first-party cookies, and link to Google's privacy policy. |
 
 ---
 
-### `/search/` — Site Search
+### `/search/` — Site Search ✅
 
-| Criterion | Rating | Notes |
-|-----------|--------|-------|
-| P1 Purpose clarity | ✅ | Hero input + label make purpose obvious |
-| P2 Content completeness | ✅ | Category chips, result cards, highlighted matches all working |
-| P3 CTA presence | ✅ | The search input itself is the CTA |
-| P4 Visual hierarchy | ✅ | h1 → sr-only h2 "Search results" added (v1.1) — no heading skips |
-| P5 Nav consistency | ✅ | Full nav + footer; skip link present |
-| P6 SEO / meta | ✅ | Title and desc within limits |
-| P7 Technical baseline | ✅ | 0 audit issues |
-
-**Summary:** Functional, useful, and now heading-order correct. No gaps.
+| | |
+|---|---|
+| **Portfolio Role** | Utility page and discoverability signal — demonstrates the site is big enough to warrant a search function and is designed for return visitors |
+| **Strength** | Category chips, highlighted matches, deep-linkable `?q=` params — all working. Heading order corrected (v1.1) so screen readers navigate correctly. |
+| **Weakness** | No "try searching for…" prompt or featured searches when the input is empty — the blank state is a missed engagement opportunity. |
+| **Risk** | Low. The blank state is clean; it just doesn't guide new visitors. |
+| **Required Fix** | Add 3–4 example search chip links below the input (e.g. "BrandGuard", "Résumé Representative", "Builders FirstSource") for discoverability. Low urgency. |
 
 ---
 
-### `/404.html` — Error page
+## Lens System Hub
 
-| Criterion | Rating | Notes |
-|-----------|--------|-------|
-| P1 Purpose clarity | ✅ | On-brand "Page not found" with Jamie voice |
-| P2 Content completeness | ✅ | Error message + homepage CTA |
-| P3 CTA presence | ✅ | "Back to homepage" button |
-| P4 Visual hierarchy | ✅ | Single h1 |
-| P5 Nav consistency | ✅ | Full nav + footer + skip link |
-| P6 SEO / meta | ✅ | `noindex` correctly set |
-| P7 Technical baseline | ✅ | 0 audit issues |
+### `/lens-system/` — Lens System Hub ✅
 
-**Summary:** Pass on all criteria.
+| | |
+|---|---|
+| **Portfolio Role** | Index page for the entire GPT portfolio — must show the scope and variety of work at a glance |
+| **Strength** | Four GPT cards are clearly differentiated. Construction overlays removed (v0.9). BrandGuard card links to the full hub, not a single case. |
+| **Weakness** | "Coming soon" buttons for the three non-live GPTs use `btn-disabled` — correct pattern — but the button text gives no ETA or invitation to follow along. |
+| **Risk** | A visitor who clicks "Coming soon" twice may not return. |
+| **Required Fix** | Consider replacing the three disabled buttons with a "Join the waitlist" mailto or Ko-fi follow link so non-live GPTs still convert. Low urgency. |
 
 ---
 
-## Lens System pages (4)
+## Lens System GPT Detail Pages
 
-### `/lens-system/` — Lens System Hub
+### `/lens-system/resume-representative/` ⚠️
 
-| Criterion | Rating | Notes |
-|-----------|--------|-------|
-| P1 Purpose clarity | ✅ | "Four lenses" concept explained in hero |
-| P2 Content completeness | ✅ | All four GPT cards populated; no stubs |
-| P3 CTA presence | ✅ | Each card links to its detail page |
-| P4 Visual hierarchy | ✅ | h1 → h2 (section headers) → h3 (card titles) |
-| P5 Nav consistency | ✅ | Full nav + footer + skip link |
-| P6 SEO / meta | ✅ | Title and desc within limits |
-| P7 Technical baseline | ✅ | 0 audit issues |
-
-**Summary:** Hub page is well-structured. No gaps.
+| | |
+|---|---|
+| **Portfolio Role** | Demonstrates the ability to translate a career into a conversational AI agent — the most directly commercial use case |
+| **Strength** | Construction overlay removed (v0.9). Page content explains the GPT's purpose and approach clearly. |
+| **Weakness** | The primary CTA button links to a GPT that may not be live — a dead link is the worst outcome on a portfolio page. |
+| **Risk** | High. A recruiter who clicks "Open GPT" and gets a 404 or error loses confidence in the entire portfolio. |
+| **Required Fix** | If GPT is not live: replace CTA with `btn-disabled` + "Coming soon" pattern (matching `lens-system/index.html` v0.6 style). If GPT is live: verify URL and update (see Task #20). |
 
 ---
 
-### `/lens-system/resume-representative/` — Résumé Representative
+### `/lens-system/professional-portfolio/` ⚠️
 
-| Criterion | Rating | Notes |
-|-----------|--------|-------|
-| P1 Purpose clarity | ✅ | GPT purpose clear in hero |
-| P2 Content completeness | ✅ | Construction overlay removed (v0.9); content-rich |
-| P3 CTA presence | ⚠️ | GPT link button present but points to a placeholder ("coming soon" state); no alternative action |
-| P4 Visual hierarchy | ✅ | Heading order correct |
-| P5 Nav consistency | ✅ | Full nav + footer + skip link |
-| P6 SEO / meta | ✅ | Within limits |
-| P7 Technical baseline | ✅ | 0 audit issues |
-
-**Summary:** Content is good. CTA gap: if GPT is not live, the "open GPT" button should be `btn-disabled` with a "Coming soon" label (matching pattern established in v0.6) rather than a dead link.
+| | |
+|---|---|
+| **Portfolio Role** | Demonstrates a "living portfolio agent" — directly relevant to the kinds of clients and employers who visit the site |
+| **Strength** | Content is specific and differentiated from the Résumé Representative. Construction overlay removed (v0.9). |
+| **Weakness** | Same dead CTA risk as Résumé Representative. |
+| **Risk** | High. Same reasoning as above. |
+| **Required Fix** | Same as Résumé Representative (see Task #20). |
 
 ---
 
-### `/lens-system/professional-portfolio/` — Professional Portfolio
+### `/lens-system/enterprise-sleuth/` ⚠️
 
-| Criterion | Rating | Notes |
-|-----------|--------|-------|
-| P1 Purpose clarity | ✅ | GPT purpose clear |
-| P2 Content completeness | ✅ | Construction overlay removed (v0.9); populated |
-| P3 CTA presence | ⚠️ | Same GPT-link placeholder state as Résumé Representative |
-| P4 Visual hierarchy | ✅ | Heading order correct |
-| P5 Nav consistency | ✅ | Full nav + footer + skip link |
-| P6 SEO / meta | ✅ | Within limits |
-| P7 Technical baseline | ✅ | 0 audit issues |
-
-**Summary:** Same CTA gap as Résumé Representative.
+| | |
+|---|---|
+| **Portfolio Role** | The most technically ambitious GPT in the portfolio — demonstrates enterprise knowledge-graph AI capability |
+| **Strength** | Strongest concept of the three GPT detail pages. "AI detective" framing is memorable. Title trimmed to 52 chars (v0.8). |
+| **Weakness** | Same dead CTA risk. The page has the most to lose from a broken button because the concept is the most impressive. |
+| **Risk** | High. A technical interviewer who reads this page and can't try the GPT is left on a cliffhanger. |
+| **Required Fix** | Same as Résumé Representative (see Task #20). |
 
 ---
 
-### `/lens-system/enterprise-sleuth/` — Enterprise Sleuth™
+## BrandGuard Hub
 
-| Criterion | Rating | Notes |
-|-----------|--------|-------|
-| P1 Purpose clarity | ✅ | "AI detective for enterprise knowledge" — strong positioning |
-| P2 Content completeness | ✅ | Construction overlay removed (v0.9); recipe pack concept explained |
-| P3 CTA presence | ⚠️ | GPT link placeholder state |
-| P4 Visual hierarchy | ✅ | Heading order correct |
-| P5 Nav consistency | ✅ | Full nav + footer + skip link |
-| P6 SEO / meta | ✅ | Title 52 chars (trimmed in v0.8) |
-| P7 Technical baseline | ✅ | 0 audit issues |
+### `/lens-system/okhp3-brandguard/` ✅
 
-**Summary:** Strongest concept of the three GPT detail pages. Same CTA gap.
+| | |
+|---|---|
+| **Portfolio Role** | The strongest single portfolio page — a hub for 13 case studies showing brand-safety AI design at scale |
+| **Strength** | All 13 cases present in semantic `<ul>` grid (v1.1). BFS featured case prominently positioned. Demo notice reordered to top of every case (v1.0). |
+| **Weakness** | No "How BrandGuard works" prose before the case grid — a visitor arriving directly must infer the methodology from card titles. |
+| **Risk** | Low. The cases speak for themselves and the BFS case is featured prominently. |
+| **Required Fix** | Consider a 2–3 sentence "BrandGuard methodology" note above the cases grid explaining the public-source-only approach. Low urgency. |
 
 ---
 
-## BrandGuard hub (1)
+## BrandGuard Case Studies (13 pages)
 
-### `/lens-system/okhp3-brandguard/` — BrandGuard Hub
+All 13 case study pages share the same structural template and passed all audit and QA checks. Common assessment:
 
-| Criterion | Rating | Notes |
-|-----------|--------|-------|
-| P1 Purpose clarity | ✅ | "AI-powered tone, ethics, and identity guardrails" — immediately clear |
-| P2 Content completeness | ✅ | All 13 case study cards present in semantic `<ul>` grid (v1.1) |
-| P3 CTA presence | ✅ | BFS featured card (primary) + 13-case grid |
-| P4 Visual hierarchy | ✅ | h1 → h2 (sections) → h3 (card titles) |
-| P5 Nav consistency | ✅ | Full nav + footer + skip link |
-| P6 SEO / meta | ✅ | Title 54 chars (trimmed in v0.8) |
-| P7 Technical baseline | ✅ | Semantic list markup added (v1.1); 0 audit issues |
+| | |
+|---|---|
+| **Portfolio Role** | Individual proof-of-concept — each case shows BrandGuard™ applied to a specific brand's tone, ethics, and identity challenges |
+| **Strength** | Demo notice at top (v1.0) makes the "public-information demonstration, not impersonation" framing the first thing visitors read. Article JSON-LD present. All descriptions ≤ 165 chars. |
+| **Weakness** | All 13 pages use the same 1024×1024 square OG image — social card preview on LinkedIn/X will show a portrait crop, not a landscape brand card. |
+| **Risk** | Medium. Sharing a case study link on LinkedIn will produce a generic OG card rather than a brand-specific image. Misses an impression. |
+| **Required Fix** | Commission 1200×630 landscape OG images per brand (see Tasks #8, #9). This is the single highest-leverage SEO/social improvement remaining site-wide. |
 
-**Summary:** Best-in-class hub page. Semantic grid (v1.1) makes all 13 cases accessible to screen readers.
+**Per-page notable status:**
 
----
-
-## BrandGuard case studies (13)
-
-All 13 cases share the same structural template. Common audit notes apply to all unless otherwise flagged.
-
-**Common findings (all 13 pages):**
-
-| Criterion | Rating | Notes |
-|-----------|--------|-------|
-| P1 Purpose clarity | ✅ | Brand name + "BrandGuard™ case study" in h1 on every page |
-| P2 Content completeness | ✅ | No stubs; all cases have scenario, approach, and guardrail sections |
-| P3 CTA presence | ✅ | Demo notice (reordered to top in v1.0) + GPT link or contact CTA at close |
-| P4 Visual hierarchy | ✅ | h1 → h2 → h3 correct on all 13 |
-| P5 Nav consistency | ✅ | Full nav + footer + skip link on all 13 |
-| P6 SEO / meta | ✅ | All descriptions trimmed to ≤165 chars (v0.5/v0.8) |
-| P7 Technical baseline | ✅ | 0 audit issues on all 13; Article JSON-LD present |
-
-**Per-page notes:**
-
-| Page | Notable status |
-|------|---------------|
-| `bfs-framing-intelligent-futures/` | ✅ Flagship case. ToC nav + back-to-top links added (v1.0). Most complete page in the set. |
-| `lego/` | ✅ All criteria pass. |
-| `starbucks/` | ✅ All criteria pass. |
-| `brooks-running/` | ✅ All criteria pass. |
-| `ping/` | ✅ All criteria pass. |
-| `costco/` | ✅ All criteria pass. |
-| `hershey/` | ✅ All criteria pass. |
-| `lvmh/` | ✅ All criteria pass. |
-| `dollar-general/` | ✅ All criteria pass. Previously zero-inbound-link orphan; resolved by BrandGuard hub grid (v0.5). |
-| `coca-cola/` | ✅ All criteria pass. Previously zero-inbound-link orphan; resolved. |
-| `discount-tire/` | ✅ All criteria pass. |
-| `scheels/` | ✅ All criteria pass. |
-| `mathews-archery/` | ✅ All criteria pass. Canonical typo fixed (v0.5). Previously zero-inbound-link orphan; resolved. |
+| Page | Distinction |
+|------|------------|
+| `bfs-framing-intelligent-futures/` | Flagship case — ToC nav + back-to-top added (v1.0), most navigable page in the set |
+| `lego/` | All criteria pass |
+| `starbucks/` | All criteria pass |
+| `brooks-running/` | All criteria pass |
+| `ping/` | All criteria pass |
+| `costco/` | All criteria pass |
+| `hershey/` | All criteria pass |
+| `lvmh/` | All criteria pass |
+| `dollar-general/` | Previously zero-inbound-link orphan — resolved by BrandGuard hub grid (v0.5) |
+| `coca-cola/` | Previously zero-inbound-link orphan — resolved |
+| `discount-tire/` | All criteria pass |
+| `scheels/` | All criteria pass |
+| `mathews-archery/` | Previously zero-inbound-link orphan; canonical typo fixed (v0.5) — resolved |
 
 ---
 
-## Summary scorecard
+## Summary Scorecard
 
-| Section | Pages | Full Pass | Partial | Fail |
-|---------|-------|-----------|---------|------|
-| Core pages | 7 | 5 | 2 | 0 |
+| Section | Pages | ✅ Ready | ⚠️ Partial | ❌ Needs work |
+|---------|-------|----------|------------|--------------|
+| Core pages | 6 | 4 | 2 | 0 |
 | Lens System hub | 1 | 1 | 0 | 0 |
 | Lens System GPT detail | 3 | 0 | 3 | 0 |
 | BrandGuard hub | 1 | 1 | 0 | 0 |
 | BrandGuard cases | 13 | 13 | 0 | 0 |
-| **Total** | **25** | **20** | **5** | **0** |
+| **Total** | **24** | **19** | **5** | **0** |
 
-*Note: `under-construction.html` excluded — not a public portfolio page.*
-
----
-
-## Prioritised remediation list
-
-| Priority | Page(s) | Issue | Effort |
-|----------|---------|-------|--------|
-| P2 | `/lens-system/resume-representative/`, `/professional-portfolio/`, `/enterprise-sleuth/` | GPT CTA buttons should use `btn-disabled` + "Coming soon" if GPT is not live, matching the v0.6 pattern established on `lens-system/index.html` | Low — 3 pages, one-line change each |
-| P3 | `/about/` | No CTA at page bottom; visitor has no prompted next step after reading | Low — add one `<a class="btn btn-secondary">` at close of last section |
-| P3 | `/universe/` | No CTA at page bottom pulling visitors toward Lens System or Contact | Low — same as above |
-| P4 (future) | All pages | OG images are 1024×1024 square; social cards would benefit from 1200×630 landscape images | Medium — design asset required (Tasks #8, #9) |
+*`404.html` and `under-construction.html` excluded — not public portfolio pages.*
 
 ---
 
-*Audit conducted using static code analysis and `scripts/audit-site.py` output.
-For live browser QA (overflow, JS errors, image loading), run
-`node scripts/responsive-qa.mjs` with Playwright installed.*
+## Prioritised Remediation
+
+| Priority | Task | Page(s) | Effort |
+|----------|------|---------|--------|
+| **P1 — High** | Fix GPT CTA buttons (live or disabled) | 3 Lens GPT detail pages | Low — 3 pages, 1 line each. Task #20. |
+| **P1 — High** | Commission 1200×630 OG images | All 16 non-homepage pages | Medium — design asset required. Tasks #8, #9. |
+| **P2 — Medium** | Add bottom CTA to About + Universe | `about/`, `universe/` | Low — 2 pages. Task #19. |
+| **P3 — Low** | Link `#fit` cards to their respective sites | `index.html` | Trivial — 3 `href` additions. |
+| **P3 — Low** | GA disclosure in Legal | `legal/` | Low — one paragraph. |
+
+---
+
+*Audit conducted using static code review, `scripts/audit-site.py` output, and `responsive-qa.mjs --static`. For live browser QA (overflow, JS errors), run `node scripts/responsive-qa.mjs` with Playwright installed.*

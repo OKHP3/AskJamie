@@ -8,6 +8,50 @@ AskJamie™ lives at the intersection of human communication and AI reasoning. T
 
 The site documents the AskJamie™ Lens System: a public-facing portfolio of GPT architectures, BrandGuard™ case studies, and professional prototypes built under the OverKill Hill P³™ umbrella.
 
+## What This Site Demonstrates
+
+This repository is itself a portfolio artifact — a proof of what intentional, discipline-driven static-site development looks like in 2026.
+
+- **Static-site discipline** — pure HTML/CSS/JS, zero build tools, zero frameworks. Everything is explicit and auditable.
+- **LLM discoverability** — `llms.txt` follows the emerging convention for AI-crawler entry points; every canonical URL is listed and machine-readable.
+- **GPT portfolio packaging** — each Lens System page is a self-contained case study for a custom GPT, structured for both human and AI readers.
+- **BrandGuard™ concept development** — 13 public-information proofs-of-concept showing how brand AI safety guardrails are designed and documented.
+- **Agent-assisted build culture** — the site was built and maintained with the Replit AI agent; every quality gate, script, and audit convention was co-designed for that workflow.
+
+## Site Structure
+
+```
+/                     # Homepage — what AskJamie is, who it's for
+about/                # About — the strategic intelligence layer
+universe/             # OKHP³ Universe — ecosystem map (Mermaid diagram)
+contact/              # Contact — six labeled inquiry-path cards
+legal/                # Legal — terms, privacy, BrandGuard™ disclaimer
+search/               # Site Search — full-text client-side search
+lens-system/          # Lens System hub — four purpose-built GPTs
+  resume-representative/     # GPT-AJ01
+  professional-portfolio/    # GPT-AJ02
+  enterprise-sleuth/         # GPT-AJ03
+  okhp3-brandguard/          # GPT-AJ04 hub + 13 BrandGuard case studies
+    bfs-framing-intelligent-futures/
+    lego/ starbucks/ brooks-running/ ping/ costco/
+    hershey/ lvmh/ dollar-general/ coca-cola/
+    discount-tire/ scheels/ mathews-archery/
+assets/
+  css/theme.css        # Single stylesheet — GLOBAL → OKH → GLEE → ASKJAMIE tiers
+  js/app.js            # Single JS file — analytics, search modal, nav, GA4 events
+  js/mermaid-init.js   # Mermaid v11 ESM init (universe page only)
+  data/search-index.json  # Pre-built search index (~130 KB, 33 pages)
+  img/                 # Brand assets, avatars, case study images
+  docs/                # Generated docs (audit reports, QA results, specs)
+  templates/           # 9 developer page templates (excluded from QA)
+scripts/
+  audit-site.py        # Static-site auditor — 17+ quality gates, 0 issues
+  responsive-qa.mjs    # Playwright + static-lint QA (208 checks across 33 pages)
+  build-search-index.py   # Regenerates assets/data/search-index.json
+  apply-modern-baseline.py # Idempotent 2026-baseline applier for new pages
+  enhance-pages.py     # Bulk-edit tool for site-wide passes
+```
+
 ## What It Builds
 
 - **Lens System** — a modular portfolio of AI case studies and GPT prototypes, each solving a real-world problem
@@ -18,6 +62,27 @@ The site documents the AskJamie™ Lens System: a public-facing portfolio of GPT
 ## Why It Matters
 
 AI is becoming the default front door for how people find and evaluate brands. AskJamie™ exists to demonstrate — clearly, publicly, and ethically — what it looks like when a brand shows up with intention inside that space. The BrandGuard™ series uses only public information and positions itself as demonstration, not impersonation.
+
+## Quality Gates
+
+Run both validators after any HTML or content change:
+
+```bash
+python3 scripts/audit-site.py --quiet        # 0 issues target (17+ checks, 33 pages)
+node scripts/responsive-qa.mjs --static      # 208/208 pass target
+python3 scripts/build-search-index.py        # rebuild after any copy change
+```
+
+The auditor checks: title/description length, canonical links, OG fields, image alt/width/height/loading, external link `noopener noreferrer`, CSP + referrer meta, theme-color, duplicate ids, broken in-page anchors, og:image file existence, sitemap ↔ disk reconciliation, search-index ↔ disk reconciliation.
+
+## Local Development
+
+```bash
+python3 -m http.server 5000 --bind 0.0.0.0
+# Then open http://localhost:5000
+```
+
+No build step, no dependencies to install. The site is pure static files.
 
 ## Explore
 

@@ -4,6 +4,42 @@ All notable changes to the **AskJamie™** public repository are recorded here.
 
 ## [Unreleased]
 
+## [1.2] — 2026-05-27 — Documentation refresh & portfolio-fit audit (Task #16)
+
+### Updated
+- **`README.md`** — expanded from a 33-line marketing overview to a full
+  developer reference: "What this site demonstrates" section, site structure
+  tree, scripts reference, quality-gate commands, and local-dev instructions.
+- **`ROADMAP.md`** — Current/Next/Shipped sections brought to v1.2 accuracy;
+  v1.0 and v1.1 added to Shipped; v0.8 entry added (was previously missing);
+  Next section restructured around active tasks (#5, #8–10, #13, #17, #18).
+- **`llms.txt`** — added `Last-Updated: 2026-05-27` metadata line.
+- **`CHANGELOG.md`** — [1.0] expanded to consolidate Tasks #11 + #12
+  comprehensively; [1.1] and [1.2] entries added.
+
+### Added
+- **`AUDIT-ASKJAMIE-PORTFOLIO-FIT.md`** — structured per-page portfolio-fit
+  audit of all 25 public pages. Each page assessed across five dimensions:
+  Portfolio Role, Strength, Weakness, Risk, Required Fix. Summary scorecard:
+  19 portfolio-ready · 5 partial · 0 fails. Prioritised remediation list
+  (4 items). Two gaps surfaced as new tasks: #19 (About/Universe CTAs)
+  and #20 (GPT placeholder buttons).
+- **`about/index.html`** — new "What this site demonstrates" section (three
+  card-grid) covering static-site discipline, GPT portfolio packaging, and
+  agent-assisted build culture.
+
+### Fixed
+- **`scripts/audit-site.py`** — added `.agents` to `EXCLUDE_DIRS` so
+  Replit skill HTML files in `.agents/skills/skill-creator/` are no longer
+  scanned as site pages (was producing 23 false-positive issues).
+
+### Validated
+- `python3 scripts/audit-site.py --quiet` → 0 issues (26 HTML pages)
+- `node scripts/responsive-qa.mjs --static` → 208/208 pass
+- Search index rebuilt: 33 pages, 131.5 KB
+
+---
+
 ## [1.1] — 2026-05-27 — Accessibility & semantic polish (Task #15)
 
 ### Changed
@@ -30,9 +66,39 @@ All notable changes to the **AskJamie™** public repository are recorded here.
 
 ---
 
-## [1.0] — 2026-05-27 — CTA hierarchy, Ko-fi callout, BFS ToC nav (Task #12)
+## [1.0] — 2026-05-27 — Portfolio polish milestone (Tasks #11 + #12)
 
-### Changed
+This release consolidates two rounds of portfolio-readiness work. Task #11
+applied baseline quality fixes; Task #12 added the homepage CTA hierarchy,
+Ko-fi callout, and BFS deep-content navigation.
+
+### Removed (Task #11)
+- **Construction overlays** stripped from all 6 Lens System pages — blocking
+  modals removed from publicly-linked, content-rich pages.
+- **Construction-overlay dismiss logic** removed from `assets/js/app.js`.
+
+### Fixed (Task #11)
+- **BFS legal copy** (`index.html`): implied exclusivity language replaced with
+  "A public-information BrandGuard™ case study focused on Builders FirstSource."
+- **Copyright year static fallback**: all 33 HTML files contain `2026` as the
+  default text in `#current-year-askjamie` span — JS-free display guaranteed.
+- **`.grid-3` tablet breakpoint**: 2 columns at 769–1024 px (tablet),
+  1 column at ≤768 px (mobile).
+
+### Added (Task #11)
+- **GA4 custom event tracking** (`app.js`): `cta_click`, `outbound_click`,
+  `contact_click`, `mermaid_affiliate_click`, `search_open`, `search_submit`.
+  All guarded by `typeof gtag === "function"` via `window._gtag_event()`.
+- **Contact page inquiry paths** (`contact/index.html`): six labeled cards with
+  subject-line tags (`[BrandGuard]`, `[Resume Representative]`,
+  `[Professional Portfolio]`, `[Enterprise Sleuth]`, `[Architecture]`,
+  `[Collaboration]`).
+- **Footer `/search/` link** on all 28 applicable pages.
+- **`scripts/responsive-qa.mjs`**: Playwright + static-fallback QA script
+  (26 pages × 8 viewports = 208 checks).
+- **`assets/docs/og-image-requirements.md`**: spec for 1200×630 OG images.
+
+### Changed (Task #12)
 - **Homepage CTA hierarchy** (`index.html`) — primary CTA is now the BrandGuard™
   button (`btn-primary`); Lens System button demoted to `btn-secondary`. Aligns
   the homepage hierarchy with the site's strongest portfolio signal.
@@ -40,7 +106,7 @@ All notable changes to the **AskJamie™** public repository are recorded here.
   notice block now appears at the top of `<main>` (before the hero), ensuring it
   is the first thing a visitor sees on every case study.
 
-### Added
+### Added (Task #12)
 - **Ko-fi callout section** (`index.html`) — new "Support the work" section on
   the homepage with a Ko-fi CTA linking to `https://ko-fi.com/overkillhillp3`.
 - **BFS page in-page navigation** (`bfs-framing-intelligent-futures/index.html`)

@@ -41,6 +41,10 @@ This roadmap outlines the near-term public direction for the **AskJamie™** rep
 - Organization JSON-LD `sameAs` — add social profile URLs (LinkedIn, X, Facebook, YouTube)
 
 ## Shipped
+- **v1.2 (2026-05-27)** — Documentation refresh: README expanded, ROADMAP
+  updated, `llms.txt` Last-Updated field, CHANGELOG consolidated, portfolio-fit
+  audit document (`AUDIT-ASKJAMIE-PORTFOLIO-FIT.md`) written, auditor `.agents`
+  exclusion fix. 0 audit issues.
 - **v1.1 (2026-05-27)** — Accessibility & semantic polish: BrandGuard hub
   grid → semantic `<ul>`, Universe Mermaid scroll wrapper, search page
   heading-order fix. 208/208 QA, 0 audit issues.
