@@ -125,7 +125,6 @@ Start from the source page for that Page Type. Apply these rules in order:
 **TOKENISE (replace with `[[TOKEN-NAME]]`):**
 - `<title>` content → `[[PAGE-TITLE]]`
 - `<meta name="description">` content → `[[PAGE-DESCRIPTION]]`
-- `<meta name="keywords">` content → `[[PAGE-KEYWORDS]]`
 - `<link rel="canonical">` href → `[[CANONICAL-URL]]`
 - `og:title` → `[[OG-TITLE]]`
 - `og:description` → `[[OG-DESCRIPTION]]`

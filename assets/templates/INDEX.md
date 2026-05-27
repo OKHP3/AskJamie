@@ -140,7 +140,6 @@ All tokens used by the generator. Each template file contains a subset.
 |--------------------------------|------------------------------------------------------------------------|------------------------------|
 | `[[PAGE-TITLE]]`               | Full browser tab title (≤70 chars)                                     | All                          |
 | `[[PAGE-DESCRIPTION]]`         | Meta description (150–160 chars)                                       | All                          |
-| `[[PAGE-KEYWORDS]]`            | Comma-separated meta keywords                                          | All                          |
 | `[[CANONICAL-URL]]`            | Canonical URL for this page                                            | All                          |
 | `[[OG-TITLE]]`                 | Open Graph title                                                       | All                          |
 | `[[OG-DESCRIPTION]]`           | Open Graph description                                                 | All                          |
