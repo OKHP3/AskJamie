@@ -33,6 +33,7 @@ const ROOT       = resolve(__dirname, '..');
 
 const BASE_URL   = process.argv.find(a => a.startsWith('--base='))?.split('=')[1]
                  ?? 'http://localhost:5000';
+const FORCE_STATIC = process.argv.includes('--static');
 
 const VIEWPORTS = [
   { name: 'mobile-360',   width: 360,  height: 780  },
@@ -212,6 +213,7 @@ async function runWithPlaywright() {
 
   console.log(`\nTotal: ${allResults.length} checks — ${totalFails} failures`);
   console.log(`Results: ${RESULTS_FILE}`);
+  if (totalFails > 0) process.exit(1);
   return report;
 }
 
@@ -346,6 +348,7 @@ async function staticAnalysis() {
   console.log(`Passing: ${report.passing_checks} | Failing: ${totalFails}`);
   if (totalFails === 0) console.log('ALL CHECKS PASS.');
   console.log(`Results: ${RESULTS_FILE}`);
+  if (totalFails > 0) process.exit(1);
   return report;
 }
 
@@ -356,7 +359,7 @@ async function staticAnalysis() {
   console.log(`Base URL: ${BASE_URL}`);
   console.log(`Pages: ${PUBLIC_PATHS.length} | Viewports: ${VIEWPORTS.length}\n`);
 
-  const pwResult = await runWithPlaywright();
+  const pwResult = FORCE_STATIC ? null : await runWithPlaywright();
   if (!pwResult) {
     await staticAnalysis();
   }
