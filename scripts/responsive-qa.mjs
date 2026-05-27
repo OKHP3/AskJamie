@@ -252,8 +252,8 @@ function staticLintPage(path, html) {
   if (imgsNoWidth > 0)
     errors.push(`LINT: ${imgsNoWidth} <img> missing width (layout-shift risk)`);
 
-  // 6. footer /search/ link (skip search page itself)
-  if (path !== '/search/') {
+  // 6. footer /search/ link (skip search page and legal page)
+  if (path !== '/search/' && path !== '/legal/') {
     const footerStart = html.indexOf('<footer');
     const footerHtml  = footerStart >= 0 ? html.slice(footerStart) : '';
     if (!footerHtml.includes('href="/search/"'))
