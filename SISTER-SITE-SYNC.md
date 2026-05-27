@@ -1,15 +1,18 @@
-# Sister-Site Sync Guide — v0.9 (2026-05-26)
+# Sister-Site Sync Guide — v1.2 (2026-05-27)
 
-Precise, copy-paste-ready patches for applying the Task #1 changes from the
-**AskJamie™** (`askjamie.bot`) repo to the two sister sites:
+Precise, copy-paste-ready patches for applying AskJamie™ changes to the two
+sister sites:
 
 | Repo | Domain | Body class |
 |------|--------|------------|
 | OverKill Hill P³ | overkillhill.com | *(none — default)* |
 | Glee-fully Tools | glee-fully.tools | `.glee-main` |
 
-Both files (`assets/css/theme.css` and `assets/js/app.js`) are shared source
-of truth for all three sites. Apply every patch below to each sister repo.
+Both `assets/css/theme.css` and `assets/js/app.js` are shared source of truth
+for all three sites. The tooling scripts (`scripts/audit-site.py`,
+`scripts/build-search-index.py`, `scripts/apply-modern-baseline.py`) are also
+shared and must be kept in lock-step. §§ 1–5 cover CSS/JS patches from v0.9
+(Task #1). § 6 covers the tooling scripts (Task #5).
 
 ---
 
@@ -262,13 +265,302 @@ copied to sister repos (they contain AskJamie-specific content or URLs):
 | `llms.txt` | URL list is AskJamie-specific; each site needs its own |
 | `sitemap.xml` | Page inventory is AskJamie-specific |
 | `assets/data/search-index.json` | Generated from AskJamie's HTML; must be rebuilt per-site |
-| `scripts/build-search-index.py` | Safe to copy — but run it per-site after copying |
-| `scripts/audit-site.py` | Safe to copy — check `THEME_COLOR` constant matches each site's brand |
+| `scripts/build-search-index.py` | **Needs per-site edits** — see § 6b |
+| `scripts/audit-site.py` | **Needs per-site edits** — see § 6a |
+| `scripts/apply-modern-baseline.py` | **Needs per-site edits** — see § 6c |
 | All `*.html` files | Site-specific content; do not copy |
 
 ---
 
-## 6 · Execution log — Task #4 (2026-05-26)
+## 6 · Tooling scripts — per-site sync instructions
+
+The three scripts below are shared tooling but contain AskJamie-specific
+constants that **must be updated** before running them on a sister site.
+This section documents exactly what to change, what is safe to copy verbatim,
+and how to verify the result.
+
+---
+
+### 6a · `scripts/audit-site.py`
+
+**Copy verbatim then edit these constants:**
+
+#### `EXPECTED_THEME_COLOR` and `EXPECTED_BG_COLOR`
+
+```python
+# AskJamie values (line ~74):
+EXPECTED_THEME_COLOR = "#2c5e6f"   # AskJamie muted teal
+EXPECTED_BG_COLOR    = "#f5efe1"   # AskJamie cream
+```
+
+Replace with the target site's brand colours. The auditor checks that at least
+one `<meta name="theme-color">` tag resolves to `EXPECTED_THEME_COLOR`, so this
+**must** match the dark-mode (or single) `theme-color` declared in the site's
+HTML.
+
+| Site | `EXPECTED_THEME_COLOR` | `EXPECTED_BG_COLOR` |
+|------|----------------------|---------------------|
+| AskJamie™ (`askjamie.bot`) | `"#2c5e6f"` | `"#f5efe1"` |
+| OverKill Hill P³ (`overkillhill.com`) | *(check OKH HTML `theme-color`)* | *(check OKH CSS `--color-bg`)* |
+| Glee-fully Tools (`glee-fully.tools`) | *(check Glee HTML `theme-color`)* | *(check Glee CSS `--color-bg`)* |
+
+To find the correct value for a sister site, search any of its HTML pages for
+`name="theme-color"` and copy the `content="..."` value.
+
+#### `EXCLUDE_DIRS`
+
+```python
+# AskJamie values (line ~66):
+EXCLUDE_DIRS = {".local", ".agents", "attached_assets", "node_modules",
+                ".cache", ".git", ".vscode", "templates"}
+```
+
+`".agents"` is a Replit-specific directory that may not exist on sister sites
+— safe to keep it in the set (the code ignores missing dirs). Add any
+site-specific build or vendor directories that should be excluded.
+
+#### `EXCLUDE_FROM_SITEMAP`
+
+```python
+# AskJamie values (line ~68):
+EXCLUDE_FROM_SITEMAP = {"404.html", "under-construction.html"}
+```
+
+Add any additional pages that exist on disk but should not appear in
+`sitemap.xml` (e.g. holding pages, staging pages).
+
+#### Mermaid referral-link check
+
+The auditor contains a check: any page with `<pre class="mermaid">` must carry
+the OKH affiliate referral link (`mermaidchart.cello.so/UhVlNtC2MlS`) and the
+`mermaid-referral-link` CSS class.
+
+- **OverKill Hill:** The OKH site (`overkillhill.com/writings/first-diagram-is-a-liar`)
+  uses the same Mermaid affiliate link. Keep the check verbatim — it applies.
+- **Glee-fully Tools:** If Glee pages use Mermaid, apply the same convention.
+  If no Glee pages will ever embed Mermaid, the check is harmless (it only
+  fires when `<pre class="mermaid">` is detected).
+
+#### Everything else
+
+All other checks (title/description length, canonical, OG fields, image
+hygiene, CSP/referrer meta, sitemap reconciliation, etc.) are generic HTML
+quality gates with no site-specific constants. **Copy verbatim.**
+
+**Verify after copying:**
+
+```bash
+python3 scripts/audit-site.py --quiet   # must report 0 issues
+```
+
+---
+
+### 6b · `scripts/build-search-index.py`
+
+**Copy verbatim then edit these constants:**
+
+#### `SITE_URL`
+
+```python
+# AskJamie value (line ~28):
+SITE_URL = "https://askjamie.bot"
+```
+
+| Site | Replace with |
+|------|-------------|
+| OverKill Hill P³ | `"https://overkillhill.com"` |
+| Glee-fully Tools | `"https://glee-fully.tools"` |
+
+`SITE_URL` is embedded in the generated `search-index.json` as a metadata
+field (`"site": "..."`) and is used by `derive_url_from_path()` to build
+canonical URLs. Getting this wrong means all indexed URLs point at the
+wrong domain.
+
+#### `strip_brand_suffix()`
+
+```python
+# AskJamie values (lines ~195-203):
+for suffix in (
+    " — AskJamie™",
+    " | AskJamie™",
+    " — AskJamie",
+    " | AskJamie",
+):
+```
+
+Replace with the target site's brand name as it appears in page `<title>` tags.
+For example, if OverKill Hill titles end with `" — OverKill Hill P³™"`, add
+that suffix to the list (and remove the AskJamie suffixes).
+
+If a sister site's pages don't append a brand suffix to titles at all, simply
+clear the loop body and `return title` directly:
+
+```python
+def strip_brand_suffix(title: str) -> str:
+    return normalize_text(title)
+```
+
+#### `derive_section()`
+
+```python
+# AskJamie values (lines ~173-189):
+section_map = {
+    "about": "About",
+    "contact": "Contact",
+    "legal": "Legal",
+    "universe": "Universe",
+    "lens-system": "Lens System",
+}
+```
+
+Replace with the target site's top-level URL segments and their human-readable
+section labels. The section label is shown in search result cards as the
+category chip.
+
+#### `EXCLUDE_DIRS` and `EXCLUDE_FILES`
+
+```python
+# AskJamie values (lines ~31-32):
+EXCLUDE_DIRS  = {".git", ".local", "attached_assets", "tools", "node_modules"}
+EXCLUDE_FILES = {"404.html", "under-construction.html"}
+```
+
+Add any site-specific directories or files to exclude from indexing (e.g.
+template directories, holding pages). Note: `"tools"` is a legacy alias for
+`"scripts/"` — kept for backward-compat but safe to remove if the sister site
+never had a `tools/` directory.
+
+#### Everything else
+
+`STRIP_TAGS`, `STRIP_CLASSES_CONTAINS`, `VOID_TAGS`, the `TextExtractor`
+parser, the `MAX_BODY` cap (4 000 chars/page), and the output format are all
+generic and **safe to copy verbatim** across all three sites. The CSS class
+names in `STRIP_CLASSES_CONTAINS` (`site-header`, `site-footer`, `primary-nav`,
+`skip-link`, `construction-overlay`) are shared by the common `theme.css`
+design system, so they apply equally to all three repos.
+
+**After copying and editing, rebuild the index:**
+
+```bash
+python3 scripts/build-search-index.py
+# → assets/data/search-index.json  (should show > 0 pages indexed)
+```
+
+Then verify the auditor still agrees the index is fresh:
+
+```bash
+python3 scripts/audit-site.py --quiet   # must report 0 issues
+```
+
+---
+
+### 6c · `scripts/apply-modern-baseline.py`
+
+**Copy verbatim then edit these constants:**
+
+#### Theme-color constants
+
+```python
+# AskJamie values (lines ~72-79):
+THEME_COLOR_LEGACY_RE = re.compile(
+    r'<meta\s+name="theme-color"\s+content="#2c5e6f"\s*/?>',
+    re.IGNORECASE
+)
+THEME_COLOR_PAIR = (
+    '<meta name="theme-color" content="#f5efe1" media="(prefers-color-scheme: light)" />\n'
+    '    <meta name="theme-color" content="#2c5e6f" media="(prefers-color-scheme: dark)" />'
+)
+```
+
+`THEME_COLOR_LEGACY_RE` matches the old single-value `theme-color` tag so it
+can be split into a modern light/dark pair. It is hardcoded to AskJamie's teal
+`#2c5e6f`. Update for each site:
+
+| Site | `THEME_COLOR_LEGACY_RE` content value | `THEME_COLOR_PAIR` light | `THEME_COLOR_PAIR` dark |
+|------|--------------------------------------|--------------------------|-------------------------|
+| AskJamie™ | `#2c5e6f` | `#f5efe1` | `#2c5e6f` |
+| OverKill Hill P³ | *(OKH brand color)* | *(OKH light bg)* | *(OKH dark/brand)* |
+| Glee-fully Tools | *(Glee brand color)* | *(Glee light bg)* | *(Glee dark/brand)* |
+
+To find the correct values: open any HTML page on the sister site and look for
+`<meta name="theme-color">`. Use that value for `THEME_COLOR_LEGACY_RE` and
+decide the light/dark split using the site's CSS `--color-bg` (light) and
+primary brand color (dark).
+
+#### CSP allow-list
+
+```python
+# AskJamie value (lines ~46-58):
+CSP = (
+    "default-src 'self'; "
+    "script-src 'self' 'unsafe-inline' "
+    "https://www.googletagmanager.com https://cdn.jsdelivr.net; "
+    ...
+)
+```
+
+All three sister sites use the **same tech stack** (GA4 via GTM, Mermaid ESM
+from `cdn.jsdelivr.net`, Google Fonts). The CSP allow-list is **safe to copy
+verbatim** — no site-specific domains to add or remove.
+
+If a sister site does not embed Mermaid diagrams, `https://cdn.jsdelivr.net`
+can be dropped from `script-src` and the Mermaid `script-src nonce` pattern
+can be removed. Otherwise, keep it.
+
+#### Everything else
+
+`EXCLUDE_DIRS`, image-upgrade logic (`upgrade_images()`), and security meta
+insertion (`add_security_meta()`) are generic. **Copy verbatim.**
+
+**Run after copying and editing:**
+
+```bash
+python3 scripts/apply-modern-baseline.py
+# Verify: 0 files modified on re-run (idempotency check)
+python3 scripts/apply-modern-baseline.py
+# → "Files modified: 0 of N"
+```
+
+Then run the auditor to confirm 0 issues:
+
+```bash
+python3 scripts/audit-site.py --quiet
+```
+
+---
+
+### 6d · `assets/js/analytics.js` — status
+
+`analytics.js` was a separate file on AskJamie through v0.8. In **v0.9
+(2026-05-26)** it was consolidated into `§0` of `assets/js/app.js`. The file
+no longer exists on AskJamie.
+
+**For sister sites:** check whether `analytics.js` is still a separate file in
+the repo.
+
+- **If the sister site has applied the v0.9 `app.js` consolidation** (i.e. the
+  §§ 1–2 patches in this guide have been applied): `analytics.js` is no longer
+  needed. Delete it and remove the `<script defer src="/assets/js/analytics.js">` 
+  tag from every HTML page.
+- **If the sister site has not yet applied the v0.9 `app.js` consolidation:**
+  keep `analytics.js` as-is until the consolidation is done. The two approaches
+  are mutually exclusive — do not mix an unconsolidated `analytics.js` with the
+  consolidated `app.js` or GA4 will initialise twice.
+
+---
+
+### 6e · Sync summary table
+
+| Script | Copy verbatim? | Per-site edits required |
+|--------|---------------|------------------------|
+| `audit-site.py` | ✅ Most of it | `EXPECTED_THEME_COLOR`, `EXPECTED_BG_COLOR` |
+| `build-search-index.py` | ✅ Most of it | `SITE_URL`, `strip_brand_suffix()` suffixes, `derive_section()` map |
+| `apply-modern-baseline.py` | ✅ Most of it | `THEME_COLOR_LEGACY_RE` pattern, `THEME_COLOR_PAIR` colors |
+| `analytics.js` | ❌ Do not copy | Eliminate once v0.9 `app.js` consolidation is applied |
+
+---
+
+## 7 · Execution log — Task #4 (2026-05-26)
 
 ### OverKill Hill (`overkillhill.com` → `OKHP3/OverKill-Hill`)
 
@@ -307,8 +599,10 @@ beyond the `.git` directory. There are no `assets/css/theme.css` or
 elsewhere (possibly in a separate deployment pipeline or are not yet committed).
 
 **No changes possible** until the Glee front-end files are committed to the repo.
-When they are, apply the same patches documented in §§ 1–2 above.
+When they are, apply the same patches documented in §§ 1–2 above, and apply the
+per-site tooling edits documented in § 6.
 
 ---
 
-*Generated: 2026-05-26 — AskJamie™ Task #4 (sister-site sync)*
+*Updated: 2026-05-27 — § 6 tooling-scripts sync added (Task #5)*
+*Originally generated: 2026-05-26 — AskJamie™ Task #4 (sister-site sync)*

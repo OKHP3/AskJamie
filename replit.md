@@ -244,8 +244,10 @@ applied most of the above.  Safe to re-run any time.
   files at `assets/docs/sister-site-sync/okh/*.patch`. See `SISTER-SITE-SYNC.md`
   for full details and verification checklist. Glee (`OKHP3/Glee-fullyTools`)
   repo was empty — no CSS/JS to patch; apply when files are committed there.
-  Older tooling scripts (`audit-site.py`, `build-search-index.py`) still need
-  a separate sync pass (see Task #5).
+  Tooling scripts (`audit-site.py`, `build-search-index.py`, `apply-modern-baseline.py`)
+  documented in `SISTER-SITE-SYNC.md` § 6 (Task #5, 2026-05-27). Per-site constants
+  to edit: `EXPECTED_THEME_COLOR`, `SITE_URL`, `strip_brand_suffix()` suffixes,
+  `THEME_COLOR_LEGACY_RE`. All other logic is safe to copy verbatim.
 
 ## Audit & Quality Gates (v0.7 — 2026-05-03)
 
