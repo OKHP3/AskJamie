@@ -1253,9 +1253,19 @@ body:not(.glee-main):not(.askjamie-main) .latest-pill {
   }
 }
 
-/* BrandGuard hub — All cases grid (v0.5) */
+/* BrandGuard hub — All cases grid (v0.5, a11y-updated v0.10) */
 .brandguard-cases-grid {
+  list-style: none;
+  padding: 0;
   margin-top: 1.5rem;
+}
+
+.brandguard-cases-grid > li {
+  display: flex;
+}
+
+.brandguard-cases-grid > li > .brandguard-case-card {
+  flex: 1;
 }
 
 .brandguard-case-card {
@@ -4069,6 +4079,12 @@ html:has(
 /* Universe hero: make the Mermaid diagram fill the angled paper card */
 .askjamie-hero--universe .askjamie-hero-visual {
   align-items: stretch;
+}
+
+.mermaid-scroll-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  width: 100%;
 }
 
 .askjamie-mermaid-shell {
