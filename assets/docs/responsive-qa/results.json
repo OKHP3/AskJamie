@@ -1,5 +1,5 @@
 {
-  "generated": "2026-05-27T04:55:38.656Z",
+  "generated": "2026-05-27T04:56:05.152Z",
   "mode": "static-lint",
   "note": "Static-lint mode: 10 structural checks per page, applied uniformly to all 8 viewport rows. Viewport-specific checks (overflow, console errors, broken images) require Playwright. To run full browser QA: npm install -D playwright && npx playwright install chromium && node scripts/responsive-qa.mjs",
   "base_url": "http://localhost:5000",
