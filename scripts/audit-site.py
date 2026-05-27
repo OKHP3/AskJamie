@@ -24,6 +24,10 @@ Per-page checks actually emitted as issues:
   * theme-color resolves to the AskJamie brand teal (#2c5e6f)
   * any page embedding a Mermaid diagram carries the OKH affiliate
     referral link (mermaidchart.cello.so) styled with `mermaid-referral-link`
+  * bare or generic link text ("read more", "click here", "here",
+    bare "→", etc.) — aria-label is used as the accessible text
+    when present, so navigation arrows that include aria-label
+    context are not flagged
   * no duplicate `id="..."` attributes within a single page (would
     break anchor navigation and JS lookups)
   * every in-page anchor link (`href="#foo"`) resolves to a real
@@ -183,6 +187,14 @@ PLACEHOLDER_PATTERNS = [
 ]
 BARE_NOOPENER = re.compile(r'\brel="noopener"(?!\s*noreferrer)')
 
+# Link text patterns that are bare/generic and fail WCAG 2.4.4.
+# aria-label overrides visible text, so labelled arrows are safe.
+BARE_LINK_TEXTS = frozenset({
+    "read more", "click here", "here", "→",
+    "↑", "↓", "←", "↗", "↘",
+    "more", "learn more", "click",
+})
+
 
 def audit_page(path: Path) -> List[str]:
     rel = path.relative_to(ROOT).as_posix()
@@ -209,6 +221,25 @@ def audit_page(path: Path) -> List[str]:
             issues.append(
                 "Mermaid diagram present but missing `mermaid-referral-link` "
                 "class (hot-pink styling)"
+            )
+
+    # Bare / generic link text — fails WCAG 2.4.4 (Link Purpose)
+    # aria-label (if present) is used as the accessible label,
+    # which means labelled navigation arrows are not flagged.
+    for _lm in re.finditer(r'<a\b([^>]*)>(.*?)</a>', src,
+                           re.DOTALL | re.IGNORECASE):
+        _attrs = _lm.group(1)
+        _inner = _lm.group(2)
+        _aria = re.search(r'aria-label="([^"]*)"', _attrs, re.IGNORECASE)
+        _aria_label = _aria.group(1).strip() if _aria else ""
+        _visible = re.sub(r'<[^>]+>', '', _inner).strip()
+        _visible = re.sub(r'\s+', ' ', _visible)
+        _accessible = _aria_label if _aria_label else _visible
+        if _accessible.lower().strip() in BARE_LINK_TEXTS:
+            _href = re.search(r'href="([^"]*)"', _attrs, re.IGNORECASE)
+            _href_val = _href.group(1) if _href else "(no href)"
+            issues.append(
+                f'Generic link text "{_accessible}": {_href_val}'
             )
 
     # duplicate-id scan — duplicate ids break anchor navigation, JS
