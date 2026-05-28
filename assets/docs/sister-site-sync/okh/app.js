@@ -66,37 +66,76 @@ document.addEventListener("DOMContentLoaded", () => {
     if (el) el.textContent = year;
   });
 
-  // Theme toggle – only for core OverKill Hill pages
-  const brandLocked =
-    body.classList.contains("glee-main") ||
-    body.classList.contains("askjamie-main");
+  // Theme toggle — OKH: 3-state (dark → light → auto).
+  // AskJamie has its own IIFE toggle appended at end of file (§1e).
+  // Glee is visually committed to its light palette — forced light here.
+  const isGlee     = body.classList.contains("glee-main");
+  const isAskJamie = body.classList.contains("askjamie-main");
 
-  if (!brandLocked) {
+  if (isGlee) {
+    document.documentElement.setAttribute("data-theme", "light");
+  } else if (!isAskJamie) {
+    // OKH 3-state toggle: dark (default) → light → auto (system) → dark
+    const OKH_CYCLE  = ["dark", "light", "auto"];
+    const OKH_LABELS = {
+      dark:  "Switch to light mode",
+      light: "Switch to system (auto) mode",
+      auto:  "Switch to dark mode"
+    };
+    const OKH_ICONS = {
+      dark:  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>',
+      light: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>',
+      auto:  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18V3z" fill="currentColor"/><circle cx="12" cy="12" r="9"/></svg>'
+    };
+
+    function getOKHStoredState() {
+      const v = localStorage.getItem("okh-theme");
+      if (v === "dark" || v === "light") return v;
+      return "auto";
+    }
+    function getOKHPreferred() {
+      return (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches)
+        ? "dark" : "light";
+    }
+    function applyOKHTheme(state) {
+      const effective = state === "auto" ? getOKHPreferred() : state;
+      document.documentElement.setAttribute("data-theme", effective);
+      if (state === "auto") {
+        localStorage.removeItem("okh-theme");
+      } else {
+        localStorage.setItem("okh-theme", state);
+      }
+    }
+
+    // Restore stored preference immediately
+    applyOKHTheme(getOKHStoredState());
+
     const themeToggle = document.createElement("button");
     themeToggle.classList.add("theme-toggle");
-    themeToggle.setAttribute("aria-label", "Toggle theme");
-    themeToggle.textContent = "🌓";
+    const s0 = getOKHStoredState();
+    themeToggle.setAttribute("aria-label", OKH_LABELS[s0]);
+    themeToggle.innerHTML = OKH_ICONS[s0];
 
     if (header && header.querySelector(".container")) {
       header.querySelector(".container").appendChild(themeToggle);
     }
 
-    const savedTheme = localStorage.getItem("okh-theme");
-    if (savedTheme === "light" || savedTheme === "dark") {
-      document.documentElement.setAttribute("data-theme", savedTheme);
-    }
-
     themeToggle.addEventListener("click", () => {
-      const current =
-        document.documentElement.getAttribute("data-theme") || "dark";
-      const next = current === "dark" ? "light" : "dark";
-      document.documentElement.setAttribute("data-theme", next);
-      localStorage.setItem("okh-theme", next);
+      const cur  = getOKHStoredState();
+      const next = OKH_CYCLE[(OKH_CYCLE.indexOf(cur) + 1) % OKH_CYCLE.length];
+      applyOKHTheme(next);
+      themeToggle.innerHTML = OKH_ICONS[next];
+      themeToggle.setAttribute("aria-label", OKH_LABELS[next]);
     });
-  } else {
-    // Subsites stay on their brand "light" look
-    document.documentElement.setAttribute("data-theme", "light");
+
+    // Re-apply when system preference changes and user is in auto mode
+    if (window.matchMedia) {
+      window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
+        if (getOKHStoredState() === "auto") applyOKHTheme("auto");
+      });
+    }
   }
+  // (AskJamie dark/light toggle handled by §1e IIFE at end of this file)
 
   // Scroll reveal
   const prefersReducedMotion = window.matchMedia(
@@ -722,3 +761,94 @@ document.addEventListener("DOMContentLoaded", () => {
     start();
   }
 }());
+
+// ── 1e. AskJamie color toggle ────────────────────────────────────────────────
+//  Three-state (light → dark → auto) dark/light mode toggle for the
+//  .askjamie-main subsite.  Runs immediately (script is at end of <body>
+//  so DOM is already ready).  Shares the `okh-theme` localStorage key with
+//  the OKH site so user preference travels across sister sites.
+//
+//  States stored:
+//    "light" → explicit light   (html[data-theme="light"])
+//    "dark"  → explicit dark    (html[data-theme="dark"])
+//    absent  → auto (system)    (effective theme set from prefers-color-scheme)
+(function askjamieColorToggle() {
+  "use strict";
+
+  if (!document.body || !document.body.classList.contains("askjamie-main")) return;
+
+  var STORAGE_KEY = "okh-theme";
+  var CYCLE  = ["light", "dark", "auto"];
+  var LABELS = {
+    light: "Switch to dark mode",
+    dark:  "Switch to system (auto) mode",
+    auto:  "Switch to light mode"
+  };
+
+  var ICON_SUN  = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
+  var ICON_MOON = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+  var ICON_AUTO = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18V3z" fill="currentColor"/><circle cx="12" cy="12" r="9"/></svg>';
+
+  function getPreferredTheme() {
+    return (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches)
+      ? "dark" : "light";
+  }
+
+  function getStoredState() {
+    var v = localStorage.getItem(STORAGE_KEY);
+    if (v === "dark" || v === "light") return v;
+    return "auto";
+  }
+
+  function applyTheme(state) {
+    var effective = (state === "auto") ? getPreferredTheme() : state;
+    document.documentElement.setAttribute("data-theme", effective);
+    if (state === "auto") {
+      localStorage.removeItem(STORAGE_KEY);
+    } else {
+      localStorage.setItem(STORAGE_KEY, state);
+    }
+  }
+
+  function iconFor(state) {
+    if (state === "dark")  return ICON_MOON;
+    if (state === "light") return ICON_SUN;
+    return ICON_AUTO;
+  }
+
+  // Restore stored theme immediately (script is at end of <body> — DOM is ready)
+  applyTheme(getStoredState());
+
+  // Inject toggle button
+  var container = document.querySelector(".site-header .container");
+  if (!container) return;
+
+  var btn = document.createElement("button");
+  btn.type = "button";
+  btn.className = "askjamie-color-toggle";
+  var s0 = getStoredState();
+  btn.setAttribute("aria-label", LABELS[s0]);
+  btn.innerHTML = iconFor(s0);
+
+  btn.addEventListener("click", function () {
+    var cur  = getStoredState();
+    var next = CYCLE[(CYCLE.indexOf(cur) + 1) % CYCLE.length];
+    applyTheme(next);
+    btn.innerHTML = iconFor(next);
+    btn.setAttribute("aria-label", LABELS[next]);
+  });
+
+  // Re-apply when system preference changes and user is in auto mode
+  if (window.matchMedia) {
+    window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", function () {
+      if (getStoredState() === "auto") applyTheme("auto");
+    });
+  }
+
+  var navToggle = container.querySelector(".nav-toggle");
+  if (navToggle) {
+    container.insertBefore(btn, navToggle);
+  } else {
+    container.appendChild(btn);
+  }
+})();

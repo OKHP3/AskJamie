@@ -686,5 +686,139 @@ per-site tooling edits documented in § 6.
 
 ---
 
+---
+
+## § 9 · Dark/Light mode toggle sync (Task #31 / Task #32)
+
+Task #31 added a working 3-state dark/light mode toggle to AskJamie.  Task #32
+stages those changes for OKH and documents what Glee already has.
+
+### 9a · Changes staged for OKH (`assets/docs/sister-site-sync/okh/`)
+
+Both files in the staged OKH sync package have been updated.
+
+#### `app.js` — two changes
+
+**1 · `brandLocked` → `isGlee`/`isAskJamie` split**
+
+The old `brandLocked` check combined Glee and AskJamie into one branch that
+forced `data-theme="light"` and skipped the toggle entirely.  The new code
+separates the three sites explicitly so OKH, Glee, and AskJamie each get the
+right behaviour:
+
+```js
+// OLD (2-state, brandLocked pattern)
+const brandLocked =
+  body.classList.contains("glee-main") ||
+  body.classList.contains("askjamie-main");
+
+if (!brandLocked) {
+  // OKH 2-state toggle
+} else {
+  document.documentElement.setAttribute("data-theme", "light");
+}
+
+// NEW (3-state, split pattern)
+const isGlee     = body.classList.contains("glee-main");
+const isAskJamie = body.classList.contains("askjamie-main");
+
+if (isGlee) {
+  document.documentElement.setAttribute("data-theme", "light");
+} else if (!isAskJamie) {
+  // OKH 3-state toggle (see below)
+}
+// AskJamie handled by §1e IIFE at end of file
+```
+
+**2 · OKH toggle upgraded from 2-state to 3-state**
+
+Cycle: **dark (default) → light → auto (system) → dark**
+
+- Uses SVG icons (moon / sun / half-circle) instead of the 🌓 emoji
+- `aria-label` updates on each state change
+- "auto" state removes the `localStorage["okh-theme"]` key and applies the
+  system-preferred theme (`prefers-color-scheme`)
+- Listens for system-preference `change` events in auto mode
+
+**3 · §1e AskJamie color toggle IIFE appended**
+
+The self-contained AskJamie toggle IIFE (identical to AskJamie's live
+`assets/js/app.js`) is appended at the end of the OKH staged `app.js`.
+It is a no-op on OKH pages (guards with `classList.contains("askjamie-main")`).
+
+#### `theme.css` — two new blocks appended
+
+**1 · `.askjamie-color-toggle` button styles**
+
+Circular pill button (2.25 rem), teal hover, `focus-visible` outline, and a
+`html[data-theme="dark"]` variant so the button itself adapts to dark mode.
+
+**2 · `html[data-theme="dark"] .askjamie-main` dark mode overrides**
+
+Full set of token overrides (`--color-bg`, `--color-surface`, `--color-fg`,
+`--color-accent`, Mermaid tokens, …) plus hardcoded-value overrides for every
+surface that doesn't pick up tokens automatically:
+
+| Component | Light value overridden | Dark value |
+|-----------|------------------------|------------|
+| Body / page | `#f6f2ee` | `#0e1e24` |
+| Site header | `#f6f2ee` | `#0c1b21` |
+| Paper hero card | `#f6f2ee` | `#14282f` |
+| Cards | `#fdfbf7` | `#14282f` |
+| Footer | `#f7f3ee` | `#0c1b21` |
+| Mobile nav | `#f6f2ee` | `#0c1b21` |
+| BrandGuard notice | `rgba(245,239,225,0.55)` | `rgba(20,40,47,0.65)` |
+| Search results | OKH orange chips | Teal chips |
+
+---
+
+### 9b · Glee — status and guidance
+
+The `OKHP3/Glee-fullyTools` repo remains **empty** (no front-end files
+committed). However, the Task #30 analysis (`dark-light-diff.md`) confirms
+that Glee's *existing* CSS/JS already has the correct patterns:
+
+| Glee feature | Status |
+|---|---|
+| `html[data-theme]` body-background selector | ✅ already correct |
+| 3-state toggle (light / dark / auto) | ✅ already implemented |
+| SVG icons (sun / moon / half-circle) | ✅ already implemented |
+| `@media (prefers-color-scheme: dark)` `.glee-main` block | ✅ ~100 lines |
+| `.glee-color-toggle` button styles | ✅ in GLEE tier |
+
+**When Glee files are committed to the repo**, the only change needed is to
+apply the `isGlee`/`isAskJamie` DOMContentLoaded split from `app.js §2`
+(replacing the old `brandLocked` pattern).  No CSS changes are required on
+the Glee side for the toggle feature.
+
+---
+
+### 9c · Verification checklist for OKH owner
+
+- [ ] Copy `assets/docs/sister-site-sync/okh/app.js` into `OKHP3/OverKill-Hill`
+- [ ] Copy `assets/docs/sister-site-sync/okh/theme.css` into `OKHP3/OverKill-Hill`
+- [ ] Hard-refresh OKH homepage — toggle button should appear (SVG icon, not 🌓)
+- [ ] Click toggle once → page shifts to light mode; refresh → light persists
+- [ ] Click toggle again → auto mode (🌓 icon); refresh → system preference applies
+- [ ] Click toggle third time → back to dark; refresh → dark persists
+- [ ] Visit any AskJamie page via the same browser — preference shared via `okh-theme` key
+- [ ] Run `python3 scripts/audit-site.py --quiet` → 0 issues expected
+- [ ] Check `node --check assets/js/app.js` → syntax OK
+
+---
+
+### Execution log — Task #32 (2026-05-28)
+
+- ✅ `assets/docs/sister-site-sync/okh/app.js` — `brandLocked` → `isGlee`/`isAskJamie`;
+  OKH 2-state toggle upgraded to 3-state with SVG icons; §1e AskJamie IIFE appended
+- ✅ `assets/docs/sister-site-sync/okh/theme.css` — `.askjamie-color-toggle` button CSS
+  and `html[data-theme="dark"] .askjamie-main` dark mode overrides appended
+- ✅ `assets/docs/sister-site-sync.md` — § 9 added (this section)
+- ℹ️ Glee repo still empty — no file changes possible; guidance documented in § 9b
+- ✅ JS syntax check: `node --check` PASS on updated `okh/app.js`
+
+---
+
+*Updated: 2026-05-28 — § 9 dark/light toggle sync added (Task #32)*
 *Updated: 2026-05-27 — § 6 tooling-scripts sync added (Task #5)*
 *Originally generated: 2026-05-26 — AskJamie™ Task #4 (sister-site sync)*
