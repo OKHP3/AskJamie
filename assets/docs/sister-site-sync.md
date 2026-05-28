@@ -795,15 +795,24 @@ the Glee side for the toggle feature.
 
 ### 9c · Verification checklist for OKH owner
 
+Items marked ✅ were verified by AskJamie agent (Task #32). Items marked `[ ]`
+require hands-on access to the OKH repo and are owner-action items.
+
+**Pre-flight (agent-verified)**
+- ✅ `node --check assets/docs/sister-site-sync/okh/app.js` → JS syntax PASS
+- ✅ `python3 scripts/audit-site.py --quiet` on AskJamie → 0 issues (dark mode CSS
+  does not affect the AskJamie live site audit; staged files are outside the page tree)
+- ✅ `node scripts/responsive-qa.mjs --static` → 208 checks PASS
+
+**OKH repo copy-and-verify (owner action — requires OKH repo access)**
 - [ ] Copy `assets/docs/sister-site-sync/okh/app.js` into `OKHP3/OverKill-Hill`
 - [ ] Copy `assets/docs/sister-site-sync/okh/theme.css` into `OKHP3/OverKill-Hill`
-- [ ] Hard-refresh OKH homepage — toggle button should appear (SVG icon, not 🌓)
-- [ ] Click toggle once → page shifts to light mode; refresh → light persists
-- [ ] Click toggle again → auto mode (🌓 icon); refresh → system preference applies
-- [ ] Click toggle third time → back to dark; refresh → dark persists
-- [ ] Visit any AskJamie page via the same browser — preference shared via `okh-theme` key
-- [ ] Run `python3 scripts/audit-site.py --quiet` → 0 issues expected
-- [ ] Check `node --check assets/js/app.js` → syntax OK
+- [ ] Hard-refresh OKH homepage — toggle button should appear (SVG icon, not emoji)
+- [ ] Click toggle once (dark → light) → page shifts to light mode; refresh → light persists
+- [ ] Click toggle again (light → auto) → half-circle SVG icon appears; system preference applies; refresh → system preference still applies
+- [ ] Click toggle third time (auto → dark) → back to dark; refresh → dark persists
+- [ ] Visit any AskJamie page in the same browser — preference shared via `okh-theme` key
+- [ ] Run OKH's audit script (if present) → 0 issues expected
 
 ---
 
