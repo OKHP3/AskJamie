@@ -79,7 +79,7 @@ gtag('config', 'G-MT9Y10YY0G');
       '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">' +
       '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>' +
       '<span class="site-search-trigger-label">Search</span>' +
-      '<kbd class="site-search-trigger-kbd" aria-hidden="true">/</kbd>';
+      '<kbd class="site-search-trigger-kbd" aria-hidden="true">Ctrl+K</kbd>';
     openButton.addEventListener("click", openModal);
 
     // Insert before the nav-toggle so it sits at the right side of the header
@@ -835,14 +835,19 @@ gtag('config', 'G-MT9Y10YY0G');
 
 /* ── 1e. AskJamie color toggle ────────────────────────────────────────────
    Three-state (light → dark → auto) dark/light mode toggle for the
-   .askjamie-main subsite.  Runs immediately (script is at end of <body>
-   so DOM is already ready).  Shares the `okh-theme` localStorage key with
+   .askjamie-main subsite.  Shares the `okh-theme` localStorage key with
    the OKH site so user preference travels across sister sites.
 
    States stored:
      "light" → explicit light   (html[data-theme="light"])
      "dark"  → explicit dark    (html[data-theme="dark"])
      absent  → auto (system)    (effective theme set from prefers-color-scheme)
+
+   Timing note: app.js has no defer, so this IIFE runs during page parse.
+   Theme restoration runs immediately (no DOM needed).  Button injection is
+   deferred to DOMContentLoaded so it fires AFTER §1a's search-trigger
+   injection and can insert the toggle to the right of the search pill:
+     Nav links → [margin-left:auto gap] → Search pill → Color toggle → ☰
 */
 (function askjamieColorToggle() {
   "use strict";
@@ -888,40 +893,59 @@ gtag('config', 'G-MT9Y10YY0G');
     return ICON_AUTO;
   }
 
-  // ── Restore stored theme immediately (before first paint) ──────────────
+  // ── 1. Restore stored theme immediately — no DOM access needed ─────────
   applyTheme(getStoredState());
 
-  // ── Inject toggle button ───────────────────────────────────────────────
-  var container = document.querySelector(".site-header .container");
-  if (!container) return;
-
-  var btn = document.createElement("button");
-  btn.type = "button";
-  btn.className = "askjamie-color-toggle";
-  var s0 = getStoredState();
-  btn.setAttribute("aria-label", LABELS[s0]);
-  btn.innerHTML = iconFor(s0);
-
-  btn.addEventListener("click", function () {
-    var cur  = getStoredState();
-    var next = CYCLE[(CYCLE.indexOf(cur) + 1) % CYCLE.length];
-    applyTheme(next);
-    btn.innerHTML = iconFor(next);
-    btn.setAttribute("aria-label", LABELS[next]);
-  });
-
-  // Re-apply when system preference changes and user is in auto mode
+  // ── 2. Re-apply on system preference change (auto mode) ────────────────
   if (window.matchMedia) {
     window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", function () {
       if (getStoredState() === "auto") applyTheme("auto");
     });
   }
 
-  var navToggle = container.querySelector(".nav-toggle");
-  if (navToggle) {
-    container.insertBefore(btn, navToggle);
+  // ── 3. Inject toggle button after §1a's search pill is in the DOM ──────
+  //    §1a registers its DOMContentLoaded listener at line ~511, before this
+  //    IIFE runs (§1a is earlier in the file), so §1a's listener fires first.
+  //    We then insert the toggle AFTER the search trigger so the header reads:
+  //      … Nav links … | [auto gap] | [Search Ctrl+K] | [toggle] | [☰]
+  function injectToggleBtn() {
+    var container = document.querySelector(".site-header .container");
+    if (!container) return;
+
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "askjamie-color-toggle";
+    var s0 = getStoredState();
+    btn.setAttribute("aria-label", LABELS[s0]);
+    btn.innerHTML = iconFor(s0);
+
+    btn.addEventListener("click", function () {
+      var cur  = getStoredState();
+      var next = CYCLE[(CYCLE.indexOf(cur) + 1) % CYCLE.length];
+      applyTheme(next);
+      btn.innerHTML = iconFor(next);
+      btn.setAttribute("aria-label", LABELS[next]);
+    });
+
+    // Insert immediately after the search pill so the order is always
+    // Search → Color-toggle → ☰ (hamburger) regardless of injection timing.
+    var searchTrigger = container.querySelector(".site-search-trigger");
+    if (searchTrigger) {
+      searchTrigger.insertAdjacentElement("afterend", btn);
+    } else {
+      var navToggle = container.querySelector(".nav-toggle");
+      if (navToggle) {
+        container.insertBefore(btn, navToggle);
+      } else {
+        container.appendChild(btn);
+      }
+    }
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", injectToggleBtn);
   } else {
-    container.appendChild(btn);
+    injectToggleBtn();
   }
 })();
 

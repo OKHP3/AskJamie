@@ -845,10 +845,16 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  var navToggle = container.querySelector(".nav-toggle");
-  if (navToggle) {
-    container.insertBefore(btn, navToggle);
+  // Insert AFTER search pill so order is: Search → Color-toggle → ☰
+  var searchTrigger = container.querySelector(".site-search-trigger");
+  if (searchTrigger) {
+    searchTrigger.insertAdjacentElement("afterend", btn);
   } else {
-    container.appendChild(btn);
+    var navToggle = container.querySelector(".nav-toggle");
+    if (navToggle) {
+      container.insertBefore(btn, navToggle);
+    } else {
+      container.appendChild(btn);
+    }
   }
 })();

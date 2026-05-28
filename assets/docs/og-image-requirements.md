@@ -1,5 +1,11 @@
 # OG Image Requirements — AskJamie™
 *Generated: 2026-05-26 (Task #1 documentation)*
+*Updated: 2026-05-28 (Task #23) — All 20 images converted to WebP; PNGs remain as orphaned source masters*
+
+> **Status as of 2026-05-28:** All 20 OG images have been generated and are live in
+> `assets/img/og/` as **WebP** files (23–92 KB each, down from 600 KB–1.2 MB PNG originals).
+> All HTML pages reference the `.webp` versions with `og:image:type = image/webp`.
+> The original `.png` source files remain in the same directory but are no longer referenced.
 
 ## The Problem
 
@@ -104,7 +110,8 @@ the page's light/dark treatment.
    meta tags on the target page:
 
 ```html
-<meta property="og:image" content="https://askjamie.bot/assets/img/og/og-homepage-1200x630.png" />
+<meta property="og:image" content="https://askjamie.bot/assets/img/og/og-homepage-1200x630.webp" />
+<meta property="og:image:type" content="image/webp" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
 <meta property="og:image:alt" content="AskJamie™ — your articulate AI persona" />
