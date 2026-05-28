@@ -114,7 +114,7 @@ Start from the source page for that Page Type. Apply these rules in order:
 - All `<link>` tags for stylesheets
 - All `<script>` tags (src paths and inline scripts)
 - All `<meta>` tags that are site-wide constants (charset, viewport,
-  X-UA-Compatible, language, author, publisher, theme-color)
+  author, publisher, theme-color)
 - All `rel="preconnect"` and `rel="preload"` link hints
 - Nav logo `<img>` src and alt (shared infrastructure)
 - Footer logo `<img>` src and alt (shared infrastructure)
