@@ -560,7 +560,60 @@ the repo.
 
 ---
 
-## 7 · Execution log
+## 7 · Phase 2: Dark/Light mode superset (Task #30 — 2026-05-28)
+
+This phase documents the dark/light mode divergences across all three sites and
+stages a CSS superset for the OKH repo. The full diff analysis is in
+`assets/docs/sister-site-sync/okh/dark-light-diff.md`.
+
+### Key findings
+
+| Site | Status |
+|------|--------|
+| **OKH** | Most complete light-mode override set; uses `html[data-theme]` correctly; dark-by-default so no `@media prefers-color-scheme` needed |
+| **Glee** | Most advanced toggle (3-state SVG icon, `data-color-scheme`); has full `.glee-main` dark-mode `@media` block |
+| **AskJamie** | Two bugs: `body[data-theme]` selector (should be `html[data-theme]`); JS forces `data-theme="light"` making the toggle inert; no brand-scoped dark-mode CSS |
+
+### What changed in the staged OKH `theme.css`
+
+One additive change applied to `assets/docs/sister-site-sync/okh/theme.css`:
+
+- **Added `.glee-color-toggle` button styles** to the GLEE tier (end of section,
+  before the ASKJAMIE banner). The block includes base, hover, focus-visible,
+  SVG reset, `@media (prefers-color-scheme: dark)` variant, and explicit
+  `html[data-color-scheme="dark"/"light"]` overrides. All rules are scoped to
+  `.glee-main` so zero impact on OKH's default brand.
+
+No other GLOBAL or OKH-tier changes were needed — OKH's existing
+`html[data-theme]` selectors and `:root[data-theme="light"]` token block are
+already correct.
+
+### Optional upgrades recommended for OKH (not applied — JS-only changes)
+
+1. **Upgrade to 3-state toggle** — copy the `glee-color-scheme` IIFE pattern
+   from Glee's `app.js` (lines 922–1030), adapt `STORAGE_KEY` to `"okh-theme"`,
+   and class name to `.okh-color-toggle` (or reuse `.theme-toggle`). The cycle
+   becomes: dark → light → auto (system preference) → dark.
+
+2. **Anti-FOSC inline script** — add before the first `<link rel="stylesheet">`
+   in each HTML `<head>`:
+   ```html
+   <script>
+   (function(){var t=localStorage.getItem("okh-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)})();
+   </script>
+   ```
+
+### Checklist before applying to OKH repo
+
+- [ ] Review `assets/docs/sister-site-sync/okh/dark-light-diff.md` (full analysis)
+- [ ] Copy `assets/docs/sister-site-sync/okh/theme.css` into `OKHP3/OverKill-Hill`
+- [ ] Visually test: toggle button appears in header; light/dark switch works
+- [ ] Run `python3 scripts/audit-site.py --quiet` → 0 issues expected
+- [ ] (Optional) Apply 3-state JS upgrade and anti-FOSC inline script
+
+---
+
+## 8 · Execution log
 
 ### Task #21 — Tooling scripts staged (2026-05-27)
 

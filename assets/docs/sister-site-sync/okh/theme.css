@@ -4432,6 +4432,78 @@ html:has(
   border: 1px solid #b83f50;
 }
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   GLEE COLOR-SCHEME TOGGLE BUTTON (.glee-color-toggle)
+   Three-state SVG icon button: sun (light) / moon (dark) / half-circle (auto).
+   Injected by app.js §Glee color-scheme toggle IIFE. Scoped to .glee-main.
+   Base styles handle the default (light) appearance.
+   Dark-mode variants follow for both OS-preference and explicit user choice.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.glee-main .glee-color-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  background: transparent;
+  border: 1.5px solid rgba(42, 35, 32, 0.18);
+  border-radius: 50%;
+  cursor: pointer;
+  color: var(--color-muted, #6b5e57);
+  padding: 0;
+  flex-shrink: 0;
+  transition: border-color 150ms ease, background 150ms ease, color 150ms ease;
+}
+.glee-main .glee-color-toggle:hover {
+  background: rgba(42, 35, 32, 0.06);
+  border-color: rgba(42, 35, 32, 0.3);
+  color: var(--color-fg, #2e2b29);
+}
+.glee-main .glee-color-toggle:focus-visible {
+  outline: 2px solid var(--color-accent, #d94f63);
+  outline-offset: 2px;
+}
+.glee-main .glee-color-toggle svg {
+  pointer-events: none;
+  display: block;
+}
+
+/* Toggle button when OS is in dark (no explicit user choice stored yet) */
+@media (prefers-color-scheme: dark) {
+  .glee-main .glee-color-toggle {
+    border-color: rgba(240, 220, 210, 0.25);
+    color: #b09080;
+  }
+  .glee-main .glee-color-toggle:hover {
+    background: rgba(240, 220, 210, 0.08);
+    border-color: rgba(240, 220, 210, 0.4);
+    color: #f0e8e0;
+  }
+}
+
+/* Toggle button when user has explicitly chosen dark mode */
+html[data-color-scheme="dark"] .glee-main .glee-color-toggle {
+  border-color: rgba(240, 220, 210, 0.25);
+  color: #b09080;
+}
+html[data-color-scheme="dark"] .glee-main .glee-color-toggle:hover {
+  background: rgba(240, 220, 210, 0.08);
+  border-color: rgba(240, 220, 210, 0.4);
+  color: #f0e8e0;
+}
+
+/* Toggle button when user has explicitly chosen light mode */
+html[data-color-scheme="light"] .glee-main .glee-color-toggle {
+  border-color: rgba(42, 35, 32, 0.18);
+  color: #6b5e57;
+}
+html[data-color-scheme="light"] .glee-main .glee-color-toggle:hover {
+  background: rgba(42, 35, 32, 0.06);
+  border-color: rgba(42, 35, 32, 0.3);
+  color: #2e2b29;
+}
+
 /* ╔════════════════════════════════════════════════════════════════════════════╗
    ║  SECTION · ASKJAMIE                                                        ║
    ║  askjamie.bot — scoped via .askjamie-main                                  ║
