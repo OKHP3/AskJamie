@@ -78,6 +78,25 @@ THEME_COLOR_PAIR = (
     '    <meta name="theme-color" content="#2c5e6f" media="(prefers-color-scheme: dark)" />'
 )
 
+# Anti-flash: tiny inline script that reads localStorage before theme.css loads,
+# so dark-mode users never see a light flash. Placed just before theme.css <link>.
+# Idempotency sentinel: 'okh-theme' present in <head>.
+ANTI_FLASH_SCRIPT = (
+    '<script>'
+    '!function(){'
+    'var s=localStorage.getItem("okh-theme");'
+    'document.documentElement.setAttribute("data-theme",'
+    's==="dark"||(s!=="light"&&window.matchMedia&&'
+    'window.matchMedia("(prefers-color-scheme:dark)").matches)'
+    '?"dark":"light")'
+    '}();'
+    '</script>'
+)
+ANTI_FLASH_RE = re.compile(
+    r'([ \t]*<link\b[^>]*\brel="stylesheet"[^>]*\bassets/css/theme\.css[^>]*/?>)',
+    re.IGNORECASE
+)
+
 
 def iter_html() -> list[Path]:
     out = []
@@ -169,6 +188,20 @@ def upgrade_images(src: str) -> tuple[str, list[str]]:
     return new_src, actions
 
 
+
+def add_anti_flash(src: str) -> tuple[str, list[str]]:
+    """Inject the anti-flash theme script before theme.css <link>. Idempotent."""
+    head = re.search(r'<head\b[^>]*>(.*?)</head>', src, re.DOTALL | re.IGNORECASE)
+    if head and 'okh-theme' in head.group(1):
+        return src, []
+    m = ANTI_FLASH_RE.search(src)
+    if not m:
+        return src, ['WARN: no theme.css <link> found — anti-flash script not added']
+    indent = re.match(r'[ \t]*', m.group(1)).group(0)
+    src = src[:m.start()] + indent + ANTI_FLASH_SCRIPT + '\n' + src[m.start():]
+    return src, ['injected anti-flash theme script']
+
+
 def main() -> int:
     files = iter_html()
     print(f"Scanning {len(files)} HTML files...\n")
@@ -179,6 +212,9 @@ def main() -> int:
         all_actions: list[str] = []
 
         src, acts = add_security_meta(src)
+        all_actions.extend(acts)
+
+        src, acts = add_anti_flash(src)
         all_actions.extend(acts)
 
         src, acts = split_theme_color(src)
