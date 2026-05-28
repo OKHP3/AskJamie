@@ -112,6 +112,10 @@ Start from the source page for that Page Type. Apply these rules in order:
 - Nav markup (logo, links, mobile menu button) — this is shared infrastructure
 - Footer markup — shared infrastructure
 - All `<link>` tags for stylesheets
+- The **anti-flash theme script** — the inline `<script>` immediately before
+  `<link rel="stylesheet" href="...theme.css">` that reads `localStorage`
+  and sets `data-theme` on `<html>` before paint. Do not remove, reorder,
+  or tokenise it; it must stay as a literal inline `<script>` block.
 - All `<script>` tags (src paths and inline scripts)
 - All `<meta>` tags that are site-wide constants (charset, viewport,
   author, publisher, theme-color)
