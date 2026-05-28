@@ -455,6 +455,16 @@ def reconcile_search_index(html_files: List[Path]) -> List[str]:
         if not isinstance(pages, list):
             return [f"search-index.json has unexpected shape: {type(pages).__name__}"]
         indexed_urls = {item.get("url", "") for item in pages if isinstance(item, dict)}
+        template_urls = sorted(
+            u for u in indexed_urls
+            if re.search(r"/assets/templates/", u)
+        )
+        if template_urls:
+            return [
+                f"search-index.json contains a template-scaffold URL "
+                f"(re-run build-search-index.py after fixing EXCLUDE_DIRS): {u}"
+                for u in template_urls
+            ]
         indexed_rels = {
             url_to_relpath(u) if u.startswith("http") else u.lstrip("/")
             for u in indexed_urls
