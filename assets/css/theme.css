@@ -125,11 +125,11 @@
   --color-accent: var(--okh-orange);
 }
 
-body[data-theme="dark"] {
+html[data-theme="dark"] body {
   background: radial-gradient(circle at top, #1f2933, #020617);
 }
 
-body[data-theme="light"] {
+html[data-theme="light"] body {
   background: radial-gradient(circle at top, #f6f2ee, #fff7f1);
 }
 
@@ -4581,4 +4581,259 @@ a.mermaid-referral-link:focus-visible {
   flex-wrap: wrap;
   gap: 0.75rem;
   align-items: center;
+}
+
+
+/* ==========================================================================
+ * ASKJAMIE — COLOR TOGGLE BUTTON (v1.0 — Task #31)
+ * Injected by app.js into .site-header .container, before .nav-toggle.
+ * Three states: light → dark → auto (system).
+ * ========================================================================== */
+
+.askjamie-color-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  background: rgba(246, 242, 238, 0.98);
+  color: #2e2b29;
+  cursor: pointer;
+  flex-shrink: 0;
+  padding: 0;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+  margin-right: 0.5rem;
+}
+
+.askjamie-color-toggle svg {
+  width: 1.1rem;
+  height: 1.1rem;
+  pointer-events: none;
+}
+
+.askjamie-color-toggle:hover {
+  background: #2d6f7e;
+  color: #fdfbf7;
+  border-color: #2d6f7e;
+  box-shadow: 0 2px 8px rgba(45, 111, 126, 0.4);
+}
+
+.askjamie-color-toggle:focus-visible {
+  outline: 2px solid #2d6f7e;
+  outline-offset: 2px;
+}
+
+html[data-theme="dark"] .askjamie-color-toggle {
+  background: rgba(20, 40, 47, 0.95);
+  border-color: rgba(232, 228, 223, 0.18);
+  color: #c8e0e5;
+}
+
+html[data-theme="dark"] .askjamie-color-toggle:hover {
+  background: #5bbfce;
+  color: #0e1e24;
+  border-color: #5bbfce;
+  box-shadow: 0 2px 8px rgba(91, 191, 206, 0.45);
+}
+
+
+/* ==========================================================================
+ * ASKJAMIE — DARK MODE OVERRIDES (v1.0 — Task #31)
+ * Applied when html[data-theme="dark"] is set by the AskJamie color toggle.
+ * All hardcoded light-palette values below are overridden here.
+ * Token block on .askjamie-main propagates via var() to most components.
+ * ========================================================================== */
+
+html[data-theme="dark"] .askjamie-main {
+  --color-bg:            #0e1e24;
+  --color-surface:       #14282f;
+  --color-surface-soft:  #0e1e24;
+  --color-fg:            #e8e4df;
+  --color-muted:         #90b3bb;
+  --color-accent:        #5bbfce;
+  --color-border-subtle: rgba(232, 228, 223, 0.1);
+  --color-heading:       #e8e4df;
+
+  /* Mermaid tokens for dark */
+  --mermaid-primary-color:        #14282f;
+  --mermaid-primary-text-color:   #e8e4df;
+  --mermaid-primary-border-color: #5bbfce;
+  --mermaid-line-color:           #5bbfce;
+  --mermaid-secondary-color:      #0e1e24;
+  --mermaid-tertiary-color:       #1a3740;
+  --mermaid-cluster-bg:           #111e24;
+  --mermaid-edge-label-bg:        #0e1e24;
+
+  background: var(--color-bg);
+  color: var(--color-fg);
+}
+
+/* Header */
+html[data-theme="dark"] .askjamie-main .site-header {
+  background: #0c1b21;
+  border-bottom-color: rgba(232, 228, 223, 0.1);
+}
+
+html[data-theme="dark"] .askjamie-main .site-header .primary-nav a,
+html[data-theme="dark"] .askjamie-main .primary-nav a {
+  color: #c8d8dc;
+}
+
+html[data-theme="dark"] .askjamie-main .primary-nav a[aria-current="page"],
+html[data-theme="dark"] .askjamie-main .primary-nav a.is-current {
+  color: #5bbfce;
+}
+
+html[data-theme="dark"] .askjamie-main .nav-toggle {
+  background: rgba(20, 40, 47, 0.95);
+  border-color: rgba(232, 228, 223, 0.16);
+}
+
+html[data-theme="dark"] .askjamie-main .nav-toggle .bar {
+  background: #c8d8dc;
+}
+
+html[data-theme="dark"] body.askjamie-main .primary-nav {
+  background: #0c1b21;
+  border-bottom-color: rgba(232, 228, 223, 0.08);
+}
+
+html[data-theme="dark"] body.askjamie-main .primary-nav a {
+  color: #c8d8dc;
+}
+
+/* Hero */
+html[data-theme="dark"] .askjamie-main .hero {
+  color: var(--color-fg);
+}
+
+html[data-theme="dark"] .askjamie-paper {
+  background: #14282f;
+  background-image:
+    radial-gradient(circle at 0 0,   rgba(0, 0, 0, 0.25), transparent 55%),
+    radial-gradient(circle at 100% 100%, rgba(0, 0, 0, 0.18), transparent 55%);
+}
+
+html[data-theme="dark"] .askjamie-hero-copy .hero-subtitle {
+  color: #a8c4cb;
+}
+
+html[data-theme="dark"] .askjamie-hero-copy .hero-tagline {
+  color: #7aa8b0;
+}
+
+html[data-theme="dark"] .askjamie-main .site-status {
+  background: rgba(20, 40, 47, 0.85);
+  border-color: rgba(91, 191, 206, 0.25);
+}
+
+html[data-theme="dark"] .askjamie-main .site-specials {
+  background: #0c1b21;
+  border-bottom-color: rgba(232, 228, 223, 0.08);
+}
+
+html[data-theme="dark"] .askjamie-main .site-specials-link {
+  color: #90b3bb;
+}
+
+/* Cards */
+html[data-theme="dark"] .askjamie-main .card {
+  background: var(--color-surface);
+  border-color: rgba(232, 228, 223, 0.1);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.45);
+}
+
+/* Stripe sections */
+html[data-theme="dark"] .askjamie-main .stripe-bg {
+  background: #0c1b21;
+  border-top-color:    rgba(232, 228, 223, 0.07);
+  border-bottom-color: rgba(232, 228, 223, 0.07);
+}
+
+/* Buttons */
+html[data-theme="dark"] .askjamie-main .btn-quiet {
+  border-color: rgba(232, 228, 223, 0.2);
+  color: #90b3bb;
+}
+
+html[data-theme="dark"] .askjamie-main .btn-quiet:hover {
+  border-color: #5bbfce;
+  color: #5bbfce;
+}
+
+/* Chat bubbles */
+html[data-theme="dark"] .askjamie-main .chat-bubble.user {
+  background: #14282f;
+  border-color: rgba(232, 228, 223, 0.12);
+  color: var(--color-fg);
+}
+
+html[data-theme="dark"] .askjamie-main .chat-bubble.assistant.secondary {
+  background: #1a3740;
+  color: #e8e4df;
+  border-color: #5bbfce;
+}
+
+/* Footer */
+html[data-theme="dark"] .askjamie-main .site-footer {
+  background: #0c1b21;
+  border-top-color: rgba(232, 228, 223, 0.09);
+}
+
+html[data-theme="dark"] .askjamie-main .footer-column h3,
+html[data-theme="dark"] .askjamie-main .footer-column h4 {
+  color: #e8e4df;
+}
+
+html[data-theme="dark"] .askjamie-main .site-footer a {
+  color: #5bbfce;
+}
+
+html[data-theme="dark"] .askjamie-main .footer-bottom {
+  background: #0c1b21;
+}
+
+/* BrandGuard demo notice */
+html[data-theme="dark"] .askjamie-main .brandguard-demo-notice {
+  background: rgba(20, 40, 47, 0.65);
+  border-color: rgba(91, 191, 206, 0.25);
+  border-left-color: #5bbfce;
+  color: #c8d8dc;
+}
+
+html[data-theme="dark"] .askjamie-main .brandguard-demo-notice__label {
+  color: #5bbfce;
+}
+
+html[data-theme="dark"] .askjamie-main .brandguard-demo-notice a {
+  color: #5bbfce;
+}
+
+/* Latest block */
+html[data-theme="dark"] .askjamie-main .latest-pill {
+  background: rgba(91, 191, 206, 0.15);
+  color: #5bbfce;
+}
+
+/* Search page */
+html[data-theme="dark"] .askjamie-main.search-page .search-input-wrap {
+  background: var(--color-surface);
+  border-color: rgba(232, 228, 223, 0.12);
+}
+
+html[data-theme="dark"] .askjamie-main.search-page .search-categories button[aria-pressed="true"] {
+  background: rgba(91, 191, 206, 0.18);
+  color: #5bbfce;
+  border-color: rgba(91, 191, 206, 0.4);
+}
+
+html[data-theme="dark"] .askjamie-main.search-page .ajs-result-cat {
+  background: rgba(91, 191, 206, 0.15);
+  color: #5bbfce;
+}
+
+html[data-theme="dark"] .askjamie-main.search-page .ajs-result mark {
+  background: rgba(91, 191, 206, 0.25);
 }
