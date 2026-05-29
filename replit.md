@@ -34,8 +34,11 @@ assets/
                        #                    under-construction overlay
   js/mermaid-init.js   # Mermaid v11 ESM diagram initialization (external file, no inline scripts)
   data/search-index.json  # Pre-built static search index (~100 KB, ~25 KB gzipped)
-  img/                 # Brand assets, avatars, case study images
+  img/                 # Brand assets, avatars, case study images — all files kebab-case
   img/favicons/        # Full favicon set (ico, 16/32/48px PNG, SVG, android-chrome, apple-touch)
+  img/og/              # OG images 1200×630 WebP+PNG for every page
+  img/brandguard/      # BrandGuard case-study images (GPT icons, scene shots, shield badges)
+  img/brandguard/company-logos/  # 12 brand logo PNGs (one per BrandGuard client)
   docs/                # Generated documentation assets:
                        #   audit-report.md       — written by scripts/audit-site.py (gitignored)
                        #   image-usage-report.md — img cross-reference (pending ROADMAP prune task)

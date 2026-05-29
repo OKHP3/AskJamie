@@ -385,7 +385,7 @@ def build_article_json(rel_path: str, html: str) -> dict | None:
             "url": SITE_ORIGIN,
             "logo": {
                 "@type": "ImageObject",
-                "url": f"{SITE_ORIGIN}/assets/img/AskJamie%20AvatarTallLeft%20Square%201024.png",
+                "url": f"{SITE_ORIGIN}/assets/img/askjamie-avatar-tall-left-square-1024.png",
             },
         },
         "mainEntityOfPage": {

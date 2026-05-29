@@ -17,122 +17,122 @@ URL-encoded (`%20` etc).
 
 ## Unreferenced files
 
-- `assets/img/AskJamie AvatarChopTopLeft Square 1024.png` (1433 KB)
-- `assets/img/AskJamie AvatarChopTopRight Square 1024.png` (1432 KB)
-- `assets/img/AskJamie AvatarTallRight Square 1024.png` (737 KB)
-- `assets/img/AskJamie AvatarTallShadowLeft Square 1024.png` (741 KB)
-- `assets/img/AskJamie AvatarTallShadowRight Square 1024.png` (739 KB)
-- `assets/img/AskJamie AvatarTorsoLeft Square 1024.png` (1316 KB)
-- `assets/img/AskJamie BackdropBlueCreamLeft Square 1024.png` (12 KB)
-- `assets/img/AskJamie BackdropBlueCreamRight Square 1024.png` (11 KB)
-- `assets/img/AskJamie BackdropBlueGrayLeft Square 1024.png` (12 KB)
-- `assets/img/AskJamie BackdropBlueGrayRight Square 1024.png` (11 KB)
-- `assets/img/AskJamie BackdropBlueTanLeft Square 1024.png` (12 KB)
-- `assets/img/AskJamie BackdropBlueTanRight Square 1024.png` (11 KB)
-- `assets/img/AskJamie BackdropCreamBlueLeft Square 1024.png` (11 KB)
-- `assets/img/AskJamie BackdropCreamBlueRight Square 1024.png` (11 KB)
-- `assets/img/AskJamie BackdropCreamGrayLeft Square 1024.png` (12 KB)
-- `assets/img/AskJamie BackdropCreamGrayRight Square 1024.png` (11 KB)
-- `assets/img/AskJamie BackdropCreamTanLeft Square 1024.png` (11 KB)
-- `assets/img/AskJamie BackdropCreamTanRight Square 1024.png` (11 KB)
-- `assets/img/AskJamie BackdropGrayBlueLeft Square 1024.png` (11 KB)
-- `assets/img/AskJamie BackdropGrayBlueRight Square 1024.png` (11 KB)
-- `assets/img/AskJamie BackdropGrayCreamLeft Square 1024.png` (11 KB)
-- `assets/img/AskJamie BackdropGrayCreamRight Square 1024.png` (11 KB)
-- `assets/img/AskJamie BackdropGrayTanLeft Square 1024.png` (11 KB)
-- `assets/img/AskJamie BackdropGrayTanRight Square 1024.png` (11 KB)
-- `assets/img/AskJamie BackdropTanBlueLeft Square 1024.png` (11 KB)
-- `assets/img/AskJamie BackdropTanBlueRight Square 1024.png` (11 KB)
-- `assets/img/AskJamie BackdropTanCreamLeft Square 1024.png` (11 KB)
-- `assets/img/AskJamie BackdropTanCreamRight Square 1024.png` (11 KB)
-- `assets/img/AskJamie BackdropTanGrayLeft Square 1024.png` (12 KB)
-- `assets/img/AskJamie BackdropTanGrayRight Square 1024.png` (11 KB)
-- `assets/img/AskJamie BackgroundBright  Square 1024.png` (1969 KB)
-- `assets/img/AskJamie BackgroundBright Wide 2390.png` (2895 KB)
-- `assets/img/AskJamie BackgroundBrightAvatarTallRightTitleCreamGrayBackdropGrayCreamLeft Wide 2390.png` (2896 KB)
-- `assets/img/AskJamie BackgroundMuted Square 1024.png` (2126 KB)
-- `assets/img/AskJamie BackgroundMuted Wide 2390.png` (3684 KB)
-- `assets/img/AskJamie BackgroundMuted Wide 4096.png` (6907 KB)
-- `assets/img/AskJamie BackgroundMutedAvatarTallRightPhoneGrey Square 1024.png` (749 KB)
-- `assets/img/AskJamie BackgroundMutedAvatarTorsoLeftAskJamieTitleGrayCreamBackdropBlueCreamLeft Wide 1536.png` (2596 KB)
-- `assets/img/AskJamie BackgroundMutedCompBlueTan Square 1024.png` (1864 KB)
-- `assets/img/AskJamie CompBlueCream Square 1024 (2).png` (1000 KB)
-- `assets/img/AskJamie CompBlueCream Square 1024.png` (1517 KB)
-- `assets/img/AskJamie CompBlueTan Square 1024.png` (1060 KB)
-- `assets/img/AskJamie CompCreamGray Square 1024.png` (870 KB)
-- `assets/img/AskJamie PhoneBlue Square 1024.png` (1318 KB)
-- `assets/img/AskJamie RealChopTopRight Square 1024.png` (1090 KB)
-- `assets/img/AskJamie TitleBlack Square 1024.png` (18 KB)
-- `assets/img/AskJamie TitleBlueCream Square 1024.png` (83 KB)
-- `assets/img/AskJamie TitleBlueCreamBackdropTanCreamLeft Square 1024.png` (175 KB)
-- `assets/img/AskJamie TitleBlueGray Square 1024.png` (75 KB)
-- `assets/img/AskJamie TitleBlueGrayBackdropTanGray Square 1024.png` (143 KB)
-- `assets/img/AskJamie TitleBlueTan Square 1024.png` (83 KB)
-- `assets/img/AskJamie TitleCreamBlue Square 1024.png` (26 KB)
-- `assets/img/AskJamie TitleCreamGray Square 1024.png` (26 KB)
-- `assets/img/AskJamie TitleCreamTan Square 1024.png` (26 KB)
-- `assets/img/AskJamie TitleGrayBlue Square 1024.png` (74 KB)
-- `assets/img/AskJamie TitleGrayCream Square 1024.png` (82 KB)
-- `assets/img/AskJamie TitleGrayCreamBackdropBlueCreamLeft Square 1024.png` (182 KB)
-- `assets/img/AskJamie TitleGrayTan Square 1024.png` (74 KB)
-- `assets/img/AskJamie TitleLeftUpAvatarTorsoLeftPhoneCream Square 1024.PNG` (708 KB)
-- `assets/img/AskJamie TitleTanBlue Square 1024.png` (28 KB)
-- `assets/img/AskJamie TitleTanBlueBackdropGrayTanLeft Square 1024.png` (178 KB)
-- `assets/img/AskJamie TitleTanCream Square 1024.png` (28 KB)
-- `assets/img/AskJamie TitleTanGray Square 1024.png` (46 KB)
-- `assets/img/AskJamie TitleUpRightAvatarTallRight Square 1024.png` (854 KB)
-- `assets/img/AskJamie TitleWhite Square 1024.png` (18 KB)
-- `assets/img/BrandGuard/AskJamie-GPT-BFS01-BFSFramingIntelligentFutures- Scene01-Wide-1536.png` (649 KB)
-- `assets/img/BrandGuard/AskJamie-GPT-BFS01-BFSFramingIntelligentFutures- Scene02-Wide-1536.jpg` (113 KB)
-- `assets/img/BrandGuard/AskJamie-GPT-BFS01-BFSFramingIntelligentFutures- Scene04-Wide-1536.PNG` (600 KB)
-- `assets/img/BrandGuard/AskJamie-GPT-BFS01-BFSFramingIntelligentFutures- Scene04-Wide-1536.jpg` (86 KB)
-- `assets/img/BrandGuard/AskJamie-GPT-BFS01-BFSFramingIntelligentFutures- Scene05-Wide-1536.jpg` (80 KB)
-- `assets/img/BrandGuard/AskJamie-GPTIcon-BFS01-BFSFramingIntelligentFutures-Square-1024-alt.png` (1394 KB)
-- `assets/img/BrandGuard/AskJamie-GPTIcon-BFS01-BFSFramingIntelligentFutures-Square-1024-pre.png` (1574 KB)
-- `assets/img/BrandGuard/OverKill Hill P³ Aura Protection 1 1024.png` (2153 KB)
-- `assets/img/BrandGuard/OverKill Hill P³ Aura Protection 2 1024.png` (2231 KB)
-- `assets/img/BrandGuard/OverKill Hill P³ GPT-BRG04 Ping (Golf) Brandgaurd Protection 1024.png` (1857 KB)
+- `assets/img/askjamie-avatar-chop-top-left-square-1024.png` (1433 KB)
+- `assets/img/askjamie-avatar-chop-top-right-square-1024.png` (1432 KB)
+- `assets/img/askjamie-avatar-tall-right-square-1024.png` (737 KB)
+- `assets/img/askjamie-avatar-tall-shadow-left-square-1024.png` (741 KB)
+- `assets/img/askjamie-avatar-tall-shadow-right-square-1024.png` (739 KB)
+- `assets/img/askjamie-avatar-torso-left-square-1024.png` (1316 KB)
+- `assets/img/askjamie-backdrop-blue-cream-left-square-1024.png` (12 KB)
+- `assets/img/askjamie-backdrop-blue-cream-right-square-1024.png` (11 KB)
+- `assets/img/askjamie-backdrop-blue-gray-left-square-1024.png` (12 KB)
+- `assets/img/askjamie-backdrop-blue-gray-right-square-1024.png` (11 KB)
+- `assets/img/askjamie-backdrop-blue-tan-left-square-1024.png` (12 KB)
+- `assets/img/askjamie-backdrop-blue-tan-right-square-1024.png` (11 KB)
+- `assets/img/askjamie-backdrop-cream-blue-left-square-1024.png` (11 KB)
+- `assets/img/askjamie-backdrop-cream-blue-right-square-1024.png` (11 KB)
+- `assets/img/askjamie-backdrop-cream-gray-left-square-1024.png` (12 KB)
+- `assets/img/askjamie-backdrop-cream-gray-right-square-1024.png` (11 KB)
+- `assets/img/askjamie-backdrop-cream-tan-left-square-1024.png` (11 KB)
+- `assets/img/askjamie-backdrop-cream-tan-right-square-1024.png` (11 KB)
+- `assets/img/askjamie-backdrop-gray-blue-left-square-1024.png` (11 KB)
+- `assets/img/askjamie-backdrop-gray-blue-right-square-1024.png` (11 KB)
+- `assets/img/askjamie-backdrop-gray-cream-left-square-1024.png` (11 KB)
+- `assets/img/askjamie-backdrop-gray-cream-right-square-1024.png` (11 KB)
+- `assets/img/askjamie-backdrop-gray-tan-left-square-1024.png` (11 KB)
+- `assets/img/askjamie-backdrop-gray-tan-right-square-1024.png` (11 KB)
+- `assets/img/askjamie-backdrop-tan-blue-left-square-1024.png` (11 KB)
+- `assets/img/askjamie-backdrop-tan-blue-right-square-1024.png` (11 KB)
+- `assets/img/askjamie-backdrop-tan-cream-left-square-1024.png` (11 KB)
+- `assets/img/askjamie-backdrop-tan-cream-right-square-1024.png` (11 KB)
+- `assets/img/askjamie-backdrop-tan-gray-left-square-1024.png` (12 KB)
+- `assets/img/askjamie-backdrop-tan-gray-right-square-1024.png` (11 KB)
+- `assets/img/askjamie-background-bright-square-1024.png` (1969 KB)
+- `assets/img/askjamie-background-bright-wide-2390.png` (2895 KB)
+- `assets/img/askjamie-background-bright-avatar-tall-right-title-cream-gray-backdrop-gray-cream-left-wide-2390.png` (2896 KB)
+- `assets/img/askjamie-background-muted-square-1024.png` (2126 KB)
+- `assets/img/askjamie-background-muted-wide-2390.png` (3684 KB)
+- `assets/img/askjamie-background-muted-wide-4096.png` (6907 KB)
+- `assets/img/askjamie-background-muted-avatar-tall-right-phone-grey-square-1024.png` (749 KB)
+- `assets/img/askjamie-background-muted-avatar-torso-left-askjamie-title-gray-cream-backdrop-blue-cream-left-wide-1536.png` (2596 KB)
+- `assets/img/askjamie-background-muted-comp-blue-tan-square-1024.png` (1864 KB)
+- `assets/img/askjamie-comp-blue-cream-square-1024-2.png` (1000 KB)
+- `assets/img/askjamie-comp-blue-cream-square-1024.png` (1517 KB)
+- `assets/img/askjamie-comp-blue-tan-square-1024.png` (1060 KB)
+- `assets/img/askjamie-comp-cream-gray-square-1024.png` (870 KB)
+- `assets/img/askjamie-phone-blue-square-1024.png` (1318 KB)
+- `assets/img/askjamie-real-chop-top-right-square-1024.png` (1090 KB)
+- `assets/img/askjamie-title-black-square-1024.png` (18 KB)
+- `assets/img/askjamie-title-blue-cream-square-1024.png` (83 KB)
+- `assets/img/askjamie-title-blue-cream-backdrop-tan-cream-left-square-1024.png` (175 KB)
+- `assets/img/askjamie-title-blue-gray-square-1024.png` (75 KB)
+- `assets/img/askjamie-title-blue-gray-backdrop-tan-gray-square-1024.png` (143 KB)
+- `assets/img/askjamie-title-blue-tan-square-1024.png` (83 KB)
+- `assets/img/askjamie-title-cream-blue-square-1024.png` (26 KB)
+- `assets/img/askjamie-title-cream-gray-square-1024.png` (26 KB)
+- `assets/img/askjamie-title-cream-tan-square-1024.png` (26 KB)
+- `assets/img/askjamie-title-gray-blue-square-1024.png` (74 KB)
+- `assets/img/askjamie-title-gray-cream-square-1024.png` (82 KB)
+- `assets/img/askjamie-title-gray-cream-backdrop-blue-cream-left-square-1024.png` (182 KB)
+- `assets/img/askjamie-title-gray-tan-square-1024.png` (74 KB)
+- `assets/img/askjamie-title-left-up-avatar-torso-left-phone-cream-square-1024.png` (708 KB)
+- `assets/img/askjamie-title-tan-blue-square-1024.png` (28 KB)
+- `assets/img/askjamie-title-tan-blue-backdrop-gray-tan-left-square-1024.png` (178 KB)
+- `assets/img/askjamie-title-tan-cream-square-1024.png` (28 KB)
+- `assets/img/askjamie-title-tan-gray-square-1024.png` (46 KB)
+- `assets/img/askjamie-title-up-right-avatar-tall-right-square-1024.png` (854 KB)
+- `assets/img/askjamie-title-white-square-1024.png` (18 KB)
+- `assets/img/brandguard/askjamie-gpt-bfs01-bfs-framing-intelligent-futures-scene01-wide-1536.png` (649 KB)
+- `assets/img/brandguard/askjamie-gpt-bfs01-bfs-framing-intelligent-futures-scene02-wide-1536.jpg` (113 KB)
+- `assets/img/brandguard/askjamie-gpt-bfs01-bfs-framing-intelligent-futures-scene04-wide-1536.png` (600 KB)
+- `assets/img/brandguard/askjamie-gpt-bfs01-bfs-framing-intelligent-futures-scene04-wide-1536.jpg` (86 KB)
+- `assets/img/brandguard/askjamie-gpt-bfs01-bfs-framing-intelligent-futures-scene05-wide-1536.jpg` (80 KB)
+- `assets/img/brandguard/askjamie-gpt-icon-bfs01-bfs-framing-intelligent-futures-square-1024-alt.png` (1394 KB)
+- `assets/img/brandguard/askjamie-gpt-icon-bfs01-bfs-framing-intelligent-futures-square-1024-pre.png` (1574 KB)
+- `assets/img/brandguard/overkill-hill-p3-aura-protection-1-1024.png` (2153 KB)
+- `assets/img/brandguard/overkill-hill-p3-aura-protection-2-1024.png` (2231 KB)
+- `assets/img/brandguard/overkill-hill-p3-gpt-brg04-ping-golf-brandguard-protection-1024.png` (1857 KB)
 
 ## Referenced files
 
 _(45 files — listed for completeness)_
 
-- `assets/img/AskJamie AvatarTallLeft Square 1024.png`
-- `assets/img/AskJamie AvatarTallLeftBackdropCreamBlueLeftErrorExplosion Wide 1536.png`
-- `assets/img/AskJamie AvatarTallLeftBackdropCreamTanLeftUnderConstruction Wide 1536.png`
-- `assets/img/AskJamie AvatarTorsoRight Square 1024.png`
-- `assets/img/AskJamie PhoneGray Square 1024.png`
-- `assets/img/AskJamie PhoneTan Square 1024.png`
-- `assets/img/AskJamie TitleCreamBlueBackdropBlueGrayLeft Square 1024.png`
-- `assets/img/AskJamie TitleMidLeftAvatarTallShadowLeftCompCreamGrayBackdropBlueTanLeft Square 1024.png`
-- `assets/img/BrandGuard/AskJamie-AvatarTallLeft-BFS01-BFSFramingIntelligentFutures-Square-1024.png`
-- `assets/img/BrandGuard/AskJamie-GPTIcon-BFS01-BFSFramingIntelligentFutures-Square-1024.png`
-- `assets/img/BrandGuard/Company Logos/Brooks Running.png`
-- `assets/img/BrandGuard/Company Logos/Coca-Cola.png`
-- `assets/img/BrandGuard/Company Logos/Costco.png`
-- `assets/img/BrandGuard/Company Logos/Discount Tire.png`
-- `assets/img/BrandGuard/Company Logos/Dollar General.png`
-- `assets/img/BrandGuard/Company Logos/Hersheys.png`
-- `assets/img/BrandGuard/Company Logos/LVMH.png`
-- `assets/img/BrandGuard/Company Logos/Lego.png`
-- `assets/img/BrandGuard/Company Logos/Mathews Archery.png`
-- `assets/img/BrandGuard/Company Logos/Ping (Golf).png`
-- `assets/img/BrandGuard/Company Logos/Scheels.png`
-- `assets/img/BrandGuard/Company Logos/Starbucks.png`
-- `assets/img/BrandGuard/OverKill Hill P³ GPT-BRG01 Lego Brandgaurd Protection 1024.png`
-- `assets/img/BrandGuard/OverKill Hill P³ GPT-BRG02 Starbucks Brandgaurd Protection 1024.png`
-- `assets/img/BrandGuard/OverKill Hill P³ GPT-BRG03 Brooks Running Brandgaurd Protection 1024.png`
-- `assets/img/BrandGuard/OverKill Hill P³ GPT-BRG05 Costco Brandgaurd Protection 1024.png`
-- `assets/img/BrandGuard/OverKill Hill P³ GPT-BRG06 Hershey Brandgaurd Protection 1024.png`
-- `assets/img/BrandGuard/OverKill Hill P³ GPT-BRG07 LVMH Brandgaurd Protection 1024.png`
-- `assets/img/BrandGuard/OverKill Hill P³ GPT-BRG08 Dollar General Brandgaurd Protection 1024.png`
-- `assets/img/BrandGuard/OverKill Hill P³ GPT-BRG09 Coca-Cola Brandgaurd Protection 1024.png`
-- `assets/img/BrandGuard/OverKill Hill P³ GPT-BRG10 Discount Tire Brandgaurd Protection 1024.png`
-- `assets/img/BrandGuard/OverKill Hill P³ GPT-BRG11 Scheels Brandgaurd Protection 1024.png`
-- `assets/img/BrandGuard/OverKill Hill P³ GPT-BRG12 Mathews Archery Brandgaurd Protection 1024.png`
-- `assets/img/ErrorExplosion1.png`
-- `assets/img/ErrorExplosion2.png`
-- `assets/img/Under Construction with Heart Elements.png`
+- `assets/img/askjamie-avatar-tall-left-square-1024.png`
+- `assets/img/askjamie-avatar-tall-left-backdrop-cream-blue-left-error-explosion-wide-1536.png`
+- `assets/img/askjamie-avatar-tall-left-backdrop-cream-tan-left-under-construction-wide-1536.png`
+- `assets/img/askjamie-avatar-torso-right-square-1024.png`
+- `assets/img/askjamie-phone-gray-square-1024.png`
+- `assets/img/askjamie-phone-tan-square-1024.png`
+- `assets/img/askjamie-title-cream-blue-backdrop-blue-gray-left-square-1024.png`
+- `assets/img/askjamie-title-mid-left-avatar-tall-shadow-left-comp-cream-gray-backdrop-blue-tan-left-square-1024.png`
+- `assets/img/brandguard/askjamie-avatar-tall-left-bfs01-bfs-framing-intelligent-futures-square-1024.png`
+- `assets/img/brandguard/askjamie-gpt-icon-bfs01-bfs-framing-intelligent-futures-square-1024.png`
+- `assets/img/brandguard/company-logos/brooks-running.png`
+- `assets/img/brandguard/company-logos/coca-cola.png`
+- `assets/img/brandguard/company-logos/costco.png`
+- `assets/img/brandguard/company-logos/discount-tire.png`
+- `assets/img/brandguard/company-logos/dollar-general.png`
+- `assets/img/brandguard/company-logos/hersheys.png`
+- `assets/img/brandguard/company-logos/lvmh.png`
+- `assets/img/brandguard/company-logos/lego.png`
+- `assets/img/brandguard/company-logos/mathews-archery.png`
+- `assets/img/brandguard/company-logos/ping-golf.png`
+- `assets/img/brandguard/company-logos/scheels.png`
+- `assets/img/brandguard/company-logos/starbucks.png`
+- `assets/img/brandguard/overkill-hill-p3-gpt-brg01-lego-brandguard-protection-1024.png`
+- `assets/img/brandguard/overkill-hill-p3-gpt-brg02-starbucks-brandguard-protection-1024.png`
+- `assets/img/brandguard/overkill-hill-p3-gpt-brg03-brooks-running-brandguard-protection-1024.png`
+- `assets/img/brandguard/overkill-hill-p3-gpt-brg05-costco-brandguard-protection-1024.png`
+- `assets/img/brandguard/overkill-hill-p3-gpt-brg06-hershey-brandguard-protection-1024.png`
+- `assets/img/brandguard/overkill-hill-p3-gpt-brg07-lvmh-brandguard-protection-1024.png`
+- `assets/img/brandguard/overkill-hill-p3-gpt-brg08-dollar-general-brandguard-protection-1024.png`
+- `assets/img/brandguard/overkill-hill-p3-gpt-brg09-coca-cola-brandguard-protection-1024.png`
+- `assets/img/brandguard/overkill-hill-p3-gpt-brg10-discount-tire-brandguard-protection-1024.png`
+- `assets/img/brandguard/overkill-hill-p3-gpt-brg11-scheels-brandguard-protection-1024.png`
+- `assets/img/brandguard/overkill-hill-p3-gpt-brg12-mathews-archery-brandguard-protection-1024.png`
+- `assets/img/error-explosion-1.png`
+- `assets/img/error-explosion-2.png`
+- `assets/img/under-construction-with-heart-elements.png`
 - `assets/img/favicons/android-chrome-192x192.png`
 - `assets/img/favicons/android-chrome-512x512.png`
 - `assets/img/favicons/apple-touch-icon.png`

@@ -828,6 +828,31 @@ require hands-on access to the OKH repo and are owner-action items.
 
 ---
 
+---
+
+## 10 · Repo-structure inconsistency — `scripts/` placement in OKH
+
+**Status: Pending OKH action**
+
+A cross-repo compliance scan (2026-05-29) against AGENTS.md § 2 found that the
+three sister repos place the tooling scripts folder differently:
+
+| Repo | `scripts/` location | AGENTS.md § 2 compliant? |
+|------|---------------------|--------------------------|
+| AskJamie | `scripts/` at **repo root** | ✅ Yes |
+| Glee-fully Tools | `scripts/` at **repo root** | ✅ Yes |
+| OverKill Hill P³ | `assets/scripts/` — **inside assets** | ❌ No |
+
+AGENTS.md Section 2 places `scripts/` explicitly at the repo root (same level
+as `assets/`, `about/`, `index.html`, etc.).
+
+**Required fix in OKH repo:**
+Move `assets/scripts/` to `scripts/` (repo root) and update any internal
+references that hard-code the `assets/scripts/` path.
+
+---
+
+*Updated: 2026-05-29 — § 10 OKH scripts/ placement note added*
 *Updated: 2026-05-28 — § 9 dark/light toggle sync added (Task #32)*
 *Updated: 2026-05-27 — § 6 tooling-scripts sync added (Task #5)*
 *Originally generated: 2026-05-26 — AskJamie™ Task #4 (sister-site sync)*

@@ -48,8 +48,8 @@ The real GPT URL for the master AskJamie™ interface remains pending. When it i
 
 Replaced literal space characters in `src="..."` attributes with `%20` encoding:
 ```
-Before: src="/assets/img/AskJamie AvatarTallLeft Square 1024.png"
-After:  src="/assets/img/AskJamie%20AvatarTallLeft%20Square%201024.png"
+Before: src="/assets/img/askjamie-avatar-tall-left-square-1024.png"
+After:  src="/assets/img/askjamie-avatar-tall-left-square-1024.png"
 ```
 A site-wide scan confirmed no other pages had this issue.
 

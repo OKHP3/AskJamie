@@ -78,10 +78,10 @@ brand-specific logo or name swapped in. Suggested: one reusable template
 
 The following existing assets could be adapted to landscape format:
 
-- `assets/img/AskJamie TitleCreamBlueBackdropBlueGrayLeft Square 1024.png` —
+- `assets/img/askjamie-title-cream-blue-backdrop-blue-gray-left-square-1024.png` —
   the title card. Place left-of-center with 630 px height, add branded copy
   on the right half.
-- `assets/img/AskJamie AvatarTallLeft Square 1024.png` — the tall avatar.
+- `assets/img/askjamie-avatar-tall-left-square-1024.png` — the tall avatar.
   Crop to show top 2/3, place right-of-center as a visual anchor.
 - `assets/img/BrandGuard/*.png` — brand-specific avatars. Already in 1024×1024;
   use as the right-side element with brand-color background on the left half.
