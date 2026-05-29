@@ -13,14 +13,21 @@ and current audit state.
 - If you need config/secrets, stop and ask. Never invent credentials.
 - Summarize what you changed and why at the end.
 
-> **AGENTS.md sync circuit** — This file is one of three kept in lockstep.
-> Any structural edit to sections 1–5 must be propagated to the other two repos
+> **AGENTS.md sync circuit** -- This file is one of five kept in lockstep.
+> Any structural edit to Sections 1-8 must be propagated to the other four repos
 > before the session closes. Section 2.2.1 (per-site inventory) is intentionally
-> site-specific and does not need to match line-for-line.
+> site-specific and does not need to match line for line. When this file is silent
+> or ambiguous on any governance matter, defer to the primary authority:
+> <https://github.com/OKHP3/OverKill-Hill/blob/main/AGENTS.md>
 >
-> - **OverKill Hill P³:** https://github.com/OKHP3/OverKill-Hill/blob/main/AGENTS.md
-> - **AskJamie™:** https://github.com/OKHP3/AskJamie/blob/main/AGENTS.md
-> - **Glee-fully Tools:** https://github.com/OKHP3/Glee-fullyTools/blob/main/AGENTS.md
+> Static site repos:
+> - **OverKill Hill P3:** <https://github.com/OKHP3/OverKill-Hill/blob/main/AGENTS.md>
+> - **AskJamie:** <https://github.com/OKHP3/AskJamie/blob/main/AGENTS.md>
+> - **Glee-fully Tools:** <https://github.com/OKHP3/Glee-fullyTools/blob/main/AGENTS.md>
+>
+> Web application repos:
+> - **BPMN for Mermaid:** <https://github.com/OKHP3/mermaid-diagram-bpmn/blob/main/AGENTS.md>
+> - **Mermaid Theme Builder:** <https://github.com/OKHP3/mermaid-theme-builder/blob/main/AGENTS.md>
 
 ---
 
