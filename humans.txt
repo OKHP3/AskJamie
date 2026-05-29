@@ -1,0 +1,26 @@
+/* TEAM */
+  Architect, builder, editor: The AskJamie / OverKill Hill P³ team
+  Contact:                    contact [at] askjamie.bot
+  Site:                       https://askjamie.bot
+
+/* THANKS */
+  This site runs on open standards, public docs, and a long list of
+  shoulders that came before. Thanks to:
+    - The HTML, CSS, and SVG working groups
+    - The Mermaid, JetBrains Mono, Baloo 2, Open Sans, and Kalam authors
+    - Every engineer whose blog post answered a late-night question
+
+/* SITE */
+  Last update:  May 2026
+  Standards:    HTML5, CSS3, JSON-LD, RFC 9116
+  Components:   Static HTML, vanilla CSS, vanilla JS, Mermaid (lazy)
+  Build:        Hand-written + idempotent Python helpers
+                (see /scripts/ in the source repo)
+  Doctype:      HTML5
+  IDE:          Replit + a stubborn local editor
+
+/* PHILOSOPHY */
+  Calm. Mid-century. Conversational.
+  AskJamie is a thinking partner, not a chatbot.
+  Precision in structure. Warmth in delivery.
+  When in doubt: think it through, write it down, and ask the right question.
