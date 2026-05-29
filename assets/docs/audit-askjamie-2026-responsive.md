@@ -44,8 +44,8 @@ protects any future pages that use the same pattern.
 node scripts/responsive-qa.mjs --base=http://localhost:5000
 ```
 
-Results are written to `assets/docs/responsive-qa/results.json`.
-Screenshots are saved to `assets/docs/responsive-qa/screenshots/` **only for
+Results are written to `assets/audit/responsive-qa/results.json`.
+Screenshots are saved to `assets/audit/responsive-qa/screenshots/` **only for
 failing page/viewport combinations** (none on a clean run).
 
 ---
@@ -175,5 +175,5 @@ All 192 static checks passed. Full details in earlier version of this file.
 
 ## Machine-readable results
 
-`assets/docs/responsive-qa/results.json` — full output from latest run
+`assets/audit/responsive-qa/results.json` — full output from latest run
 (24 pages × 8 viewports = 192 checks, mode: playwright).

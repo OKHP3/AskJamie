@@ -103,7 +103,7 @@ if (_badPaths.length > 0) {
   process.exit(1);
 }
 
-const RESULTS_DIR    = resolve(ROOT, 'assets/docs/responsive-qa');
+const RESULTS_DIR    = resolve(ROOT, 'assets/audit/responsive-qa');
 const RESULTS_FILE   = resolve(RESULTS_DIR, 'results.json');
 const SCREENSHOTS_DIR = resolve(RESULTS_DIR, 'screenshots');
 

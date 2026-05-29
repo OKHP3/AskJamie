@@ -421,7 +421,7 @@ Expected contents:
 - `template--<page-type>.html` files, one per page type, using double-dash
   separator. Each carries a comment block listing every `[[TOKEN]]` before
   `<!DOCTYPE html>`.
-- `INDEX.md` or `index.md` / `template-index.md` -- documents every template,
+- `INDEX.md` -- documents every template,
   its token list, and the workflow for creating new pages from it.
 - `template-system-prompt.md` -- optional AI prompt document for using
   templates (AskJamie convention; adopt on siblings as needed).

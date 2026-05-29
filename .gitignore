@@ -78,7 +78,7 @@ secrets.json
 *.log
 .tmp/
 .scratch/
-assets/docs/responsive-qa/results.json
+assets/audit/responsive-qa/results.json
 
 # ---------- Alternate spellings / additional baseline entries ----------
 attached-assets/

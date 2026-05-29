@@ -86,7 +86,7 @@ Created `scripts/responsive-qa.mjs` — a dual-mode script that:
 - Falls back to lightweight static HTML analysis when it isn't
 
 Covers 24 public pages × 8 viewport widths. Results written to
-`assets/docs/responsive-qa/results.json`. Screenshots saved only on failure.
+`assets/audit/responsive-qa/results.json`. Screenshots saved only on failure.
 
 ### Step 8 — CSS grid / tablet layout fixes (theme.css)
 
@@ -205,6 +205,6 @@ After deployment, verify events appear in GA4's DebugView under:
 | `scripts/responsive-qa.mjs` | Created |
 | `scripts/task1-bulk-edits.py` | Created (one-time use; safe to delete) |
 | `assets/docs/og-image-requirements.md` | Created |
-| `assets/docs/responsive-qa/results.json` | Created |
+| `assets/audit/responsive-qa/results.json` | Created |
 | `AUDIT-ASKJAMIE-2026-RESPONSIVE.md` | Created |
 | `AUDIT-ASKJAMIE-2026-REPLIT-FIXES.md` | Created (this document) |
