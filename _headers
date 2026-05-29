@@ -9,10 +9,15 @@
   Permissions-Policy: accelerometer=(), ambient-light-sensor=(), autoplay=(), battery=(), camera=(), display-capture=(), document-domain=(), encrypted-media=(), fullscreen=(self), gamepad=(), geolocation=(), gyroscope=(), hid=(), idle-detection=(), interest-cohort=(), magnetometer=(), microphone=(), midi=(), payment=(), picture-in-picture=(self), publickey-credentials-get=(), screen-wake-lock=(), serial=(), sync-xhr=(), usb=(), web-share=(self), xr-spatial-tracking=()
   Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
 
+  # Modern cross-origin isolation (Spectre mitigation, MDN 2024+ recommended baseline).
   Cross-Origin-Opener-Policy: same-origin
   Cross-Origin-Resource-Policy: same-origin
   Origin-Agent-Cluster: ?1
 
+  # CSP — derived from a real audit of the site.
+  # Site uses: Google Analytics gtag (G-MT9Y10YY0G), Google Fonts (CSS + woff2),
+  # Mermaid via jsdelivr ESM, and inline JSON-LD + gtag config blocks.
+  # Future hardening: hash or nonce inline blocks, then drop 'unsafe-inline'.
   Content-Security-Policy-Report-Only: default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com https://cdn.jsdelivr.net; frame-ancestors 'self'; base-uri 'self'; form-action 'self'; object-src 'none'; manifest-src 'self'; upgrade-insecure-requests
 
 /assets/css/*
