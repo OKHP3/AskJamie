@@ -42,18 +42,42 @@ assets/
   docs/                # Generated documentation assets:
                        #   audit-report.md       — written by scripts/audit-site.py (gitignored)
                        #   image-usage-report.md — img cross-reference (pending ROADMAP prune task)
+_headers               # Cloudflare Pages / Netlify edge security headers
+.well-known/
+  security.txt           # RFC 9116 security disclosure contact
 scripts/
-  audit-site.py           # Static-site auditor (v0.8) — 17 quality gates:
-                          # 13 per-page + 2 cross-file reconciliations +
-                          # 2 repo-wide. Writes assets/docs/audit-report.md.
-                          # Current run: 0 issues (post v0.9 consolidation).
-  apply-modern-baseline.py # Idempotent 2025/2026 baseline applier:
-                          # injects security meta tags (referrer + CSP),
-                          # adds loading=lazy/eager + fetchpriority=high
-                          # to every <img>. Safe to re-run on new pages.
+  # ── Quality gates (run after every meaningful change) ──────────────────
+  audit-site.py           # Primary auditor — 17+ per-page + cross-file quality gates.
+                          # Per-site constants: EXPECTED_THEME_COLOR="#2c5e6f".
+                          # Writes assets/docs/audit-report.md. Current: 0 issues.
+  validate-site.py        # Secondary validator — DOM structure, sitemap inclusion,
+                          # broken links/assets, GA4 presence, placeholder hrefs.
   build-search-index.py   # Regenerates assets/data/search-index.json from all .html files
-  enhance-pages.py        # Bulk-edit tool for new-page additions: BreadcrumbList
-                          # JSON-LD injection, decoding="async", meta trimming (v0.5)
+  post-merge.sh           # Post-merge harness: checks core files, rebuilds index,
+                          # runs audit-site.py. Replaces the former 1-line stub.
+  responsive-qa.mjs       # Playwright (or static-lint fallback) responsive QA.
+                          # 26 pages × 8 viewports. Current: 208/208 pass.
+  # ── Bulk-edit / migration tools ────────────────────────────────────────
+  apply-modern-baseline.py # Injects referrer + CSP meta, loading= attrs. Idempotent.
+  enhance-pages.py        # BreadcrumbList JSON-LD, decoding=async, meta trimming.
+  extract-templates.py    # Pull shared page templates out of HTML files.
+  normalize-head.py       # Standardise <head> ordering and whitespace.
+  inject-breadcrumb.py    # Inject BreadcrumbList JSON-LD on inner pages.
+  inject-jsonld.py        # Inject structured-data (Article, WebSite, etc.) JSON-LD.
+  remove-deprecated-meta.py # Strip X-UA-Compatible and other obsolete meta tags.
+  # ── Image / asset tools ────────────────────────────────────────────────
+  picture-upgrade.py      # Wrap <img> in <picture> with WebP source sets.
+  png-to-webp.py          # Batch-convert PNGs to WebP.
+  cache-bust.py           # Append content-hash ?v= to CSS/JS hrefs.
+  rename-img-kebab.py     # Rename image files to kebab-case convention.
+  audit-assets.py         # Cross-reference images declared vs referenced.
+  audit-meta-versions.py  # Check for stale version strings in meta tags.
+  # ── Link / head auditing ───────────────────────────────────────────────
+  check-links.py          # Crawl and report broken internal/external links.
+  responsive-audit.py     # Audit viewport/responsive markup patterns.
+  viewport-qa.py          # Viewport-specific visual regression checks.
+  # ── GitHub sync ────────────────────────────────────────────────────────
+  push-to-github.py       # Push files to any OKHP3 repo via GitHub Contents API.
 about/                 # About page
 contact/               # Contact page
 legal/                 # Legal pages
@@ -378,3 +402,58 @@ All events are guarded by `typeof gtag === 'function'` via `window._gtag_event()
 - ✅ GA custom event tracking (item 5 from v0.8 flagged list)
 - ✅ BrandGuard hub relative case-study links → root-relative (item 7)
 - ✅ Sister-site sync guide created (Task #4) — `assets/docs/sister-site-sync.md`
+
+## Scripts Superset Sync (v2.0 — 2026-05-29)
+
+All three OKHP3 repos now contain a superset of every general-purpose script.
+46 files pushed in one batch (0 failures). Local repo updated to match.
+
+### What moved where
+
+| Script | Direction | Purpose |
+|--------|-----------|---------|
+| `audit-site.py` | AJ → OKH, Glee (adapted) | Per-site `EXPECTED_THEME_COLOR` constant |
+| `validate-site.py` | OKH → AJ (adapted), Glee already had it | DOM + sitemap + link validation |
+| `post-merge.sh` | OKH full harness → AJ, Glee (adapted) | Replaces 1-line stubs |
+| `apply-modern-baseline.py` | AJ → OKH, Glee | Security meta + image loading attrs |
+| `enhance-pages.py` | AJ → OKH, Glee | BreadcrumbList JSON-LD, meta trimming |
+| `responsive-qa.mjs` | AJ → OKH, Glee | 26-page × 8-viewport QA runner |
+| `push-to-github.py` | AJ → OKH, Glee | GitHub Contents API push utility |
+| `extract-templates.py` | OKH → AJ, Glee | Template extraction from HTML |
+| `cache-bust.py` | OKH → AJ, Glee | Content-hash cache busting |
+| `picture-upgrade.py` | OKH → AJ, Glee | `<img>` → `<picture>` + WebP |
+| `png-to-webp.py` | OKH → AJ, Glee | Batch PNG→WebP conversion |
+| `audit-meta-versions.py` | OKH → AJ, Glee | Stale version string detection |
+| `check-links.py` | Glee → OKH, AJ | Internal/external link crawl |
+| `normalize-head.py` | Glee → OKH, AJ | `<head>` ordering standardiser |
+| `remove-deprecated-meta.py` | Glee → OKH, AJ | Strip obsolete meta tags |
+| `audit-assets.py` | Glee → OKH, AJ | Image declared vs referenced |
+| `rename-img-kebab.py` | Glee → OKH, AJ | Enforce kebab-case filenames |
+| `inject-breadcrumb.py` | Glee → OKH, AJ | BreadcrumbList injection |
+| `inject-jsonld.py` | Glee → OKH, AJ | JSON-LD structured-data injection |
+| `responsive-audit.py` | Glee → OKH, AJ | Viewport markup audit |
+| `viewport-qa.py` | Glee → OKH, AJ | Viewport-specific checks |
+
+### New gap files pushed
+
+| File | Repos | Notes |
+|------|-------|-------|
+| `_headers` | AJ, Glee | Cloudflare/Netlify security headers (adapted from OKH) |
+| `.well-known/security.txt` | AJ | RFC 9116 contact (OKH + Glee already had it) |
+| `ROADMAP.md` | OKH, Glee | Stub roadmaps (AJ already had one) |
+
+### Site-specific scripts (intentionally NOT distributed)
+
+- **OKH only:** `check-mtb-version.py`, `release-mtb.py`, `reorg-theme-css.py`,
+  `modernize-pages.py`, `move-orphans-to-library.py`, `cross-site-sync.py`, `site-audit.py`
+- **Glee only:** `inject-toolette-hub.py`, `generate-illustrations.py`,
+  `wire-illustrations.py`, `sync-portfolio-stats.py`, `activate-icons.py`,
+  and ~15 other Glee-specific toolette/showcase scripts
+
+### Per-site constants (adapt when distributing scripts)
+
+| Constant | OKH | AskJamie | Glee |
+|----------|-----|----------|------|
+| `EXPECTED_THEME_COLOR` | `#2a2320` | `#2c5e6f` | `#d35b2d` |
+| `SITE_URL` / `SITE_ORIGIN` | `https://overkillhill.com` | `https://askjamie.bot` | `https://glee-fully.tools` |
+| `GA4_ID` | `G-VJ1BKXS27H` | `G-MT9Y10YY0G` | `G-89W66VMGPB` |

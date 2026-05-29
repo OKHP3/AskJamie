@@ -1,0 +1,8 @@
+Contact: mailto:contact@askjamie.bot
+Expires: 2027-05-29T00:00:00.000Z
+Preferred-Languages: en
+Canonical: https://askjamie.bot/.well-known/security.txt
+Policy: https://askjamie.bot/legal/
+
+# This is a static, no-backend site. There is no user data, login system,
+# or database. Security disclosures are welcome via the contact address above.
