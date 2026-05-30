@@ -35,7 +35,7 @@ and current audit state.
 **Brand:** AskJamie (Teal / Paper)
 **Body scope class:** `askjamie-main` (pages set `<body class="askjamie-main">`)
 **Canonical stylesheet:** https://raw.githubusercontent.com/OKHP3/OverKill-Hill/main/assets/css/theme.css
-**Version:** 2.3
+**Version:** 2.4
 
 This section governs how files and folders are named, what structure all sibling
 repos share, what counts as detritus, and the brand contract this repo serves.
@@ -241,7 +241,6 @@ These names are reserved for detritus (see Section 3) and must not be used
 as legitimate folders: `_unused/`, `attached_assets/`, `attached-assets/`,
 `_drafts/`, `_scratch/`, `_old/`, `tmp/`, `temp/`, `unused/`.
 
-#### 2.2 Directory schema and expected contents
 #### 2.2 Directory purposes and expected contents
 
 The definitions below describe the purpose and expected contents of every
