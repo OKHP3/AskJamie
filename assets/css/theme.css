@@ -5453,6 +5453,22 @@ html[data-theme="light"] .askjamie-main {
 }
 
 /* Footer – soften OverKill’s dark footer just for AskJamie */
+/* Footer – forced-light mode sets near-white text for OKH’s dark footer;
+   raise specificity to (0,3,1) so AskJamie’s cream footer stays readable. */
+html[data-theme="light"] .askjamie-main .site-footer {
+  color: var(--color-muted);
+}
+html[data-theme="light"] .askjamie-main .footer-column a {
+  color: var(--color-accent);
+}
+html[data-theme="light"] .askjamie-main .footer-column a:hover {
+  color: var(--color-accent);
+  opacity: 0.75;
+}
+html[data-theme="light"] .askjamie-main .footer-bottom {
+  color: var(--color-muted);
+}
+
 .askjamie-main .site-footer {
   background: #f7f3ee;
   color: var(--color-muted);

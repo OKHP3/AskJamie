@@ -83,10 +83,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Theme toggle – only for core OverKill Hill pages (brand-locked sites force light)
-  const brandLocked =
-    body.classList.contains("glee-main") ||
-    body.classList.contains("askjamie-main");
+  // Theme toggle – Glee-fully is brand-locked (coral palette breaks in dark mode).
+  // AskJamie is light-first but supports a user-controlled toggle.
+  const brandLocked = body.classList.contains("glee-main");
 
   if (!brandLocked) {
     const STATES      = ["system", "light", "dark"];
