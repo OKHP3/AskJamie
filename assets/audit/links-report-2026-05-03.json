@@ -1,0 +1,145 @@
+{
+  "generated": "2026-05-03",
+  "pages_scanned": 26,
+  "internal_links": 709,
+  "external_links": 558,
+  "broken_links": [],
+  "style_issues": [],
+  "sitemap": {
+    "total_urls": 24,
+    "missing_from_sitemap": [],
+    "extra_in_sitemap": []
+  },
+  "by_page": [
+    {
+      "path": "404.html",
+      "internal_links": 25,
+      "external_links": 17
+    },
+    {
+      "path": "about/index.html",
+      "internal_links": 27,
+      "external_links": 16
+    },
+    {
+      "path": "contact/index.html",
+      "internal_links": 25,
+      "external_links": 18
+    },
+    {
+      "path": "index.html",
+      "internal_links": 27,
+      "external_links": 23
+    },
+    {
+      "path": "legal/index.html",
+      "internal_links": 24,
+      "external_links": 17
+    },
+    {
+      "path": "lens-system/enterprise-sleuth/index.html",
+      "internal_links": 26,
+      "external_links": 18
+    },
+    {
+      "path": "lens-system/index.html",
+      "internal_links": 29,
+      "external_links": 17
+    },
+    {
+      "path": "lens-system/okhp3-brandguard/bfs-framing-intelligent-futures/index.html",
+      "internal_links": 27,
+      "external_links": 28
+    },
+    {
+      "path": "lens-system/okhp3-brandguard/brooks-running/index.html",
+      "internal_links": 27,
+      "external_links": 27
+    },
+    {
+      "path": "lens-system/okhp3-brandguard/coca-cola/index.html",
+      "internal_links": 25,
+      "external_links": 27
+    },
+    {
+      "path": "lens-system/okhp3-brandguard/costco/index.html",
+      "internal_links": 27,
+      "external_links": 24
+    },
+    {
+      "path": "lens-system/okhp3-brandguard/discount-tire/index.html",
+      "internal_links": 26,
+      "external_links": 26
+    },
+    {
+      "path": "lens-system/okhp3-brandguard/dollar-general/index.html",
+      "internal_links": 26,
+      "external_links": 24
+    },
+    {
+      "path": "lens-system/okhp3-brandguard/hershey/index.html",
+      "internal_links": 27,
+      "external_links": 26
+    },
+    {
+      "path": "lens-system/okhp3-brandguard/index.html",
+      "internal_links": 45,
+      "external_links": 20
+    },
+    {
+      "path": "lens-system/okhp3-brandguard/lego/index.html",
+      "internal_links": 27,
+      "external_links": 24
+    },
+    {
+      "path": "lens-system/okhp3-brandguard/lvmh/index.html",
+      "internal_links": 27,
+      "external_links": 26
+    },
+    {
+      "path": "lens-system/okhp3-brandguard/mathews-archery/index.html",
+      "internal_links": 27,
+      "external_links": 22
+    },
+    {
+      "path": "lens-system/okhp3-brandguard/ping/index.html",
+      "internal_links": 27,
+      "external_links": 25
+    },
+    {
+      "path": "lens-system/okhp3-brandguard/scheels/index.html",
+      "internal_links": 27,
+      "external_links": 22
+    },
+    {
+      "path": "lens-system/okhp3-brandguard/starbucks/index.html",
+      "internal_links": 27,
+      "external_links": 25
+    },
+    {
+      "path": "lens-system/professional-portfolio/index.html",
+      "internal_links": 28,
+      "external_links": 18
+    },
+    {
+      "path": "lens-system/resume-representative/index.html",
+      "internal_links": 28,
+      "external_links": 16
+    },
+    {
+      "path": "search/index.html",
+      "internal_links": 26,
+      "external_links": 16
+    },
+    {
+      "path": "under-construction.html",
+      "internal_links": 25,
+      "external_links": 17
+    },
+    {
+      "path": "universe/index.html",
+      "internal_links": 27,
+      "external_links": 19
+    }
+  ]
+}
