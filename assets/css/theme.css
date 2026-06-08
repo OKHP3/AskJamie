@@ -5179,6 +5179,60 @@ html[data-theme="light"] .askjamie-main {
   font-family: var(--font-body);
 }
 
+/* ── AskJamie dark-mode token overrides ───────────────────────────────────
+   Without these, the light-palette variables defined on .askjamie-main (body)
+   win the cascade even after data-theme="dark" fires, leaving dark charcoal
+   text on a dark background. Specificity: html[attr] .class = (0,2,1),
+   which beats .askjamie-main alone at (0,1,0). */
+html[data-theme="dark"] .askjamie-main {
+  --color-bg:           #1e1a17;
+  --color-surface:      #2a2420;
+  --color-surface-soft: #231f1c;
+  --color-fg:           #e8e4df;
+  --color-muted:        #9e918a;
+  --color-accent:       #4ba8bd;          /* brighter teal for dark bg */
+  --color-border-subtle: rgba(255, 255, 255, 0.12);
+  background: var(--color-bg);
+  color: var(--color-fg);
+}
+
+/* Header — hardcoded cream becomes dark */
+html[data-theme="dark"] .askjamie-main .site-header {
+  background: #1e1a17;
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Nav links */
+html[data-theme="dark"] .askjamie-main .site-header .primary-nav a {
+  color: var(--color-muted);
+}
+html[data-theme="dark"] .askjamie-main .primary-nav a[aria-current="page"],
+html[data-theme="dark"] .askjamie-main .primary-nav a.is-current {
+  color: var(--color-accent);
+}
+
+/* Mobile nav hamburger bars */
+html[data-theme="dark"] .askjamie-main .nav-toggle .bar {
+  background: var(--color-fg);
+}
+
+/* Hero */
+html[data-theme="dark"] .askjamie-main .hero {
+  color: var(--color-fg);
+}
+
+/* Stripe-bg sections */
+html[data-theme="dark"] .askjamie-main .stripe-bg {
+  background: var(--color-surface);
+  border-top-color: rgba(255, 255, 255, 0.06);
+  border-bottom-color: rgba(255, 255, 255, 0.06);
+}
+
+/* Paper card behind the hero */
+html[data-theme="dark"] .askjamie-paper {
+  background: #2a2420;
+}
+
 /* Neutralize dark blueprint vibe inside AskJamie */
 .askjamie-main .hero {
   background: none;
