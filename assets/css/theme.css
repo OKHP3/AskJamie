@@ -1028,28 +1028,38 @@ button {
 }
 
 /* Skip-link — WCAG 2.4.1 baseline. Visually hidden until focused.
+   Uses clip + overflow technique (more reliable than transform across renderers).
    .skip-link is the legacy class still used in HTML; both are styled here. */
 .okh-skip-link,
 .skip-link {
   position: absolute;
   top: 0;
   left: 0;
-  padding: 0.75rem 1rem;
-  background: var(--okh-espresso, var(--okh-espresso));
-  color: var(--okh-cream, #f5ead7);
-  font-weight: 600;
-  text-decoration: none;
-  border-radius: 0 0 6px 0;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
   z-index: 9999;
-  transform: translateY(-150%);
-  transition: transform 120ms ease-out;
 }
 .okh-skip-link:focus,
 .okh-skip-link:focus-visible,
 .skip-link:focus,
 .skip-link:focus-visible {
-  transform: translateY(0);
-  outline: 2px solid var(--okh-orange, var(--okh-orange));
+  width: auto;
+  height: auto;
+  padding: 0.75rem 1rem;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+  background: var(--okh-espresso, #1a0a00);
+  color: var(--okh-cream, #f5ead7);
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 0 0 6px 0;
+  outline: 2px solid var(--okh-orange, #c46a2c);
   outline-offset: 2px;
 }
 
