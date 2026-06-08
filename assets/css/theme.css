@@ -1027,8 +1027,10 @@ button {
   }
 }
 
-/* Skip-link — WCAG 2.4.1 baseline. Visually hidden until focused. */
-.okh-skip-link {
+/* Skip-link — WCAG 2.4.1 baseline. Visually hidden until focused.
+   .skip-link is the legacy class still used in HTML; both are styled here. */
+.okh-skip-link,
+.skip-link {
   position: absolute;
   top: 0;
   left: 0;
@@ -1043,7 +1045,9 @@ button {
   transition: transform 120ms ease-out;
 }
 .okh-skip-link:focus,
-.okh-skip-link:focus-visible {
+.okh-skip-link:focus-visible,
+.skip-link:focus,
+.skip-link:focus-visible {
   transform: translateY(0);
   outline: 2px solid var(--okh-orange, var(--okh-orange));
   outline-offset: 2px;
