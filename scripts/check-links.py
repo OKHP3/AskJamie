@@ -21,7 +21,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 SKIP_DIRS = {"node_modules", ".local", ".git", "attached_assets", "assets", ".pythonlibs", ".cache", ".agents"}
-SITE = "https://glee-fully.tools"
+SITE = "https://askjamie.bot"
 
 
 def is_external(href: str) -> bool:
