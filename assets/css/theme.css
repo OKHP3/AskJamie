@@ -1,25 +1,25 @@
 /* OverKill Hill P³ — Industrial Blueprint Theme
    Shared layout + motion across overkillhill.com, glee-fully.tools, and askjamie.bot.
 
-   ┌────────────────────────────────────────────────────────────────┐
-   │  STRUCTURE (canonical order — mirror this in sibling repos)    │
-   │   1. GLOBAL        tokens, reset, base, shared utilities,      │
-   │                    components used by all three sites          │
-   │   2. OVERKILL HILL site-specific (default)                     │
-   │   3. GLEE-FULLY    `.glee-main`-scoped overrides               │
-   │   4. ASKJAMIE      `.askjamie-main`-scoped overrides           │
-   │                                                                │
-   │  Maintenance: edit here, then run                              │
-   │    python3 assets/scripts/reorg-theme-css.py --dry-run         │
-   │  to verify the section a new rule lands in.                    │
-   └────────────────────────────────────────────────────────────────┘
+   ┌─────────────────────────────────────────────────────────────────────────┐
+   │  STRUCTURE (canonical order — mirror this in sibling repos)            │
+   │   1. GLOBAL        tokens, reset, base, shared utilities,               │
+   │                    components used by all three sites                  │
+   │   2. OVERKILL HILL site-specific (default)                             │
+   │   3. GLEE-FULLY    `.glee-main`-scoped overrides                      │
+   │   4. ASKJAMIE      `.askjamie-main`-scoped overrides                  │
+   │                                                                         │
+   │  Maintenance: edit here, then run                                      │
+   │    python3 assets/scripts/reorg-theme-css.py --dry-run                │
+   │  to verify the section a new rule lands in.                           │
+   └─────────────────────────────────────────────────────────────────────────┘
 */
 
 
-/* ╔════════════════════════════════════════════════════════════════════════════╗
-   ║  SECTION · GLOBAL                                                          ║
-   ║  Tokens, reset, base, shared utilities + components                        ║
-   ╚════════════════════════════════════════════════════════════════════════════╝ */
+/* ╔═════════════════════════════════════════════════════════════════════════╗
+   ║  SECTION · GLOBAL                                                      ║
+   ║  Tokens, reset, base, shared utilities + components                    ║
+   ╚═════════════════════════════════════════════════════════════════════════╝ */
 
 /* OverKill Hill P³ – 2025 Industrial Blueprint Theme
    Shared layout + motion for OverKill Hill, Ask Jamie (subsite), and sibling sites.
@@ -58,10 +58,9 @@
   --mermaid-edge-label-bg: #181f26;
 
   /* Typography – OverKill Hill default */
-  --font-heading: "Alfa Slab One", system-ui, -apple-system, BlinkMacSystemFont,
-    "Segoe UI", sans-serif;
-  --font-body: "DM Sans", system-ui, -apple-system, BlinkMacSystemFont,
-    "Segoe UI", sans-serif;
+  --font-heading: "Alfa Slab One", sans-serif;
+  --font-body: "DM Sans", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
 
   /* Layout */
   --max-width: 1120px;
@@ -75,7 +74,6 @@
   --color-text-heading:     var(--color-fg);          /* heading text color */
   --color-link:             var(--color-fg);           /* default link color */
   --color-link-hover:       var(--okh-orange);         /* link hover state */
-  --font-mono:              "JetBrains Mono", "Fira Code", ui-monospace, monospace;
   --radius-sm:              4px;
 
   /* --- Spacing scale --- */
@@ -102,7 +100,7 @@
   --color-accent: var(--okh-orange);
 }
 
-/* ── Body background: JS sets data-theme on <html>, not <body> ────────── */
+/* ── Body background: JS sets data-theme on <html>, not <body> ───────────── */
 html[data-theme="dark"] body {
   background: radial-gradient(circle at top, #1f2933, #020617);
 }
@@ -223,6 +221,10 @@ body {
   padding: 0;
 }
 
+html {
+  overflow-x: hidden; /* iOS Safari: prevents horizontal scroll at root level */
+}
+
 body {
   background: radial-gradient(circle at top, var(--okh-teal), #020617);
   color: var(--color-fg);
@@ -310,11 +312,6 @@ button {
   }
 }
 
-.grid {
-  display: grid;
-  gap: 1.75rem;
-}
-
 /* ===== UTILS & LAYOUT ==================================================== */
 
 .grid {
@@ -324,7 +321,7 @@ button {
 
 /* Define .grid-3 once.  Use a smaller minimum size so a column can shrink on phones. */
 .grid-3 {
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
 }
 
 /* Collapse to a single column sooner (tablet + phone). */
@@ -755,6 +752,9 @@ button {
 
 .site-specials-link {
   text-decoration: underline;
+  min-width: 0;           /* flex item: allows shrink below natural text width */
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .site-specials--okh { /* forge / industrial */
@@ -1027,39 +1027,25 @@ button {
   }
 }
 
-/* Skip-link — WCAG 2.4.1 baseline. Visually hidden until focused.
-   Uses clip + overflow technique (more reliable than transform across renderers).
-   .skip-link is the legacy class still used in HTML; both are styled here. */
-.okh-skip-link,
-.skip-link {
+/* Skip-link — WCAG 2.4.1 baseline. Visually hidden until focused. */
+.okh-skip-link {
   position: absolute;
   top: 0;
   left: 0;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-  z-index: 9999;
-}
-.okh-skip-link:focus,
-.okh-skip-link:focus-visible,
-.skip-link:focus,
-.skip-link:focus-visible {
-  width: auto;
-  height: auto;
   padding: 0.75rem 1rem;
-  overflow: visible;
-  clip: auto;
-  white-space: normal;
-  background: var(--okh-espresso, #1a0a00);
+  background: var(--okh-espresso, var(--okh-espresso));
   color: var(--okh-cream, #f5ead7);
   font-weight: 600;
   text-decoration: none;
   border-radius: 0 0 6px 0;
-  outline: 2px solid var(--okh-orange, #c46a2c);
+  z-index: 9999;
+  transform: translateY(-150%);
+  transition: transform 120ms ease-out;
+}
+.okh-skip-link:focus,
+.okh-skip-link:focus-visible {
+  transform: translateY(0);
+  outline: 2px solid var(--okh-orange, var(--okh-orange));
   outline-offset: 2px;
 }
 
@@ -1114,7 +1100,11 @@ button {
 .project-card {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+}
+
+.project-card > p:last-child {
+  margin-top: auto;
+  padding-top: 1rem;
 }
 
 /* About */
@@ -1519,6 +1509,16 @@ body.construction-dismissed .construction-overlay,
 .mermaid foreignObject p,
 .mermaid foreignObject span {
   color: initial;
+}
+
+/* Override color:initial for OKH diagrams that use the dark Mermaid palette.
+   .okh-mermaid-shell scopes the universe page map; higher specificity
+   (2 classes vs 1 class) beats the color:initial rule above without !important. */
+.okh-mermaid-shell .mermaid foreignObject,
+.okh-mermaid-shell .mermaid foreignObject div,
+.okh-mermaid-shell .mermaid foreignObject p,
+.okh-mermaid-shell .mermaid foreignObject span {
+  color: var(--mermaid-primary-text-color);
 }
 
 /* Prompts section: h3 subtitle beneath h2 */
@@ -2560,19 +2560,19 @@ body:not(.askjamie-main):not(.glee-main) .mermaid svg {
   height: auto;
 }
 
-/* Nodes */
+/* Nodes — use stable mermaid tokens so fills stay dark in both page themes */
 body:not(.askjamie-main):not(.glee-main) .mermaid .node rect,
 body:not(.askjamie-main):not(.glee-main) .mermaid .node circle {
   rx: 6px;
   ry: 6px;
-  fill: var(--color-surface-soft);
-  stroke: var(--color-accent);
+  fill: var(--mermaid-primary-color);
+  stroke: var(--mermaid-primary-border-color);
   stroke-width: 1.5px;
 }
 
-/* Labels */
+/* Labels — use stable mermaid tokens so text stays light in both page themes */
 body:not(.askjamie-main):not(.glee-main) .mermaid .label text {
-  fill: var(--color-fg);
+  fill: var(--mermaid-primary-text-color);
   font-family: var(--font-body);
   font-size: 0.9rem;
 }
@@ -2597,6 +2597,29 @@ body:not(.askjamie-main):not(.glee-main) .mermaidTooltip {
   padding: 0.25rem 0.6rem;
   font-size: 0.75rem;
   border: 1px solid rgba(148, 163, 184, 0.8);
+}
+
+/* OKH universe map – Mermaid diagram shell (used in universe/index.html) */
+.okh-mermaid-shell {
+  margin: 0;
+  width: 100%;
+  max-width: 960px;
+}
+
+.okh-mermaid-shell .mermaid {
+  width: 100%;
+  min-height: 22rem;
+  padding: 1.25rem 1.5rem;
+  border-radius: 18px;
+  background: var(--color-surface);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+}
+
+@media (max-width: 640px) {
+  .okh-mermaid-shell .mermaid {
+    min-height: 18rem;
+    padding: 1rem;
+  }
 }
 
 
@@ -5179,60 +5202,6 @@ html[data-theme="light"] .askjamie-main {
   font-family: var(--font-body);
 }
 
-/* ── AskJamie dark-mode token overrides ───────────────────────────────────
-   Without these, the light-palette variables defined on .askjamie-main (body)
-   win the cascade even after data-theme="dark" fires, leaving dark charcoal
-   text on a dark background. Specificity: html[attr] .class = (0,2,1),
-   which beats .askjamie-main alone at (0,1,0). */
-html[data-theme="dark"] .askjamie-main {
-  --color-bg:           #1e1a17;
-  --color-surface:      #2a2420;
-  --color-surface-soft: #231f1c;
-  --color-fg:           #e8e4df;
-  --color-muted:        #9e918a;
-  --color-accent:       #4ba8bd;          /* brighter teal for dark bg */
-  --color-border-subtle: rgba(255, 255, 255, 0.12);
-  background: var(--color-bg);
-  color: var(--color-fg);
-}
-
-/* Header — hardcoded cream becomes dark */
-html[data-theme="dark"] .askjamie-main .site-header {
-  background: #1e1a17;
-  border-bottom-color: rgba(255, 255, 255, 0.1);
-}
-
-/* Nav links */
-html[data-theme="dark"] .askjamie-main .site-header .primary-nav a {
-  color: var(--color-muted);
-}
-html[data-theme="dark"] .askjamie-main .primary-nav a[aria-current="page"],
-html[data-theme="dark"] .askjamie-main .primary-nav a.is-current {
-  color: var(--color-accent);
-}
-
-/* Mobile nav hamburger bars */
-html[data-theme="dark"] .askjamie-main .nav-toggle .bar {
-  background: var(--color-fg);
-}
-
-/* Hero */
-html[data-theme="dark"] .askjamie-main .hero {
-  color: var(--color-fg);
-}
-
-/* Stripe-bg sections */
-html[data-theme="dark"] .askjamie-main .stripe-bg {
-  background: var(--color-surface);
-  border-top-color: rgba(255, 255, 255, 0.06);
-  border-bottom-color: rgba(255, 255, 255, 0.06);
-}
-
-/* Paper card behind the hero */
-html[data-theme="dark"] .askjamie-paper {
-  background: #2a2420;
-}
-
 /* Neutralize dark blueprint vibe inside AskJamie */
 .askjamie-main .hero {
   background: none;
@@ -5521,22 +5490,6 @@ html[data-theme="dark"] .askjamie-paper {
 }
 
 /* Footer – soften OverKill’s dark footer just for AskJamie */
-/* Footer – forced-light mode sets near-white text for OKH’s dark footer;
-   raise specificity to (0,3,1) so AskJamie’s cream footer stays readable. */
-html[data-theme="light"] .askjamie-main .site-footer {
-  color: var(--color-muted);
-}
-html[data-theme="light"] .askjamie-main .footer-column a {
-  color: var(--color-accent);
-}
-html[data-theme="light"] .askjamie-main .footer-column a:hover {
-  color: var(--color-accent);
-  opacity: 0.75;
-}
-html[data-theme="light"] .askjamie-main .footer-bottom {
-  color: var(--color-muted);
-}
-
 .askjamie-main .site-footer {
   background: #f7f3ee;
   color: var(--color-muted);

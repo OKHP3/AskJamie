@@ -83,9 +83,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Theme toggle – Glee-fully is brand-locked (coral palette breaks in dark mode).
-  // AskJamie is light-first but supports a user-controlled toggle.
-  const brandLocked = body.classList.contains("glee-main");
+  // Theme toggle – only for core OverKill Hill pages (brand-locked sites force light)
+  const brandLocked =
+    body.classList.contains("glee-main") ||
+    body.classList.contains("askjamie-main");
 
   if (!brandLocked) {
     const STATES      = ["system", "light", "dark"];
@@ -281,6 +282,33 @@ document.addEventListener("DOMContentLoaded", () => {
       tocH = toc.offsetHeight;
     }
   });
+}());
+
+// ── 4b. TOC scrollspy — active-link tracking for #toc-widget ───────────
+// Works on any page that has id="toc-widget" with .toc-list anchor links.
+// Pairs with Section 4's lerp scroll-follow. No-op when widget is absent.
+(function () {
+  var links = Array.from(document.querySelectorAll('#toc-widget .toc-list a[href^="#"]'));
+  if (!links.length) return;
+
+  var targets = links
+    .map(function (a) { return document.getElementById(a.getAttribute('href').slice(1)); })
+    .filter(Boolean);
+  if (!targets.length) return;
+
+  function setActive() {
+    var triggerY = window.scrollY + window.innerHeight * 0.20;
+    var activeId = null;
+    targets.forEach(function (el) {
+      if (el.getBoundingClientRect().top + window.scrollY <= triggerY) activeId = el.id;
+    });
+    links.forEach(function (a) {
+      a.classList.toggle('toc-active', a.getAttribute('href').slice(1) === activeId);
+    });
+  }
+
+  window.addEventListener('scroll', setActive, { passive: true });
+  setTimeout(setActive, 100);
 }());
 
 // ── 5. OKH Search — overlay + dedicated /search/ page ──────────────────────
