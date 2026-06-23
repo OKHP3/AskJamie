@@ -13,6 +13,29 @@ and current audit state.
 - If you need config/secrets, stop and ask. Never invent credentials.
 - Summarize what you changed and why at the end.
 
+---
+
+### Project Identity
+
+| Field | Value |
+|---|---|
+| Suite | AskJamie |
+| Type | Website / Suite Root |
+| Status | Active |
+| GitHub | https://github.com/OKHP3/AskJamie |
+| Notion Anchor | https://app.notion.com/p/2cc812e0ced480198efcce3b53e65e54 |
+| Local path (Windows) | `C:\Users\jamie\OKH-Local\Websites\askjamie` |
+| Local path (Mac) | `/Volumes/OKH-Local/04_GitHub_Mirrors/AskJamie` |
+
+**Satellite repos (AskJamie family):**
+- [askjamie-foundry](https://github.com/OKHP3/AskJamie-FoundRy) — core AI/GPT scaffolding
+- [askjamie-aj01-resume-representative](https://github.com/OKHP3/askjamie-aj01-resume-representative)
+- [askjamie-aj02-professional-portfolio](https://github.com/OKHP3/askjamie-aj02-professional-portfolio)
+- [askjamie-aj03-enterprise-sleuth](https://github.com/OKHP3/askjamie-aj03-enterprise-sleuth)
+- [askjamie-aj04-brandguard](https://github.com/OKHP3/askjamie-aj04-brandguard)
+
+---
+
 > **AGENTS.md sync circuit** — This file is one of three kept in lockstep.
 > Any structural edit to sections 1–5 must be propagated to the other two repos
 > before the session closes. Section 2.2.1 (per-site inventory) is intentionally
@@ -697,6 +720,11 @@ These apply in every session, regardless of task:
   or restructure the sentence.
 - No AI filler in copy or comments: not "seamlessly," "robust," "powerful,"
   "effortlessly," "elevate," "unleash."
+- Preserve standalone punchy lines in copy. Do not consolidate short,
+  intentional single-sentence paragraphs into longer blocks.
+- ROY principle: understanding produced / explanation invested. Verbosity
+  must earn its space. If a shorter answer serves equally well, use it.
+- AutoCAD version for this project family is R10. Locked, not negotiable.
 - Tailwind v4 only if Tailwind is in use: no `tailwind.config.js` (tokens live
   in CSS via `@theme inline`).
 - No new dependencies unless explicitly requested.
