@@ -24,7 +24,7 @@ and current audit state.
 | Status | Active |
 | GitHub | https://github.com/OKHP3/AskJamie |
 | Notion Anchor | https://app.notion.com/p/2cc812e0ced480198efcce3b53e65e54 |
-| Local path (Windows) | `C:\Users\jamie\OKH-Local\Websites\askjamie` |
+| Local path (Windows) | `C:\Users\jamie\OKH-Local\04_GitHub_Mirrors\askjamie` |
 | Local path (Mac) | `/Volumes/OKH-Local/04_GitHub_Mirrors/AskJamie` |
 
 **Satellite repos (AskJamie family):**
