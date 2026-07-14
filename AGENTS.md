@@ -749,3 +749,5 @@ Replit Agent:
 > intentionally left unchanged with reason, (6) identifier renaming candidates
 > flagged for separate handling, (7) final confirmation the report itself
 > contains no UK spellings. Wait for "go." No em dashes.
+
+## Imported Claude Cowork project instructions
