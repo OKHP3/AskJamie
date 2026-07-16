@@ -179,16 +179,19 @@ html[data-theme="light"] .projects-main .hero {
 }
 
 /* Footer — hardcoded #020617 bg; keep all footer text readable */
-html[data-theme="light"] .site-footer {
+/* OKH only — AskJamie and Glee have their own cream/paper footers and use
+   dark ink instead of near-white. See the brand-tier sections for their
+   footer overrides. */
+html[data-theme="light"] body:not(.glee-main):not(.askjamie-main) .site-footer {
   color: rgba(229, 231, 235, 0.75);
 }
-html[data-theme="light"] .footer-column a {
+html[data-theme="light"] body:not(.glee-main):not(.askjamie-main) .footer-column a {
   color: rgba(229, 231, 235, 0.6);
 }
-html[data-theme="light"] .footer-column a:hover {
+html[data-theme="light"] body:not(.glee-main):not(.askjamie-main) .footer-column a:hover {
   color: var(--okh-orange);
 }
-html[data-theme="light"] .footer-bottom {
+html[data-theme="light"] body:not(.glee-main):not(.askjamie-main) .footer-bottom {
   color: rgba(229, 231, 235, 0.45);
 }
 
@@ -1028,24 +1031,43 @@ button {
 }
 
 /* Skip-link — WCAG 2.4.1 baseline. Visually hidden until focused. */
+/* Skip-navigation link — hidden until focused by keyboard.
+   Uses clip+size technique instead of transform: the Replit preview renderer
+   can override translateY(-150%), making the bar permanently visible.
+   clip: rect(0,0,0,0) + 1px + overflow:hidden is universally suppressed. */
+.skip-link,
 .okh-skip-link {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+  z-index: 9999;
+}
+.skip-link:focus,
+.skip-link:focus-visible,
+.okh-skip-link:focus,
+.okh-skip-link:focus-visible {
   position: absolute;
   top: 0;
   left: 0;
+  width: auto;
+  height: auto;
   padding: 0.75rem 1rem;
-  background: var(--okh-espresso, var(--okh-espresso));
+  margin: 0;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+  background: var(--okh-espresso, #2a1f1a);
   color: var(--okh-cream, #f5ead7);
   font-weight: 600;
   text-decoration: none;
   border-radius: 0 0 6px 0;
-  z-index: 9999;
-  transform: translateY(-150%);
-  transition: transform 120ms ease-out;
-}
-.okh-skip-link:focus,
-.okh-skip-link:focus-visible {
-  transform: translateY(0);
-  outline: 2px solid var(--okh-orange, var(--okh-orange));
+  outline: 2px solid var(--okh-orange, #c46a2c);
   outline-offset: 2px;
 }
 
@@ -5177,6 +5199,7 @@ html[data-theme="light"] .askjamie-main {
   --color-surface: #fdfbf7;
   --color-surface-soft: #f6f2ee;
   --color-fg: #2e2b29;
+  --color-heading: #2e2b29;      /* explicit heading ink — charcoal */
   --color-muted: #6b6b6b;
   --color-accent: #2d6f7e;
   --color-border-subtle: #d7d7d7;
@@ -5200,6 +5223,60 @@ html[data-theme="light"] .askjamie-main {
   background: var(--color-bg);
   color: var(--color-fg);
   font-family: var(--font-body);
+}
+
+/* ── AskJamie dark-mode token overrides ──────────────────────────────────
+   Without these, the light-palette variables defined on .askjamie-main (body)
+   win the cascade even after data-theme="dark" fires, leaving dark charcoal
+   text on a dark background. Specificity (0,2,1) beats .askjamie-main (0,1,0). */
+html[data-theme="dark"] .askjamie-main {
+  --color-bg:            #1e1a17;
+  --color-surface:       #2a2420;
+  --color-surface-soft:  #231f1c;
+  --color-fg:            #e8e4df;
+  --color-heading:       #e8e4df;     /* warm cream — readable on dark bg */
+  --color-muted:         #9e918a;
+  --color-accent:        #4ba8bd;     /* brighter teal for dark bg */
+  --color-border-subtle: rgba(255, 255, 255, 0.12);
+  background: var(--color-bg);
+  color: var(--color-fg);
+}
+
+/* Header — hardcoded cream becomes dark */
+html[data-theme="dark"] .askjamie-main .site-header {
+  background: #1e1a17;
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Nav links */
+html[data-theme="dark"] .askjamie-main .site-header .primary-nav a {
+  color: var(--color-muted);
+}
+html[data-theme="dark"] .askjamie-main .primary-nav a[aria-current="page"],
+html[data-theme="dark"] .askjamie-main .primary-nav a.is-current {
+  color: var(--color-accent);
+}
+
+/* Mobile nav hamburger bars */
+html[data-theme="dark"] .askjamie-main .nav-toggle .bar {
+  background: var(--color-fg);
+}
+
+/* Hero */
+html[data-theme="dark"] .askjamie-main .hero {
+  color: var(--color-fg);
+}
+
+/* Stripe-bg sections */
+html[data-theme="dark"] .askjamie-main .stripe-bg {
+  background: var(--color-surface);
+  border-top-color: rgba(255, 255, 255, 0.06);
+  border-bottom-color: rgba(255, 255, 255, 0.06);
+}
+
+/* Paper card behind the hero */
+html[data-theme="dark"] .askjamie-paper {
+  background: #2a2420;
 }
 
 /* Neutralize dark blueprint vibe inside AskJamie */
