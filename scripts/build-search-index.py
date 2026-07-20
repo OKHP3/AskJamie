@@ -234,7 +234,7 @@ def process_file(rel_path: str) -> dict | None:
         "url": url_path,
         "title": title_clean or rel_path,
         "description": parser.description,
-        "section": derive_section(url_path),
+        "category": derive_section(url_path),
         "h1": parser.h1,
         "headings": parser.headings[:20],  # cap
         "body": body,
@@ -264,7 +264,7 @@ def main():
         "generated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "site": SITE_URL,
         "count": len(pages),
-        "pages": pages,
+        "entries": pages,
     }
 
     os.makedirs(os.path.dirname(INDEX_OUT), exist_ok=True)

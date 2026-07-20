@@ -329,7 +329,7 @@ document.addEventListener("DOMContentLoaded", () => {
           if (!r.ok) throw new Error("Index fetch failed: " + r.status);
           return r.json();
         })
-        .then((d) => Array.isArray(d.entries) ? d.entries : [])
+        .then((d) => Array.isArray(d.entries) ? d.entries : (Array.isArray(d.pages) ? d.pages : []))
         .catch((err) => {
           console.warn("[okh-search] index load failed:", err);
           return [];
