@@ -175,14 +175,20 @@ the 26 listed public paths at eight viewports without a browser. A full
 browser run requires Playwright and Chromium. `audit-site.py` is the canonical
 site audit and writes `assets/docs/audit-report.md`.
 
-The July 13, 2026 inspection ran these checks in an isolated copy of the
-repository so generated files in the working tree were not changed:
+The July 24, 2026 inspection re-ran these checks against the working tree
+(last commit `93d4b02`, 2026-07-22; working tree clean):
 
 - `validate-site.py`: passed, 26 HTML pages clean.
+- `check-links.py`: passed, 26 pages scanned, 711 internal and 559 external
+  links checked, 0 broken links, 0 style issues.
 - `responsive-qa.mjs --static`: passed, 208 of 208 checks.
 - `audit-site.py --quiet`: exited successfully but reported three findings:
-  the ignored `.DS_Store`, a stale generated search index because
-  `under-construction.html` is newer, and a 168-character Universe description.
+  the ignored `.DS_Store`, a stale generated search index (index.html,
+  legal/index.html, the BFS BrandGuard case study, and search/index.html are
+  all newer than `assets/data/search-index.json`), and a shape warning noting
+  the search index is a dict rather than the expected list. The 168-character
+  Universe description flagged on July 13 no longer appears, so that one item
+  has been resolved since the last inspection.
 
 These findings remain open because this context-maintenance task does not edit
 source or generated artifacts.
@@ -254,7 +260,9 @@ commands such as `git reset --hard` or `git checkout --` to discard work.
 These are evidence-backed observations from the July 13, 2026 inspection:
 
 - The canonical audit is not currently at zero findings. See the exact three
-  findings in the validation section above.
+  findings in the validation section above. Run
+  `python3 scripts/build-search-index.py` to clear the stale-index finding
+  before the next content release.
 - `scripts/site-audit.py` is a separate OverKill Hill audit script with the
   wrong GA4 constant for this site. Use `scripts/audit-site.py` for AskJamie.
 - Several maintenance scripts contain sibling-site constants or historical
