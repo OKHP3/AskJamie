@@ -113,6 +113,8 @@ assets/img/                 Served images, favicons, OG cards, and references
 assets/templates/           Developer scaffolding, excluded from public QA
 assets/docs/                Human-authored audits and sync documentation
 scripts/                    Validation, build, audit, and maintenance tools
+docs/adr/                   Architecture Decision Records (key design choices)
+brand-styles/               Visual style registry and AskJamie brand profile
 .github/                    GitHub workflow and Copilot guidance
 ```
 

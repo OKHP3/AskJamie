@@ -1,0 +1,13 @@
+schema_version: "1.0"
+library:
+  name: AskJamie brand style library
+  description: >
+    Named visual profiles for the AskJamie site and its sister brands.
+    Maintained under the okhp3-brand-style-registry skill workflow.
+  profiles:
+    - id: askjamie
+      display_name: AskJamie
+      path: profiles/askjamie.yaml
+      status: active
+      version: "1.1.0"
+      tags: [calm, mid-century, helpdesk, explanatory]
