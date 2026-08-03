@@ -116,6 +116,9 @@ scripts/                    Validation, build, audit, and maintenance tools
 docs/adr/                   Architecture Decision Records (key design choices)
 brand-styles/               Visual style registry and AskJamie brand profile
 .github/                    GitHub workflow and Copilot guidance
+SUPPORT.md                  Where to file bugs, ask questions, and get help
+CONTRIBUTING.md             Contribution guidelines
+SECURITY.md                 Security reporting policy
 ```
 
 The repository currently contains 35 HTML files on disk. Nine are templates,
