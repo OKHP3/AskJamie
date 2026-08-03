@@ -28,3 +28,26 @@ activation phrases, and usage instructions.
 | [web-design-guidelines](web-design-guidelines/SKILL.md) | Review UI code for Web Interface Guidelines compliance. Use when asked to "review my UI", "check ... | 1.0.0 | — |
 
 <!-- SKILLS_CATALOG_END -->
+
+## Applicability to this repo
+
+Not every installed skill applies to this project. The table below records
+which skills are fully applicable and which are retained as reference only.
+Read this section before activating a skill to avoid applying the wrong runbook.
+
+| Status | Skill | Reason |
+|---|---|---|
+| **Project-applicable** | architecture-decision-records | Used for design decisions in `docs/adr/` |
+| **Project-applicable** | frontend-design | Applies to this vanilla HTML/CSS site |
+| **Project-applicable** | okhp3-artifact-validation | Used to validate changes and handoffs |
+| **Project-applicable** | okhp3-brand-style-registry | AskJamie brand profile lives in `brand-styles/` |
+| **Project-applicable** | okhp3-equilibrium-review | Used for document and decision review |
+| **Project-applicable** | okhp3-evidence-standard | Used to classify claims in reports and handoffs |
+| **Project-applicable** | okhp3-repository-organizer | Applicable to this content-first static repo |
+| **Project-applicable** | okhp3-session-handoff | Used when work pauses or crosses sessions |
+| **Project-applicable** | okhp3-skill-cataloger | Regenerates this catalog |
+| **Project-applicable** | okhp3-skill-foundry | Used to author and improve skills |
+| **Project-applicable** | okhp3-skill-promotion | Used to promote skills to OKHP3/skillz |
+| **Project-applicable** | web-design-guidelines | Applies to UI review and accessibility checks |
+| **Reference only** | okhp3-vite-github-pages | Vite/React/GitHub Pages runbook for Kieran's LifeTrkr. This repo is a static HTML site with no Vite build, React, or GitHub Pages deployment. Do not apply. |
+| **Reference only** | vercel-react-best-practices | React and Next.js optimization rules. This repo contains no React or Next.js code. Do not apply. |

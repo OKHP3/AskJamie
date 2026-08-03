@@ -125,6 +125,23 @@ The repository currently contains 35 HTML files on disk. Nine are templates,
 leaving 26 paths in the responsive QA list. The 26 QA paths include utility
 pages such as `404.html` and `under-construction.html`.
 
+### Agent skills
+
+The `.agents/skills/` directory holds Agent Skills for AI assistants. Not all
+installed skills apply to this tech stack. Two are retained as reference only
+and must not be activated for this repo:
+
+- **`okhp3-vite-github-pages`** — a runbook for a separate React/Vite app
+  deployed to GitHub Pages. This repo is a static HTML site with no Vite
+  build step, React code, or GitHub Pages deployment. Do not add a
+  `vite.config.ts`, `package.json` build scripts, or React components on the
+  basis of this skill.
+- **`vercel-react-best-practices`** — React and Next.js optimization rules.
+  This repo contains no React or Next.js code. Do not apply these rules here.
+
+All other installed skills are applicable. See `.agents/skills/README.md` for
+the full applicability table.
+
 ### Brand contract
 
 Pages must use `<body class="askjamie-main">` unless a utility page has a
