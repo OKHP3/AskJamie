@@ -18,3 +18,8 @@ No bounty program exists at this time. Reports will be reviewed and mitigated as
 ## Notes
 
 This repo is primarily for reference and public brand artifact access. No authentication or user data is handled by this static site.
+
+## Maintainer
+
+Jamie Hill / AskJamie™ · OverKill Hill P³™
+contact@askjamie.bot
