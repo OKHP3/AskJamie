@@ -228,20 +228,27 @@ def validate_page(path: Path, sitemap_urls: set[str]) -> list[Finding]:
 
 GOVERNANCE_DOCS = ["SUPPORT.md", "SECURITY.md", "CONTRIBUTING.md"]
 _EMAIL_RE = re.compile(r"[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}")
+# Captures the first non-blank line after a "## Maintainer" heading.
+_MAINTAINER_RE = re.compile(r"##\s+Maintainer\s*\n+([^\n]+)", re.IGNORECASE)
 
 
 def check_governance_docs_consistency() -> list[Finding]:
-    """Ensure the contact email set is identical across SUPPORT.md, SECURITY.md, and CONTRIBUTING.md.
+    """Ensure the contact email set and maintainer credit line are identical
+    across SUPPORT.md, SECURITY.md, and CONTRIBUTING.md.
 
     Reports ERROR when:
     - No email is found in any governance doc
-    - A doc's email set differs from the consensus set (catches missing *and* extra addresses)
-    Reports WARN when a governance doc file is missing entirely.
+    - A doc’s email set differs from the consensus set (catches missing *and* extra addresses)
+    - A doc’s maintainer credit line differs from the consensus value
+    Reports WARN when:
+    - A governance doc file is missing entirely
+    - Some readable docs have a maintainer section but others do not
     """
     from collections import Counter
 
     findings: list[Finding] = []
     emails_by_doc: dict[str, set[str]] = {}
+    maintainer_by_doc: dict[str, str] = {}
 
     for doc_name in GOVERNANCE_DOCS:
         doc_path = ROOT / doc_name
@@ -253,43 +260,62 @@ def check_governance_docs_consistency() -> list[Finding]:
             continue
         raw = doc_path.read_text(encoding="utf-8", errors="replace")
         emails_by_doc[doc_name] = set(_EMAIL_RE.findall(raw))
+        m = _MAINTAINER_RE.search(raw)
+        if m:
+            maintainer_by_doc[doc_name] = m.group(1).strip()
 
     if len(emails_by_doc) < 2:
         return findings  # not enough docs to compare
 
+    # ── email consistency ──────────────────────────────────────────────────────────
     all_emails: set[str] = set().union(*emails_by_doc.values())
 
-    # No emails found in any governance doc
     if not all_emails:
         for doc_name in emails_by_doc:
             findings.append(Finding(
                 "ERROR", doc_name,
                 "no contact email found — add a consistent contact address to all governance docs",
             ))
-        return findings
+    else:
+        unique_email_sets = {frozenset(v) for v in emails_by_doc.values()}
+        if len(unique_email_sets) > 1:
+            set_counter: Counter = Counter(frozenset(v) for v in emails_by_doc.values())
+            canonical_set: set[str] = set(set_counter.most_common(1)[0][0])
+            for doc_name, emails in emails_by_doc.items():
+                if emails != canonical_set:
+                    expected = ", ".join(sorted(canonical_set))
+                    found = ", ".join(sorted(emails)) if emails else "(none)"
+                    findings.append(Finding(
+                        "ERROR", doc_name,
+                        f"contact email set mismatch: found [{found}], expected [{expected}] "
+                        f"(from other governance docs)",
+                    ))
 
-    # All email sets identical — nothing to report
-    unique_sets = {frozenset(v) for v in emails_by_doc.values()}
-    if len(unique_sets) == 1:
-        return findings
+    # ── maintainer credit line consistency ──────────────────────────────────────────────
+    if len(maintainer_by_doc) >= 2:
+        unique_credits = set(maintainer_by_doc.values())
+        if len(unique_credits) > 1:
+            credit_counter: Counter = Counter(maintainer_by_doc.values())
+            canonical_credit = credit_counter.most_common(1)[0][0]
+            for doc_name, credit in maintainer_by_doc.items():
+                if credit != canonical_credit:
+                    findings.append(Finding(
+                        "ERROR", doc_name,
+                        f"maintainer credit mismatch: found {credit!r}, "
+                        f"expected {canonical_credit!r} (from other governance docs)",
+                    ))
 
-    # Determine the canonical set: most common frozenset across docs
-    set_counter: Counter = Counter(frozenset(v) for v in emails_by_doc.values())
-    canonical_set: set[str] = set(set_counter.most_common(1)[0][0])
-
-    for doc_name, emails in emails_by_doc.items():
-        if emails == canonical_set:
-            continue
-        expected = ", ".join(sorted(canonical_set))
-        found = ", ".join(sorted(emails)) if emails else "(none)"
-        findings.append(Finding(
-            "ERROR", doc_name,
-            f"contact email set mismatch: found [{found}], expected [{expected}] (from other governance docs)",
-        ))
+    # Warn if some readable docs have a maintainer section but others do not
+    readable_docs = set(emails_by_doc)
+    if maintainer_by_doc and len(maintainer_by_doc) < len(readable_docs):
+        for doc_name in sorted(readable_docs - set(maintainer_by_doc)):
+            findings.append(Finding(
+                "WARN", doc_name,
+                "no maintainer credit line found (## Maintainer section missing) — "
+                "other governance docs have one",
+            ))
 
     return findings
-
-
 def main() -> int:
     sitemap_urls = load_sitemap_urls()
     if not sitemap_urls:
