@@ -1016,6 +1016,18 @@ def main() -> int:
     if not args.quiet:
         print(f"\n✓ Written: {meta_dir / '.catalog-meta.json'}")
 
+    # ── Applicability table reminder (catalog mode only) ──────────────────────
+    # The README contains a manual "Applicability to this repo" table below
+    # SKILLS_CATALOG_END. That table is NOT regenerated automatically. When
+    # skills are added or removed, a maintainer must update it by hand.
+    if not args.full and changed and not args.quiet:
+        print(
+            "\n⚠ Reminder: the 'Applicability to this repo' table in "
+            f"{output} is maintained manually.\n"
+            "  Add a row for each new skill and remove rows for deleted skills.\n"
+            "  See the ## Applicability section below SKILLS_CATALOG_END."
+        )
+
     return 0
 
 
