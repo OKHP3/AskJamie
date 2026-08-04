@@ -13,6 +13,14 @@ metadata:
   out_of_scope: "Unapproved publication, unrelated application redesign, or credential and repository administration."
 ---
 
+> [!CAUTION]
+> **NOT APPLICABLE TO THIS REPO.**
+> This skill is a Vite + React + GitHub Pages runbook for *Kieran's LifeTrkr*.
+> The **AskJamie** project is a plain static HTML/CSS site — it has no Vite build,
+> no React or JSX, and is not deployed to GitHub Pages.
+> Do **not** follow this skill's instructions here. Consult `.agents/skills/README.md`
+> for the list of skills that do apply to this project.
+
 # okhp3-vite-github-pages
 
 **OverKill Hill P³** · [overkillhill.com](https://overkillhill.com) · [github.com/OKHP3](https://github.com/OKHP3)

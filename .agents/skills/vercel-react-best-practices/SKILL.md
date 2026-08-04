@@ -7,6 +7,13 @@ metadata:
   version: "1.0.0"
 ---
 
+> [!CAUTION]
+> **NOT APPLICABLE TO THIS REPO.**
+> This skill covers React and Next.js performance optimization for Vercel deployments.
+> The **AskJamie** project contains no React, Next.js, or JSX code.
+> Do **not** follow this skill's instructions here. Consult `.agents/skills/README.md`
+> for the list of skills that do apply to this project.
+
 # Vercel React Best Practices
 
 Comprehensive performance optimization guide for React and Next.js applications, maintained by Vercel. Contains 70 rules across 8 categories, prioritized by impact to guide automated refactoring and code generation.
