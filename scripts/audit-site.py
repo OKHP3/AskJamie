@@ -451,7 +451,7 @@ def reconcile_search_index(html_files: List[Path]) -> List[str]:
     except (OSError, json.JSONDecodeError) as exc:
         return [f"search-index.json is unreadable: {exc}"]
     try:
-        pages = data.get("pages", data) if isinstance(data, dict) else data
+        pages = data.get("pages", data.get("entries", data)) if isinstance(data, dict) else data
         if not isinstance(pages, list):
             return [f"search-index.json has unexpected shape: {type(pages).__name__}"]
         indexed_urls = {item.get("url", "") for item in pages if isinstance(item, dict)}
@@ -459,12 +459,11 @@ def reconcile_search_index(html_files: List[Path]) -> List[str]:
             u for u in indexed_urls
             if re.search(r"/assets/templates/", u)
         )
-        if template_urls:
-            return [
-                f"search-index.json contains a template-scaffold URL "
-                f"(re-run build-search-index.py after fixing EXCLUDE_DIRS): {u}"
-                for u in template_urls
-            ]
+        issues: List[str] = [
+            f"search-index.json contains a template-scaffold URL "
+            f"(re-run build-search-index.py after fixing EXCLUDE_DIRS): {u}"
+            for u in template_urls
+        ]
         indexed_rels = {
             url_to_relpath(u) if u.startswith("http") else u.lstrip("/")
             for u in indexed_urls
@@ -478,7 +477,8 @@ def reconcile_search_index(html_files: List[Path]) -> List[str]:
         rels_on_disk = {p.relative_to(ROOT).as_posix() for p in html_files}
         rels_on_disk -= EXCLUDE_FROM_SITEMAP
         missing = sorted(rels_on_disk - indexed_rels)
-        return [f"Page on disk not in search index: {p}" for p in missing]
+        issues += [f"Page on disk not in search index: {p}" for p in missing]
+        return issues
     except Exception as exc:  # pragma: no cover — defensive
         return [f"search-index reconciliation crashed: {exc!r}"]
 
