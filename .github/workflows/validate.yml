@@ -1,4 +1,5 @@
 name: Site Validation
+# Both validate-site.py and audit-site.py must pass for the build to succeed.
 
 on:
   push:
@@ -40,3 +41,9 @@ jobs:
             exit 1
           fi
           echo "Search index OK: $(wc -c < assets/data/search-index.json) bytes"
+
+      - name: Run site auditor
+        # Checks search-index consistency (template contamination, missing pages),
+        # sitemap reconciliation, image hygiene, and governance checks.
+        # Exits 1 if any issues are found.
+        run: python3 scripts/audit-site.py --quiet

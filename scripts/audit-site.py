@@ -589,7 +589,7 @@ def main() -> int:
             len(disk_missing_sitemap) + len(search_issues)
     # cruft was already added into per_page above, so it's already in the sum
     print(f"Total issues found: {total}")
-    return 0
+    return 1 if total > 0 else 0
 
 
 if __name__ == "__main__":
