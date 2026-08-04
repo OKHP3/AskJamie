@@ -225,6 +225,71 @@ def validate_page(path: Path, sitemap_urls: set[str]) -> list[Finding]:
     return findings
 
 
+
+GOVERNANCE_DOCS = ["SUPPORT.md", "SECURITY.md", "CONTRIBUTING.md"]
+_EMAIL_RE = re.compile(r"[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}")
+
+
+def check_governance_docs_consistency() -> list[Finding]:
+    """Ensure the contact email set is identical across SUPPORT.md, SECURITY.md, and CONTRIBUTING.md.
+
+    Reports ERROR when:
+    - No email is found in any governance doc
+    - A doc's email set differs from the consensus set (catches missing *and* extra addresses)
+    Reports WARN when a governance doc file is missing entirely.
+    """
+    from collections import Counter
+
+    findings: list[Finding] = []
+    emails_by_doc: dict[str, set[str]] = {}
+
+    for doc_name in GOVERNANCE_DOCS:
+        doc_path = ROOT / doc_name
+        if not doc_path.exists():
+            findings.append(Finding(
+                "WARN", doc_name,
+                f"{doc_name} not found — cannot verify contact email consistency",
+            ))
+            continue
+        raw = doc_path.read_text(encoding="utf-8", errors="replace")
+        emails_by_doc[doc_name] = set(_EMAIL_RE.findall(raw))
+
+    if len(emails_by_doc) < 2:
+        return findings  # not enough docs to compare
+
+    all_emails: set[str] = set().union(*emails_by_doc.values())
+
+    # No emails found in any governance doc
+    if not all_emails:
+        for doc_name in emails_by_doc:
+            findings.append(Finding(
+                "ERROR", doc_name,
+                "no contact email found — add a consistent contact address to all governance docs",
+            ))
+        return findings
+
+    # All email sets identical — nothing to report
+    unique_sets = {frozenset(v) for v in emails_by_doc.values()}
+    if len(unique_sets) == 1:
+        return findings
+
+    # Determine the canonical set: most common frozenset across docs
+    set_counter: Counter = Counter(frozenset(v) for v in emails_by_doc.values())
+    canonical_set: set[str] = set(set_counter.most_common(1)[0][0])
+
+    for doc_name, emails in emails_by_doc.items():
+        if emails == canonical_set:
+            continue
+        expected = ", ".join(sorted(canonical_set))
+        found = ", ".join(sorted(emails)) if emails else "(none)"
+        findings.append(Finding(
+            "ERROR", doc_name,
+            f"contact email set mismatch: found [{found}], expected [{expected}] (from other governance docs)",
+        ))
+
+    return findings
+
+
 def main() -> int:
     sitemap_urls = load_sitemap_urls()
     if not sitemap_urls:
@@ -236,6 +301,7 @@ def main() -> int:
     all_findings: list[Finding] = []
     for path in pages:
         all_findings.extend(validate_page(path, sitemap_urls))
+    all_findings.extend(check_governance_docs_consistency())
 
     errors   = [f for f in all_findings if f.severity == "ERROR"]
     warnings = [f for f in all_findings if f.severity == "WARN"]
