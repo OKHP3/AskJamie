@@ -22,13 +22,16 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install beautifulsoup4
+        run: pip install beautifulsoup4 "pytest>=8"
 
       - name: Run site validator
         run: python3 scripts/validate-site.py
 
       - name: Run link checker
         run: python3 scripts/check-links.py
+
+      - name: Run regression tests
+        run: python3 -m pytest
 
       - name: Rebuild search index
         run: python3 scripts/build-search-index.py
