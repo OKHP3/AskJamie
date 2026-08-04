@@ -187,6 +187,24 @@ PLACEHOLDER_PATTERNS = [
 ]
 BARE_NOOPENER = re.compile(r'\brel="noopener"(?!\s*noreferrer)')
 
+# Deprecated browser-hint meta tags that must not appear on live pages.
+# Removed during the v0.8 standards audit; this list prevents regression.
+DEPRECATED_BROWSER_HINTS: List[Tuple[str, str]] = [
+    (r'http-equiv=["\']X-UA-Compatible["\']',        '<meta http-equiv="X-UA-Compatible">'),
+    (r'name=["\']language["\']',                     '<meta name="language">'),
+    (r'name=["\']revisit-after["\']',                '<meta name="revisit-after">'),
+    (r'name=["\']googlebot["\']',                    '<meta name="googlebot">'),
+    (r'name=["\']bingbot["\']',                      '<meta name="bingbot">'),
+    (r'name=["\']mobile-web-app-capable["\']',       '<meta name="mobile-web-app-capable">'),
+    (r'name=["\']apple-mobile-web-app-capable["\']', '<meta name="apple-mobile-web-app-capable">'),
+    (r'name=["\']apple-mobile-web-app-status-bar-style["\']',
+     '<meta name="apple-mobile-web-app-status-bar-style">'),
+]
+_DEPRECATED_HINT_RE = [
+    (re.compile(pattern, re.IGNORECASE), label)
+    for pattern, label in DEPRECATED_BROWSER_HINTS
+]
+
 # Link text patterns that are bare/generic and fail WCAG 2.4.4.
 # aria-label overrides visible text, so labeled arrows are safe.
 BARE_LINK_TEXTS = frozenset({
@@ -269,6 +287,12 @@ def audit_page(path: Path) -> List[str]:
             decoded = urllib.parse.unquote(url.replace("https://askjamie.bot", ""))
             if not (ROOT / decoded.lstrip("/")).exists():
                 issues.append(f"og:image file does not exist on disk: {decoded}")
+
+    # Deprecated browser-hint meta tags — must not reappear on live pages.
+    # Any match is a regression from the v0.8 standards audit cleanup.
+    for _hint_re, _hint_label in _DEPRECATED_HINT_RE:
+        if _hint_re.search(src):
+            issues.append(f"Deprecated browser-hint tag: {_hint_label}")
 
     # Modern (2025/2026) baseline — security meta tags
     if 'name="referrer"' not in src:
