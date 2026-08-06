@@ -114,6 +114,8 @@ assets/templates/           Developer scaffolding, excluded from public QA
 assets/docs/                Human-authored audits and sync documentation
 scripts/                    Validation, build, audit, and maintenance tools
 docs/adr/                   Architecture Decision Records (key design choices)
+docs/brandguard/            BrandGuard-specific working documentation
+docs/security/              Security threat-model documentation
 brand-styles/               Visual style registry and AskJamie brand profile
 .github/                    GitHub workflow and Copilot guidance
 SUPPORT.md                  Where to file bugs, ask questions, and get help
@@ -285,8 +287,8 @@ These are evidence-backed observations from the July 13, 2026 inspection:
   findings in the validation section above. Run
   `python3 scripts/build-search-index.py` to clear the stale-index finding
   before the next content release.
-- `scripts/site-audit.py` is a separate OverKill Hill audit script with the
-  wrong GA4 constant for this site. Use `scripts/audit-site.py` for AskJamie.
+- The retired cross-site audit and migration scripts were removed in August
+  2026. Use `scripts/audit-site.py` for the canonical AskJamie audit.
 - Several maintenance scripts contain sibling-site constants or historical
   names. Check the target script and `assets/docs/sister-site-sync.md` before
   running or adapting them.
