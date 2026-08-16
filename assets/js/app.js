@@ -459,6 +459,7 @@ document.addEventListener("DOMContentLoaded", () => {
             'placeholder="' + searchPlaceholder + '" aria-label="Search" />' +
           '<button type="button" class="okh-search-close" aria-label="Close search">Esc</button>' +
         "</div>" +
+        '<div role="status" aria-live="polite" aria-atomic="true" class="okh-search-status sr-only"></div>' +
         '<div class="okh-search-results" role="list" aria-label="Search results"></div>' +
         '<div class="okh-search-footer">' +
           '<div class="okh-search-keys">' +
@@ -547,9 +548,16 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       });
     }
+    const statusEl = overlay.querySelector(".okh-search-status");
+    function announce(msg) {
+      if (!statusEl) return;
+      statusEl.textContent = "";
+      // Force a DOM flush so screen readers re-announce even identical text
+      requestAnimationFrame(() => { statusEl.textContent = msg; });
+    }
     function render() {
       const q = input.value.trim();
-      if (!q) { renderEmpty(); currentResults = []; lastTokens = []; return; }
+      if (!q) { renderEmpty(); currentResults = []; lastTokens = []; announce(""); return; }
       lastTokens     = tokenize(q);
       currentResults = search(entries, q, 12);
       if (!currentResults.length) {
@@ -557,6 +565,7 @@ document.addEventListener("DOMContentLoaded", () => {
           '<div class="okh-search-noresults"><p>No matches for <strong>' +
           escapeHtml(q) + "</strong>.</p><p>Try <em>mermaid</em>, <em>ROY</em>, " +
           "<em>council</em>, or <em>manifesto</em>.</p></div>";
+        announce("No results for " + q);
         return;
       }
       list.innerHTML = currentResults.map((r) => (
@@ -565,6 +574,7 @@ document.addEventListener("DOMContentLoaded", () => {
         "</a>"
       )).join("");
       setActive(0);
+      announce(currentResults.length + " result" + (currentResults.length === 1 ? "" : "s") + " for " + q);
     }
     input.addEventListener("input", render);
     input.addEventListener("keydown", (ev) => {
