@@ -392,9 +392,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }[c]));
   }
   function snippetFor(entry, tokens, length) {
-    const body = entry.body || entry.description || "";
-    if (!body) return "";
-    const lower = body.toLowerCase();
+    const description = (entry.description || "").trim();
+    const body = entry.body || "";
+    const descriptionLower = description.toLowerCase();
+    const useDescription = description && tokens.some((t) => descriptionLower.includes(t));
+    const source = useDescription ? description : (body || description);
+    if (!source) return "";
+    const lower = source.toLowerCase();
     let bestIdx = -1;
     for (const t of tokens) {
       const i = lower.indexOf(t);
@@ -402,9 +406,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     let start = 0;
     if (bestIdx > 80) start = Math.max(0, bestIdx - 60);
-    let snip = body.slice(start, start + (length || 220));
+    let snip = source.slice(start, start + (length || 220));
     if (start > 0) snip = "…" + snip;
-    if (start + (length || 220) < body.length) snip += "…";
+    if (start + (length || 220) < source.length) snip += "…";
     return snip;
   }
   function highlight(text, tokens) {

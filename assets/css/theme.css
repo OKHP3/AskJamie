@@ -1884,6 +1884,7 @@ body.construction-dismissed .construction-overlay,
   border: none;
   color: var(--color-fg, var(--color-fg));
   font-size: 1.05rem;
+  min-height: 24px;
   outline: none;
 }
 .search-page .search-stats {
@@ -1929,8 +1930,8 @@ body.construction-dismissed .construction-overlay,
 }
 .search-page .search-categories button[aria-pressed="true"] {
   background: rgba(196, 106, 44, 0.18);
-  color: var(--okh-amber, #d99257);
   border-color: rgba(196, 106, 44, 0.45);
+  color: #6f3418;
 }/* Draft notice — unpublished writing pages */
 .draft-notice {
   background-color: color-mix(in srgb, var(--okh-amber) 12%, transparent);
@@ -4225,12 +4226,12 @@ sentinel artwork used on this error page, we override two rules:
 
 /* Mermaid Chart referral links — official Mermaid hot pink */
 a.mermaid-referral-link {
-  color: #FF3670;
+  color: #9e1747;
   text-decoration: none;
 }
 a.mermaid-referral-link:hover,
 a.mermaid-referral-link:focus-visible {
-  color: #ff6b95;
+  color: #7d123a;
   text-decoration: underline;
 }
 
@@ -5476,7 +5477,7 @@ html[data-theme="dark"] .askjamie-paper {
 }
 
 .askjamie-main .btn-primary {
-  background: linear-gradient(135deg, #2d6f7e, #3c8ea1);
+  background: linear-gradient(135deg, #245968, #2d6f7e);
   color: #f9fafb;
   box-shadow: 0 10px 24px rgba(45, 111, 126, 0.45);
 }
@@ -5527,7 +5528,7 @@ html[data-theme="dark"] .askjamie-paper {
 .askjamie-main .eyebrow {
   text-transform: none;      /* overrides the uppercase version above */
   font-size: 0.95rem;
-  color: #3c8ea1;
+  color: #245968;
 }
 /* AskJamie: logo + text breadcrumb for inner-page heroes */
 .askjamie-main .askjamie-breadcrumb {
@@ -5536,7 +5537,7 @@ html[data-theme="dark"] .askjamie-paper {
   flex-wrap: wrap;
   gap: 0.5rem;
   font-size: 0.9rem;
-  color: #3c8ea1; /* same teal accent */
+  color: #245968; /* accessible teal accent */
   margin-bottom: 0.75rem;
 }
 
