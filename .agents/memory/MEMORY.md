@@ -1,0 +1,5 @@
+- [AskJamie audit execution pattern](askjamie-audit-execution.md) — audit reports are action lists; execute every finding, don't just document them
+- [height=auto removal pattern](img-height-auto.md) — removing height="auto" breaks audit checks; always add explicit pixel heights for square images
+- [FK scoring approach](fk-scoring.md) — treat closing block-level HTML tags as sentence boundaries or list items inflate FK scores artificially
+- [Git credential pattern](git-credentials.md) — GITHUB_PAT must be re-applied each session before push via git-credentials store
+- [AskJamie contrast corrections](contrast-corrections.md) — two originally reported contrast failures were calculation errors; correct ratios both pass AA
