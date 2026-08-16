@@ -442,7 +442,13 @@ document.addEventListener("DOMContentLoaded", () => {
     wrap.className = "okh-search-overlay";
     wrap.setAttribute("role", "dialog");
     wrap.setAttribute("aria-modal", "true");
-    wrap.setAttribute("aria-label", "Search OverKill Hill");
+    const isAskJamie = document.body.classList.contains("askjamie-main");
+    const isGlee     = document.body.classList.contains("glee-main");
+    const searchBrand = isAskJamie ? "AskJamie" : isGlee ? "Glee-fully" : "OverKill Hill";
+    const searchPlaceholder = isAskJamie
+      ? "Search AskJamie — pages, cases, and services…"
+      : "Search the Forge — articles, projects, ideas…";
+    wrap.setAttribute("aria-label", "Search " + searchBrand);
     wrap.innerHTML = (
       '<div class="okh-search-panel" role="document">' +
         '<div class="okh-search-input-row">' +
@@ -450,7 +456,7 @@ document.addEventListener("DOMContentLoaded", () => {
             '<circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" />' +
           "</svg>" +
           '<input type="search" class="okh-search-input" autocomplete="off" spellcheck="false" ' +
-            'placeholder="Search the Forge — articles, projects, ideas…" aria-label="Search" />' +
+            'placeholder="' + searchPlaceholder + '" aria-label="Search" />' +
           '<button type="button" class="okh-search-close" aria-label="Close search">Esc</button>' +
         "</div>" +
         '<div class="okh-search-results" role="list" aria-label="Search results"></div>' +

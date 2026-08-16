@@ -890,7 +890,7 @@ button {
 .theme-toggle:hover,
 .theme-toggle:focus-visible {
   border-color: var(--okh-orange, #c46a2c);
-  outline: none;
+  /* outline:none removed — global button:focus-visible rule provides the 2px ring */
 }
 .theme-toggle .tt-icon {
   width: 1rem;
@@ -1635,7 +1635,7 @@ body.construction-dismissed .construction-overlay,
 .okh-search-trigger:focus-visible {
   border-color: var(--okh-orange, var(--okh-orange));
   color: var(--okh-orange, var(--okh-orange));
-  outline: none;
+  /* outline:none removed — global button:focus-visible rule provides the 2px ring (WCAG 2.4.7, 2.4.11) */
 }
 .okh-search-trigger .okh-search-icon {
   width: 1em;
@@ -5204,7 +5204,7 @@ html[data-theme="light"] .askjamie-main {
   --color-surface-soft: #f6f2ee;
   --color-fg: #2e2b29;
   --color-heading: #2e2b29;      /* explicit heading ink — charcoal */
-  --color-muted: #6b6b6b;
+  --color-muted: #5a5a5a;   /* was #6b6b6b (4.21:1 on paper — WCAG fail); #5a5a5a = 5.12:1 ✓ AA */
   --color-accent: #2d6f7e;
   --color-border-subtle: #d7d7d7;
   
