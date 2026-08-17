@@ -158,6 +158,8 @@ wrap.setAttribute("aria-label", searchLabel);
 
 **Note on FK calculation:** Proper nouns, brand names, and product codes (AskJamie™, OKHP³, GPT‑BRG01, BrandGuard™) inflate syllable counts without meaningfully increasing cognitive difficulty. The raw FK numbers above include these terms. The effective reading difficulty is slightly lower than the numbers suggest. However, /legal/ (12.3) and /coca-cola/ (12.0) have genuinely complex sentence structures beyond brand terminology.
 
+**Automated enforcement (added 2026-08-16):** `scripts/audit-site.py` now computes FK grade for every page on each audit run and fails the audit (exit code 1) when any page exceeds the ≤10.5 threshold. Methodology: strip `<nav>`, `<footer>`, `<pre>`, `<code>`, `<script>`, `<style>`, `<head>` blocks; treat closing block-level tags (`</li>`, `</p>`, `</h1>`–`</h6>`, `</div>`, `</section>`, `</article>`) as sentence terminators; apply standard FK formula (0.39 × ASL + 11.8 × ASW − 15.59). Pages with fewer than 3 sentences or 30 words are skipped (scored 0.0). FK grades appear in `assets/docs/audit-report.md` after each run.
+
 **Recommended fix:** Priority edits for the three college-level pages:
 - `/legal/`: Break compound-complex sentences; replace passive constructions. Target: ≤10.5.
 - `/contact/`: Introduce action-first sentence structures; trim embedded clauses. Target: ≤10.0.

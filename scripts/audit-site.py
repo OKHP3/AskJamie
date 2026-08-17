@@ -34,6 +34,13 @@ Per-page checks actually emitted as issues:
     `id="foo"` on the same page
   * og:image URL (when it points to askjamie.bot) resolves to a file
     that actually exists on disk (URL-decoded to handle %20 etc.)
+  * Flesch-Kincaid reading level ≤10.5 (9th–10th grade target).
+    Methodology: strip <nav>/<footer>/<pre>/<code>/<script>/<style>/<head>;
+    treat closing block-level tags (</li>, </p>, </h1>–</h6>, </div>,
+    </section>, </article>) as sentence terminators so bullet-list items
+    aren't concatenated into one long pseudo-sentence; score with the
+    standard FK formula (0.39×ASL + 11.8×ASW − 15.59). Pages with < 3
+    sentences or < 30 words are skipped (score reported as 0.0).
 
 Cross-file / repo-wide checks:
   * no leftover backup / OS-junk files (.bak, .orig, .swp, .DS_Store, ~)
@@ -83,6 +90,79 @@ DESC_MAX = 165
 # Brand-correct theme color
 EXPECTED_THEME_COLOR = "#2c5e6f"
 EXPECTED_BG_COLOR = "#f5efe1"
+
+# Reading-level target: Flesch-Kincaid grade ≤ this value.
+# Matches the 9th–10th grade plain-language target documented in the audit.
+FK_WARN_THRESHOLD = 10.5
+
+
+# ── Flesch-Kincaid reading-level helpers ────────────────────────────────────
+
+def _count_syllables(word: str) -> int:
+    """Estimate syllable count for one lowercase word (no punctuation)."""
+    word = word.lower()
+    if not word:
+        return 0
+    vowels = "aeiouy"
+    count = 0
+    prev_vowel = False
+    for ch in word:
+        is_v = ch in vowels
+        if is_v and not prev_vowel:
+            count += 1
+        prev_vowel = is_v
+    # Silent trailing 'e' (e.g. "rate" → 1 syllable, not 2)
+    if word.endswith("e") and count > 1:
+        count -= 1
+    return max(1, count)
+
+
+def fk_grade(html: str) -> float:
+    """Flesch-Kincaid grade level for the body content of an HTML page.
+
+    Methodology (matches the scoring used in the 2026-08-16 accessibility audit):
+      1. Strip non-content blocks: <script>, <style>, <pre>, <code>,
+         <head>, <nav>, <footer>.
+      2. Treat closing block-level tags (</li>, </p>, </h1>–</h6>,
+         </div>, </section>, </article>) as sentence terminators so that
+         bullet-list items are counted as separate sentences rather than
+         concatenating into one artificially long sentence.
+      3. Strip remaining HTML tags, reduce non-alpha to spaces,
+         then split on .!? to get sentences and re.findall([a-zA-Z]{2,})
+         to get scoreable words.
+      4. Apply the standard FK formula:
+            grade = 0.39 × ASL + 11.8 × ASW − 15.59
+         where ASL = average words per sentence,
+               ASW = average syllables per word.
+
+    Returns 0.0 when there is insufficient text to score reliably
+    (< 3 sentences or < 30 words).
+    """
+    # 1 — strip non-content blocks
+    src = re.sub(
+        r'<(script|style|pre|code|head|nav|footer)[^>]*>.*?</\1>',
+        '', html, flags=re.DOTALL | re.IGNORECASE
+    )
+    # 2 — closing block tags become sentence terminators
+    src = re.sub(
+        r'</(li|p|h[1-6]|div|section|article|td|th)>',
+        '. ', src, flags=re.IGNORECASE
+    )
+    # 3 — strip tags, collapse whitespace
+    src = re.sub(r'<[^>]+>', ' ', src)
+    src = re.sub(r'[^\w\s.!?]', ' ', src)
+    src = re.sub(r'\s+', ' ', src).strip()
+
+    sentences = [s.strip() for s in re.split(r'[.!?]+', src) if len(s.strip()) > 10]
+    words = re.findall(r'\b[a-zA-Z]{2,}\b', src)
+
+    if len(sentences) < 3 or len(words) < 30:
+        return 0.0
+
+    total_syllables = sum(_count_syllables(w) for w in words)
+    asl = len(words) / len(sentences)
+    asw = total_syllables / len(words)
+    return round(0.39 * asl + 11.8 * asw - 15.59, 1)
 
 
 def iter_html_files() -> List[Path]:
@@ -214,10 +294,23 @@ BARE_LINK_TEXTS = frozenset({
 })
 
 
-def audit_page(path: Path) -> List[str]:
+def audit_page(path: Path) -> Tuple[List[str], float]:
+    """Run all per-page checks.
+
+    Returns (issues, fk) where fk is the Flesch-Kincaid grade level
+    (0.0 when there is insufficient text to score).
+    """
     rel = path.relative_to(ROOT).as_posix()
     src = path.read_text(encoding="utf-8", errors="replace")
     issues: List[str] = []
+
+    # ── Reading-level check ──────────────────────────────────────────────────
+    fk = fk_grade(src)
+    if fk > FK_WARN_THRESHOLD:
+        issues.append(
+            f"Reading level FK {fk} exceeds target ≤{FK_WARN_THRESHOLD} "
+            f"(Flesch-Kincaid grade; see methodology note in the audit doc)"
+        )
 
     # placeholder text scan (raw)
     for needle, label in PLACEHOLDER_PATTERNS:
@@ -331,7 +424,7 @@ def audit_page(path: Path) -> List[str]:
         p.feed(src)
     except Exception as exc:  # pragma: no cover
         issues.append(f"HTML parser raised: {exc!r}")
-        return issues
+        return issues, fk
 
     title = p.title.strip()
     if not title:
@@ -388,7 +481,7 @@ def audit_page(path: Path) -> List[str]:
                 f'External target=_blank link lacks noopener+noreferrer: {link["href"]}'
             )
 
-    return issues
+    return issues, fk
 
 
 def parse_sitemap() -> Tuple[List[str], List[str]]:
@@ -510,7 +603,8 @@ def reconcile_search_index(html_files: List[Path]) -> List[str]:
 def render_report(per_page: Dict[str, List[str]],
                   sitemap_missing_disk: List[str],
                   disk_missing_sitemap: List[str],
-                  search_issues: List[str]) -> str:
+                  search_issues: List[str],
+                  fk_scores: Dict[str, float] | None = None) -> str:
     total_issues = sum(len(v) for v in per_page.values()) + \
                    len(sitemap_missing_disk) + len(disk_missing_sitemap) + len(search_issues)
     lines = [
@@ -538,7 +632,30 @@ def render_report(per_page: Dict[str, List[str]],
     else:
         for x in search_issues:
             lines.append(f"- {x}")
-    lines += ["", "## Per-page issues", ""]
+
+    # Reading-level summary — show FK grade for every scored page, worst first.
+    # Methodology: FK grade (0.39×ASL + 11.8×ASW − 15.59); closing block tags
+    # treated as sentence boundaries; <nav>, <footer>, <pre>, <code> excluded.
+    # Target: ≤10.5 (9th–10th grade). Scores of 0.0 mean insufficient text.
+    if fk_scores:
+        scored = [(rel, score) for rel, score in fk_scores.items() if score > 0.0]
+        scored.sort(key=lambda x: x[1], reverse=True)
+        lines += ["", "## Reading-level summary (Flesch-Kincaid grade)", ""]
+        lines.append(f"Target: ≤{FK_WARN_THRESHOLD} | Warn threshold: >{FK_WARN_THRESHOLD}")
+        lines.append("")
+        lines.append("| Page | FK Grade | Status |")
+        lines.append("|---|---|---|")
+        for rel, score in scored:
+            if score > FK_WARN_THRESHOLD:
+                status = f"⚠ WARN (>{FK_WARN_THRESHOLD})"
+            elif score > FK_WARN_THRESHOLD - 1:
+                status = "~ borderline"
+            else:
+                status = "✓"
+            lines.append(f"| `{rel}` | {score} | {status} |")
+        lines.append("")
+
+    lines += ["## Per-page issues", ""]
     for page, issues in sorted(per_page.items()):
         if not issues:
             continue
@@ -561,13 +678,17 @@ def main() -> int:
 
     html_files = iter_html_files()
     per_page: Dict[str, List[str]] = {}
+    fk_scores: Dict[str, float] = {}
     for path in html_files:
         rel = path.relative_to(ROOT).as_posix()
-        per_page[rel] = audit_page(path)
+        issues, fk = audit_page(path)
+        per_page[rel] = issues
+        fk_scores[rel] = fk
         if not args.quiet:
-            count = len(per_page[rel])
+            count = len(issues)
+            fk_tag = f" FK={fk}" if fk > 0 else ""
             flag = "OK " if count == 0 else f"{count:>3}"
-            print(f"  [{flag}] {rel}")
+            print(f"  [{flag}] {rel}{fk_tag}")
 
     sitemap_missing_disk, disk_missing_sitemap, sitemap_errors = reconcile_sitemap(html_files)
     search_issues = reconcile_search_index(html_files)
@@ -579,7 +700,8 @@ def main() -> int:
     if cruft_issues:
         per_page["(repo cruft)"] = cruft_issues
 
-    report = render_report(per_page, sitemap_missing_disk, disk_missing_sitemap, search_issues)
+    report = render_report(per_page, sitemap_missing_disk, disk_missing_sitemap,
+                           search_issues, fk_scores)
     out = ROOT / args.report
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(report, encoding="utf-8")
