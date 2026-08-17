@@ -22,3 +22,6 @@ After prose simplification + correct scoring:
 - legal/ FK 12.3 → 9.5 ✓
 - contact/ FK 11.7 → 7.8 ✓
 - coca-cola/ FK 12.0 → 8.6 ✓
+
+## Audit baselines are not reproducible (2026-08-17)
+The accessibility audit doc claims its FK script is "embedded in Section 4, S-02" — it is not; no FK script exists anywhere in the repo. The audit's per-page FK numbers (e.g. legal 12.3) could not be reproduced by any extraction variant (with/without block boundaries, main-only or whole body). When a task cites those baselines, verify against your own implementation and target the threshold under the strictest variant rather than chasing exact baseline matches.
