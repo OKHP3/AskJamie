@@ -663,6 +663,14 @@ document.addEventListener("DOMContentLoaded", () => {
     let entries        = [];
     let activeCategory = "all";
 
+    // Mirror the overlay's announce() pattern: clear first so screen readers
+    // re-announce even when the new message text is identical to the previous one.
+    function announceStats(msg) {
+      if (!stats) return;
+      stats.textContent = "";
+      requestAnimationFrame(() => { stats.textContent = msg; });
+    }
+
     function readQueryFromURL() {
       return new URL(window.location.href).searchParams.get("q") || "";
     }
@@ -677,9 +685,9 @@ document.addEventListener("DOMContentLoaded", () => {
       writeQueryToURL(q);
       if (!q) {
         list.innerHTML = "";
-        if (stats) stats.textContent = entries.length
+        announceStats(entries.length
           ? "Type to search " + entries.length + " indexed entries."
-          : "Loading index…";
+          : "Loading index…");
         return;
       }
       const tokens = tokenize(q);
@@ -695,12 +703,11 @@ document.addEventListener("DOMContentLoaded", () => {
           escapeHtml(q) + "</strong>" +
           (activeCategory !== "all" ? ' in <em>' + escapeHtml(activeCategory) + "</em>" : "") +
           ".</p></div>";
-        if (stats) stats.textContent = "0 results";
+        announceStats("0 results for " + q);
         return;
       }
-      if (stats) stats.textContent =
-        results.length + " result" + (results.length === 1 ? "" : "s") +
-        " for \u201c" + q + "\u201d";
+      announceStats(results.length + " result" + (results.length === 1 ? "" : "s") +
+        " for \u201c" + q + "\u201d");
       list.innerHTML = results.map((r) => (
         '<a class="okh-search-result" href="' + escapeHtml(r.entry.url) + '">' +
           renderResultHtml(r, tokens) +
