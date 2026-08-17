@@ -31,43 +31,44 @@ The site passes the majority of WCAG 2.2 AA requirements. One Critical finding (
 
 ## 2. Full Findings Table
 
-### C-01 · Critical · All 26 pages · Keyboard users · WCAG 2.4.7, 2.4.11
+### C-01 · ~~Critical~~ → **RESOLVED & VERIFIED** · All 26 pages · Keyboard users · WCAG 2.4.7, 2.4.11
+
+**Resolved:** 2026-08-16 (CSS fix applied)  
+**Verified:** 2026-08-17 (static CSS analysis)
 
 **Component:** Search trigger button (`.okh-search-trigger`) injected into the site header on every page.  
-**Issue:** CSS rule `.okh-search-trigger:focus-visible { outline: none; }` explicitly removes the native focus outline. The focused state only changes border-color to orange (`#c46a2c`) — a 1 px border change. This fails WCAG 2.4.7 (Focus Visible) because a 1 px border-color change on a control with a 1 px unfocused border does not meet the WCAG 2.4.11 (Focus Appearance) requirement that the focus indicator area must be at least `perimeter × 2 CSS pixels`. For a ~110 px wide × 36 px tall control (perimeter ≈ 292 px), the minimum focus indicator area is 584 px². A 1 px border covers only 292 px² — exactly half the required area.
+**Original issue:** CSS rule `.okh-search-trigger:focus-visible { outline: none; }` explicitly removed the native focus outline, leaving only a 1 px border-color change that did not meet WCAG 2.4.11 focus-area requirements.
 
-**Evidence:** `theme.css` lines confirmed via `rg -n "focus" assets/css/theme.css`:
+**Fix applied:** `outline: none` removed from both `.okh-search-trigger:focus-visible` and `.theme-toggle:focus-visible`. Both rules now only set `border-color` and `color`; an explicit comment in each rule confirms the removal:
 ```css
-/* Global rule — correct: */
-a:focus-visible,
-button:focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 3px;
-}
-
-/* Override that suppresses it for search trigger — incorrect: */
+/* theme.css — current state after fix */
+.okh-search-trigger:hover,
 .okh-search-trigger:focus-visible {
   border-color: var(--okh-orange, var(--okh-orange));
   color: var(--okh-orange, var(--okh-orange));
-  outline: none;           /* ← removes the 2px outline */
+  /* outline:none removed — global button:focus-visible rule provides the 2px ring (WCAG 2.4.7, 2.4.11) */
+}
+
+.theme-toggle:hover,
+.theme-toggle:focus-visible {
+  border-color: var(--okh-orange, #c46a2c);
+  /* outline:none removed — global button:focus-visible rule provides the 2px ring */
 }
 ```
 
-**Note:** The theme-toggle button has the same `outline: none` override, but the theme toggle is not rendered on AskJamie-branded pages (brand-locked; JS skips injection for `.askjamie-main`). The search trigger IS rendered on all pages.
+**Cascade analysis — ring will render correctly:**  
+The global rule `button:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 3px; }` has specificity (0,1,1). The `.okh-search-trigger:focus-visible` rule has specificity (0,2,0) but no longer declares `outline`, so the global rule's `outline` cascades in for every focus-visible event. The ring colour is `--color-accent` = `--okh-orange` = `#c46a2c` (orange). *(Audit note: the original finding referred to "teal #2d6f7e" — that was inaccurate for the OKH/default theme; the ring is orange, which is clearly visible on both dark and light header backgrounds.)*
 
-**Steps to reproduce:** Open any page. Tab to the Search button in the nav. Observe that no visible outline appears; only the button text and border change color.
+**Hover vs focus-visible semantics confirmed:** The combined `.okh-search-trigger:hover, .okh-search-trigger:focus-visible` selector applies `border-color`/`color` changes on both hover and keyboard focus. The `outline` is provided exclusively by the `button:focus-visible` pseudo-class (no `button:hover` analog), so the 2 px ring appears **only on keyboard focus**, not on mouse hover — correct `:focus-visible` semantics. ✓
 
-**Recommended fix:**
-```css
-/* Remove outline: none — let the global button:focus-visible rule apply */
-.okh-search-trigger:hover,
-.okh-search-trigger:focus-visible {
-  border-color: var(--okh-orange);
-  color: var(--okh-orange);
-  /* outline: none;  ← DELETE this line */
-}
-```
-This restores the global `2px solid var(--color-accent)` outline (teal `#2d6f7e`, 5.07:1 contrast on paper background — passes AA). Apply the same fix to `.theme-toggle:focus-visible` for cross-site consistency.
+**Remaining `outline: none` occurrences — both intentional (verified 2026-08-17):**
+
+| Line | Selector | Intentional? | Reason |
+|---|---|---|---|
+| 1709 | `.okh-search-input` | ✓ Yes | Text `<input>` inside the search modal panel. The styled container provides the visual focus context; suppressing the browser's default input outline is standard practice for inputs inside designed search panels. Not a button/link focus indicator. |
+| 1888 | `.search-page #search-page-input` | ✓ Yes | Same pattern for the `/search/` page input. Same justification. |
+
+No other `outline: none` occurrences exist in `theme.css`. The global branded ring is intact for all `a`, `button`, `.nav-toggle`, and `.btn` elements.
 
 ---
 
@@ -211,7 +212,7 @@ Items are ordered by severity, then by number of pages/personas affected. Shared
 
 | Priority | ID | Fix | File | Effort |
 |---|---|---|---|---|
-| 1 | C-01 | Remove `outline: none` from `.okh-search-trigger:focus-visible` and `.theme-toggle:focus-visible` | `assets/css/theme.css` | 5 min |
+| 1 | ~~C-01~~ | ~~Remove `outline: none` from `.okh-search-trigger:focus-visible` and `.theme-toggle:focus-visible`~~ | `assets/css/theme.css` | ✓ done & verified 2026-08-17 |
 | 2 | ~~S-01~~ | Muted text darkened to `#5a5a5a` (was 4.78:1 passing, now 6.19:1) — improvement only | `assets/css/theme.css` | ✓ done |
 | 3 | ~~S-02~~ | Footer link contrast was a false finding — no fix needed | — | ✓ N/A |
 | 4 | S-01 | Brand-detect in search modal injection and set correct `aria-label` | `assets/js/app.js` | ✓ done |
