@@ -21,12 +21,36 @@ mermaid.initialize({
 
 const diagrams = Array.from(document.querySelectorAll(".mermaid"));
 
+function enhanceMermaidLinks(node) {
+  node.querySelectorAll("svg a").forEach((link) => {
+    const href =
+      link.getAttribute("href") ||
+      link.getAttribute("xlink:href") ||
+      link.getAttributeNS("http://www.w3.org/1999/xlink", "href");
+    if (href) link.setAttribute("href", href);
+
+    if (link.getAttribute("target") === "_blank") {
+      link.setAttribute("rel", "noopener noreferrer");
+    }
+
+    const label =
+      link.getAttribute("aria-label") ||
+      link.querySelector("[title]")?.getAttribute("title") ||
+      link.querySelector("title")?.textContent?.trim();
+    if (label) link.setAttribute("aria-label", label);
+    if (href) link.setAttribute("role", "link");
+  });
+}
+
 function renderOne(node) {
   if (node.dataset.mermaidRendered === "1") return;
   node.dataset.mermaidRendered = "1";
-  mermaid.run({ nodes: [node] }).catch((err) => {
-    console.warn("[mermaid-init] render error:", err);
-  });
+  mermaid
+    .run({ nodes: [node] })
+    .then(() => enhanceMermaidLinks(node))
+    .catch((err) => {
+      console.warn("[mermaid-init] render error:", err);
+    });
 }
 
 // If only a few diagrams, or no IntersectionObserver, render immediately.
