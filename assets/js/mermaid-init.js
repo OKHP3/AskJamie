@@ -39,6 +39,11 @@ function enhanceMermaidLinks(node) {
       link.querySelector("title")?.textContent?.trim();
     if (label) link.setAttribute("aria-label", label);
     if (href) link.setAttribute("role", "link");
+
+    // The Universe diagram is an orientation graphic, not a second navigation
+    // surface. aria-hidden alone does not remove SVG anchors from Chromium's
+    // sequential focus order, so keep generated links visible but unfocusable.
+    link.setAttribute("tabindex", "-1");
   });
 }
 
