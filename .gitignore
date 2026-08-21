@@ -41,12 +41,11 @@ __pycache__/
 htmlcov/
 .python-version
 
-# ---------- Node (in case any tooling is added later) ----------
+# ---------- Node tooling ----------
 node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-package-lock.json
 .pnpm-store/
 
 # ---------- Build / cache ----------
