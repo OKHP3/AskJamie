@@ -5,3 +5,4 @@
 - [AskJamie contrast corrections](contrast-corrections.md) — two originally reported contrast failures were calculation errors; correct ratios both pass AA
 - [Mermaid keyboard focus](mermaid-keyboard-focus.md) — aria-hidden does not remove generated SVG anchors from Chromium tab order; pair it with tabindex="-1"
 - [GitHub Pages artifact publishing](github-pages-artifact-publishing.md) — workflow mode and an explicit page-tree allowlist are required to publish only the validated public site
+- [Plain-language term validation](plain-language-term-validation.md) — check explanatory prose only, with stack-safe exclusion handling for shared UI
