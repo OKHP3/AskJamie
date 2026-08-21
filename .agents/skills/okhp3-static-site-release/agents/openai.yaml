@@ -1,0 +1,7 @@
+interface:
+  display_name: "Static Site Release"
+  short_description: "Validate and prepare a static-site release"
+  default_prompt: "Use $okhp3-static-site-release to run safe release checks and prepare, but not publish, the public artifact."
+
+policy:
+  allow_implicit_invocation: true
