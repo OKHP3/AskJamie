@@ -182,6 +182,8 @@ wrap.setAttribute("aria-label", searchLabel);
 - In search results and the search placeholder, replace "BrandGuard™ cases" with "BrandGuard™ brand-protection demos."
 - The breadcrumb GPT code (GPT‑BRG03) could include a screen-reader-only label: `<span class="sr-only"> — BrandGuard case study</span>`.
 
+**Regression guard added 2026-08-21:** `scripts/validate-site.py` now checks the first meaningful explanatory-copy occurrence of BrandGuard™, OKHP³, OverKill Hill P³™, and Lens System on every public HTML page. Shared navigation, specials banners, decorative/hidden content, and link/button-only labels are excluded so the check targets visitor-facing explanations rather than repeated chrome. An unexplained first use reports the page and term as a validation error.
+
 ---
 
 ### M-02 · Moderate · Browser-enforced limitation · Not a WCAG failure

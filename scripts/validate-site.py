@@ -13,6 +13,8 @@ Checks every production HTML page for:
   - broken asset references (CSS/JS/images)
   - external target="_blank" links missing rel="noopener" / "noreferrer"
   - placeholder hrefs ("#", "javascript:void(0)", empty href)
+  - first meaningful use of flagged brand terms has a nearby plain-language
+    definition
   - GA4 tag presence
 
 Exits 0 if no errors. Exits 1 if any errors. Warnings do not fail the build.
@@ -33,6 +35,50 @@ SKIP_DIRS = {".local", ".git", "node_modules", "attached_assets", "dist", "templ
 SITEMAP = ROOT / "sitemap.xml"
 SITE_ORIGIN = "https://askjamie.bot"
 GA4_ID = "G-MT9Y10YY0G"
+
+# These terms are useful internal labels, but should not be the first
+# unexplained concept a visitor encounters in explanatory copy. Navigation,
+# shared announcements, breadcrumb/eyebrow orientation labels, decorative
+# diagrams, and link/button-only labels are intentionally excluded by
+# MeaningfulBodyTextParser below.
+PLAIN_LANGUAGE_TERMS = (
+    (
+        "BrandGuard",
+        re.compile(r"\bBrandGuard\b", re.IGNORECASE),
+        re.compile(
+            r"brand[- ]voice|brand protection|protect(?:s|ing)?\s+"
+            r"(?:tone|identity)|family of .*GPT|reusable GPT patterns",
+            re.IGNORECASE,
+        ),
+    ),
+    (
+        "OKHP³",
+        re.compile(r"\bOKHP[³3]\b", re.IGNORECASE),
+        re.compile(
+            r"R&D studio|engineering spine|experimental playground|"
+            r"studio behind AskJamie|backbone",
+            re.IGNORECASE,
+        ),
+    ),
+    (
+        "OverKill Hill P³",
+        re.compile(r"\bOverKill Hill P[³3]\b", re.IGNORECASE),
+        re.compile(
+            r"R&D studio|engineering spine|experimental playground|"
+            r"studio behind AskJamie|backbone",
+            re.IGNORECASE,
+        ),
+    ),
+    (
+        "Lens System",
+        re.compile(r"\bLens System\b", re.IGNORECASE),
+        re.compile(
+            r"focused ways? to examine|focused way of seeing|"
+            r"structured way to ex|way of seeing and using AI|focused ways",
+            re.IGNORECASE,
+        ),
+    ),
+)
 
 
 class TagCounter(HTMLParser):
@@ -97,6 +143,99 @@ class TagCounter(HTMLParser):
     def handle_data(self, data: str):
         if self._in_title:
             self._title_buf.append(data)
+
+
+class MeaningfulBodyTextParser(HTMLParser):
+    """Collect explanatory text while excluding shared/decorative UI."""
+
+    # Headings, breadcrumbs, labels, and list navigation name concepts; prose
+    # blocks are where a first-time visitor needs the explanation.
+    BLOCK_TAGS = {"p", "blockquote", "dt", "dd"}
+    VOID_TAGS = {
+        "area", "base", "br", "col", "embed", "hr", "img", "input", "link",
+        "meta", "param", "source", "track", "wbr",
+    }
+
+    def __init__(self) -> None:
+        super().__init__(convert_charrefs=True)
+        self.excluded_depth = 0
+        self.interactive_depth = 0
+        self._element_stack: list[tuple[str, bool, bool]] = []
+        self.blocks: list[list[str]] = []
+        self._open_blocks: list[list[str]] = []
+
+    def handle_starttag(self, tag: str, attrs_list) -> None:
+        attrs = {k: (v or "") for k, v in attrs_list}
+        classes = set(attrs.get("class", "").split())
+        excluded = (
+            tag in {"head", "header", "nav", "footer", "script", "style"}
+            or bool(classes.intersection({"site-specials", "askjamie-breadcrumb", "eyebrow"}))
+            or attrs.get("aria-hidden", "").lower() == "true"
+        )
+        if excluded:
+            self.excluded_depth += 1
+        if tag in {"a", "button"}:
+            self.interactive_depth += 1
+        if tag not in self.VOID_TAGS:
+            self._element_stack.append((tag, excluded, tag in {"a", "button"}))
+        if (
+            tag in self.BLOCK_TAGS
+            and self.excluded_depth == 0
+            and self.interactive_depth == 0
+        ):
+            block: list[str] = []
+            self.blocks.append(block)
+            self._open_blocks.append(block)
+
+    def handle_startendtag(self, tag: str, attrs_list) -> None:
+        # Void elements cannot contain meaningful prose.
+        return
+
+    def handle_endtag(self, tag: str) -> None:
+        if tag in self.BLOCK_TAGS and self._open_blocks:
+            self._open_blocks.pop()
+        for index in range(len(self._element_stack) - 1, -1, -1):
+            if self._element_stack[index][0] != tag:
+                continue
+            removed = self._element_stack[index:]
+            del self._element_stack[index:]
+            self.excluded_depth -= sum(item[1] for item in removed)
+            self.interactive_depth -= sum(item[2] for item in removed)
+            break
+
+    def handle_data(self, data: str) -> None:
+        if self.excluded_depth == 0 and self.interactive_depth == 0:
+            for block in self._open_blocks:
+                block.append(data)
+
+
+def check_plain_language_terms(path: Path, raw: str) -> list[Finding]:
+    """Require a nearby definition for each term's first meaningful use."""
+    parser = MeaningfulBodyTextParser()
+    try:
+        parser.feed(raw)
+    except Exception as exc:
+        return [Finding("WARN", path.relative_to(ROOT).as_posix(),
+                        f"plain-language term parser exception: {exc}")]
+
+    text = " ".join(" ".join(block) for block in parser.blocks)
+    text = " ".join(text.split())
+    findings: list[Finding] = []
+    rel = path.relative_to(ROOT).as_posix()
+    for label, term_re, definition_re in PLAIN_LANGUAGE_TERMS:
+        match = term_re.search(text)
+        if not match:
+            continue
+        nearby = text[max(0, match.start() - 220): match.end() + 320]
+        if not definition_re.search(nearby):
+            findings.append(
+                Finding(
+                    "ERROR",
+                    rel,
+                    f"first meaningful use of {label} lacks a nearby plain-language definition",
+                )
+            )
+    return findings
 
 
 def find_html_files() -> list[Path]:
@@ -184,6 +323,8 @@ def validate_page(path: Path, sitemap_urls: set[str]) -> list[Finding]:
     except Exception as exc:
         findings.append(Finding("WARN", rel, f"HTML parser exception: {exc}"))
         return findings
+
+    findings.extend(check_plain_language_terms(path, raw))
 
     if not parser.title:
         findings.append(Finding("ERROR", rel, "missing <title>"))
