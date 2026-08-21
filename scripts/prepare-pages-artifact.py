@@ -32,12 +32,22 @@ PUBLIC_ROOT_FILES = {
 }
 PUBLIC_ROOT_DIRS = {"assets", ".well-known"}
 PUBLIC_ASSET_DIRS = {"css", "data", "img", "js"}
+PUBLIC_PAGE_DIRS = {
+    "about",
+    "contact",
+    "legal",
+    "lens-system",
+    "search",
+    "universe",
+}
 
 
 def is_public(path: Path) -> bool:
     rel = path.relative_to(ROOT)
     if not rel.parts:
         return False
+    if rel.parts[0] in PUBLIC_PAGE_DIRS:
+        return True
     if rel.parts[0] in PUBLIC_ROOT_DIRS:
         if rel.parts[0] != "assets":
             return True
