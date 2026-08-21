@@ -346,6 +346,7 @@ button {
   border-radius: var(--radius-md);
   border: 1px solid var(--color-border-subtle);
   padding: 1.5rem 1.75rem;
+  min-width: 0;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
 }
 
@@ -5546,7 +5547,8 @@ html[data-theme="dark"] .askjamie-paper {
 }
 
 .askjamie-main .askjamie-breadcrumb .breadcrumb-label {
-  white-space: nowrap;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 /* Smaller, inline logo for breadcrumb (doesn't affect main hero logo) */
@@ -5627,6 +5629,16 @@ html[data-theme="dark"] .askjamie-paper {
   max-width: 960px;
 }
 
+/* Keep a wide generated diagram from widening the page at 400% zoom.
+   Scrolling is deliberately limited to the diagram surface so the surrounding
+   hero copy and page remain readable without horizontal page scrolling. */
+.mermaid-scroll-wrap {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
 /* The block Mermaid replaces with an SVG in the hero */
 .askjamie-mermaid-shell .mermaid {
   width: 100%;
@@ -5652,6 +5664,7 @@ html[data-theme="dark"] .askjamie-paper {
 
 /* SVG sizing */
 .askjamie-main .mermaid svg {
+   display: block;
   width: 100%;
   height: auto;
 }
