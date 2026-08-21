@@ -21,6 +21,7 @@ import json
 import os
 import re
 import sys
+import argparse
 from datetime import datetime, timezone
 from html.parser import HTMLParser
 
@@ -241,7 +242,7 @@ def process_file(rel_path: str) -> dict | None:
     }
 
 
-def main():
+def collect_pages():
     pages = []
     for dirpath, dirnames, filenames in os.walk(REPO_ROOT):
         # Prune excluded dirs in-place
@@ -257,8 +258,12 @@ def main():
             if page:
                 pages.append(page)
 
-    # Sort by URL for stable output
     pages.sort(key=lambda p: p["url"])
+    return pages
+
+
+def build_index_document():
+    pages = collect_pages()
 
     out = {
         "generated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
@@ -266,6 +271,57 @@ def main():
         "count": len(pages),
         "entries": pages,
     }
+    return out
+
+
+def canonical_for_check(document):
+    """Remove the intentionally volatile timestamp before comparing output."""
+    return {key: value for key, value in document.items() if key != "generated"}
+
+
+def preserve_timestamp_when_unchanged(document):
+    """Avoid dirtying the worktree when rebuilding unchanged content."""
+    if not os.path.exists(INDEX_OUT):
+        return document
+    try:
+        with open(INDEX_OUT, encoding="utf-8") as f:
+            previous = json.load(f)
+    except (OSError, json.JSONDecodeError):
+        return document
+    if canonical_for_check(previous) == canonical_for_check(document):
+        document["generated"] = previous.get("generated", document["generated"])
+    return document
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--check",
+        action="store_true",
+        help="Verify the committed index matches current HTML without rewriting it.",
+    )
+    args = parser.parse_args()
+
+    out = preserve_timestamp_when_unchanged(build_index_document())
+    if args.check:
+        if not os.path.exists(INDEX_OUT):
+            print(f"ERROR: missing generated index: {INDEX_OUT}", file=sys.stderr)
+            return 1
+        try:
+            with open(INDEX_OUT, encoding="utf-8") as f:
+                committed = json.load(f)
+        except (OSError, json.JSONDecodeError) as exc:
+            print(f"ERROR: cannot read generated index: {exc}", file=sys.stderr)
+            return 1
+        if canonical_for_check(committed) != canonical_for_check(out):
+            print(
+                "ERROR: search-index.json is out of date. "
+                "Run `python3 scripts/build-search-index.py` and commit the result.",
+                file=sys.stderr,
+            )
+            return 1
+        print(f"✓ Search index is current ({len(out['entries'])} pages).")
+        return 0
 
     os.makedirs(os.path.dirname(INDEX_OUT), exist_ok=True)
     with open(INDEX_OUT, "w", encoding="utf-8") as f:
@@ -273,9 +329,10 @@ def main():
 
     size_kb = os.path.getsize(INDEX_OUT) / 1024
     print(f"✓ Wrote {INDEX_OUT}")
-    print(f"  Pages indexed: {len(pages)}")
+    print(f"  Pages indexed: {len(out['entries'])}")
     print(f"  File size:     {size_kb:.1f} KB")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

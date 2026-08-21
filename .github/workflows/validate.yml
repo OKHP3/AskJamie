@@ -24,8 +24,17 @@ jobs:
         with:
           python-version: '3.11'
 
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
       - name: Install dependencies
-        run: pip install beautifulsoup4 "pytest>=8"
+        run: |
+          pip install beautifulsoup4 "pytest>=8"
+          npm ci
+          npx playwright install --with-deps chromium
 
       - name: Run site validator
         run: python3 scripts/validate-site.py
@@ -36,23 +45,39 @@ jobs:
       - name: Run regression tests
         run: python3 -m pytest
 
-      - name: Rebuild search index
-        run: python3 scripts/build-search-index.py
-        continue-on-error: false
+      - name: Verify committed search index is current
+        run: python3 scripts/build-search-index.py --check
 
-      - name: Verify search index was built
+      - name: Run full browser responsive QA
         run: |
-          if [ ! -f assets/data/search-index.json ]; then
-            echo "ERROR: search-index.json not found after build step"
-            exit 1
-          fi
-          echo "Search index OK: $(wc -c < assets/data/search-index.json) bytes"
+          python3 -m http.server 5000 --bind 127.0.0.1 >/tmp/askjamie-server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid"' EXIT
+          for attempt in {1..20}; do
+            if curl --silent --fail http://127.0.0.1:5000/ >/dev/null; then break; fi
+            sleep 0.5
+          done
+          curl --silent --fail http://127.0.0.1:5000/ >/dev/null
+          node scripts/responsive-qa.mjs --base=http://127.0.0.1:5000
 
       - name: Run site auditor
         # Checks search-index consistency (template contamination, missing pages),
         # sitemap reconciliation, image hygiene, and governance checks.
         # Exits 1 if any issues are found.
         run: python3 scripts/audit-site.py --quiet
+
+      - name: Prepare public Pages artifact
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: python3 scripts/prepare-pages-artifact.py --output dist-pages
+
+      - name: Preserve validated Pages artifact
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/upload-artifact@v4
+        with:
+          name: pages-site-${{ github.sha }}
+          path: dist-pages
+          if-no-files-found: error
+          retention-days: 1
 
   deploy:
     name: Deploy validated site to GitHub Pages
@@ -71,8 +96,11 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
-      - name: Checkout validated commit
-        uses: actions/checkout@v4
+      - name: Download validated Pages artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: pages-site-${{ github.sha }}
+          path: dist-pages
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
@@ -80,7 +108,7 @@ jobs:
       - name: Upload site artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '.'
+          path: 'dist-pages'
 
       - name: Deploy to GitHub Pages
         id: deployment

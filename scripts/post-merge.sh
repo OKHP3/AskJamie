@@ -3,7 +3,7 @@ set -e
 
 # AskJamie™ — post-merge setup
 # Static HTML site — no build step required.
-# Verifies key files exist, rebuilds search index, runs site auditor.
+# Verifies key files exist, rebuilds search index, and runs all local gates.
 
 echo "Post-merge: verifying static site integrity..."
 
@@ -23,5 +23,9 @@ if [ $? -ne 0 ]; then
   echo "ERROR: Site audit failed — stale or broken pages detected." >&2
   exit 1
 fi
+
+echo "Post-merge: running site validator and link checker..."
+python3 scripts/validate-site.py
+python3 scripts/check-links.py >/dev/null
 
 echo "Post-merge: all checks passed."

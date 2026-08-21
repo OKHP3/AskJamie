@@ -40,13 +40,13 @@ assets/
   css/theme.css        # Single stylesheet — GLOBAL → OKH → GLEE → ASKJAMIE tiers
   js/app.js            # Single JS file — analytics, search modal, nav, GA4 events
   js/mermaid-init.js   # Mermaid v11 ESM init (universe page only)
-  data/search-index.json  # Pre-built search index (~130 KB, 33 pages)
+  data/search-index.json  # Pre-built search index (~108 KB, 24 public pages)
   img/                 # Brand assets, avatars, case study images
   docs/                # Generated docs (audit reports, QA results, specs)
   templates/           # 9 developer page templates (excluded from QA)
 scripts/
   audit-site.py        # Static-site auditor — 17+ quality gates, 0 issues
-  responsive-qa.mjs    # Playwright + static-lint QA (208 checks across 33 pages)
+  responsive-qa.mjs    # Playwright + static-lint QA (208 checks across 26 pages)
   build-search-index.py   # Regenerates assets/data/search-index.json
   apply-modern-baseline.py # Idempotent 2026-baseline applier for new pages
   enhance-pages.py     # Bulk-edit tool for site-wide passes
@@ -68,9 +68,11 @@ AI is becoming the default front door for how people find and evaluate brands. A
 Run both validators after any HTML or content change:
 
 ```bash
-python3 scripts/audit-site.py --quiet        # 0 issues target (17+ checks, 33 pages)
+python3 scripts/audit-site.py --quiet        # 0 issues target (17+ checks, 26 pages)
 node scripts/responsive-qa.mjs --static      # 208/208 pass target
 python3 scripts/build-search-index.py        # rebuild after any copy change
+python3 scripts/build-search-index.py --check # verify committed index is current
+python3 scripts/prepare-pages-artifact.py    # preview the clean GitHub Pages artifact
 ```
 
 The auditor checks: title/description length, canonical links, OG fields, image alt/width/height/loading, external link `noopener noreferrer`, CSP + referrer meta, theme-color, duplicate ids, broken in-page anchors, og:image file existence, sitemap ↔ disk reconciliation, search-index ↔ disk reconciliation.
