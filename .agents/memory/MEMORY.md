@@ -4,3 +4,4 @@
 - [Git credential pattern](git-credentials.md) — GITHUB_PAT must be re-applied each session before push via git-credentials store
 - [AskJamie contrast corrections](contrast-corrections.md) — two originally reported contrast failures were calculation errors; correct ratios both pass AA
 - [Mermaid keyboard focus](mermaid-keyboard-focus.md) — aria-hidden does not remove generated SVG anchors from Chromium tab order; pair it with tabindex="-1"
+- [GitHub Pages artifact publishing](github-pages-artifact-publishing.md) — workflow mode and an explicit page-tree allowlist are required to publish only the validated public site
