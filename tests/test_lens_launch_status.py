@@ -1,7 +1,10 @@
+import importlib.util
+import sys
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
+PUBLIC_GPT_CHECK = ROOT / "scripts/check-public-gpt-links.py"
 
 
 LENS_CONTRACTS = {
@@ -52,3 +55,26 @@ def test_lens_hub_labels_all_four_lenses():
         assert contract["url"] in hub
     assert '<strong class="site-status-eyebrow">Live</strong>' in hub
     assert "published BrandGuard GPT case studies" in hub
+
+
+def test_public_gpt_probe_matches_owner_verified_destinations():
+    probe_source = PUBLIC_GPT_CHECK.read_text(encoding="utf-8")
+    for contract in LENS_CONTRACTS.values():
+        assert f'"{contract["url"]}"' in probe_source
+
+
+def test_public_gpt_probe_classifies_http_statuses():
+    spec = importlib.util.spec_from_file_location("public_gpt_probe", PUBLIC_GPT_CHECK)
+    probe = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = probe
+    spec.loader.exec_module(probe)
+
+    assert probe.classify_status(200) == "reachable"
+    assert probe.classify_status(301) == "reachable"
+    assert probe.classify_status(401) == "authentication_or_private"
+    assert probe.classify_status(403) == "authentication_or_private"
+    assert probe.classify_status(404) == "broken_or_unpublished"
+    assert probe.classify_status(410) == "broken_or_unpublished"
+    assert probe.classify_status(429) == "transient_service"
+    assert probe.classify_status(503) == "transient_service"
+    assert probe.classify_status(451) == "unexpected_response"

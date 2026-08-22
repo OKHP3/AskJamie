@@ -17,6 +17,7 @@ cannot be mistaken for current pipeline commands.
 | `responsive-qa.mjs` | active | Responsive QA entry point |
 | `post-merge.sh` | active | Post-merge rebuild and validation hook |
 | `capture-visual-baseline.mjs` | active | Capture the dated visual reference set |
+| `check-public-gpt-links.py` | active | Opt-in reachability probe for public AJ01–AJ03 destinations |
 
 The following scripts are **reference-only**. They may still be useful for a
 deliberately scoped maintenance or migration task, but they are not part of
@@ -46,3 +47,14 @@ Read their headers and review their target paths before adapting any of them.
 The release-check regression test uses the active table above as its command
 allowlist and scans CI plus `post-merge.sh`; historical documentation is not
 part of that executable-command check.
+
+## Public GPT reachability
+
+Run `python3 scripts/check-public-gpt-links.py` when verifying the three live
+ChatGPT destinations. `reachable` means the final response is 2xx or 3xx.
+`broken_or_unpublished` covers 404/410, while `authentication_or_private`
+covers 401/403. `transient_service` covers rate limits and 5xx responses;
+`transient_network` covers timeouts and connection failures. Investigate and
+rerun transient results before treating them as destination status changes.
+This probe never edits site content and is intentionally not part of the
+static `check-links.py` run.
