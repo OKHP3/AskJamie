@@ -17,6 +17,17 @@ read-only connection and review the newly defined events alongside the existing
 page-view data. Until that happens, the site can measure intent, but cannot
 demonstrate whether visitors complete the journey.
 
+## Access review
+
+On 2026-08-22, the Replit integration catalog was searched for Google Analytics
+and GA4. No matching connector, authorized connection, or catalog setup option
+was available. The workspace has no supplied GA4 export for property
+`G-MT9Y10YY0G`. No GA4 key event could be configured from this environment.
+
+The public site contains the consent-gated GA4 implementation and the
+`search_open`, `gpt_click`, and `inquiry_click` event definitions, but those
+facts do not provide historical visitor counts.
+
 ## GA4 baseline
 
 | Requested measure | Baseline for this review | Evidence/status |
@@ -34,6 +45,14 @@ GA4 is consent-gated in `assets/js/app.js`. Visitors who decline analytics are
 not sent to GA4, so any future report must describe its denominator as
 **consented sessions**, not all site visits. This is intentional privacy
 behavior; it is not a defect to be bypassed.
+
+### Resulting evidence boundary
+
+The highest-volume funnel exit cannot be identified from the available
+evidence. Page views, consented sessions, event counts, and drop-off rates all
+remain unknown. The only evidence-backed improvement at this time is to obtain
+a read-only GA4 export or authorized connection, then review a stated date
+range using consented sessions.
 
 ## Inquiry funnel map
 
