@@ -15,7 +15,7 @@ Checks every production HTML page for:
   - placeholder hrefs ("#", "javascript:void(0)", empty href)
   - first meaningful use of flagged brand terms has a nearby plain-language
     definition
-  - GA4 tag presence
+  - GA4 configuration or consent-gated analytics loader presence
 
 Exits 0 if no errors. Exits 1 if any errors. Warnings do not fail the build.
 Run from repo root:  python3 scripts/validate-site.py
@@ -304,9 +304,11 @@ def validate_page(path: Path, sitemap_urls: set[str]) -> list[Finding]:
     rel = path.relative_to(ROOT).as_posix()
     raw = path.read_text(encoding="utf-8", errors="replace")
 
-    # GA4 tag presence
-    if GA4_ID not in raw:
-        findings.append(Finding("WARN", rel, f"GA4 tag ({GA4_ID}) not found"))
+    # GA4 configuration or the explicit consent-gated loader marker. The
+    # latter is required on production pages so analytics cannot run eagerly.
+    consent_marker = "Analytics loads only after visitor consent via assets/js/app.js."
+    if GA4_ID not in raw and consent_marker not in raw:
+        findings.append(Finding("WARN", rel, f"GA4 configuration ({GA4_ID}) or consent loader marker not found"))
 
     # placeholder hrefs
     for m in re.finditer(r'href="(#|javascript:[^"]*|)"', raw):

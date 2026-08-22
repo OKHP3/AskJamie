@@ -5,7 +5,7 @@ import re
 ROOT = Path(__file__).resolve().parents[1]
 PUBLIC_HTML = [
     path for path in ROOT.rglob("*.html")
-    if "assets/templates" not in path.parts
+    if not {"assets", "templates"}.issubset(path.parts)
 ]
 
 
