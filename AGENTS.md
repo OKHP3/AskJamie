@@ -199,6 +199,21 @@ the 26 listed public paths at eight viewports without a browser. A full
 browser run requires Playwright and Chromium. `audit-site.py` is the canonical
 site audit and writes `assets/docs/audit-report.md`.
 
+### Visual baseline updates
+
+The committed visual reference set lives in `assets/audit/visual-baseline/`.
+After an intentional visual change, run the capture script against the local
+server:
+
+```bash
+node scripts/capture-visual-baseline.mjs
+```
+
+Review the resulting homepage, BrandGuard card, and Universe diagram images at
+1280px and 390px before replacing the committed references. Update the dated
+performance report and commit the new images only when the visual change is
+intentional and understood.
+
 The July 24, 2026 inspection re-ran these checks against the working tree
 (last commit `93d4b02`, 2026-07-22; working tree clean):
 

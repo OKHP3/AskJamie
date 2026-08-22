@@ -1,0 +1,103 @@
+# Performance and Visual Baseline
+
+**Captured:** 2026-08-22  
+**Site:** AskJamie.bot  
+**Method:** Lighthouse 12.8.2 against the local static server, using the
+Playwright-managed Chromium binary. Visual references were captured with
+Playwright at 1280px and 390px viewport widths.
+
+This is a repeatable lab baseline, not field data. Network conditions, browser
+versions, consent state, CDN responses, and CPU load can change the results.
+The raw Lighthouse reports are in
+`assets/audit/lighthouse-baseline-2026-08-22/`. The compact machine-readable
+summary is `assets/audit/lighthouse-baseline-2026-08-22.json`.
+
+## Lighthouse summary
+
+| Page | Performance | Accessibility | Best practices | SEO | LCP | CLS | Max potential FID | TBT |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Homepage `/` | 87 | 100 | 100 | 100 | 3.76 s | 0.034 | 16 ms | 0 ms |
+| BrandGuard hub | 75 | 100 | 100 | 100 | 6.61 s | 0.003 | 89 ms | 40 ms |
+| Universe `/universe/` | 44 | 100 | 100 | 100 | 6.16 s | 0.493 | 392 ms | 428 ms |
+| Search `/search/` | 75 | 100 | 100 | 100 | 6.46 s | 0.069 | 49 ms | 0 ms |
+
+Lighthouse 12 does not provide field INP in this lab report. The max potential
+FID column is retained as the closest available lab interaction proxy. It
+should not be presented as real visitor INP.
+
+## Findings above the agreed thresholds
+
+The task thresholds are performance below 90, CLS above 0.1, and LCP above
+2.5 seconds.
+
+### Performance below 90
+
+All four pages are below 90 in this run. The Universe page is the most
+significant outlier at 44, followed by the BrandGuard hub and Search at 75.
+The homepage is closest to the target at 87.
+
+### LCP above 2.5 seconds
+
+All four pages exceed the 2.5 second target:
+
+- **Homepage, 3.76 s:** Lighthouse identified the hero tagline
+  `.hero-tagline` as the LCP element. Render delay accounted for about 88% of
+  LCP in this run.
+- **BrandGuard hub, 6.61 s:** Lighthouse identified the hero heading
+  `#hero-title` as the LCP element. Render delay accounted for about 93% of
+  LCP.
+- **Universe, 6.16 s:** Lighthouse identified the hero tagline
+  `.askjamie-hero-tagline` as the LCP element. Render delay accounted for about
+  93% of LCP.
+- **Search, 6.46 s:** Lighthouse identified `.search-hero-lede` as the LCP
+  element. Render delay accounted for about 93% of LCP.
+
+These are measurement findings only. Performance optimization is outside this
+task. The large render-delay share is a useful target for a later performance
+task, especially on pages with external fonts or client-side initialization.
+
+### CLS above 0.1
+
+The Universe page recorded **0.493 CLS**, above the 0.1 threshold. Its
+interactive Mermaid diagram is the highest-impact area to investigate because
+the generated SVG replaces the initial diagram container after page load. The
+other pages remained below the threshold, with Search at 0.069 as the next
+highest value.
+
+### Interaction and blocking observations
+
+Universe also recorded the highest lab interaction cost: 392 ms max potential
+FID and 428 ms TBT. BrandGuard recorded 89 ms max potential FID and 40 ms TBT.
+The homepage and Search pages recorded 0 ms TBT in this run. These values are
+lab observations, not a claim about field experience.
+
+## Visual reference set
+
+The committed reference images are in `assets/audit/visual-baseline/`:
+
+- `homepage-full-desktop-1280.png`
+- `homepage-full-mobile-390.png`
+- `homepage-hero-desktop-1280.png`
+- `homepage-hero-mobile-390.png`
+- `brandguard-card-desktop-1280.png`
+- `brandguard-card-mobile-390.png`
+- `universe-diagram-desktop-1280.png`
+- `universe-diagram-mobile-390.png`
+
+The capture used denied analytics consent and the light theme so that the
+reference images do not depend on a visitor decision or a system color
+preference.
+
+## How to refresh
+
+Start the local server, then run:
+
+```bash
+node scripts/capture-visual-baseline.mjs
+```
+
+For a new dated Lighthouse run, use the same four routes and write the raw
+reports to a new dated directory under `assets/audit/`. Update the compact JSON
+summary and this report only after reviewing the screenshots and raw metrics.
+Do not overwrite the committed references for an intentional visual change
+without recording why the change is expected.
