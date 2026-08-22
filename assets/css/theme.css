@@ -5735,6 +5735,20 @@ html[data-theme="dark"] .askjamie-paper {
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
 }
 
+.mermaid-noscript {
+  margin-top: 1rem;
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 18px;
+  background: var(--color-surface);
+  color: var(--color-fg);
+  line-height: 1.55;
+}
+
+.mermaid-noscript p {
+  margin: 0.5rem 0 0;
+}
+
 @media (max-width: 640px) {
   .askjamie-mermaid-shell .mermaid {
     min-height: 18rem;

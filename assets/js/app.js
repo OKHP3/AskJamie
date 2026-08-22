@@ -3,7 +3,7 @@
 //
 //  Sections (in load order):
 //   1. GLOBAL   · Reading-progress bar (article pages)
-//   2. GLOBAL   · DOMContentLoaded: nav, year stamps, theme toggle (OKH only),
+//   2. GLOBAL   · DOMContentLoaded: nav, year stamps, theme toggle,
 //                 scroll reveal, smooth anchors
 //   3. GLEE     · Under-construction overlay gate (toolbox WIP pages)
 //   4. GLOBAL   · Sticky TOC scroll-follow (article pages, ≥1024px)
@@ -195,10 +195,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Theme toggle – only for core OverKill Hill pages (brand-locked sites force light)
-  const brandLocked =
-    body.classList.contains("glee-main") ||
-    body.classList.contains("askjamie-main");
+  // Glee-fully keeps its brand-locked light presentation; AskJamie supports
+  // the shared light/dark/system theme control.
+  const brandLocked = body.classList.contains("glee-main");
 
   if (!brandLocked) {
     const STATES      = ["system", "light", "dark"];
@@ -253,7 +252,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (currentState === "system") applyThemeState("system");
     });
   } else {
-    // Subsites stay on their brand "light" look
+    // Brand-locked subsites stay on their "light" look
     document.documentElement.setAttribute("data-theme", "light");
   }
 
