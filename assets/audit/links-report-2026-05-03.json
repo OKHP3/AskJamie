@@ -1,8 +1,8 @@
 {
   "generated": "2026-05-03",
   "pages_scanned": 26,
-  "internal_links": 711,
-  "external_links": 559,
+  "internal_links": 713,
+  "external_links": 573,
   "broken_links": [],
   "style_issues": [],
   "sitemap": {
@@ -24,7 +24,7 @@
     {
       "path": "contact/index.html",
       "internal_links": 25,
-      "external_links": 18
+      "external_links": 21
     },
     {
       "path": "index.html",
@@ -38,13 +38,13 @@
     },
     {
       "path": "lens-system/enterprise-sleuth/index.html",
-      "internal_links": 26,
-      "external_links": 18
+      "internal_links": 27,
+      "external_links": 20
     },
     {
       "path": "lens-system/index.html",
       "internal_links": 29,
-      "external_links": 17
+      "external_links": 20
     },
     {
       "path": "lens-system/okhp3-brandguard/bfs-framing-intelligent-futures/index.html",
@@ -119,12 +119,12 @@
     {
       "path": "lens-system/professional-portfolio/index.html",
       "internal_links": 28,
-      "external_links": 18
+      "external_links": 21
     },
     {
       "path": "lens-system/resume-representative/index.html",
       "internal_links": 28,
-      "external_links": 16
+      "external_links": 19
     },
     {
       "path": "search/index.html",
@@ -138,7 +138,7 @@
     },
     {
       "path": "universe/index.html",
-      "internal_links": 27,
+      "internal_links": 28,
       "external_links": 19
     }
   ]
