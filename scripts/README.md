@@ -1,0 +1,45 @@
+# AskJamie maintenance scripts
+
+This directory contains the scripts that are safe to use for the current
+AskJamie repository. The active scripts are the only scripts kept at this
+level. Historical and manual tools are preserved in `scripts/archive/` so they
+cannot be mistaken for current pipeline commands.
+
+## Classification
+
+| Script | Classification | Use |
+| --- | --- | --- |
+| `audit-site.py` | active | Canonical site audit |
+| `build-search-index.py` | active | Rebuild the generated search index |
+| `check-links.py` | active | Check internal and external links |
+| `prepare-pages-artifact.py` | active | Build the allowlisted static release artifact |
+| `validate-site.py` | active | Structural site validation |
+| `responsive-qa.mjs` | active | Responsive QA entry point |
+| `post-merge.sh` | active | Post-merge rebuild and validation hook |
+| `capture-visual-baseline.mjs` | active | Capture the dated visual reference set |
+
+The following scripts are **reference-only**. They may still be useful for a
+deliberately scoped maintenance or migration task, but they are not part of
+the current validation or release pipeline: `apply-modern-baseline.py`,
+`audit-assets.py`, `audit-meta-versions.py`, `cache-bust.py`,
+`check-accent-contrast.py`, `cross-site-sync.py`, `enhance-pages.py`,
+`extract-templates.py`, `fix-image-performance.py`,
+`fix-placeholder-gpt-links.py`, `generate-illustrations.py`,
+`generate-templates.py`, `inject-gpt-icon-picture.py`,
+`inject-keep-exploring.py`, `modernize-pages.py`,
+`move-orphans-to-library.py`, `normalize-head.py`, `picture-upgrade.py`,
+`png-to-webp.py`, `remove-deprecated-meta.py`, `rename-img-kebab.py`,
+`reorg-theme-css.py`, `responsive-audit.py`, `sync-portfolio-stats.py`,
+`update-card-srcsets.py`, and `update-placeholder-dimensions.py`.
+
+The following scripts are **retired**. They are preserved for history only and
+must not be run against AskJamie: `activate-icons.py`,
+`add-toolbox-to-footer.py`, `convert-gpt-icons-webp.py`,
+`convert-hero-webp.py`, `generate-feed.py`, `inject-breadcrumb.py`,
+`inject-color-scheme-init.py`, `inject-hero-picture.py`, `inject-jsonld.py`,
+`inject-nav-logo-webp.py`, `inject-showcase-footer.py`,
+`inject-showcase-subnav.py`, `push-to-github.py`, `release-mtb.py`,
+`run-viewport-qa.py`, `viewport-qa.py`, and `wire-illustrations.py`.
+
+All reference-only and retired Python scripts live in `scripts/archive/`.
+Read their headers and review their target paths before adapting any of them.

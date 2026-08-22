@@ -296,17 +296,21 @@ commands such as `git reset --hard` or `git checkout --` to discard work.
 
 ## 6. Known gaps and risks
 
-These are evidence-backed observations from the July 13, 2026 inspection:
+These are current evidence-backed observations, with dated historical context
+retained where it matters:
 
 - The canonical audit is not currently at zero findings. See the exact three
   findings in the validation section above. Run
   `python3 scripts/build-search-index.py` to clear the stale-index finding
   before the next content release.
-- The retired cross-site audit and migration scripts were removed in August
-  2026. Use `scripts/audit-site.py` for the canonical AskJamie audit.
-- Several maintenance scripts contain sibling-site constants or historical
-  names. Check the target script and `assets/docs/sister-site-sync.md` before
-  running or adapting them.
+- `scripts/README.md` classifies every maintenance script. Only the active
+  scripts remain at the top level. Reference-only and retired scripts are
+  preserved in `scripts/archive/` with a prominent warning because several
+  contain sibling-site constants or historical names.
+- Use `scripts/audit-site.py` for the canonical AskJamie audit,
+  `scripts/validate-site.py` for structural validation, and
+  `scripts/responsive-qa.mjs` for responsive QA. Do not run archived scripts
+  without reviewing their target paths and intended repository.
 - `README.md` and older sections of `replit.md` retain historical counts and
   audit snapshots from earlier site states. Treat dated audit documents as
   history, and use current scripts and this guide for present state.

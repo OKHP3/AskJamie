@@ -12,6 +12,9 @@ ADRs document significant decisions about architecture, tooling, and design so f
 | [0002](0002-client-side-search.md) | Client-Side Search with Pre-Built Index | Accepted | 2026-07-13 |
 | [0003](0003-security-headers-csp.md) | Security Headers and CSP Baseline | Accepted | 2026-07-13 |
 | [0004](0004-typography-system.md) | Google Fonts Typography System | Accepted | 2026-07-13 |
+| [0005](0005-dark-light-mode-toggle.md) | Dark and Light Mode Toggle | Accepted | 2026-08-22 |
+| [0006](0006-mermaid-accessibility-pattern.md) | Mermaid Diagram Accessibility Pattern | Accepted | 2026-08-22 |
+| [0007](0007-plain-language-term-enforcement.md) | Plain-Language Brand Term Enforcement | Accepted | 2026-08-22 |
 
 ## When to Write an ADR
 
