@@ -11,6 +11,118 @@
 //                 (search.js consolidated here 2026-05-03)
 // ════════════════════════════════════════════════════════════════════════════
 
+// ── Privacy-first analytics consent ─────────────────────────────────────────
+// GA4 is intentionally not a script tag in page markup. It is loaded only
+// after a visitor explicitly accepts analytics in this small first-party UI.
+(function () {
+  "use strict";
+
+  const CONSENT_KEY = "askjamie-analytics-consent";
+  const GA_ID = "G-MT9Y10YY0G";
+
+  function readConsent() {
+    try {
+      const value = window.localStorage.getItem(CONSENT_KEY);
+      return value === "granted" || value === "denied" ? value : null;
+    } catch (error) {
+      console.warn("[privacy] consent storage unavailable:", error);
+      return null;
+    }
+  }
+
+  function writeConsent(value) {
+    try {
+      window.localStorage.setItem(CONSENT_KEY, value);
+    } catch (error) {
+      console.warn("[privacy] could not save consent choice:", error);
+    }
+  }
+
+  function loadAnalytics() {
+    if (window.__askJamieAnalyticsLoaded) return;
+    window.__askJamieAnalyticsLoaded = true;
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = window.gtag || function () {
+      window.dataLayer.push(arguments);
+    };
+    window.gtag("js", new Date());
+    window.gtag("config", GA_ID, { anonymize_ip: true });
+
+    const script = document.createElement("script");
+    script.async = true;
+    script.src = "https://www.googletagmanager.com/gtag/js?id=" + GA_ID;
+    script.dataset.analyticsConsent = "granted";
+    document.head.appendChild(script);
+  }
+
+  function setConsent(value, banner) {
+    writeConsent(value);
+    banner.hidden = true;
+    if (value === "granted") loadAnalytics();
+  }
+
+  function buildConsentBanner() {
+    const banner = document.createElement("section");
+    banner.className = "privacy-consent";
+    banner.hidden = true;
+    banner.setAttribute("aria-labelledby", "privacy-consent-title");
+    banner.innerHTML =
+      '<div class="privacy-consent-copy">' +
+        '<h2 id="privacy-consent-title">A quick privacy choice</h2>' +
+        '<p>AskJamie uses Google Analytics to understand which pages help visitors. ' +
+          'It uses anonymous visit and device information. Choose whether to allow it.</p>' +
+        '<a href="/legal/#privacy">Read the privacy details</a>' +
+      '</div>' +
+      '<div class="privacy-consent-actions">' +
+        '<button type="button" class="btn btn-primary" data-consent="accept">Allow analytics</button>' +
+        '<button type="button" class="btn btn-quiet" data-consent="decline">Decline</button>' +
+      '</div>';
+    banner.querySelector('[data-consent="accept"]').addEventListener("click", function () {
+      setConsent("granted", banner);
+    });
+    banner.querySelector('[data-consent="decline"]').addEventListener("click", function () {
+      setConsent("denied", banner);
+    });
+    document.body.appendChild(banner);
+    return banner;
+  }
+
+  function addPrivacySettingsLink() {
+    const footer = document.querySelector(".site-footer");
+    if (!footer || footer.querySelector("[data-privacy-settings]")) return;
+    const meta = footer.querySelector(".footer-meta") || footer;
+    const link = document.createElement("button");
+    link.type = "button";
+    link.className = "privacy-settings-link";
+    link.dataset.privacySettings = "true";
+    link.textContent = "Privacy settings";
+    link.addEventListener("click", function () {
+      const banner = document.querySelector(".privacy-consent");
+      if (!banner) return;
+      banner.hidden = false;
+      banner.querySelector('[data-consent="accept"]').focus();
+    });
+    meta.appendChild(link);
+  }
+
+  function initPrivacy() {
+    const banner = buildConsentBanner();
+    addPrivacySettingsLink();
+    const consent = readConsent();
+    if (consent === "granted") {
+      loadAnalytics();
+    } else if (!consent) {
+      banner.hidden = false;
+    }
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initPrivacy);
+  } else {
+    initPrivacy();
+  }
+}());
+
 // ── 1. Reading progress bar ─────────────────────────────────────────────────
 (function () {
   const bar = document.getElementById("reading-progress");
