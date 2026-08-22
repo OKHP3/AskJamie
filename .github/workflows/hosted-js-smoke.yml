@@ -1,0 +1,35 @@
+name: Hosted JavaScript Smoke
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 9 * * *'
+
+permissions:
+  contents: read
+
+jobs:
+  hosted-js-smoke:
+    runs-on: ubuntu-latest
+    name: Verify published JavaScript behavior
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install browser test dependencies
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+
+      - name: Run smoke test against published site
+        env:
+          BASE_URL: https://askjamie.bot
+        run: node tests/test_js_smoke.spec.mjs

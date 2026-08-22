@@ -37,5 +37,17 @@ Run the existing smoke suite against the published origin:
 BASE_URL=https://askjamie.bot node tests/test_js_smoke.spec.mjs
 ```
 
+The repeatable GitHub Actions workflow is
+`.github/workflows/hosted-js-smoke.yml`. It runs on demand and daily, outside
+the static validation and deploy job, so a temporary hosted-service failure
+cannot rewrite content or be mistaken for a local build failure.
+
+When it fails, inspect the route named in the smoke-test assertion or
+navigation error. A `request failed` line naming `cdn.jsdelivr.net` indicates
+a Mermaid module/CDN loading problem; a `browser console error` line identifies
+a runtime error. HTTP navigation or Mermaid timeouts should be rerun before
+being treated as a persistent hosted regression, because they can reflect a
+transient origin or network failure.
+
 The hosted check found no CDN loading, routing, or JavaScript behavior
-differences from the local smoke path.
+differences from the local smoke path on the recorded check date.

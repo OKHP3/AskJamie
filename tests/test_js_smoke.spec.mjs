@@ -7,16 +7,41 @@ function check(condition, message) {
   if (!condition) failures.push(message);
 }
 
+async function waitFor(locator, options, path, description) {
+  try {
+    await locator.waitFor(options);
+  } catch (error) {
+    throw new Error(`${path}: ${description}: ${error.message}`);
+  }
+}
+
 const browser = await chromium.launch({ headless: true });
 const context = await browser.newContext();
 const page = await context.newPage();
+page.on("requestfailed", (request) => {
+  const failure = request.failure();
+  if (failure?.errorText === "net::ERR_ABORTED") return;
+  failures.push(
+    `request failed: ${request.url()}${failure ? ` (${failure.errorText})` : ""}`
+  );
+});
+page.on("console", (message) => {
+  if (message.type() === "error") {
+    failures.push(`browser console error: ${message.text()}`);
+  }
+});
 
 try {
-  await page.goto(`${baseUrl}/universe/`, { waitUntil: "domcontentloaded" });
-  await page.locator(".askjamie-mermaid-shell svg").first().waitFor({
+  const universePath = "/universe/";
+  try {
+    await page.goto(`${baseUrl}${universePath}`, { waitUntil: "domcontentloaded" });
+  } catch (error) {
+    throw new Error(`${universePath}: ${error.message}`);
+  }
+  await waitFor(page.locator(".askjamie-mermaid-shell svg").first(), {
     state: "attached",
     timeout: 15000,
-  });
+  }, universePath, "Mermaid SVG did not load");
   check(
     (await page.locator(".askjamie-mermaid-shell svg").count()) > 0,
     "Universe Mermaid diagram did not render an SVG"
@@ -24,7 +49,7 @@ try {
 
   const noJsContext = await browser.newContext({ javaScriptEnabled: false });
   const noJsPage = await noJsContext.newPage();
-  await noJsPage.goto(`${baseUrl}/universe/`, { waitUntil: "domcontentloaded" });
+  await noJsPage.goto(`${baseUrl}${universePath}`, { waitUntil: "domcontentloaded" });
   check(
     await noJsPage.locator(".mermaid-noscript").isVisible(),
     "Universe static fallback is not visible without JavaScript"
@@ -35,12 +60,16 @@ try {
   );
   await noJsContext.close();
 
-  await page.goto(baseUrl, { waitUntil: "domcontentloaded" });
+  try {
+    await page.goto(baseUrl, { waitUntil: "domcontentloaded" });
+  } catch (error) {
+    throw new Error("/: " + error.message);
+  }
   const searchTrigger = page.locator(".okh-search-trigger");
-  await searchTrigger.waitFor({ state: "visible", timeout: 5000 });
+  await waitFor(searchTrigger, { state: "visible", timeout: 5000 }, "/", "Search trigger unavailable");
   await searchTrigger.click();
   const overlay = page.locator(".okh-search-overlay");
-  await overlay.waitFor({ state: "visible", timeout: 5000 });
+  await waitFor(overlay, { state: "visible", timeout: 5000 }, "/", "Search overlay unavailable");
   const searchInput = overlay.locator(".okh-search-input");
   await searchInput.fill("BrandGuard");
   check(
@@ -54,9 +83,14 @@ try {
   await page.keyboard.press("Escape");
 
   await page.addInitScript(() => window.localStorage.setItem("okh-theme", "light"));
-  await page.goto(`${baseUrl}/about/`, { waitUntil: "domcontentloaded" });
+  const aboutPath = "/about/";
+  try {
+    await page.goto(`${baseUrl}${aboutPath}`, { waitUntil: "domcontentloaded" });
+  } catch (error) {
+    throw new Error(`${aboutPath}: ${error.message}`);
+  }
   const themeToggle = page.locator(".theme-toggle");
-  await themeToggle.waitFor({ state: "visible", timeout: 5000 });
+  await waitFor(themeToggle, { state: "visible", timeout: 5000 }, aboutPath, "Theme toggle unavailable");
   await themeToggle.click();
   check(
     (await page.locator("html").getAttribute("data-theme")) === "dark",
