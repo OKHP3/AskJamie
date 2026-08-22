@@ -55,6 +55,11 @@
     document.head.appendChild(script);
   }
 
+  window.askJamieTrack = function (eventName, parameters) {
+    if (typeof window.gtag !== "function") return;
+    window.gtag("event", eventName, parameters || {});
+  };
+
   function setConsent(value, banner) {
     writeConsent(value);
     banner.hidden = true;
@@ -121,6 +126,42 @@
   } else {
     initPrivacy();
   }
+}());
+
+// ── Analytics events: measurable inquiry funnel actions ──────────────────────
+// These listeners are consent-safe because askJamieTrack is a no-op until GA4
+// has been loaded after an explicit visitor grant.
+(function () {
+  "use strict";
+
+  function track(eventName, link, extra) {
+    window.askJamieTrack(eventName, Object.assign({
+      link_url: link.href,
+      link_text: (link.textContent || "").trim().slice(0, 100),
+      page_path: window.location.pathname
+    }, extra || {}));
+  }
+
+  document.querySelectorAll('a[href*="chatgpt.com/g/"]').forEach(function (link) {
+    link.addEventListener("click", function () {
+      track("gpt_click", link, {
+        destination: "chatgpt",
+        lens: document.title.replace(/\s*[|—-].*$/, "").trim()
+      });
+    });
+  });
+
+  document.querySelectorAll('a[href^="mailto:"]').forEach(function (link) {
+    link.addEventListener("click", function () {
+      var card = link.closest("article, section");
+      var heading = card && card.querySelector("h2, h3");
+      var subject = new URL(link.href).searchParams.get("subject");
+      track("inquiry_click", link, {
+        destination: "email",
+        inquiry_type: subject || (heading ? heading.textContent.trim() : "general")
+      });
+    });
+  });
 }());
 
 // ── 1. Reading progress bar ─────────────────────────────────────────────────
@@ -625,6 +666,12 @@ document.addEventListener("DOMContentLoaded", () => {
       if (overlay.dataset.open === "true") return;
       lastFocus = document.activeElement;
       overlay.dataset.open = "true";
+      window.askJamieTrack("search_open", {
+        page_path: window.location.pathname,
+        trigger: lastFocus && lastFocus.classList.contains("okh-search-trigger")
+          ? "button"
+          : "keyboard"
+      });
       document.documentElement.style.overflow = "hidden";
       loadIndex().then((d) => { entries = d; renderEmpty(); });
       setTimeout(() => input.focus(), 30);
