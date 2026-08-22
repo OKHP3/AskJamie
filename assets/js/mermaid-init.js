@@ -58,15 +58,23 @@ function renderOne(node) {
     });
 }
 
+function scheduleRender(node) {
+  if (typeof requestIdleCallback === "function") {
+    requestIdleCallback(() => renderOne(node), { timeout: 1200 });
+  } else {
+    setTimeout(() => renderOne(node), 0);
+  }
+}
+
 // If only a few diagrams, or no IntersectionObserver, render immediately.
 if (diagrams.length <= 2 || typeof IntersectionObserver === "undefined") {
-  diagrams.forEach(renderOne);
+  diagrams.forEach(scheduleRender);
 } else {
   const io = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          renderOne(entry.target);
+          scheduleRender(entry.target);
           io.unobserve(entry.target);
         }
       });

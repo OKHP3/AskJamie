@@ -5725,10 +5725,18 @@ html[data-theme="dark"] .askjamie-paper {
   -webkit-overflow-scrolling: touch;
 }
 
+/* Mermaid's generated SVG is about twice as tall as this column is wide.
+   Reserve that space before the async module renders so replacing the source
+   text does not push the hero and everything below it down the page. */
+.askjamie-hero--universe .mermaid-scroll-wrap {
+  aspect-ratio: 1 / 2.1;
+}
+
 /* The block Mermaid replaces with an SVG in the hero */
 .askjamie-mermaid-shell .mermaid {
   width: 100%;
-  min-height: 22rem;
+  min-height: 0;
+  height: 100%;
   padding: 1.25rem 1.5rem;
   border-radius: 18px;
   background: var(--color-surface);         /* uses AskJamie surface token */
@@ -5751,7 +5759,6 @@ html[data-theme="dark"] .askjamie-paper {
 
 @media (max-width: 640px) {
   .askjamie-mermaid-shell .mermaid {
-    min-height: 18rem;
     padding: 1rem;
   }
 }

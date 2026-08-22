@@ -71,6 +71,27 @@ FID and 428 ms TBT. BrandGuard recorded 89 ms max potential FID and 40 ms TBT.
 The homepage and Search pages recorded 0 ms TBT in this run. These values are
 lab observations, not a claim about field experience.
 
+## Optimization verification
+
+The Universe layout and Mermaid initialization were rechecked on 2026-08-22
+with Lighthouse 12.8.2 against the same local static server and four routes.
+The existing baseline remains the historical comparison point; it was not
+overwritten.
+
+| Page | Performance | LCP | CLS | Max potential FID | TBT |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Homepage `/` | 73 (−14) | 9.68 s (+5.93 s) | 0.027 (−0.007) | 86 ms (+70 ms) | 36 ms (+36 ms) |
+| BrandGuard hub | 75 (—) | 6.46 s (−0.15 s) | 0.004 (+0.001) | 158 ms (+69 ms) | 108 ms (+68 ms) |
+| Universe `/universe/` | 88 (+44) | 2.63 s (−3.53 s) | 0.028 (−0.465) | 402 ms (+10 ms) | 296 ms (−132 ms) |
+| Search `/search/` | 75 (—) | 6.46 s (−0.001 s) | 0.069 (−0.0001) | 49 ms (—) | 0 ms (—) |
+
+The Universe result confirms that reserving the generated diagram's measured
+space prevents the replacement from shifting the hero: CLS moved below the
+0.1 threshold, while performance and LCP improved substantially. The
+homepage and BrandGuard variance reinforces that these are lab samples, not
+field guarantees; the Universe change is the clear signal because its CLS
+improvement is much larger than the other pages' movement.
+
 ## Visual reference set
 
 The committed reference images are in `assets/audit/visual-baseline/`:
@@ -83,6 +104,10 @@ The committed reference images are in `assets/audit/visual-baseline/`:
 - `brandguard-card-mobile-390.png`
 - `universe-diagram-desktop-1280.png`
 - `universe-diagram-mobile-390.png`
+
+The Universe references were refreshed after this intentional layout change.
+The diagram remains fully visible at both reference widths while the reserved
+slot prevents a post-load page shift.
 
 The capture used denied analytics consent and the light theme so that the
 reference images do not depend on a visitor decision or a system color
