@@ -43,3 +43,6 @@ must not be run against AskJamie: `activate-icons.py`,
 
 All reference-only and retired Python scripts live in `scripts/archive/`.
 Read their headers and review their target paths before adapting any of them.
+The release-check regression test uses the active table above as its command
+allowlist and scans CI plus `post-merge.sh`; historical documentation is not
+part of that executable-command check.
