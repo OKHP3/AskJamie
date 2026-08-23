@@ -1310,6 +1310,13 @@ button {
   transform: translateY(0);
 }
 
+/* Keep above-the-fold hero content paintable before app.js initializes.
+   Below-the-fold sections retain their scroll-reveal treatment. */
+.askjamie-hero > .reveal-on-scroll {
+  opacity: 1;
+  transform: none;
+}
+
 /* Chat mock layout – shared structure, brand-specific colors layered on top */
 .chat-mock {
   display: flex;
