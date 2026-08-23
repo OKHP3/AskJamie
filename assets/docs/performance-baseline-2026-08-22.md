@@ -92,6 +92,25 @@ homepage and BrandGuard variance reinforces that these are lab samples, not
 field guarantees; the Universe change is the clear signal because its CLS
 improvement is much larger than the other pages' movement.
 
+## Targeted performance pass
+
+A follow-up Lighthouse 12.8.2 desktop run on 2026-08-22 verified the
+above-the-fold and image-delivery changes against the same four routes:
+
+| Page | Performance | LCP | Total payload |
+| --- | ---: | ---: | ---: |
+| Homepage `/` | 95 | 1.2 s | 1,240 KiB |
+| BrandGuard hub | 99 | 0.8 s | — |
+| Universe `/universe/` | 96 | 1.1 s | — |
+| Search `/search/` | 97 | 1.2 s | — |
+
+The homepage hero now paints before `app.js` initialization, its avatar uses
+a right-sized WebP source with a PNG fallback, and the milestone card uses a
+right-sized WebP source. The audited route scripts are deferred because they
+do not provide parser-blocking behavior. These are desktop lab results;
+mobile Lighthouse scores remain sensitive to font/CDN timing and are not
+represented as passing thresholds by this record.
+
 ## Visual reference set
 
 The committed reference images are in `assets/audit/visual-baseline/`:

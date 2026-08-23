@@ -163,7 +163,10 @@
             </div>
             <div class="askjamie-hero-visual">
               <!-- Use the official AskJamie avatar instead of a gray placeholder -->
-              <img src="/assets/img/askjamie-title-mid-left-avatar-tall-shadow-left-comp-cream-gray-backdrop-blue-tan-left-square-1024.png" alt="AskJamie™ avatar illustration" class="askjamie-avatar" width="520" height="520" loading="lazy" decoding="async">
+              <picture>
+                <source srcset="/assets/img/askjamie-title-mid-left-avatar-tall-shadow-left-comp-cream-gray-backdrop-blue-tan-left-square-520.webp" type="image/webp">
+                <img src="/assets/img/askjamie-title-mid-left-avatar-tall-shadow-left-comp-cream-gray-backdrop-blue-tan-left-square-1024.png" alt="AskJamie™ avatar illustration" class="askjamie-avatar" width="520" height="520" fetchpriority="high" loading="eager" decoding="async">
+              </picture>
             </div>
           </div>
         </div>
@@ -192,11 +195,14 @@
           <figure class="latest-image">
             <a class="latest-image-link"
               href="lens-system/okhp3-brandguard/bfs-framing-intelligent-futures/">
-              <img src="/assets/img/brandguard/askjamie-gpt-icon-bfs01-bfs-framing-intelligent-futures-square-1024.png"
-                  alt="Builders FirstSource BrandGuard™ GPT milestone illustration"
-                  width="300"
-                  height="300"
-                  loading="lazy" decoding="async">
+              <picture>
+                <source srcset="/assets/img/brandguard/askjamie-gpt-icon-bfs01-bfs-framing-intelligent-futures-square-600.webp" type="image/webp">
+                <img src="/assets/img/brandguard/askjamie-gpt-icon-bfs01-bfs-framing-intelligent-futures-square-1024.png"
+                    alt="Builders FirstSource BrandGuard™ GPT milestone illustration"
+                    width="300"
+                    height="300"
+                    loading="lazy" decoding="async">
+              </picture>
             </a>
             <figcaption class="latest-submenu">
               <a href="lens-system/okhp3-brandguard/bfs-framing-intelligent-futures/">View this milestone →</a>
@@ -343,7 +349,7 @@
         </p>
       </div>
     </footer>
-    <script src="/assets/js/app.js"></script>
+    <script defer src="/assets/js/app.js"></script>
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",

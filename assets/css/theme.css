@@ -5546,6 +5546,12 @@ html[data-theme="dark"] .askjamie-paper {
   margin-bottom: 1.6rem;
 }
 
+/* Keep above-the-fold hero copy paintable while the decorative remote font
+   finishes loading. The small visual difference is preferable to delayed LCP. */
+.askjamie-hero-copy .hero-tagline {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
 /* Avatar */
 .askjamie-avatar {
   max-width: 260px;
