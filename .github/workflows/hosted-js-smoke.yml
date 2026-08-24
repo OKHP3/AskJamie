@@ -32,4 +32,37 @@ jobs:
       - name: Run smoke test against published site
         env:
           BASE_URL: https://askjamie.bot
-        run: node tests/test_js_smoke.spec.mjs
+        run: |
+          mkdir -p artifacts/hosted-js-smoke
+          set +e
+          node tests/test_js_smoke.spec.mjs 2>&1 | tee artifacts/hosted-js-smoke/smoke-output.txt
+          status=${PIPESTATUS[0]}
+          {
+            echo "# Hosted JavaScript Smoke Summary"
+            echo
+            echo "- Checked (UTC): $(date -u '+%Y-%m-%dT%H:%M:%SZ')"
+            echo "- Published origin: ${BASE_URL}"
+            echo "- Commit: ${GITHUB_SHA}"
+            if [ "$status" -eq 0 ]; then
+              echo "- Result: PASS"
+            else
+              echo "- Result: FAIL (exit ${status})"
+            fi
+            echo
+            echo "## Smoke output"
+            echo
+            echo '```text'
+            cat artifacts/hosted-js-smoke/smoke-output.txt
+            echo '```'
+          } > artifacts/hosted-js-smoke/summary.md
+          cat artifacts/hosted-js-smoke/summary.md >> "$GITHUB_STEP_SUMMARY"
+          exit "$status"
+
+      - name: Retain smoke summary and diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hosted-js-smoke-${{ github.run_number }}-${{ github.run_attempt }}
+          path: artifacts/hosted-js-smoke/
+          if-no-files-found: error
+          retention-days: 90

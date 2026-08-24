@@ -51,3 +51,18 @@ transient origin or network failure.
 
 The hosted check found no CDN loading, routing, or JavaScript behavior
 differences from the local smoke path on the recorded check date.
+
+## Retained workflow evidence
+
+Beginning with the workflow hardening recorded on 2026-08-24, every scheduled
+or manually triggered hosted run uploads a small artifact named
+`hosted-js-smoke-<run number>-<attempt>`. Each artifact contains:
+
+- `summary.md`, with the UTC check time, published origin, commit, pass/fail
+  result, and the smoke suite's route/CDN/runtime diagnostics.
+- `smoke-output.txt`, the same concise test output in plain text for searching.
+
+Artifacts are retained for 90 days and are uploaded on both passing and failing
+runs. This is intentionally separate from static validation and deployment.
+The artifact does not contain credentials, visitor data, browser traces, or
+page content beyond diagnostics printed by the smoke suite.
