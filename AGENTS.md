@@ -81,8 +81,8 @@ Out of scope unless explicitly requested:
 - Frontend: vanilla HTML5, CSS3 custom properties, and browser JavaScript.
 - Diagramming: Mermaid.js v11 as an external ESM module, used by
   `universe/index.html`.
-- Typography: Google Fonts loaded by the page shell. AskJamie pages use Baloo
-  2 for headings, Open Sans for body text, and Kalam for accent text.
+- Typography: AskJamie pages use locally served Baloo 2, Open Sans, and Kalam
+  WOFF2 files through `assets/css/fonts.css`.
 - Search: zero-dependency client-side search in `assets/js/app.js`, backed by
   generated `assets/data/search-index.json`.
 - Analytics: Google tag `G-MT9Y10YY0G` appears in the page shell and is handled

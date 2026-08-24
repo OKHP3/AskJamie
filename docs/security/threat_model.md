@@ -16,7 +16,10 @@ AskJamie is a public static marketing and documentation site for an AI persona a
 
 - **Browser to static host** -- all content crosses from the deployed static host to an untrusted browser. The client must be treated as hostile, and no security decision can rely on client state.
 - **Public page content to shared browser JavaScript** -- static HTML and generated search-index data are consumed by `assets/js/app.js`. Anything rendered into the DOM from indexed content must be safely handled.
-- **Site to third-party services** -- the site loads Google Fonts, Google Tag Manager, Google Analytics, and Mermaid from jsDelivr. These are explicit trust relationships because third-party content executes or influences rendering in the browser.
+- **Site to third-party services** -- the site loads Google Tag Manager,
+  Google Analytics, and Mermaid from jsDelivr. These are explicit trust
+  relationships because third-party content executes or influences rendering in
+  the browser. Typography is served locally from the repository.
 - **Production to dev-only repository content** -- scripts, templates, docs, agent tooling, and local task artifacts exist in the repository but are not part of the deployed static site. They should normally be ignored during production vulnerability assessment unless a public path exposes them.
 
 ## Scan Anchors

@@ -54,7 +54,8 @@ All four pages exceed the 2.5 second target:
 
 These are measurement findings only. Performance optimization is outside this
 task. The large render-delay share is a useful target for a later performance
-task, especially on pages with external fonts or client-side initialization.
+task, especially on pages with client-side initialization. The later typography
+migration removes the former external-font variable from future comparisons.
 
 ### CLS above 0.1
 
@@ -108,8 +109,8 @@ The homepage hero now paints before `app.js` initialization, its avatar uses
 a right-sized WebP source with a PNG fallback, and the milestone card uses a
 right-sized WebP source. The audited route scripts are deferred because they
 do not provide parser-blocking behavior. These are desktop lab results;
-mobile Lighthouse scores remain sensitive to font/CDN timing and are not
-represented as passing thresholds by this record.
+mobile Lighthouse scores remain sensitive to device and browser timing and are
+not represented as passing thresholds by this record.
 
 ## Visual reference set
 

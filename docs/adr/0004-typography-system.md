@@ -1,4 +1,4 @@
-# ADR-0004: Google Fonts Typography System
+# ADR-0004: AskJamie Typography System
 
 ## Status
 
@@ -47,33 +47,34 @@ font-display management, added maintenance for font updates.
 
 ## Decision
 
-We will use **Google Fonts** with the following role assignments:
+We will use the following role assignments with the font files served from
+`/assets/fonts/` and loaded through the shared stylesheet:
 
 | Role | Family | Rationale |
 |------|--------|-----------|
 | Heading | Baloo 2 | Rounded, warm, friendly; reads like a confident helper |
 | Body | Open Sans | Highly legible, neutral, comfortable at reading sizes |
 | Accent | Kalam | Handwritten feel; used sparingly for personal notes |
-| Monospace | JetBrains Mono | Technical clarity for code and structured output |
+| Monospace | JetBrains Mono / system monospace | Technical clarity for code and structured output |
 
 ## Consequences
 
 ### Positive
 
-- Distinctive brand identity achievable without font files in the repository
-- All four families are reliably cached by Google's CDN for repeat visitors
+- Distinctive brand identity without a third-party font request
+- Font files are cacheable and available when the site is used offline
 
 ### Negative
 
-- A Google Fonts request is issued on first page load, which reveals the visitor's
-  IP to Google
-- If Google Fonts CDN is unavailable, pages fall back to system fonts
+- The repository carries a small set of font files that must be reviewed when
+  the typography system changes
+- If local font loading fails, pages fall back to system fonts
 
 ### Risks
 
-- Family discontinuation by Google (low risk; all four families are actively
-  maintained as of 2026)
-- Mitigation: fallback stacks are declared in `assets/css/theme.css` for every role
+- Font licensing or file drift
+- Mitigation: retain the source family/weight record above, use `font-display:
+  swap`, and keep fallback stacks declared in `assets/css/theme.css`
 
 ## Related Decisions
 

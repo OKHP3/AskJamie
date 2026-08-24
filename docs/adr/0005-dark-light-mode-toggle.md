@@ -72,4 +72,4 @@ on AskJamie pages and omitted from pages intentionally designed as light-only.
 ## Related Decisions
 
 - ADR-0001: Static HTML Architecture
-- ADR-0004: Google Fonts Typography System
+- ADR-0004: AskJamie Typography System
