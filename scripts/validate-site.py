@@ -16,6 +16,7 @@ Checks every production HTML page for:
   - first meaningful use of flagged brand terms has a nearby plain-language
     definition
   - GA4 configuration or consent-gated analytics loader presence
+   - disallowed Google Fonts origins in served HTML and stylesheets
 
 Exits 0 if no errors. Exits 1 if any errors. Warnings do not fail the build.
 Run from repo root:  python3 scripts/validate-site.py
@@ -35,6 +36,8 @@ SKIP_DIRS = {".local", ".git", "node_modules", "attached_assets", "dist", "templ
 SITEMAP = ROOT / "sitemap.xml"
 SITE_ORIGIN = "https://askjamie.bot"
 GA4_ID = "G-MT9Y10YY0G"
+DISALLOWED_FONT_HOSTS = frozenset({"fonts.googleapis.com", "fonts.gstatic.com"})
+EXTERNAL_URL_RE = re.compile(r'(?:(?:https?:)?//)[^\s"\'<>`)]+', re.IGNORECASE)
 
 # These terms are useful internal labels, but should not be the first
 # unexplained concept a visitor encounters in explanatory copy. Navigation,
@@ -251,6 +254,38 @@ def find_html_files() -> list[Path]:
     return sorted(files)
 
 
+def find_stylesheet_files() -> list[Path]:
+    """Return shipped CSS files, excluding repository-only directories."""
+    files: list[Path] = []
+    for path in ROOT.rglob("*.css"):
+        if set(path.relative_to(ROOT).parts) & SKIP_DIRS:
+            continue
+        files.append(path)
+    return sorted(files)
+
+
+def check_external_font_origins(path: Path, raw: str) -> list[Finding]:
+    """Reject Google Fonts URLs while leaving documented origins alone.
+
+    Analytics (Google Tag Manager) and Mermaid (jsDelivr) are intentionally
+    outside this font-origin policy; only the two Google Fonts hosts are
+    disallowed.
+    """
+    findings: list[Finding] = []
+    rel = path.relative_to(ROOT).as_posix()
+    for url in EXTERNAL_URL_RE.findall(raw):
+        host = (urlparse(url if not url.startswith("//") else "https:" + url).hostname or "").lower()
+        if host in DISALLOWED_FONT_HOSTS:
+            findings.append(
+                Finding(
+                    "ERROR",
+                    rel,
+                    f"disallowed external font origin: {url}",
+                )
+            )
+    return findings
+
+
 def load_sitemap_urls() -> set[str]:
     if not SITEMAP.exists():
         return set()
@@ -309,6 +344,7 @@ def validate_page(path: Path, sitemap_urls: set[str]) -> list[Finding]:
     consent_marker = "Analytics loads only after visitor consent via assets/js/app.js."
     if GA4_ID not in raw and consent_marker not in raw:
         findings.append(Finding("WARN", rel, f"GA4 configuration ({GA4_ID}) or consent loader marker not found"))
+    findings.extend(check_external_font_origins(path, raw))
 
     # placeholder hrefs
     for m in re.finditer(r'href="(#|javascript:[^"]*|)"', raw):
@@ -470,6 +506,9 @@ def main() -> int:
     all_findings: list[Finding] = []
     for path in pages:
         all_findings.extend(validate_page(path, sitemap_urls))
+    for path in find_stylesheet_files():
+        raw = path.read_text(encoding="utf-8", errors="replace")
+        all_findings.extend(check_external_font_origins(path, raw))
     all_findings.extend(check_governance_docs_consistency())
 
     errors   = [f for f in all_findings if f.severity == "ERROR"]

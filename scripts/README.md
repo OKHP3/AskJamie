@@ -13,7 +13,7 @@ cannot be mistaken for current pipeline commands.
 | `build-search-index.py` | active | Rebuild the generated search index |
 | `check-links.py` | active | Check internal and external links |
 | `prepare-pages-artifact.py` | active | Build the allowlisted static release artifact |
-| `validate-site.py` | active | Structural site validation |
+| `validate-site.py` | active | Structural site validation, including external-font-origin regression checks |
 | `responsive-qa.mjs` | active | Responsive QA entry point |
 | `post-merge.sh` | active | Post-merge rebuild and validation hook |
 | `capture-visual-baseline.mjs` | active | Capture the dated visual reference set |
@@ -61,3 +61,12 @@ scheduled workflow uses `--retries 2`, which retries only those two transient
 classes and never retries a 401/403 or 404/410 destination result.
 This probe never edits site content and is intentionally not part of the
 static `check-links.py` run.
+
+## External font-origin policy
+
+`validate-site.py` scans every public HTML page and shipped stylesheet for
+Google Fonts origins (`fonts.googleapis.com` and `fonts.gstatic.com`). A
+disallowed URL is an error and reports both the affected file and URL. The
+check does not block the separately documented Google Tag Manager analytics
+origin or the jsDelivr Mermaid origin, and local WOFF2 assets remain the
+preferred font source.
