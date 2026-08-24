@@ -60,6 +60,11 @@ The comparison was limited to public repositories and published pages. No compan
 These items require an environment with human-operated assistive technology or production administration and are not silently treated as passed:
 
 - VoiceOver/NVDA announcement quality still needs human confirmation; markup and update behavior are covered by source checks.
+- The 2026-08-24 Chromium keyboard matrix confirmed consent, privacy-settings
+  focus, search focus/restoration, live-region text updates, theme attributes,
+  mobile navigation state, and the Universe no-JavaScript fallback. VoiceOver
+  and NVDA spoken output remains **unknown**, not a pass by assumption. See
+  `assets/docs/accessibility-audit-2026-08-16.md`, section 5.
 - GitHub Pages’ repository environment and custom-domain DNS status require checking in the GitHub repository settings after the workflow runs.
 - External third-party links are syntax-checked but not all are fetched during CI, because availability and rate limits are outside the site’s control.
 

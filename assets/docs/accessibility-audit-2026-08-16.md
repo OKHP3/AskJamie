@@ -2,7 +2,10 @@
 **Date:** 2026-08-16  
 **Scope:** WCAG 2.2 Level AA · ISO 9241-11 / Nielsen's 10 Heuristics · Plain-language readability  
 **Pages tested:** All 24 public pages in sitemap.xml plus 404.html and under-construction.html (26 total)  
-**Auditor note:** Static source + computed CSS analysis; screenshot evidence captured. Tests that require live browser interaction (actual keyboard-tab dispatch, screen reader audio, dynamic JS console capture, real 400% reflow render) are noted where they were not possible and flagged for follow-up manual testing.
+**Auditor note:** Static source + computed CSS analysis, screenshot evidence,
+and a dated Chromium keyboard/DOM verification matrix. Screen reader audio and
+human-operated VoiceOver/NVDA output remain unknown and are explicitly flagged
+for manual follow-up.
 
 ---
 
@@ -319,4 +322,55 @@ Every item below was tested across all applicable pages and found conformant.
 | WCAG 2.2 AA criteria checked | ~38 of 50 (those verifiable via source + CSS analysis) |
 | Criteria requiring live-browser verification | ~12 (reflow at 400%, JS console, tab-order rendering, ARIA live announcements) |
 
-**Partial coverage explicitly noted:** Tap-target sizing at 375/390px (cannot measure rendered CSS pixel sizes without a browser runtime), actual keyboard-tab event capture, and screen reader audio output were not possible in this static analysis environment. The responsive-qa.mjs script (208 checks, 0 failures) covers structural responsive layout; live reflow at 400% zoom was not independently verified.
+**Partial coverage explicitly noted:** Tap-target sizing at 375/390px (cannot
+measure rendered CSS pixel sizes without a dedicated measurement pass) and
+screen reader audio output were not possible in this environment. The
+responsive-qa.mjs script (208 checks, 0 failures) covers structural responsive
+layout; the dated matrix below covers representative keyboard behavior and the
+no-JavaScript fallback.
+
+---
+
+## 5. Assistive-technology verification matrix
+
+**Verification date:** 2026-08-24
+**Representative routes:** `/`, `/about/`, `/universe/`
+**Method:** Headless Chromium keyboard and DOM observation for browser-visible
+behavior. No VoiceOver or NVDA session was available in this environment.
+
+The matrix deliberately separates confirmed browser behavior from spoken
+announcement evidence. `Unknown` is not a pass or a failure; it requires a
+human-operated assistive-technology session.
+
+| Check | Assistive technology | Browser | Route | Expected result | Observed result | Evidence status |
+|---|---|---|---|---|---|---|
+| Consent banner controls | None; keyboard automation | Chromium 1280/390px | `/about/` | Banner exposes Allow analytics and Decline controls | Banner visible; both controls present and labelled | **Confirmed**: live DOM/visual state |
+| Privacy settings focus | None; keyboard automation | Chromium 390px | `/about/` | Reopening settings focuses Allow analytics | Banner reopened; active element was Allow analytics | **Confirmed**: active-element observation |
+| Consent decline | None; keyboard automation | Chromium 390px | `/about/` | Decline hides the banner and persists the choice | Banner hidden; `denied` stored | **Confirmed**: live DOM/storage state |
+| Consent announcement | VoiceOver | Safari (macOS) | `/about/` | Banner heading and choice context are announced when presented | Not run in this environment | **Unknown** |
+| Consent announcement | NVDA | Firefox (Windows) | `/about/` | Banner heading and choice context are announced when presented | Not run in this environment | **Unknown** |
+| Search dialog focus | None; keyboard automation | Chromium 390px | `/` | Opening search focuses the search input | Dialog open; active element was `.okh-search-input` | **Confirmed**: active-element observation |
+| Search result announcement | None; keyboard automation | Chromium 390px | `/` | Query updates the polite live region | Status text became `12 results for BrandGuard` | **Confirmed**: DOM update; spoken output unknown |
+| Search result announcement | VoiceOver | Safari (macOS) | `/` | Result count is announced after query changes | Not run in this environment | **Unknown** |
+| Search result announcement | NVDA | Firefox (Windows) | `/` | Result count is announced after query changes | Not run in this environment | **Unknown** |
+| Search focus restoration | None; keyboard automation | Chromium 390px | `/` | Escape closes search and restores trigger focus | Dialog closed; active element was `.okh-search-trigger` | **Confirmed**: active-element observation |
+| Theme control state | None; keyboard automation | Chromium 390px | `/` | Theme changes and control exposes the next action label | `data-theme="light"`; label was `Switch to dark mode` | **Confirmed**: DOM attributes; spoken output unknown |
+| Theme control announcement | VoiceOver | Safari (macOS) | `/` | New theme action/state is announced meaningfully | Not run in this environment | **Unknown** |
+| Navigation expanded state | None; keyboard automation | Chromium 390px | `/` | Mobile menu button updates `aria-expanded` after activation | Changed from `false` to `true` | **Confirmed**: DOM attribute; spoken output unknown |
+| Navigation expanded announcement | NVDA | Firefox (Windows) | `/` | Expanded/collapsed state is announced after activation | Not run in this environment | **Unknown** |
+| Mermaid fallback | None; JavaScript disabled | Chromium 390px | `/universe/` | Static explanation and contact link remain visible | Fallback visible; one `/contact/` link present | **Confirmed**: no-JavaScript browser state |
+| Mermaid fallback announcement | VoiceOver or NVDA | Safari or Firefox | `/universe/` | Static fallback is read as useful orientation content | Not run in this environment | **Unknown** |
+
+### Findings and owner action
+
+- **Confirmed failures:** None in the browser-observable matrix.
+- **Unresolved evidence:** VoiceOver/Safari and NVDA/Firefox spoken output for
+  the consent banner, search live region, theme state, navigation state, and
+  Mermaid fallback remains unknown.
+- **Required manual session:** On macOS, test VoiceOver with Safari on
+  `/about/` and `/`; on Windows, test NVDA with Firefox on `/about/`, `/`, and
+  `/universe/`. Record whether each expected announcement is understandable,
+  timely, and not duplicated.
+- **Automation boundary:** Existing Playwright smoke checks remain authoritative
+  for Mermaid rendering, the no-JavaScript fallback, search interaction, and
+  theme behavior. They do not prove screen-reader audio output.
