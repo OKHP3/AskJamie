@@ -78,3 +78,43 @@ def test_public_gpt_probe_classifies_http_statuses():
     assert probe.classify_status(429) == "transient_service"
     assert probe.classify_status(503) == "transient_service"
     assert probe.classify_status(451) == "unexpected_response"
+
+
+def test_public_gpt_probe_retries_only_transient_results(monkeypatch):
+    spec = importlib.util.spec_from_file_location("public_gpt_probe_retry", PUBLIC_GPT_CHECK)
+    probe = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = probe
+    spec.loader.exec_module(probe)
+
+    results = iter([
+        probe.ProbeResult("AJ01", "https://example.test", "transient_network"),
+        probe.ProbeResult("AJ01", "https://example.test", "reachable", 200),
+    ])
+    calls = []
+    monkeypatch.setattr(probe, "probe", lambda *args: calls.append(args) or next(results))
+    monkeypatch.setattr(probe.time, "sleep", lambda _: None)
+
+    result = probe.probe_with_retries("AJ01", "https://example.test", 1, 2)
+
+    assert result.classification == "reachable"
+    assert len(calls) == 2
+
+
+def test_public_gpt_probe_does_not_retry_destination_status(monkeypatch):
+    spec = importlib.util.spec_from_file_location("public_gpt_probe_no_retry", PUBLIC_GPT_CHECK)
+    probe = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = probe
+    spec.loader.exec_module(probe)
+
+    calls = []
+    monkeypatch.setattr(
+        probe,
+        "probe",
+        lambda *args: calls.append(args)
+        or probe.ProbeResult("AJ01", "https://example.test", "broken_or_unpublished", 404),
+    )
+
+    result = probe.probe_with_retries("AJ01", "https://example.test", 1, 2)
+
+    assert result.classification == "broken_or_unpublished"
+    assert len(calls) == 1

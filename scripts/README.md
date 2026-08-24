@@ -56,6 +56,8 @@ ChatGPT destinations. `reachable` means the final response is 2xx or 3xx.
 `broken_or_unpublished` covers 404/410, while `authentication_or_private`
 covers 401/403. `transient_service` covers rate limits and 5xx responses;
 `transient_network` covers timeouts and connection failures. Investigate and
-rerun transient results before treating them as destination status changes.
+rerun transient results before treating them as destination status changes. The
+scheduled workflow uses `--retries 2`, which retries only those two transient
+classes and never retries a 401/403 or 404/410 destination result.
 This probe never edits site content and is intentionally not part of the
 static `check-links.py` run.
