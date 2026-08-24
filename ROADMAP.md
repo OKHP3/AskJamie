@@ -4,31 +4,47 @@ This roadmap outlines the near-term public direction for the **AskJamie™** rep
 
 ## Current
 - BrandGuard™ case study series — ongoing documentation
-- Quality gates: `scripts/audit-site.py` runs clean (0 issues across 33 pages);
-  re-run on every meaningful HTML change
+- Quality gates: `scripts/audit-site.py` runs clean (0 issues across 26 public
+  QA paths); 35 HTML files exist on disk, including 9 excluded developer
+  templates. Re-run on every meaningful HTML change.
 - Responsive QA: `node scripts/responsive-qa.mjs --static` → 208/208 pass;
   run full Playwright pass after each major round of edits
+- Consent-gated GA4 is implemented, but visitor and funnel numbers remain
+  unknown until a read-only GA4 export or authorized connection is available.
+- Twenty landscape WebP OG cards are shipped. Six utility or informational
+  pages still use existing square artwork and are not blocked from publication.
 
 ## Next
-- **OG images** — commission 1200×630 landscape social-card images for the
-  3 Lens System GPT pages and 12 BrandGuard case studies (currently square
-  1024×1024 for all). See `assets/docs/og-image-requirements.md`.
-- **Submit sitemap** to Google Search Console and Bing Webmaster Tools.
-- **Heading-order auditor** (Task #17) — add automated h1→h2→h3 skip detection
-  to `scripts/audit-site.py` so regressions are caught at CI time.
-- **Generic-link-text auditor** (Task #18) — extend the auditor to flag bare
-  "read more" / "click here" link text across all pages.
-- **Sister-site sync** (Task #5) — document the `audit-site.py` and
-  `build-search-index.py` sync workflow for the OverKill Hill and
-  Glee-fully repos; apply `theme.css` / `app.js` patches.
-- **Developer template fixes** (Tasks #10, #13) — add the 9 `assets/templates/`
-  files to the QA exclusion list; apply Phase 1 baseline fixes to them.
-- **CSP hardening** — refactor the `onload="this.media='all'"` lazy-CSS inline
-  handlers into `assets/js/lazy-css.js` so `script-src 'unsafe-inline'` can
-  be dropped. Low-risk but touches every page.
-- **Self-hosted fonts** — move Baloo 2, Open Sans, and Kalam from
-  `fonts.googleapis.com` to `assets/fonts/` to eliminate the third-party
-  privacy boundary and two extra DNS lookups.
+- **Submit sitemap** to Google Search Console and Bing Webmaster Tools. This is
+  an owner or administrator action, not a repository code task.
+- **Sister-site sync** — decide whether the documented `theme.css` / `app.js`
+  changes should be applied in the OverKill Hill and Glee-fully repositories.
+  No sibling repository is modified by this project.
+- **Assistive technology verification** — confirm consent, search live-region,
+  keyboard focus, theme, and Mermaid fallback behavior with human-operated
+  VoiceOver or NVDA testing.
+- **CSP hardening** — refactor the remaining inline initialization and lazy-CSS
+  handlers so `script-src 'unsafe-inline'` can be dropped.
+- **GA4 reporting** — obtain an authorized, read-only export and report
+  consented sessions only. Do not infer visitor counts from site code.
+- **Recurring hosted checks** — retain hosted smoke and public GPT probe
+  results outside the static validation path.
+- **Optional OG enhancement** — create cards for the remaining pages that use
+  square artwork if social-sharing optimization is prioritized. See
+  `assets/docs/og-image-requirements.md`.
+- **Developer template maintenance** — keep the 9 `assets/templates/` files
+  excluded from public QA and update them deliberately when the page shell
+  changes.
+- **Self-hosted fonts** — completed on 2026-08-24; typography now loads from
+  `assets/fonts/` through `assets/css/fonts.css`.
+- **Heading-order auditor** — shipped in `scripts/audit-site.py`.
+- **Generic-link-text auditor** — shipped in `scripts/audit-site.py`.
+- **Post-merge browser checks** — queued separately from the static audit.
+- **Public GPT availability checks** — queued separately from static HTML
+  validation.
+- **Hosted JavaScript result retention** — queued separately from deployment.
+- **Performance budgets** — desktop targeted results clear 90; mobile
+  thresholds remain an evidence gap and need a separate performance task.
 - **Expand Lens System** with additional BrandGuard™ case studies.
 
 ## Later
@@ -37,7 +53,8 @@ This roadmap outlines the near-term public direction for the **AskJamie™** rep
 - Evaluate adding a public prompt library or recipe section
 - Add progressive web app install flow (PWA manifest + service worker)
 - Audit and prune the ~75 unused brand image variants (see `assets/docs/image-usage-report.md`)
-- GA disclosure section in `legal/index.html` (GDPR/CCPA best practice)
+- GA disclosure section in `legal/index.html` — shipped; retain owner/legal
+  review as needed
 - Organization JSON-LD `sameAs` — add social profile URLs (LinkedIn, X, Facebook, YouTube)
 
 ## Shipped
@@ -56,7 +73,7 @@ This roadmap outlines the near-term public direction for the **AskJamie™** rep
   `/search/` link, `grid-3` tablet breakpoint fix, responsive QA script.
 - **v0.8 (2026-05-12)** — GTM moved to `<head>`, deprecated meta tags removed
   (8 types × 22–25 pages), `legal/index.html` head-tag fix, 5 titles trimmed,
-  root-relative path enforcement, search index rebuilt (128.5 KB, 33 pages).
+  root-relative path enforcement, search index rebuilt (128.5 KB).
 - **v0.7 (2026-05-03)** — Audit tooling, BrandGuard demo notice on all
   13 case pages, multi-CTA homepage hero, site-wide theme-color sweep,
   4 broken portfolio links fixed. See `AUDIT-ASKJAMIE-FINAL.md`.

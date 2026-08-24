@@ -5,6 +5,14 @@
 **Scope:** 26 HTML pages · 1 stylesheet (theme.css, 4,561 lines) · 1 JS file (app.js, 993 lines)
 **Site auditor (`scripts/audit-site.py`) result at close:** 0 issues across 26 pages
 
+> **Current-state note (2026-08-24):** This is a historical audit record, not a
+> current defect list. The repository now has 26 public QA paths and 35 HTML
+> files on disk, including 9 excluded templates. Subsequent work shipped 20
+> landscape WebP OG cards, consent-gated GA4 with named events, locally served
+> AskJamie fonts, and automated heading-order and generic-link checks. The
+> original findings below remain dated evidence; use the roadmap and current
+> validators for present status.
+
 ---
 
 ## Executive Summary
@@ -67,10 +75,10 @@ The site entered this audit structurally sound but carrying a meaningful accumul
 - `universe/index.html` and `search/index.html` have no above-the-fold hero image, so `fetchpriority` is not applicable — both PASS
 
 ### 1.11 — Resource Hints (Preconnect)
-`[PASS]` All three required third-party origins have `<link rel="preconnect">` on every page:
-- `https://fonts.googleapis.com`
-- `https://fonts.gstatic.com`
-- `https://www.googletagmanager.com`
+`[PASS — reconciled 2026-08-24]` The page shell no longer preconnects to font
+providers. Typography is served locally through `assets/css/fonts.css`.
+`https://www.googletagmanager.com` remains a separate analytics origin and is
+still handled by the consent-gated runtime.
 
 ### 1.12 — `<link rel="preload">` for Critical CSS
 `[FLAGGED]` `theme.css` is loaded as a standard synchronous stylesheet and is therefore render-blocking. A `<link rel="preload" href="/assets/css/theme.css" as="style">` hint would allow the browser to begin fetching it earlier in the parse cycle and improve LCP. Not added in this session because it requires testing the font-swap pattern interaction.
@@ -135,9 +143,15 @@ All 26 pages have: `og:title`, `og:description`, `og:type`, `og:url`, `og:image`
 `[PASS]` All 26 canonicals use `https://` with consistent trailing slash usage. No two pages share a canonical URL. No page's canonical points to a different page.
 
 ### 2.3 — OG Image Quality
-`[FLAGGED]` All pages use the AskJamie avatar at **1024×1024px** as the OG image. This resolves and displays correctly, but the optimal social card spec is **1200×630px landscape**. At 1024×1024, LinkedIn and Facebook will crop to their preferred aspect ratios.
+`[RECONCILED]` The original square-avatar finding is resolved for the 20
+planned content cards. The homepage, Contact, Lens System, and BrandGuard
+pages now use shipped 1200×630 landscape WebP cards. Six utility or
+informational pages still use functional square artwork and remain an optional
+enhancement, not a release blocker.
 
-**Recommended action:** Commission a purpose-built 1200×630px landscape OG image. Until then, the 1024×1024 avatar is functional. Page-specific OG images for the 13 BrandGuard case studies and 4 Lens System pages would also substantially improve link-share appearance.
+**Historical recommended action:** Commission additional purpose-built cards
+for the remaining square-artwork pages if their social-sharing value warrants
+the work.
 
 `[FLAGGED]` `Organization` JSON-LD on `index.html` has a `sameAs` array with only two entries (`overkillhill.com`, `glee-fully.tools`). Active social profiles (LinkedIn, Ko-fi, X/Twitter, YouTube, Facebook) should be added once their canonical profile URLs are confirmed.
 
@@ -182,16 +196,16 @@ Zero double-initialization. The separate `analytics.js` file referenced in the a
 | No commented-out alternate GA IDs | ✓ |
 
 ### 3.5 — Event Tracking Inventory
-`[FLAGGED]` No custom GA events beyond pageview are implemented. Recommended for future implementation:
-- Outbound link clicks (Ko-fi, Fiverr, LinkedIn, ChatGPT GPT links)
-- CTA button clicks (primary hero CTAs — "Explore the Lens System", "See BrandGuard in action", "Talk with Jamie")
-- Navigation interactions (which nav items are clicked)
-- Scroll depth milestones (25%, 50%, 75%, 100%)
+`[FIXED — later implementation]` Consent-gated custom GA events are now
+implemented in `assets/js/app.js`, including `gpt_click`, `inquiry_click`, and
+`search_open`. This section records the state observed on 2026-05-12; event
+volume and conversion reporting remain unavailable without an authorized GA4
+export.
 
 ### 3.6 — Privacy / Consent Considerations
-`[FLAGGED]` `legal/index.html` does not contain an explicit disclosure of Google Analytics usage. Under GDPR and CCPA best practices, the privacy policy should name GA4, identify it as a third-party data processor, and disclose what data it collects.
-
-**Recommended action:** Add a Google Analytics disclosure section to `legal/index.html`. Do not auto-generate legal copy — requires owner review.
+`[FIXED — later implementation]` `legal/index.html` now describes GA4,
+consent, and the data-use boundary. This section records the pre-remediation
+state observed on 2026-05-12.
 
 ---
 
@@ -413,7 +427,10 @@ No other inline JavaScript exists. Full compliance.
 - All non-GTM scripts use `defer` or `src` without blocking
 
 ### 7.8 — CSS File Loading Audit
-`[PASS]` `theme.css` is loaded exactly once per page on all 26 pages. No page references a stylesheet that doesn't exist. The Google Fonts async-load pattern (`media="print"` → `onload="this.media='all'"`) is consistent across all pages and always accompanied by the `<noscript>` fallback.
+`[PASS — reconciled 2026-08-24]` `theme.css` is loaded exactly once per page
+on all 26 public pages and imports the existing local `assets/css/fonts.css`.
+No page references a stylesheet that does not exist. Google Fonts async-load
+tags are no longer present.
 
 ---
 
@@ -441,15 +458,19 @@ No other inline JavaScript exists. Full compliance.
 
 1. **`<link rel="preload">` for `theme.css`** — Add before the existing stylesheet link on all pages. Improves LCP. Requires verification that font-swap pattern interaction behaves correctly. *(Domain 1.12)*
 
-2. **OG image dimensions** — All pages use 1024×1024px avatar. Commission a 1200×630px landscape OG image for optimal social card rendering on LinkedIn and Facebook. *(Domain 2.3)*
+2. **Optional OG coverage** — Twenty planned content cards are shipped as
+   landscape WebP. Consider cards for the six remaining square-artwork pages
+   if their social-sharing value warrants it. *(Domain 2.3)*
 
 3. **Organization JSON-LD `sameAs`** — Currently only lists `overkillhill.com` and `glee-fully.tools`. Add canonical URLs for LinkedIn, Ko-fi, X/Twitter, YouTube, and Facebook once confirmed. *(Domain 2.4)*
 
-4. **Page-specific OG images** — BrandGuard case studies and Lens System pages use the generic avatar. Page-specific images would substantially improve link-share appearance and click-through. *(Domain 2.3)*
+4. **Page-specific OG images** — BrandGuard and Lens System content pages now
+   have page-specific landscape cards. Remaining utility pages are optional
+   coverage. *(Domain 2.3)*
 
-5. **GA custom event tracking** — No custom events beyond pageview are tracked. Recommend: outbound link clicks, CTA button clicks, nav interactions, scroll depth. *(Domain 3.5)*
-
-6. **Google Analytics disclosure in `legal/index.html`** — GDPR/CCPA best practice requires naming GA4 as a third-party data processor. Requires legal copy review before adding. *(Domain 3.6)*
+5. **GA4 reporting access** — Consent-gated events are implemented, but
+   visitor counts, event volume, and funnel exits remain unknown until an
+   authorized read-only export is available. *(Domain 3.5)*
 
 7. **BrandGuard hub relative case-study links** — `okhp3-brandguard/index.html` links to case studies via relative paths (`href="lego/"` etc.). Converts to root-relative improves link-map analyzability and is consistent with site-wide convention. *(Domain 4.4)*
 
@@ -469,12 +490,17 @@ Ordered by impact-to-effort ratio:
 
 2. **CSS token refactor (rename phase only)** — Rename the 8 existing tokens that have wrong names (`--color-fg` → `--color-text`, etc.) with a find-and-replace pass. Zero visual change. Eliminates the naming gap and makes the codebase match the spec convention before adding new tokens.
 
-3. **GA custom event tracking** — Add `gtag('event', ...)` calls for outbound links and primary CTA buttons to `app.js`. Low-effort, high analytics value — currently the most-clicked elements on the site produce no GA event data.
+3. **GA4 reporting access** — Obtain an authorized export and report
+   consented sessions only. Do not infer visitor numbers from implementation
+   code.
 
-4. **OG image commission** — One 1200×630px landscape image improves all 26 pages' social card appearance simultaneously. High visibility impact for external link sharing.
+4. **Optional OG coverage** — Review whether the six remaining
+   square-artwork pages merit custom landscape cards.
 
-5. **GA disclosure in `legal/index.html`** — Required for GDPR/CCPA compliance. Small copy addition, but needs legal review.
+5. **Assistive technology verification** — Confirm consent, search live-region,
+   keyboard focus, theme, and Mermaid fallback behavior with VoiceOver or NVDA.
 
 ---
 
-*Audit completed 2026-05-12 · Site auditor result: 0 issues · 38 fixes applied · 10 items flagged*
+*Audit completed 2026-05-12 · Site auditor result at close: 0 issues ·
+38 fixes applied. Current-state reconciliation added 2026-08-24.*

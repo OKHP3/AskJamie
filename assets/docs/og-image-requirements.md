@@ -1,24 +1,28 @@
 # OG Image Requirements — AskJamie™
-*Generated: 2026-05-26 (Task #1 documentation)*
-*Updated: 2026-05-28 (Task #23) — All 20 images converted to WebP; PNGs remain as orphaned source masters*
+*Generated: 2026-05-26 (original commission brief)*
+*Updated: 2026-08-24 — Twenty landscape WebP cards are shipped; this document
+retains the original commission brief and records the remaining optional work.*
 
-> **Status as of 2026-05-28:** All 20 OG images have been generated and are live in
+> **Current status as of 2026-08-24:** All 20 planned OG images have been generated and are live in
 > `assets/img/og/` as **WebP** files (23–92 KB each, down from 600 KB–1.2 MB PNG originals).
-> All HTML pages reference the `.webp` versions with `og:image:type = image/webp`.
+> The homepage, Contact, Lens System, and BrandGuard pages reference the `.webp`
+> versions with `og:image:type = image/webp`.
 > The original `.png` source files remain in the same directory but are no longer referenced.
+> The remaining utility and informational pages use existing square artwork.
 
-## The Problem
+## Historical Problem and Remaining Enhancement
 
-All pages currently use a **1024×1024** square avatar PNG as their Open Graph image.
-The gold standard for social sharing is **1200×630 landscape** (16:9-ish).
-Twitter/X and Facebook crop square images to landscape in card previews, cutting off
-roughly a third of the image height and often decapitating the AskJamie™ character.
+The original audit found that all pages used a **1024×1024** square avatar PNG.
+The 20 planned landscape cards now resolve that problem for the homepage,
+Contact, Lens System, and BrandGuard content. The remaining square images are
+functional and represent an optional enhancement for utility and informational
+pages, not an uncompleted prerequisite for publication.
 
 ---
 
-## Required Images
+## Shipped and Optional Image Set
 
-### Priority 1 — High-traffic / link-shared pages
+### Shipped Priority 1 — High-traffic / link-shared pages
 
 | Page | Path | Suggested filename |
 |------|------|--------------------|
@@ -28,7 +32,7 @@ roughly a third of the image height and often decapitating the AskJamie™ chara
 | BFS — Framing Intelligent Futures | `/lens-system/okhp3-brandguard/bfs-framing-intelligent-futures/` | `og-bfs01-1200x630.png` |
 | Contact | `/contact/` | `og-contact-1200x630.png` |
 
-### Priority 2 — Lens System GPT pages
+### Shipped Priority 2 — Lens System GPT pages
 
 | Page | Path | Suggested filename |
 |------|------|--------------------|
@@ -36,7 +40,7 @@ roughly a third of the image height and often decapitating the AskJamie™ chara
 | Professional Portfolio (AJ02) | `/lens-system/professional-portfolio/` | `og-aj02-portfolio-1200x630.png` |
 | Enterprise Sleuth™ (AJ03) | `/lens-system/enterprise-sleuth/` | `og-aj03-sleuth-1200x630.png` |
 
-### Priority 3 — BrandGuard™ case studies (shared template)
+### Shipped Priority 3 — BrandGuard™ case studies (shared template)
 
 All 12 remaining BRG case studies can share a single landscape template with a
 brand-specific logo or name swapped in. Suggested: one reusable template
@@ -64,7 +68,7 @@ brand-specific logo or name swapped in. Suggested: one reusable template
 | Attribute | Required value |
 |-----------|---------------|
 | **Dimensions** | 1200 × 630 px |
-| **Format** | PNG or JPEG (.jpg) |
+| **Current format** | WebP (`.webp`) with PNG source masters retained |
 | **Max file size** | 1 MB (aim for ≤ 400 KB with PNG compression) |
 | **Safe zone** | Keep key content within central 1000×500 px (100 px bleed on all sides) |
 | **Text minimum size** | 32 px at 1200 px canvas (or ≥ 2.67% image height) |
@@ -103,9 +107,9 @@ the page's light/dark treatment.
 
 ---
 
-## How to Update a Page Once Images Are Produced
+## How to Update a Page Once an Optional Image Is Produced
 
-1. Save the image to `assets/img/og/` (create this folder).
+1. Save the image to `assets/img/og/`.
 2. Update the `og:image`, `og:image:alt`, `og:image:width`, `og:image:height`
    meta tags on the target page:
 
@@ -118,7 +122,8 @@ the page's light/dark treatment.
 ```
 
 3. Update `twitter:image` and `twitter:image:alt` to match.
-4. Rebuild the search index (`python3 scripts/build-search-index.py`).
+4. Rebuild the search index only if page content changed
+   (`python3 scripts/build-search-index.py`).
 5. Re-run the auditor (`python3 scripts/audit-site.py`) to confirm 0 issues.
 
 ---
