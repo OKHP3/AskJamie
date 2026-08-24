@@ -21,8 +21,12 @@ demonstrate whether visitors complete the journey.
 
 On 2026-08-22, the Replit integration catalog was searched for Google Analytics
 and GA4. No matching connector, authorized connection, or catalog setup option
-was available. The workspace has no supplied GA4 export for property
-`G-MT9Y10YY0G`. No GA4 key event could be configured from this environment.
+was available. The authorized Google Drive connection was then attached and
+searched read-only for GA4, analytics, visitor, session, funnel, export, and
+report files; no matching export was found. A follow-up request for an owner-
+supplied export was declined on 2026-08-23. The workspace therefore still has
+no supplied GA4 export for property `G-MT9Y10YY0G`, and no GA4 key event could
+be configured from this environment.
 
 The public site contains the consent-gated GA4 implementation and the
 `search_open`, `gpt_click`, and `inquiry_click` event definitions, but those
@@ -45,6 +49,13 @@ GA4 is consent-gated in `assets/js/app.js`. Visitors who decline analytics are
 not sent to GA4, so any future report must describe its denominator as
 **consented sessions**, not all site visits. This is intentional privacy
 behavior; it is not a defect to be bypassed.
+
+### Requested review window
+
+The requested review window was **2026-08-15 through 2026-08-22**, using
+consented sessions only. No export was supplied for that window, so the
+requested measures remain unavailable. The date range must be re-confirmed if
+the owner later supplies a different export window.
 
 ### Resulting evidence boundary
 
