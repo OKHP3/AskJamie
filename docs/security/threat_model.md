@@ -72,4 +72,22 @@ There is no authenticated or role-separated production surface in the current de
 
 Required guarantees:
 - No production code path should allow DOM XSS through query parameters, generated content, or external resource handling.
-- CSP and related browser policies SHOULD continue to constrain script execution to intended sources, recognizing that inline scripts currently require a narrowly scoped exception.
+- CSP and related browser policies MUST constrain script execution to intended
+  sources. The only first-party inline executable is the pre-paint theme
+  bootstrap, which is allowed by one exact SHA-256 hash; broad
+  `script-src 'unsafe-inline'` is not permitted. JSON-LD blocks are data, not
+  executable JavaScript.
+
+### CSP tradeoffs (2026-08-24)
+
+Every public HTML page carries the same policy. First-party behavior is loaded
+from `assets/js/app.js` and, on the Universe page, the approved Mermaid ESM
+module from jsDelivr. The theme bootstrap remains inline because it must run
+before the blocking stylesheet to prevent a light/dark flash. It is protected
+by the single hash
+`sha256-eoZKPPj7R1opAA3EaZUGTmO56gm1hhyiyo8phdpFl9c=`.
+
+The policy still permits inline styles because the shared static theme contains
+intentional inline style attributes and because removing them is a separate
+visual refactor. Google Tag Manager remains an approved script and connection
+boundary, but its loader is created only after explicit analytics consent.

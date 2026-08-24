@@ -1,11 +1,16 @@
 from pathlib import Path
 import re
+import base64
+import hashlib
 
 
 ROOT = Path(__file__).resolve().parents[1]
 PUBLIC_HTML = [
     path for path in ROOT.rglob("*.html")
-    if not {"assets", "templates"}.issubset(path.parts)
+    if not set(path.parts).intersection(
+        {".local", ".git", "node_modules", "attached_assets", "dist", "templates", ".agents"}
+    )
+    and not path.relative_to(ROOT).as_posix().startswith("assets/templates/")
 ]
 
 
@@ -32,3 +37,48 @@ def test_consent_handler_and_privacy_control_are_present():
     assert 'data-privacy-settings' in app_js
     assert 'id="privacy"' in legal
     assert "only after you choose" in legal
+
+
+def test_public_csp_uses_only_the_scoped_theme_script_hash():
+    theme_hash = "sha256-" + base64.b64encode(
+        hashlib.sha256(
+            b'!function(){var s=localStorage.getItem("okh-theme");document.documentElement.setAttribute("data-theme",s==="dark"||(s!=="light"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches)?"dark":"light")}();'
+        ).digest()
+    ).decode()
+    csp_re = re.compile(
+        r'<meta[^>]+http-equiv=["\']Content-Security-Policy["\'][^>]+content="([^"]+)"',
+        re.IGNORECASE,
+    )
+    theme_script_re = re.compile(r"<script>(.*?)</script>", re.DOTALL)
+
+    for path in PUBLIC_HTML:
+        raw = path.read_text(encoding="utf-8")
+        policy_match = csp_re.search(raw)
+        assert policy_match, f"missing CSP on {path.relative_to(ROOT)}"
+        script_src = next(
+            directive for directive in policy_match.group(1).split(";")
+            if directive.strip().startswith("script-src")
+        )
+        assert "'unsafe-inline'" not in script_src, (
+            f"broad inline script permission remains on {path.relative_to(ROOT)}"
+        )
+        assert theme_hash in script_src, (
+            f"scoped theme hash missing from {path.relative_to(ROOT)}"
+        )
+        theme_scripts = [
+            body for body in theme_script_re.findall(raw) if "okh-theme" in body
+        ]
+        assert len(theme_scripts) == 1, (
+            f"expected one theme bootstrap on {path.relative_to(ROOT)}"
+        )
+        assert hashlib.sha256(theme_scripts[0].encode()).digest() == (
+            base64.b64decode(theme_hash.removeprefix("sha256-"))
+        ), f"theme hash drifted on {path.relative_to(ROOT)}"
+
+    headers = (ROOT / "_headers").read_text(encoding="utf-8")
+    report_policy = next(
+        line for line in headers.splitlines()
+        if line.strip().startswith("Content-Security-Policy-Report-Only:")
+    )
+    assert "'unsafe-inline'" not in report_policy.split("script-src", 1)[1].split(";", 1)[0]
+    assert theme_hash in report_policy
