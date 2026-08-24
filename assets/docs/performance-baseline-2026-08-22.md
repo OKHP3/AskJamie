@@ -112,6 +112,35 @@ do not provide parser-blocking behavior. These are desktop lab results;
 mobile Lighthouse scores remain sensitive to device and browser timing and are
 not represented as passing thresholds by this record.
 
+## Repeatable route check
+
+The current comparison run was captured on **2026-08-24** with Lighthouse
+12.8.2. Start the configured static server, then run:
+
+```bash
+node scripts/lighthouse-routes.mjs --date=2026-08-24
+```
+
+The runner discovers the committed Playwright Chromium binary, tests `/`,
+`/lens-system/okhp3-brandguard/`, `/universe/`, and `/search/` with the desktop
+preset, writes raw reports to the dated directory under `assets/audit/`, and
+compares each result with `lighthouse-baseline-2026-08-22.json`.
+
+| Page | Before performance | After performance | Change | Before LCP | After LCP | CLS after |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Homepage `/` | 87 | 97 | +10 | 3.76 s | 1.33 s | 0.025 |
+| BrandGuard hub | 75 | 97 | +22 | 6.61 s | 1.29 s | 0.001 |
+| Universe `/universe/` | 44 | 96 | +52 | 6.16 s | 1.29 s | 0.013 |
+| Search `/search/` | 75 | 97 | +22 | 6.46 s | 1.25 s | 0.055 |
+
+The homepage, BrandGuard, and Search routes now clear the 90 performance target.
+Universe remains below target because Mermaid still contributes blocking work,
+but its layout shift remains below the 0.1 threshold. The route check's raw
+Lighthouse accessibility score varied for two AskJamie routes because this
+fresh browser session evaluated the active-navigation contrast and injected
+search control labeling; the repository's canonical structural and accessibility
+checks remained clean (`validate-site.py` and `audit-site.py`).
+
 ## Visual reference set
 
 The committed reference images are in `assets/audit/visual-baseline/`:
