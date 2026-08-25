@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import re
 import subprocess
 import sys
@@ -124,3 +125,98 @@ def test_pages_artifact_excludes_repository_only_files(tmp_path):
     assert not (output / "replit.md").exists()
     assert not (output / ".pytest_cache").exists()
     assert not (output / ".pages-manifest.json").exists()
+
+
+def _run_post_merge_with_fake_tools(tmp_path, *, reuse_server, fail_browser=False):
+    bin_dir = tmp_path / "bin"
+    bin_dir.mkdir()
+    server_pid_file = tmp_path / "server.pid"
+    curl_count_file = tmp_path / "curl.count"
+
+    (bin_dir / "curl").write_text(
+        """#!/bin/sh
+if [ "${REUSE_SERVER:-0}" = "1" ]; then exit 0; fi
+count=0
+if [ -f "$CURL_COUNT_FILE" ]; then count=$(cat "$CURL_COUNT_FILE"); fi
+count=$((count + 1))
+printf '%s' "$count" > "$CURL_COUNT_FILE"
+[ "$count" -gt 1 ]
+""",
+        encoding="utf-8",
+    )
+    (bin_dir / "python3").write_text(
+        """#!/bin/sh
+if [ "$1" = "-m" ] && [ "$2" = "http.server" ]; then
+  printf '%s' "$$" > "$SERVER_PID_FILE"
+  exec sleep 60
+fi
+exit 0
+""",
+        encoding="utf-8",
+    )
+    (bin_dir / "node").write_text(
+        """#!/bin/sh
+case "$*" in
+  *test_js_smoke.spec.mjs*)
+    [ "${FAIL_BROWSER:-0}" = "1" ] && exit 9
+    ;;
+esac
+exit 0
+""",
+        encoding="utf-8",
+    )
+    for tool in ("curl", "python3", "node"):
+        (bin_dir / tool).chmod(0o755)
+
+    env = {
+        **os.environ,
+        "PATH": f"{bin_dir}:{os.environ['PATH']}",
+        "BROWSER_BASE_URL": "http://127.0.0.1:5000",
+        "SERVER_PID_FILE": str(server_pid_file),
+        "CURL_COUNT_FILE": str(curl_count_file),
+        "REUSE_SERVER": "1" if reuse_server else "0",
+        "FAIL_BROWSER": "1" if fail_browser else "0",
+    }
+    result = subprocess.run(
+        ["bash", "scripts/post-merge.sh"],
+        cwd=ROOT,
+        env=env,
+        capture_output=True,
+        text=True,
+        timeout=20,
+    )
+    return result, server_pid_file
+
+
+def test_post_merge_reuses_existing_server_without_starting_another(tmp_path):
+    result, server_pid_file = _run_post_merge_with_fake_tools(
+        tmp_path, reuse_server=True
+    )
+
+    assert result.returncode == 0, result.stderr
+    assert "reusing browser server" in result.stdout
+    assert "starting temporary browser server" not in result.stdout
+    assert not server_pid_file.exists()
+
+
+def test_post_merge_cleans_up_temporary_server_after_success(tmp_path):
+    result, server_pid_file = _run_post_merge_with_fake_tools(
+        tmp_path, reuse_server=False
+    )
+
+    assert result.returncode == 0, result.stderr
+    assert "starting temporary browser server" in result.stdout
+    assert server_pid_file.exists()
+    pid = int(server_pid_file.read_text(encoding="utf-8"))
+    assert subprocess.run(["kill", "-0", str(pid)]).returncode != 0
+
+
+def test_post_merge_cleans_up_temporary_server_after_browser_failure(tmp_path):
+    result, server_pid_file = _run_post_merge_with_fake_tools(
+        tmp_path, reuse_server=False, fail_browser=True
+    )
+
+    assert result.returncode != 0
+    assert server_pid_file.exists()
+    pid = int(server_pid_file.read_text(encoding="utf-8"))
+    assert subprocess.run(["kill", "-0", str(pid)]).returncode != 0
