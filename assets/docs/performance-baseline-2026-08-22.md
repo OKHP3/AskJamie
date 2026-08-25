@@ -141,6 +141,41 @@ fresh browser session evaluated the active-navigation contrast and injected
 search control labeling; the repository's canonical structural and accessibility
 checks remained clean (`validate-site.py` and `audit-site.py`).
 
+## Mobile Lighthouse comparison
+
+On **2026-08-25**, the same four routes were measured with Lighthouse 12.8.2
+using its `--form-factor=mobile` configuration against the local static server.
+Raw reports and the compact summary are in
+`assets/audit/lighthouse-2026-08-25-mobile/`. These are lab measurements under
+emulated mobile conditions, not field data.
+
+| Page | Performance | LCP | CLS | TBT |
+| --- | ---: | ---: | ---: | ---: |
+| Homepage `/` | 87 | 3.63 s | 0.002 | 55 ms |
+| BrandGuard hub | 72 | 6.91 s | 0.003 | 0 ms |
+| Universe `/universe/` | 58 | 6.46 s | 0.045 | 562 ms |
+| Search `/search/` | 95 | 2.42 s | 0.026 | 0 ms |
+
+### Mobile-only findings
+
+- **Universe is the mobile outlier:** performance is 58, LCP is 6.46 s, and
+  TBT is 562 ms. CLS remains below the 0.1 threshold, so the measured issue is
+  render and blocking cost rather than a new layout-shift regression.
+- **BrandGuard is slower than the desktop comparison:** performance is 72 and
+  LCP is 6.91 s. Its CLS and TBT remain low in this sample.
+- **Search is not a mobile regression in this run:** it scored 95 with LCP
+  below 2.5 s. The homepage remained near its desktop score at 87.
+- No visual identity changes were made in response to this measurement.
+
+The mobile run is repeatable with:
+
+```bash
+node scripts/lighthouse-routes.mjs --preset=mobile --date=2026-08-25
+```
+
+The runner keeps mobile reports in a `-mobile` dated directory and preserves
+the existing desktop command and output path.
+
 ## Visual reference set
 
 The committed reference images are in `assets/audit/visual-baseline/`:
