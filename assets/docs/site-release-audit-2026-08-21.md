@@ -68,6 +68,36 @@ These items require an environment with human-operated assistive technology or p
 - GitHub Pages’ repository environment and custom-domain DNS status require checking in the GitHub repository settings after the workflow runs.
 - External third-party links are syntax-checked but not all are fetched during CI, because availability and rate limits are outside the site’s control.
 
+## Spoken screen-reader verification — owner-supported checks
+
+**Verification date:** 2026-08-25
+**Required environments:** VoiceOver with Safari on macOS; NVDA with Firefox on Windows
+**Routes:** `/about/`, `/`, `/universe/`
+
+The owner-supported VoiceOver/Safari and NVDA/Firefox sessions could not be run
+in this environment. The available tooling is headless Chromium and cannot
+capture or validate spoken screen-reader output. The results below therefore
+describe the evidence status, not the expected markup behavior:
+
+| Check | Assistive technology / browser | Route | Spoken result | Evidence status |
+|---|---|---|---|---|
+| Consent banner heading and choice context | VoiceOver / Safari | `/about/` | No owner-operated session available; not heard | **Unknown** |
+| Consent banner heading and choice context | NVDA / Firefox | `/about/` | No owner-operated session available; not heard | **Unknown** |
+| Search result count after query changes | VoiceOver / Safari | `/` | No owner-operated session available; not heard | **Unknown** |
+| Search result count after query changes | NVDA / Firefox | `/` | No owner-operated session available; not heard | **Unknown** |
+| Theme control's new action/state | VoiceOver / Safari | `/` | No owner-operated session available; not heard | **Unknown** |
+| Navigation expanded/collapsed state | NVDA / Firefox | `/` | No owner-operated session available; not heard | **Unknown** |
+| Static Mermaid fallback orientation content | VoiceOver / Safari | `/universe/` | No owner-operated session available; not heard | **Unknown** |
+| Static Mermaid fallback orientation content | NVDA / Firefox | `/universe/` | No owner-operated session available; not heard | **Unknown** |
+
+**Disposition:** Confirmed spoken results: none. Confirmed spoken failures:
+none. Unknown spoken results: all eight owner-supported checks above. The
+Chromium matrix cited above confirms live DOM updates, focus behavior, and the
+no-JavaScript fallback only; it does not prove that a screen reader announces
+them understandably, promptly, or without duplication. This release review
+must not claim VoiceOver or NVDA accessibility evidence until a human-operated
+session records the actual spoken output.
+
 ## Local release commands
 
 ```bash
