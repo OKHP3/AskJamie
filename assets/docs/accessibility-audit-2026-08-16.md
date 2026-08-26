@@ -333,10 +333,12 @@ no-JavaScript fallback.
 
 ## 5. Assistive-technology verification matrix
 
-**Verification date:** 2026-08-24
+**Verification dates:** 2026-08-24 (Chromium keyboard/DOM matrix); 2026-08-26 (screen-reader session availability review)
 **Representative routes:** `/`, `/about/`, `/universe/`
 **Method:** Headless Chromium keyboard and DOM observation for browser-visible
-behavior. No VoiceOver or NVDA session was available in this environment.
+behavior, followed by an availability check for the required human-operated
+sessions. No macOS VoiceOver/Safari or Windows NVDA/Firefox session was
+available in this environment.
 
 The matrix deliberately separates confirmed browser behavior from spoken
 announcement evidence. `Unknown` is not a pass or a failure; it requires a
@@ -361,16 +363,38 @@ human-operated assistive-technology session.
 | Mermaid fallback | None; JavaScript disabled | Chromium 390px | `/universe/` | Static explanation and contact link remain visible | Fallback visible; one `/contact/` link present | **Confirmed**: no-JavaScript browser state |
 | Mermaid fallback announcement | VoiceOver or NVDA | Safari or Firefox | `/universe/` | Static fallback is read as useful orientation content | Not run in this environment | **Unknown** |
 
+### Human-operated spoken-output review — 2026-08-26
+
+The required VoiceOver/Safari-on-macOS and NVDA/Firefox-on-Windows sessions
+were not available in this headless Linux workspace. No spoken output was
+heard, so the fields below are **Unknown**, not inferred from the DOM or from
+Chromium behavior. In particular, understandability, timeliness, and lack of
+duplicate announcements remain unverified.
+
+| Check | Assistive technology | Browser | Route | Understandable | Timely | Not duplicated | Evidence status |
+|---|---|---|---|---|---|---|---|
+| Consent banner heading and choice context | VoiceOver | Safari (macOS) | `/about/` | Unknown — not heard | Unknown — not heard | Unknown — not heard | **Unknown** |
+| Consent banner heading and choice context | NVDA | Firefox (Windows) | `/about/` | Unknown — not heard | Unknown — not heard | Unknown — not heard | **Unknown** |
+| Search result count after query changes | VoiceOver | Safari (macOS) | `/` | Unknown — not heard | Unknown — not heard | Unknown — not heard | **Unknown** |
+| Search result count after query changes | NVDA | Firefox (Windows) | `/` | Unknown — not heard | Unknown — not heard | Unknown — not heard | **Unknown** |
+| Theme control's new action/state | VoiceOver | Safari (macOS) | `/` | Unknown — not heard | Unknown — not heard | Unknown — not heard | **Unknown** |
+| Theme control's new action/state | NVDA | Firefox (Windows) | `/` | Unknown — not heard | Unknown — not heard | Unknown — not heard | **Unknown** |
+| Navigation expanded/collapsed state | VoiceOver | Safari (macOS) | `/` | Unknown — not heard | Unknown — not heard | Unknown — not heard | **Unknown** |
+| Navigation expanded/collapsed state | NVDA | Firefox (Windows) | `/` | Unknown — not heard | Unknown — not heard | Unknown — not heard | **Unknown** |
+| Static Mermaid fallback orientation content | VoiceOver | Safari (macOS) | `/universe/` | Unknown — not heard | Unknown — not heard | Unknown — not heard | **Unknown** |
+| Static Mermaid fallback orientation content | NVDA | Firefox (Windows) | `/universe/` | Unknown — not heard | Unknown — not heard | Unknown — not heard | **Unknown** |
+
 ### Findings and owner action
 
 - **Confirmed failures:** None in the browser-observable matrix.
-- **Unresolved evidence:** VoiceOver/Safari and NVDA/Firefox spoken output for
-  the consent banner, search live region, theme state, navigation state, and
-  Mermaid fallback remains unknown.
-- **Required manual session:** On macOS, test VoiceOver with Safari on
-  `/about/` and `/`; on Windows, test NVDA with Firefox on `/about/`, `/`, and
-  `/universe/`. Record whether each expected announcement is understandable,
-  timely, and not duplicated.
+- **Unresolved evidence:** As reviewed on 2026-08-26, VoiceOver/Safari and
+  NVDA/Firefox spoken output for the consent banner, search live region, theme
+  state, navigation state, and Mermaid fallback remains unknown. No spoken
+  result can be classified as confirmed or failed without an actual session.
+- **Required manual session:** On macOS, test VoiceOver with Safari across
+  `/about/`, `/`, and `/universe/`; on Windows, test NVDA with Firefox across
+  `/about/`, `/`, and `/universe/`. Record whether each expected announcement
+  is understandable, timely, and not duplicated.
 - **Automation boundary:** Existing Playwright smoke checks remain authoritative
   for Mermaid rendering, the no-JavaScript fallback, search interaction, and
   theme behavior. They do not prove screen-reader audio output.

@@ -5,7 +5,7 @@
 
 ## Executive result
 
-**Status: Ready for publication after the workflow hardening in this review.**
+**Status: Conditional readiness; spoken screen-reader evidence remains outstanding.**
 
 The current site passed all available local and browser checks:
 
@@ -70,33 +70,37 @@ These items require an environment with human-operated assistive technology or p
 
 ## Spoken screen-reader verification — owner-supported checks
 
-**Verification date:** 2026-08-25
+**Verification date:** 2026-08-26
 **Required environments:** VoiceOver with Safari on macOS; NVDA with Firefox on Windows
 **Routes:** `/about/`, `/`, `/universe/`
 
 The owner-supported VoiceOver/Safari and NVDA/Firefox sessions could not be run
 in this environment. The available tooling is headless Chromium and cannot
-capture or validate spoken screen-reader output. The results below therefore
-describe the evidence status, not the expected markup behavior:
+capture or validate spoken screen-reader output. No spoken output was heard.
+The results below therefore describe the evidence status, not the expected
+markup behavior:
 
-| Check | Assistive technology / browser | Route | Spoken result | Evidence status |
-|---|---|---|---|---|
-| Consent banner heading and choice context | VoiceOver / Safari | `/about/` | No owner-operated session available; not heard | **Unknown** |
-| Consent banner heading and choice context | NVDA / Firefox | `/about/` | No owner-operated session available; not heard | **Unknown** |
-| Search result count after query changes | VoiceOver / Safari | `/` | No owner-operated session available; not heard | **Unknown** |
-| Search result count after query changes | NVDA / Firefox | `/` | No owner-operated session available; not heard | **Unknown** |
-| Theme control's new action/state | VoiceOver / Safari | `/` | No owner-operated session available; not heard | **Unknown** |
-| Navigation expanded/collapsed state | NVDA / Firefox | `/` | No owner-operated session available; not heard | **Unknown** |
-| Static Mermaid fallback orientation content | VoiceOver / Safari | `/universe/` | No owner-operated session available; not heard | **Unknown** |
-| Static Mermaid fallback orientation content | NVDA / Firefox | `/universe/` | No owner-operated session available; not heard | **Unknown** |
+| Check | Assistive technology / browser | Route | Understandable | Timely | Not duplicated | Evidence status |
+|---|---|---|---|---|---|---|
+| Consent banner heading and choice context | VoiceOver / Safari | `/about/` | Unknown — not heard | Unknown — not heard | Unknown — not heard | **Unknown** |
+| Consent banner heading and choice context | NVDA / Firefox | `/about/` | Unknown — not heard | Unknown — not heard | Unknown — not heard | **Unknown** |
+| Search result count after query changes | VoiceOver / Safari | `/` | Unknown — not heard | Unknown — not heard | Unknown — not heard | **Unknown** |
+| Search result count after query changes | NVDA / Firefox | `/` | Unknown — not heard | Unknown — not heard | Unknown — not heard | **Unknown** |
+| Theme control's new action/state | VoiceOver / Safari | `/` | Unknown — not heard | Unknown — not heard | Unknown — not heard | **Unknown** |
+| Theme control's new action/state | NVDA / Firefox | `/` | Unknown — not heard | Unknown — not heard | Unknown — not heard | **Unknown** |
+| Navigation expanded/collapsed state | VoiceOver / Safari | `/` | Unknown — not heard | Unknown — not heard | Unknown — not heard | **Unknown** |
+| Navigation expanded/collapsed state | NVDA / Firefox | `/` | Unknown — not heard | Unknown — not heard | Unknown — not heard | **Unknown** |
+| Static Mermaid fallback orientation content | VoiceOver / Safari | `/universe/` | Unknown — not heard | Unknown — not heard | Unknown — not heard | **Unknown** |
+| Static Mermaid fallback orientation content | NVDA / Firefox | `/universe/` | Unknown — not heard | Unknown — not heard | Unknown — not heard | **Unknown** |
 
 **Disposition:** Confirmed spoken results: none. Confirmed spoken failures:
-none. Unknown spoken results: all eight owner-supported checks above. The
-Chromium matrix cited above confirms live DOM updates, focus behavior, and the
-no-JavaScript fallback only; it does not prove that a screen reader announces
-them understandably, promptly, or without duplication. This release review
-must not claim VoiceOver or NVDA accessibility evidence until a human-operated
-session records the actual spoken output.
+none. Unknown spoken results: all ten owner-supported checks above. The
+2026-08-26 review confirms only that the required sessions were unavailable;
+the Chromium matrix cited above confirms live DOM updates, focus behavior, and
+the no-JavaScript fallback only. It does not prove that a screen reader
+announces them understandably, promptly, or without duplication. This release
+review must not claim VoiceOver or NVDA accessibility evidence until a
+human-operated session records the actual spoken output.
 
 ## Local release commands
 
