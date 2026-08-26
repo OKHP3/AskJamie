@@ -102,6 +102,28 @@ announces them understandably, promptly, or without duplication. This release
 review must not claim VoiceOver or NVDA accessibility evidence until a
 human-operated session records the actual spoken output.
 
+### Release-gate rerun — 2026-08-25
+
+The automated release checks were rerun:
+
+| Check | Result |
+|---|---|
+| HTML/site validator | 26 pages, all clean |
+| Internal link checker | 713 internal links, 0 broken |
+| Regression tests | 28 passed |
+| Search-index freshness | Current; 24 indexed public pages |
+| Flesch-Kincaid/site audit | 0 issues |
+| Static responsive QA | 26 pages × 8 viewports = 208/208 |
+| Public artifact preparation | 208 deployable files |
+
+No human-operated VoiceOver/Safari or NVDA/Firefox results were supplied for
+this rerun. All ten spoken checks remain **Unknown** for understandability,
+timeliness, and non-duplication. Release disposition therefore remains
+**Conditional readiness; spoken screen-reader evidence is outstanding**. The
+site must not be described as having a full accessibility pass until the two
+human sessions cover `/about/`, `/`, and `/universe/` and their results are
+recorded.
+
 ## Local release commands
 
 ```bash

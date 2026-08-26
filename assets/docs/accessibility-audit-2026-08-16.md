@@ -398,3 +398,26 @@ duplicate announcements remain unverified.
 - **Automation boundary:** Existing Playwright smoke checks remain authoritative
   for Mermaid rendering, the no-JavaScript fallback, search interaction, and
   theme behavior. They do not prove screen-reader audio output.
+
+### Release-gate rerun — 2026-08-25
+
+The automated release checks were rerun while awaiting the required
+human-operated sessions:
+
+| Check | Result |
+|---|---|
+| HTML/site validator | 26 pages, all clean |
+| Internal link checker | 713 internal links, 0 broken |
+| Regression tests | 28 passed |
+| Search-index freshness | Current; 24 indexed public pages |
+| Flesch-Kincaid/site audit | 0 issues |
+| Static responsive QA | 26 pages × 8 viewports = 208/208 |
+| Public artifact preparation | 208 deployable files |
+
+No VoiceOver/Safari or NVDA/Firefox session results were supplied for this
+rerun. The ten human-operated spoken-output checks in the matrix above
+therefore remain **Unknown** for understandability, timeliness, and
+non-duplication. The automated rerun does not change that evidence status.
+The accessibility verdict remains **CONDITIONAL PASS**; this record must not
+be promoted to a full accessibility pass until both human-operated sessions
+are completed and recorded.
