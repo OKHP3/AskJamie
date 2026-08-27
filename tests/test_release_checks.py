@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import importlib.util
 import json
 import os
 import re
@@ -101,6 +102,60 @@ def test_search_index_rebuild_is_stable_when_content_is_unchanged():
 
     assert result.returncode == 0, result.stderr
     assert index.read_text(encoding="utf-8") == before
+
+
+def test_site_audit_survives_disappearing_workspace_directory(tmp_path, monkeypatch):
+    audit_path = ROOT / "scripts/audit-site.py"
+    spec = importlib.util.spec_from_file_location("audit_site", audit_path)
+    assert spec and spec.loader
+    audit_site = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(audit_site)
+
+    (tmp_path / "index.html").write_text(
+        "<html><body><h1>Public page</h1></body></html>",
+        encoding="utf-8",
+    )
+    (tmp_path / "extra.html").write_text(
+        "<html><body><h1>Another public page</h1></body></html>",
+        encoding="utf-8",
+    )
+    disappearing_directory = tmp_path / ".local/secondary_skills/recipe-creator"
+    disappearing_directory.mkdir(parents=True)
+    (tmp_path / "assets/data").mkdir(parents=True)
+    (tmp_path / "assets/data/search-index.json").write_text(
+        '{"pages": [{"url": "https://askjamie.bot/"}]}',
+        encoding="utf-8",
+    )
+    (tmp_path / "sitemap.xml").write_text(
+        """<?xml version="1.0" encoding="UTF-8"?>
+        <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+          <url><loc>https://askjamie.bot/</loc></url>
+        </urlset>
+        """,
+        encoding="utf-8",
+    )
+
+    real_scandir = os.scandir
+
+    def flaky_scandir(path):
+        if Path(path) == disappearing_directory:
+            raise FileNotFoundError(
+                2, "No such file or directory", str(disappearing_directory)
+            )
+        return real_scandir(path)
+
+    monkeypatch.setattr(audit_site, "ROOT", tmp_path)
+    monkeypatch.setattr(audit_site.os, "scandir", flaky_scandir)
+    monkeypatch.setattr(sys, "argv", ["audit-site.py", "--quiet"])
+
+    assert audit_site.main() == 1
+    report = (tmp_path / "assets/docs/audit-report.md").read_text(
+        encoding="utf-8"
+    )
+    assert "**Pages scanned:** 2" in report
+    assert "Missing <title>" in report
+    assert "Pages on disk not listed in sitemap.xml" in report
+    assert "Page on disk not in search index: extra.html" in report
 
 
 def test_pages_artifact_excludes_repository_only_files(tmp_path):

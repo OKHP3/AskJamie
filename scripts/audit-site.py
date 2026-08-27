@@ -69,13 +69,15 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import fnmatch
 import json
+import os
 import re
 import sys
 import urllib.parse
 from html.parser import HTMLParser
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Dict, Iterator, List, Tuple
 from xml.etree import ElementTree as ET
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -166,12 +168,34 @@ def fk_grade(html: str) -> float:
 
 
 def iter_html_files() -> List[Path]:
-    out: List[Path] = []
-    for p in ROOT.rglob("*.html"):
-        if any(part in EXCLUDE_DIRS for part in p.parts):
-            continue
-        out.append(p)
-    return sorted(out)
+    return sorted(
+        path for path in iter_public_files()
+        if path.name.endswith(".html")
+    )
+
+
+def iter_public_files() -> Iterator[Path]:
+    """Yield files in the public site tree without entering workspace paths.
+
+    ``Path.rglob`` discovers excluded directories before the caller can filter
+    them.  That makes a scan fail if a workspace-managed directory disappears
+    while it is being traversed.  ``os.walk`` lets us prune those directories
+    in top-down mode and report transient access errors through ``onerror``.
+    """
+    def ignore_scan_error(_error: OSError) -> None:
+        # Workspace provisioning can remove an auxiliary directory between
+        # os.scandir calls.  The public tree remains auditable without it.
+        return None
+
+    for root, directories, filenames in os.walk(
+        ROOT, topdown=True, onerror=ignore_scan_error
+    ):
+        directories[:] = sorted(
+            directory for directory in directories
+            if directory not in EXCLUDE_DIRS
+        )
+        for filename in sorted(filenames):
+            yield Path(root) / filename
 
 
 class PageParser(HTMLParser):
@@ -531,10 +555,8 @@ CRUFT_PATTERNS = ("*.bak", "*.orig", "*.swp", "*.swo", ".DS_Store", "Thumbs.db",
 def scan_repo_cruft() -> List[str]:
     """Find leftover backup / OS-junk files in production directories."""
     issues: List[str] = []
-    for pattern in CRUFT_PATTERNS:
-        for p in ROOT.rglob(pattern):
-            if any(part in EXCLUDE_DIRS for part in p.parts):
-                continue
+    for p in iter_public_files():
+        if any(fnmatch.fnmatch(p.name, pattern) for pattern in CRUFT_PATTERNS):
             issues.append(f"Repo cruft (delete me): {p.relative_to(ROOT).as_posix()}")
     return issues
 
