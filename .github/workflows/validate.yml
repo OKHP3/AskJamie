@@ -34,6 +34,7 @@ jobs:
         run: |
           pip install beautifulsoup4 "pytest>=8"
           npm ci
+          node --input-type=module -e "import('playwright').then(() => console.log('Playwright dependency resolved from node_modules.'))"
           npx playwright install --with-deps chromium
 
       - name: Run site validator

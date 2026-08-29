@@ -27,6 +27,7 @@ jobs:
       - name: Install browser test dependencies
         run: |
           npm ci
+          node --input-type=module -e "import('playwright').then(() => console.log('Playwright dependency resolved from node_modules.'))"
           npx playwright install --with-deps chromium
 
       - name: Run smoke test against published site
