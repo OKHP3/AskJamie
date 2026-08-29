@@ -109,7 +109,7 @@ def build_policies() -> dict[str, str]:
         + "; style-src-attr 'unsafe-hashes' "
         + " ".join(sorted(style_hashes["standard"]))
         + "; font-src 'self'; "
-        "img-src 'self' data: https:; "
+        "img-src 'self' data:; "
         "connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://www.googletagmanager.com; "
         "object-src 'none'; base-uri 'self'; form-action 'self'; "
         "manifest-src 'self'; upgrade-insecure-requests"
@@ -152,7 +152,7 @@ def build_policies() -> dict[str, str]:
             + "; script-src-attr 'none'; "
             + style_directives
             + "font-src 'self'; "
-            "img-src 'self' data: https:; "
+            "img-src 'self' data:; "
             "connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://www.googletagmanager.com; "
             + (f"frame-src 'self' {frame}; " if frame else "")
             + "object-src 'none'; base-uri 'self'; form-action 'self'; "

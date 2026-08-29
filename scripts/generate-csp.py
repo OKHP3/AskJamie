@@ -89,7 +89,7 @@ def build_edge_policy() -> str:
         + " ".join(sorted(scripts))
         + "; script-src-attr 'none'; style-src 'self' 'unsafe-inline'; "
         "style-src-attr 'unsafe-inline'; font-src 'self'; "
-        "img-src 'self' data: https:; "
+        "img-src 'self' data:; "
         "connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://www.googletagmanager.com; "
         "object-src 'none'; base-uri 'self'; form-action 'self'; "
         "manifest-src 'self'; upgrade-insecure-requests"
