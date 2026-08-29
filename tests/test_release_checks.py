@@ -175,6 +175,7 @@ def test_pages_artifact_excludes_repository_only_files(tmp_path):
     assert result.returncode == 0, result.stderr
     assert (output / "index.html").exists()
     assert (output / "assets/js/app.js").exists()
+    assert (output / "assets/fonts/open-sans-400-latin.woff2").exists()
     assert not (output / ".github").exists()
     assert not (output / "scripts").exists()
     assert not (output / "replit.md").exists()
