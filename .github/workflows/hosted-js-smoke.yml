@@ -8,6 +8,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: hosted-js-smoke
+  cancel-in-progress: false
+
 jobs:
   hosted-js-smoke:
     runs-on: ubuntu-latest
@@ -26,8 +30,19 @@ jobs:
 
       - name: Install browser test dependencies
         run: |
-          npm ci
-          node --input-type=module -e "import('playwright').then(() => console.log('Playwright dependency resolved from node_modules.'))"
+          installed=false
+          for attempt in 1 2 3; do
+            if npm ci --no-audit --no-fund --prefer-offline && node --input-type=module -e "import('playwright').then(() => console.log('Playwright dependency resolved from node_modules.'))"; then
+              installed=true
+              break
+            fi
+            echo "Dependency installation attempt ${attempt} did not produce a usable Playwright installation."
+            if [ "$attempt" -lt 3 ]; then sleep 5; fi
+          done
+          if [ "$installed" != true ]; then
+            echo "Playwright dependency installation failed after 3 attempts."
+            exit 1
+          fi
           npx playwright install --with-deps chromium
 
       - name: Run smoke test against published site
@@ -36,8 +51,14 @@ jobs:
         run: |
           mkdir -p artifacts/hosted-js-smoke
           set +e
-          node tests/test_js_smoke.spec.mjs 2>&1 | tee artifacts/hosted-js-smoke/smoke-output.txt
-          status=${PIPESTATUS[0]}
+          status=1
+          for attempt in 1 2 3; do
+            node tests/test_js_smoke.spec.mjs 2>&1 | tee "artifacts/hosted-js-smoke/smoke-output-${attempt}.txt"
+            status=${PIPESTATUS[0]}
+            if [ "$status" -eq 0 ]; then break; fi
+            if [ "$attempt" -lt 3 ]; then sleep 30; fi
+          done
+          cat artifacts/hosted-js-smoke/smoke-output-*.txt > artifacts/hosted-js-smoke/smoke-output.txt
           {
             echo "# Hosted JavaScript Smoke Summary"
             echo

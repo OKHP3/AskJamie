@@ -33,8 +33,19 @@ jobs:
       - name: Install dependencies
         run: |
           pip install beautifulsoup4 "pytest>=8"
-          npm ci
-          node --input-type=module -e "import('playwright').then(() => console.log('Playwright dependency resolved from node_modules.'))"
+          installed=false
+          for attempt in 1 2 3; do
+            if npm ci --no-audit --no-fund --prefer-offline && node --input-type=module -e "import('playwright').then(() => console.log('Playwright dependency resolved from node_modules.'))"; then
+              installed=true
+              break
+            fi
+            echo "Dependency installation attempt ${attempt} did not produce a usable Playwright installation."
+            if [ "$attempt" -lt 3 ]; then sleep 5; fi
+          done
+          if [ "$installed" != true ]; then
+            echo "Playwright dependency installation failed after 3 attempts."
+            exit 1
+          fi
           npx playwright install --with-deps chromium
 
       - name: Run site validator
