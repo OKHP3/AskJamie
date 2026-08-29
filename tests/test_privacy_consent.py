@@ -75,10 +75,11 @@ def test_public_csp_uses_only_the_scoped_theme_script_hash():
             base64.b64decode(theme_hash.removeprefix("sha256-"))
         ), f"theme hash drifted on {path.relative_to(ROOT)}"
 
-    headers = (ROOT / "_headers").read_text(encoding="utf-8")
-    report_policy = next(
-        line for line in headers.splitlines()
-        if line.strip().startswith("Content-Security-Policy-Report-Only:")
-    )
-    assert "'unsafe-inline'" not in report_policy.split("script-src", 1)[1].split(";", 1)[0]
-    assert theme_hash in report_policy
+    # A Content-Security-Policy-Report-Only header used to trial this same
+    # hash-scoped, no-'unsafe-inline' script-src before it was rolled out.
+    # It was retired when scripts/csp.py + scripts/generate-csp.py (the
+    # shared policy generator ported from overkill-hill) started producing
+    # _headers directly: the enforced policy above already is the hardened
+    # state the report-only header used to preview, and neither
+    # overkill-hill nor glee-fullytools carry a report-only header or test
+    # for one. Nothing left to assert here.
