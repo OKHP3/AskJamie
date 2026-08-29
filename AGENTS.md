@@ -10,7 +10,9 @@ boundaries. Never invent credentials or secrets.
 
 ## 1. Target and scope
 
-- Repository root: `/Volumes/OKH-Local/04_GitHub_Mirrors/AskJamie`.
+- Repository root:
+  - Windows: `C:\Users\jamie\OKH-Local\04_GitHub_Mirrors\askjamie`
+  - Mac: `/Volumes/OKH-Local/04_GitHub_Mirrors/AskJamie`.
 - Git repository: `OKHP3/AskJamie`, with `main` tracking `origin/main`.
 - Site origin: `https://askjamie.bot`.
 - Deployment model: static files from the repository root. There is no
