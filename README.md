@@ -52,6 +52,18 @@ scripts/
   enhance-pages.py     # Bulk-edit tool for site-wide passes
 ```
 
+## Mermaid Runtime
+
+The `universe/` diagram runs on Mermaid, vendored locally at
+`assets/vendor/mermaid/` (not loaded from a CDN) so rendering can't break on
+someone else's release schedule or outage. `assets/vendor/mermaid/VERSION`
+pins the exact release; a daily `mermaid-version-watch` GitHub Action
+compares it against the latest npm release and opens/updates a tracking
+issue when the vendored copy falls behind -- re-vendoring is always a
+deliberate, reviewed step, never automatic. `scripts/validate-site.py`
+checks the VERSION pin matches the vendored bundle and that every page
+rendering a live diagram carries a CSP class that actually allows Mermaid's
+runtime-generated inline styles (see `scripts/csp.py`).
 ## What It Builds
 
 - **Lens System** — a modular portfolio of AI case studies and GPT prototypes, each solving a real-world problem

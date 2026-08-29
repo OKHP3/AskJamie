@@ -31,9 +31,14 @@ from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import urlparse, unquote
 
+from csp import build_policies, page_class
+
 ROOT = Path(__file__).resolve().parent.parent
 SKIP_DIRS = {".local", ".git", "node_modules", "attached_assets", "dist", "templates", ".agents"}
 SITEMAP = ROOT / "sitemap.xml"
+MERMAID_VENDOR_ROOT = ROOT / "assets/vendor/mermaid"
+MERMAID_VENDOR_ENTRY = MERMAID_VENDOR_ROOT / "mermaid.esm.min.mjs"
+MERMAID_VERSION_FILE = MERMAID_VENDOR_ROOT / "VERSION"
 SITE_ORIGIN = "https://askjamie.bot"
 GA4_ID = "G-MT9Y10YY0G"
 DISALLOWED_FONT_HOSTS = frozenset({"fonts.googleapis.com", "fonts.gstatic.com"})
@@ -495,6 +500,96 @@ def check_governance_docs_consistency() -> list[Finding]:
             ))
 
     return findings
+def validate_mermaid_version_pin(pages: list[Path]) -> list[Finding]:
+    """Confirm the pinned VERSION file matches the vendored runtime bundle.
+
+    This does not check npm for a newer release -- that is the job of the
+    scheduled "mermaid-version-watch" GitHub Action, which needs network
+    access this local validator does not assume. This check only confirms
+    internal consistency: the version this repo claims to be running is the
+    version actually sitting in assets/vendor/mermaid/, so a partial or
+    forgotten re-vendor step cannot silently pass validation.
+    """
+    findings: list[Finding] = []
+    rel_version_file = MERMAID_VERSION_FILE.relative_to(ROOT).as_posix()
+
+    if not MERMAID_VERSION_FILE.is_file():
+        findings.append(Finding(
+            "ERROR", rel_version_file,
+            "Mermaid VERSION pin file is missing; create it with the vendored "
+            "release number",
+        ))
+        return findings
+
+    pinned = MERMAID_VERSION_FILE.read_text(encoding="utf-8").strip()
+    if not re.fullmatch(r"\d+\.\d+\.\d+", pinned):
+        findings.append(Finding(
+            "ERROR", rel_version_file,
+            f"Mermaid VERSION pin {pinned!r} is not a plain semver string (X.Y.Z)",
+        ))
+        return findings
+
+    if not MERMAID_VENDOR_ENTRY.is_file():
+        findings.append(Finding(
+            "ERROR", str(MERMAID_VENDOR_ENTRY.relative_to(ROOT)),
+            "vendored Mermaid entry module is missing",
+        ))
+        return findings
+
+    bundle_text = MERMAID_VENDOR_ENTRY.read_text(encoding="utf-8", errors="replace")
+    if pinned not in bundle_text:
+        findings.append(Finding(
+            "ERROR", rel_version_file,
+            f"Mermaid VERSION pin ({pinned}) was not found inside "
+            f"{MERMAID_VENDOR_ENTRY.relative_to(ROOT).as_posix()}; the pin file "
+            "and the vendored runtime have drifted out of sync",
+        ))
+
+    return findings
+
+
+def _page_renders_mermaid(raw: str) -> bool:
+    return bool(re.search(r"""class=["\'][^"\']*\bmermaid\b""", raw, re.IGNORECASE))
+
+
+def validate_mermaid_csp_alignment(pages: list[Path]) -> list[Finding]:
+    """Flag pages whose CSP class cannot legally style Mermaid's own output.
+
+    Mermaid renders inline style="..." attributes and <style> blocks at
+    runtime, per diagram, per page load. scripts/csp.py computes the
+    style-src / style-src-attr allowlists by statically scanning HTML, so a
+    hash-only allowlist can never cover output Mermaid only generates in the
+    browser. This is a consistency safety net: csp.py's "diagram" /
+    "embed-diagram" classes are designed to grant a scoped 'unsafe-inline'
+    to every page that needs it, so this should always come back clean; it
+    exists to catch a future page picking up a live diagram without being
+    correctly classified.
+    """
+    findings: list[Finding] = []
+    policies = build_policies()
+    for path in pages:
+        raw = path.read_text(encoding="utf-8", errors="replace")
+        if not _page_renders_mermaid(raw):
+            continue
+        rel = path.relative_to(ROOT).as_posix()
+        kind = page_class(path)
+        policy = policies.get(kind, "")
+        style_attr_directive = next(
+            (part.strip() for part in policy.split(";")
+             if part.strip().startswith("style-src-attr")),
+            "",
+        )
+        if "unsafe-inline" not in style_attr_directive:
+            findings.append(Finding(
+                "WARN", rel,
+                f"page renders live Mermaid diagrams under the {kind!r} CSP "
+                "class, which only allow-lists static style hashes; Mermaid's "
+                "runtime-generated inline styles will be blocked and diagrams "
+                "will render without theme styling",
+            ))
+    return findings
+
+
 def main() -> int:
     sitemap_urls = load_sitemap_urls()
     if not sitemap_urls:
@@ -506,6 +601,8 @@ def main() -> int:
     all_findings: list[Finding] = []
     for path in pages:
         all_findings.extend(validate_page(path, sitemap_urls))
+    all_findings.extend(validate_mermaid_version_pin(pages))
+    all_findings.extend(validate_mermaid_csp_alignment(pages))
     for path in find_stylesheet_files():
         raw = path.read_text(encoding="utf-8", errors="replace")
         all_findings.extend(check_external_font_origins(path, raw))
