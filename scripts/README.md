@@ -14,6 +14,7 @@ cannot be mistaken for current pipeline commands.
 | `check-links.py` | active | Check internal and external links |
 | `prepare-pages-artifact.py` | active | Build the allowlisted static release artifact |
 | `validate-site.py` | active | Structural site validation, including external-font-origin regression checks |
+| `sync-foundation-files.py` | active | 3-way sync of theme.css/app.js/mermaid-init.js across the three sibling repos |
 | `responsive-qa.mjs` | active | Responsive QA entry point |
 | `post-merge.sh` | active | Post-merge rebuild and validation hook |
 | `capture-visual-baseline.mjs` | active | Capture the dated visual reference set |
