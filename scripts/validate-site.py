@@ -344,8 +344,8 @@ def validate_page(path: Path, sitemap_urls: set[str]) -> list[Finding]:
     rel = path.relative_to(ROOT).as_posix()
     raw = path.read_text(encoding="utf-8", errors="replace")
 
-    # GA4 configuration or the explicit consent-gated loader marker. The
-    # latter is required on production pages so analytics cannot run eagerly.
+    # GA4 configuration must be present on every production page (loaded
+    # unconditionally, same pattern as overkill-hill and glee-fully.tools).
     consent_marker = "Analytics loads only after visitor consent via assets/js/app.js."
     if GA4_ID not in raw and consent_marker not in raw:
         findings.append(Finding("WARN", rel, f"GA4 configuration ({GA4_ID}) or consent loader marker not found"))
