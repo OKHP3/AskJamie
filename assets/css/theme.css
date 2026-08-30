@@ -1,5 +1,3 @@
-@import url("/assets/css/fonts.css");
-
 /* OverKill Hill P³ — Industrial Blueprint Theme
    Shared layout + motion across overkillhill.com, glee-fully.tools, and askjamie.bot.
 
@@ -424,92 +422,6 @@ button {
 .btn-quiet:hover {
   border-color: var(--color-accent);
   color: var(--color-accent);
-}
-
-/* Privacy consent: intentionally first-party, compact, and keyboard accessible. */
-.privacy-consent {
-  position: fixed;
-  z-index: 1100;
-  right: 1rem;
-  bottom: 1rem;
-  left: 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1.25rem;
-  max-width: 72rem;
-  margin: 0 auto;
-  padding: 1rem 1.25rem;
-  color: var(--okh-espresso);
-  background: var(--okh-paper);
-  border: 2px solid var(--okh-teal);
-  border-radius: var(--radius-md);
-  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.3);
-}
-
-.privacy-consent[hidden] {
-  display: none;
-}
-
-.privacy-consent h2 {
-  margin-bottom: 0.25rem;
-  color: var(--okh-teal);
-  font-size: 1.1rem;
-}
-
-.privacy-consent p {
-  max-width: 52rem;
-  margin-bottom: 0.25rem;
-  font-size: 0.9rem;
-}
-
-.privacy-consent a {
-  color: var(--okh-teal);
-  font-size: 0.85rem;
-  font-weight: 600;
-  text-decoration: underline;
-}
-
-.privacy-consent-actions {
-  display: flex;
-  flex-shrink: 0;
-  gap: 0.6rem;
-  align-items: center;
-}
-
-.privacy-consent-actions .btn {
-  white-space: nowrap;
-}
-
-.privacy-settings-link {
-  margin-left: 1rem;
-  padding: 0;
-  color: inherit;
-  background: transparent;
-  border: 0;
-  font: inherit;
-  text-decoration: underline;
-  cursor: pointer;
-}
-
-.privacy-settings-link:hover,
-.privacy-settings-link:focus-visible {
-  color: var(--okh-orange);
-}
-
-@media (max-width: 700px) {
-  .privacy-consent {
-    display: block;
-    padding: 1rem;
-  }
-
-  .privacy-consent-actions {
-    margin-top: 0.75rem;
-  }
-
-  .privacy-consent-actions .btn {
-    flex: 1;
-  }
 }
 
 /* Screen-reader-only text (for buttons like the mobile nav toggle) */

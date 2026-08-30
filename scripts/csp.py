@@ -104,12 +104,12 @@ def build_policies() -> dict[str, str]:
         "script-src 'self' https://www.googletagmanager.com "
         + " ".join(sorted(hashes["standard"]))
         + "; script-src-attr 'none'; "
-        "style-src 'self' "
+        "style-src 'self' https://fonts.googleapis.com "
         + " ".join(sorted(style_hashes["standard"]))
         + "; style-src-attr 'unsafe-hashes' "
         + " ".join(sorted(style_hashes["standard"]))
-        + "; font-src 'self'; "
-        "img-src 'self' data: https:; "
+        + "; font-src 'self' data: https://fonts.gstatic.com; "
+        "img-src 'self' data:; "
         "connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://www.googletagmanager.com; "
         "object-src 'none'; base-uri 'self'; form-action 'self'; "
         "manifest-src 'self'; upgrade-insecure-requests"
@@ -134,12 +134,12 @@ def build_policies() -> dict[str, str]:
     for kind, frame, diagram_style in class_config:
         if diagram_style:
             style_directives = (
-                "style-src 'self' 'unsafe-inline'; "
+                "style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; "
                 "style-src-attr 'unsafe-inline'; "
             )
         else:
             style_directives = (
-                "style-src 'self' "
+                "style-src 'self' https://fonts.googleapis.com "
                 + " ".join(sorted(style_hashes[kind]))
                 + "; style-src-attr 'unsafe-hashes' "
                 + " ".join(sorted(style_hashes[kind]))
@@ -151,8 +151,8 @@ def build_policies() -> dict[str, str]:
             + " ".join(sorted(hashes[kind]))
             + "; script-src-attr 'none'; "
             + style_directives
-            + "font-src 'self'; "
-            "img-src 'self' data: https:; "
+            + "font-src 'self' data: https://fonts.gstatic.com; "
+            "img-src 'self' data:; "
             "connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://www.googletagmanager.com; "
             + (f"frame-src 'self' {frame}; " if frame else "")
             + "object-src 'none'; base-uri 'self'; form-action 'self'; "

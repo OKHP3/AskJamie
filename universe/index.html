@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.googletagmanager.com 'sha256-9leCdhSeX49HW/R2aDl+OA5QPl/ueIkIjNdeDmy3jz4=' 'sha256-eoZKPPj7R1opAA3EaZUGTmO56gm1hhyiyo8phdpFl9c=' 'sha256-s+uZi/++imRQEO/nQ3zQm3XzyBrdQW1mEkR91SxwFOE='; script-src-attr 'none'; style-src 'self' 'unsafe-inline'; style-src-attr 'unsafe-inline'; font-src 'self'; img-src 'self' data: https:; connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://www.googletagmanager.com; object-src 'none'; base-uri 'self'; form-action 'self'; manifest-src 'self'; upgrade-insecure-requests" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.googletagmanager.com 'sha256-9leCdhSeX49HW/R2aDl+OA5QPl/ueIkIjNdeDmy3jz4=' 'sha256-9oH6vwN/ru4YJB+5kmdwnRplNe4S0hXOQm253UyBYBw=' 'sha256-eoZKPPj7R1opAA3EaZUGTmO56gm1hhyiyo8phdpFl9c=' 'sha256-s+uZi/++imRQEO/nQ3zQm3XzyBrdQW1mEkR91SxwFOE='; script-src-attr 'none'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; style-src-attr 'unsafe-inline'; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://www.googletagmanager.com; object-src 'none'; base-uri 'self'; form-action 'self'; manifest-src 'self'; upgrade-insecure-requests" />
 <!-- ========================================
        METADATA: Primary Title & Description
        ======================================== -->
@@ -72,6 +72,9 @@
     <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin />
     <link rel="preload" href="/assets/css/theme.css" as="style" />
     <script>!function(){var s=localStorage.getItem("okh-theme");document.documentElement.setAttribute("data-theme",s==="dark"||(s!=="light"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches)?"dark":"light")}();</script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Open+Sans:wght@400;600&family=Kalam:wght@400&display=swap" />
     <link rel="stylesheet" href="/assets/css/theme.css" />
 
       <!-- BreadcrumbList JSON-LD (v0.5) -->
@@ -95,7 +98,14 @@
   ]
 }
     </script>
-      <!-- Analytics loads only after visitor consent via assets/js/app.js. -->
+      <!-- Google tag (gtag.js) -->
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-MT9Y10YY0G"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-MT9Y10YY0G');
+      </script>
   </head>
 
   <body class="askjamie-main" data-theme="light">
