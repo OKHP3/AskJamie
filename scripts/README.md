@@ -69,3 +69,12 @@ and Kalam. The page CSP explicitly allows `fonts.googleapis.com` for the
 stylesheet and `fonts.gstatic.com` for the resulting font files. The static
 site validator checks the page structure and generated CSP alignment; it does
 not reject those declared font origins.
+
+## Provenance
+
+This active/reference-only/retired classification, and the `scripts/archive/`
+convention, were ported to `overkill-hill/scripts/README.md` and
+`glee-fullytools/scripts/README.md` on 2026-08-30 -- both sibling repos now
+use this same scheme for their own `scripts/` directories. See
+`overkill-hill/docs/sxs-infrastructure-audit-2026-08-29.md` for the
+cross-repo classification evidence.
