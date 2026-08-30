@@ -586,7 +586,7 @@ def reconcile_search_index(html_files: List[Path]) -> List[str]:
     if not idx.exists():
         return ["search-index.json missing"]
     try:
-        data = json.loads(idx.read_text())
+        data = json.loads(idx.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
         return [f"search-index.json is unreadable: {exc}"]
     try:
@@ -693,10 +693,21 @@ def render_report(per_page: Dict[str, List[str]],
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--report", default="assets/docs/audit-report.md",
-                        help="Path to write the Markdown report.")
+                        help="Path to write the Markdown report. Relative paths are rooted at the repository.")
     parser.add_argument("--quiet", action="store_true",
                         help="Suppress per-page console output.")
     args = parser.parse_args()
+
+    # The report includes deliberate Unicode such as check marks, warning
+    # markers, and the FK inequality. Reconfigure console streams when the
+    # host supports it so Windows' legacy code pages do not crash the audit.
+    for stream in (sys.stdout, sys.stderr):
+        reconfigure = getattr(stream, "reconfigure", None)
+        if reconfigure:
+            try:
+                reconfigure(encoding="utf-8", errors="replace")
+            except (OSError, ValueError):
+                pass
 
     html_files = iter_html_files()
     per_page: Dict[str, List[str]] = {}
@@ -724,10 +735,17 @@ def main() -> int:
 
     report = render_report(per_page, sitemap_missing_disk, disk_missing_sitemap,
                            search_issues, fk_scores)
-    out = ROOT / args.report
+    out = Path(args.report).expanduser()
+    if not out.is_absolute():
+        out = ROOT / out
+    out = out.resolve()
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(report, encoding="utf-8")
-    print(f"\nReport written to {out.relative_to(ROOT)}")
+    try:
+        display_out = out.relative_to(ROOT).as_posix()
+    except ValueError:
+        display_out = str(out)
+    print(f"\nReport written to {display_out}")
 
     total = sum(len(v) for v in per_page.values()) + len(sitemap_missing_disk) + \
             len(disk_missing_sitemap) + len(search_issues)

@@ -158,6 +158,43 @@ def test_site_audit_survives_disappearing_workspace_directory(tmp_path, monkeypa
     assert "Page on disk not in search index: extra.html" in report
 
 
+def test_site_audit_accepts_absolute_utf8_report_path(tmp_path, monkeypatch):
+    audit_path = ROOT / "scripts/audit-site.py"
+    spec = importlib.util.spec_from_file_location("audit_site_absolute", audit_path)
+    assert spec and spec.loader
+    audit_site = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(audit_site)
+
+    (tmp_path / "index.html").write_text(
+        "<html><body><h1>Résumé</h1></body></html>",
+        encoding="utf-8",
+    )
+    (tmp_path / "assets/data").mkdir(parents=True)
+    (tmp_path / "assets/data/search-index.json").write_text(
+        '{"pages": [{"url": "https://askjamie.bot/", "title": "Résumé"}]}',
+        encoding="utf-8",
+    )
+    (tmp_path / "sitemap.xml").write_text(
+        """<?xml version="1.0" encoding="UTF-8"?>
+        <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+          <url><loc>https://askjamie.bot/</loc></url>
+        </urlset>
+        """,
+        encoding="utf-8",
+    )
+    report_path = tmp_path / "reports" / "audit-report.md"
+
+    monkeypatch.setattr(audit_site, "ROOT", tmp_path)
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["audit-site.py", "--quiet", "--report", str(report_path)],
+    )
+
+    assert audit_site.main() == 1
+    assert report_path.read_text(encoding="utf-8").startswith("# AskJamie.bot")
+
+
 def test_pages_artifact_excludes_repository_only_files(tmp_path):
     output = tmp_path / "dist-pages"
     result = subprocess.run(
