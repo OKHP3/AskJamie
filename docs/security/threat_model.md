@@ -90,4 +90,6 @@ by the single hash
 The policy still permits inline styles because the shared static theme contains
 intentional inline style attributes and because removing them is a separate
 visual refactor. Google Tag Manager remains an approved script and connection
-boundary, but its loader is created only after explicit analytics consent.
+boundary, and the page shell loads it for aggregate measurement. The legal
+page discloses the analytics behavior, while browser controls and privacy
+extensions remain available to limit cookies and analytics requests.

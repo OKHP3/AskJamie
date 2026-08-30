@@ -15,8 +15,7 @@ Checks every production HTML page for:
   - placeholder hrefs ("#", "javascript:void(0)", empty href)
   - first meaningful use of flagged brand terms has a nearby plain-language
     definition
-  - GA4 configuration or consent-gated analytics loader presence
-   - disallowed Google Fonts origins in served HTML and stylesheets
+  - GA4 configuration in the page shell
 
 Exits 0 if no errors. Exits 1 if any errors. Warnings do not fail the build.
 Run from repo root:  python3 scripts/validate-site.py

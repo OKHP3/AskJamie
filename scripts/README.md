@@ -62,11 +62,10 @@ classes and never retries a 401/403 or 404/410 destination result.
 This probe never edits site content and is intentionally not part of the
 static `check-links.py` run.
 
-## External font-origin policy
+## Google Fonts runtime policy
 
-`validate-site.py` scans every public HTML page and shipped stylesheet for
-Google Fonts origins (`fonts.googleapis.com` and `fonts.gstatic.com`). A
-disallowed URL is an error and reports both the affected file and URL. The
-check does not block the separately documented Google Tag Manager analytics
-origin or the jsDelivr Mermaid origin, and local WOFF2 assets remain the
-preferred font source.
+Public pages use the declared Google Fonts stylesheet for Baloo 2, Open Sans,
+and Kalam. The page CSP explicitly allows `fonts.googleapis.com` for the
+stylesheet and `fonts.gstatic.com` for the resulting font files. The static
+site validator checks the page structure and generated CSP alignment; it does
+not reject those declared font origins.

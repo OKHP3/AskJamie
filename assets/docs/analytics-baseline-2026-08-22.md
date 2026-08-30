@@ -1,5 +1,9 @@
 # Visitor Analytics Baseline and Inquiry Funnel
 
+> Historical implementation note: this 2026-08-22 baseline records the
+> consent-gated implementation that existed at that time. The page-shell GA4
+> implementation merged on 2026-08-29 supersedes those runtime statements.
+
 **Review date:** 2026-08-22  
 **Property requested:** GA4 `G-MT9Y10YY0G`  
 **Site:** AskJamie.bot

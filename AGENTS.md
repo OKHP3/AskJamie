@@ -83,12 +83,12 @@ Out of scope unless explicitly requested:
 - Frontend: vanilla HTML5, CSS3 custom properties, and browser JavaScript.
 - Diagramming: Mermaid.js v11 as an external ESM module, used by
   `universe/index.html`.
-- Typography: AskJamie pages use locally served Baloo 2, Open Sans, and Kalam
-  WOFF2 files through `assets/css/fonts.css`.
+- Typography: AskJamie pages load Baloo 2, Open Sans, and Kalam from the
+  Google Fonts stylesheet declared in each page shell.
 - Search: zero-dependency client-side search in `assets/js/app.js`, backed by
   generated `assets/data/search-index.json`.
-- Analytics: Google tag `G-MT9Y10YY0G` appears in the page shell and is handled
-  by the shared browser script.
+- Analytics: Google tag `G-MT9Y10YY0G` loads from the page shell, while the
+  shared browser script provides the no-op-safe event wrapper.
 - Security baseline: page-level CSP and referrer metadata, plus `_headers` for
   the static hosting edge.
 - Optional QA tooling: Node and Playwright are declared in `package.json`, but

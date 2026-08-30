@@ -14,29 +14,29 @@ PUBLIC_HTML = [
 ]
 
 
-def test_public_pages_do_not_eagerly_load_google_analytics():
+def test_public_pages_load_google_analytics_from_the_page_shell():
     eager_tag = re.compile(
         r"<script\b[^>]*\bsrc=[\"']https://www\.googletagmanager\.com/gtag/js",
         re.IGNORECASE,
     )
-    offenders = [
+    missing = [
         str(path.relative_to(ROOT))
         for path in PUBLIC_HTML
-        if eager_tag.search(path.read_text(encoding="utf-8"))
+        if not eager_tag.search(path.read_text(encoding="utf-8"))
     ]
-    assert not offenders, "GA4 must be loaded only by the consent handler: " + ", ".join(offenders)
+    assert not missing, "GA4 page-shell script missing from: " + ", ".join(missing)
 
 
-def test_consent_handler_and_privacy_control_are_present():
+def test_analytics_tracker_and_privacy_disclosure_are_present():
     app_js = (ROOT / "assets/js/app.js").read_text(encoding="utf-8")
     legal = (ROOT / "legal/index.html").read_text(encoding="utf-8")
 
-    assert 'askjamie-analytics-consent' in app_js
-    assert 'data-consent="accept"' in app_js
-    assert 'data-consent="decline"' in app_js
-    assert 'data-privacy-settings' in app_js
+    assert "window.askJamieTrack" in app_js
+    assert 'typeof window.gtag !== "function"' in app_js
     assert 'id="privacy"' in legal
-    assert "only after you choose" in legal
+    assert "Google Analytics 4" in legal
+    assert "Browser controls" in legal
+    assert "only after you choose" not in legal
 
 
 def test_public_csp_uses_only_the_scoped_theme_script_hash():

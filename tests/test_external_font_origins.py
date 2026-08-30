@@ -1,72 +1,31 @@
-from __future__ import annotations
-
-import importlib.util
-import sys
 from pathlib import Path
+import re
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SCRIPT = ROOT / "scripts" / "validate-site.py"
-if str(SCRIPT.parent) not in sys.path:
-    sys.path.insert(0, str(SCRIPT.parent))
-spec = importlib.util.spec_from_file_location("validate_site_fonts", SCRIPT)
-validate_site = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(validate_site)  # type: ignore[union-attr]
-
-
-def test_external_font_check_rejects_google_fonts_in_html(tmp_path, monkeypatch):
-    page = tmp_path / "index.html"
-    page.write_text(
-        '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans">',
-        encoding="utf-8",
+PUBLIC_HTML = [
+    path for path in ROOT.rglob("*.html")
+    if not set(path.parts).intersection(
+        {".local", ".git", "node_modules", "attached_assets", "dist", "templates", ".agents"}
     )
-    monkeypatch.setattr(validate_site, "ROOT", tmp_path)
-
-    findings = validate_site.check_external_font_origins(page, page.read_text())
-
-    assert len(findings) == 1
-    assert findings[0].severity == "ERROR"
-    assert findings[0].page == "index.html"
-    assert "fonts.googleapis.com" in findings[0].msg
+    and not path.relative_to(ROOT).as_posix().startswith("assets/templates/")
+]
 
 
-def test_external_font_check_rejects_google_font_file_in_css(tmp_path, monkeypatch):
-    stylesheet = tmp_path / "assets" / "css" / "fonts.css"
-    stylesheet.parent.mkdir(parents=True)
-    stylesheet.write_text(
-        '@font-face { src: url("https://fonts.gstatic.com/s/opensans.woff2"); }',
-        encoding="utf-8",
+def test_public_pages_use_the_google_fonts_runtime_contract():
+    stylesheet = re.compile(
+        r"https://fonts\.googleapis\.com/css2\?family=Baloo\+2:.*Open\+Sans:.*Kalam:",
+        re.IGNORECASE,
     )
-    monkeypatch.setattr(validate_site, "ROOT", tmp_path)
+    missing = [
+        str(path.relative_to(ROOT))
+        for path in PUBLIC_HTML
+        if not stylesheet.search(path.read_text(encoding="utf-8"))
+    ]
 
-    findings = validate_site.check_external_font_origins(
-        stylesheet, stylesheet.read_text()
-    )
-
-    assert len(findings) == 1
-    assert findings[0].page == "assets/css/fonts.css"
-    assert "fonts.gstatic.com" in findings[0].msg
+    assert not missing, "Google Fonts stylesheet missing from: " + ", ".join(missing)
 
 
-def test_external_font_check_allows_documented_non_font_origins(tmp_path, monkeypatch):
-    page = tmp_path / "index.html"
-    page.write_text(
-        """
-        <script src="https://www.googletagmanager.com/gtag/js?id=G-EXAMPLE"></script>
-        <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs"></script>
-        """,
-        encoding="utf-8",
-    )
-    monkeypatch.setattr(validate_site, "ROOT", tmp_path)
-
-    assert validate_site.check_external_font_origins(page, page.read_text()) == []
-
-
-def test_stylesheet_discovery_excludes_repository_only_directories(tmp_path, monkeypatch):
-    (tmp_path / "assets").mkdir()
-    (tmp_path / "assets" / "site.css").write_text("", encoding="utf-8")
-    (tmp_path / ".agents").mkdir()
-    (tmp_path / ".agents" / "internal.css").write_text("", encoding="utf-8")
-    monkeypatch.setattr(validate_site, "ROOT", tmp_path)
-
-    assert validate_site.find_stylesheet_files() == [tmp_path / "assets" / "site.css"]
+def test_local_font_bundle_is_not_published():
+    assert not (ROOT / "assets/css/fonts.css").exists()
+    assert not (ROOT / "assets/fonts").exists()
