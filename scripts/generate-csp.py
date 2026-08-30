@@ -12,7 +12,7 @@ import argparse
 import json
 import re
 
-from csp import POLICY_FILE, ROOT, all_pages, build_policies, inline_sources, page_class, render_meta
+from csp import POLICY_FILE, ROOT, all_pages, build_edge_policy, build_policies, page_class, render_meta
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -66,34 +66,6 @@ def main(argv: list[str] | None = None) -> int:
         return 1
     print(f"CSP policies verified for {len(all_pages())} pages.")
     return 0
-
-
-def build_edge_policy() -> str:
-    """Build the enforcing header policy, broad enough for every page class.
-
-    style-src stays 'unsafe-inline' rather than hash-only: this envelope has
-    to be broad enough to cover the "diagram" and "embed-diagram" page
-    classes too (see csp.build_policies), and a hash-source alongside
-    'unsafe-inline' in the same directive causes browsers to ignore
-    'unsafe-inline' entirely. Per-page meta policies remain the real,
-    tighter enforcement for every other page; this header is only ever
-    meant to be a permissive outer bound, matching overkillhill.com's own
-    scripts/csp.py::build_edge_policy.
-    """
-    scripts: set[str] = set()
-    for page in all_pages():
-        page_scripts, _ = inline_sources(page)
-        scripts.update(page_scripts)
-    return (
-        "default-src 'self'; script-src 'self' https://www.googletagmanager.com "
-        + " ".join(sorted(scripts))
-        + "; script-src-attr 'none'; style-src 'self' 'unsafe-inline'; "
-        "style-src-attr 'unsafe-inline'; font-src 'self'; "
-        "img-src 'self' data:; "
-        "connect-src 'self' https://www.google.com https://www.google-analytics.com https://*.google-analytics.com https://www.googletagmanager.com; "
-        "object-src 'none'; base-uri 'self'; form-action 'self'; "
-        "manifest-src 'self'; upgrade-insecure-requests"
-    )
 
 
 def meta_policy(source: str) -> str | None:
