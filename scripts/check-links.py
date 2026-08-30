@@ -3,10 +3,10 @@
 check-links.py — Internal link validator
 =========================================
 Walks every HTML file and validates every internal href against the
-filesystem.  Cross-references the result with `sitemap.xml`.
+filesystem. Cross-references the result with `sitemap.xml`.
 
 Outputs:
-  assets/audit/links-report-2026-05-03.json
+  assets/audit/links-report-YYYY-MM-DD.json
 
 Usage:
     python3 scripts/check-links.py
@@ -16,12 +16,54 @@ from __future__ import annotations
 import json
 import re
 import sys
-from collections import defaultdict
+from datetime import date
+from html.parser import HTMLParser
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-SKIP_DIRS = {"node_modules", ".local", ".git", "attached_assets", "assets", ".pythonlibs", ".cache", ".agents"}
+SKIP_DIRS = {
+    "node_modules",
+    ".local",
+    ".git",
+    "attached_assets",
+    "assets",
+    ".pythonlibs",
+    ".cache",
+    ".agents",
+    ".pr-head",
+    "_replit",
+    "dist",
+    "site-src",
+}
 SITE = "https://askjamie.bot"
+REPORT_DATE = date.today().isoformat()
+
+
+class PageIndexingMeta(HTMLParser):
+    """Read the robots and refresh metadata that determines sitemap eligibility."""
+
+    def __init__(self) -> None:
+        super().__init__(convert_charrefs=True)
+        self.is_noindex = False
+        self.redirect_target: str | None = None
+
+    def handle_starttag(self, tag: str, attrs_list) -> None:
+        if tag.lower() != "meta":
+            return
+        attrs = {key.lower(): (value or "") for key, value in attrs_list}
+        if (
+            attrs.get("name", "").lower() == "robots"
+            and "noindex" in attrs.get("content", "").lower()
+        ):
+            self.is_noindex = True
+        if attrs.get("http-equiv", "").lower() == "refresh":
+            match = re.search(
+                r"(?:^|;)\s*url\s*=\s*(.+?)\s*$",
+                attrs.get("content", ""),
+                re.I,
+            )
+            if match:
+                self.redirect_target = match.group(1).strip("'\" ")
 
 
 def is_external(href: str) -> bool:
@@ -47,6 +89,32 @@ def resolves(href: str, source_dir: Path) -> bool:
     if (Path(str(target).rstrip("/")) / "index.html").is_file():
         return True
     return False
+
+
+def route_for_index(path: Path) -> str:
+    """Return the public route represented by an index.html file."""
+    rel = path.relative_to(ROOT)
+    if rel.as_posix() == "index.html":
+        return "/"
+    return f"/{'/'.join(rel.parts[:-1])}/"
+
+
+def sitemap_exclusion(path: Path) -> dict | None:
+    """Describe a noindex page intentionally excluded from sitemap coverage."""
+    html = path.read_text(encoding="utf-8", errors="replace")
+    meta = PageIndexingMeta()
+    meta.feed(html)
+    if not meta.is_noindex:
+        return None
+
+    reason = "robots meta declares noindex"
+    if meta.redirect_target:
+        reason = f"noindex redirect to {meta.redirect_target}"
+    return {
+        "page": path.relative_to(ROOT).as_posix(),
+        "url": f"{SITE}{route_for_index(path)}",
+        "reason": reason,
+    }
 
 
 def main() -> int:
@@ -103,16 +171,16 @@ def main() -> int:
                                              sitemap.read_text(encoding="utf-8"))}
 
     file_urls = set()
-    for p in ROOT.rglob("index.html"):
+    excluded_from_sitemap: list[dict] = []
+    for p in sorted(ROOT.rglob("index.html")):
         rel = p.relative_to(ROOT)
         if any(s in rel.parts for s in SKIP_DIRS):
             continue
-        if rel.parts[0] in {"under-construction.html"}:
+        exclusion = sitemap_exclusion(p)
+        if exclusion:
+            excluded_from_sitemap.append(exclusion)
             continue
-        if rel.as_posix() == "index.html":
-            file_urls.add(f"{SITE}/")
-        else:
-            file_urls.add(f"{SITE}/{'/'.join(rel.parts[:-1])}/")
+        file_urls.add(f"{SITE}{route_for_index(p)}")
 
     missing_from_sitemap = sorted(file_urls - sitemap_urls
                                    - {f"{SITE}/under-construction.html",
@@ -121,9 +189,9 @@ def main() -> int:
 
     audit_dir = ROOT / "assets" / "audit"
     audit_dir.mkdir(exist_ok=True)
-    out = audit_dir / "links-report-2026-05-03.json"
+    out = audit_dir / f"links-report-{REPORT_DATE}.json"
     out.write_text(json.dumps({
-        "generated": "2026-05-03",
+        "generated": REPORT_DATE,
         "pages_scanned": len(pages),
         "internal_links": all_internal,
         "external_links": all_external,
@@ -133,6 +201,7 @@ def main() -> int:
             "total_urls": len(sitemap_urls),
             "missing_from_sitemap": missing_from_sitemap,
             "extra_in_sitemap": extra_in_sitemap,
+            "intentionally_excluded": excluded_from_sitemap,
         },
         "by_page": pages,
     }, indent=2), encoding="utf-8")
@@ -153,8 +222,11 @@ def main() -> int:
     if extra_in_sitemap:
         for u in extra_in_sitemap:
             print(f"  - sitemap entry has no file: {u}")
+    print(f"Noindex exclusions: {len(excluded_from_sitemap)}")
+    for excluded in excluded_from_sitemap:
+        print(f"  = excluded from sitemap: {excluded['url']} ({excluded['reason']})")
     print(f"Detail: {out.relative_to(ROOT)}")
-    return 1 if (broken or extra_in_sitemap) else 0
+    return 1 if broken or missing_from_sitemap or extra_in_sitemap else 0
 
 
 if __name__ == "__main__":
