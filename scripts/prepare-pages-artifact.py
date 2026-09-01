@@ -31,7 +31,7 @@ PUBLIC_ROOT_FILES = {
     "under-construction.html",
 }
 PUBLIC_ROOT_DIRS = {"assets", ".well-known"}
-PUBLIC_ASSET_DIRS = {"css", "data", "fonts", "img", "js"}
+PUBLIC_ASSET_DIRS = {"css", "data", "fonts", "img", "js", "vendor"}
 PUBLIC_PAGE_DIRS = {
     "about",
     "contact",
