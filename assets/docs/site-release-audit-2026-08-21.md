@@ -17,7 +17,7 @@ The current site passed all available local and browser checks:
 | Flesch-Kincaid/site audit | 0 issues |
 | Playwright responsive QA | 26 pages × 8 viewports = 208/208 |
 | Search-index freshness | Current; 24 indexed public pages |
-| Public artifact preparation | 182 deployable files; repository-only tooling excluded |
+| Public artifact preparation | Historical count; current allowlisted artifact is 313 files |
 
 ## Confirmed rendering review
 
@@ -60,9 +60,9 @@ The comparison was limited to public repositories and published pages. No compan
 These items require an environment with human-operated assistive technology or production administration and are not silently treated as passed:
 
 - VoiceOver/NVDA announcement quality still needs human confirmation; markup and update behavior are covered by source checks.
-- The 2026-08-24 Chromium keyboard matrix confirmed consent, privacy-settings
-  focus, search focus/restoration, live-region text updates, theme attributes,
-  mobile navigation state, and the Universe no-JavaScript fallback. VoiceOver
+- The 2026-08-24 Chromium keyboard matrix confirmed search focus/restoration,
+  live-region text updates, theme attributes, mobile navigation state, and the
+  Universe no-JavaScript fallback. VoiceOver
   and NVDA spoken output remains **unknown**, not a pass by assumption. See
   `assets/docs/accessibility-audit-2026-08-16.md`, section 5.
 - GitHub Pages’ repository environment and custom-domain DNS status require checking in the GitHub repository settings after the workflow runs.
@@ -82,8 +82,8 @@ markup behavior:
 
 | Check | Assistive technology / browser | Route | Understandable | Timely | Not duplicated | Evidence status |
 |---|---|---|---|---|---|---|
-| Consent banner heading and choice context | VoiceOver / Safari | `/about/` | Unknown — not heard | Unknown — not heard | Unknown — not heard | **Unknown** |
-| Consent banner heading and choice context | NVDA / Firefox | `/about/` | Unknown — not heard | Unknown — not heard | Unknown — not heard | **Unknown** |
+| Analytics disclosure and page-shell behavior | VoiceOver / Safari | `/legal/` | Unknown - not heard | Unknown - not heard | Unknown - not heard | **Unknown** |
+| Analytics disclosure and page-shell behavior | NVDA / Firefox | `/legal/` | Unknown - not heard | Unknown - not heard | Unknown - not heard | **Unknown** |
 | Search result count after query changes | VoiceOver / Safari | `/` | Unknown — not heard | Unknown — not heard | Unknown — not heard | **Unknown** |
 | Search result count after query changes | NVDA / Firefox | `/` | Unknown — not heard | Unknown — not heard | Unknown — not heard | **Unknown** |
 | Theme control's new action/state | VoiceOver / Safari | `/` | Unknown — not heard | Unknown — not heard | Unknown — not heard | **Unknown** |
@@ -114,7 +114,7 @@ The automated release checks were rerun:
 | Search-index freshness | Current; 24 indexed public pages |
 | Flesch-Kincaid/site audit | 0 issues |
 | Static responsive QA | 26 pages × 8 viewports = 208/208 |
-| Public artifact preparation | 208 deployable files |
+| Public artifact preparation | Current allowlisted artifact: 313 files |
 
 No human-operated VoiceOver/Safari or NVDA/Firefox results were supplied for
 this rerun. All ten spoken checks remain **Unknown** for understandability,

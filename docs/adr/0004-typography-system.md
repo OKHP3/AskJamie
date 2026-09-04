@@ -11,8 +11,8 @@ Accepted
 ## Context
 
 The AskJamie brand identity calls for a warm, readable, mid-century helpdesk feel.
-A typography system needed to be chosen that matched this identity, loaded reliably
-across devices, and did not require self-hosting font files.
+A typography system needed to be chosen that matched this identity, loaded
+reliably across devices, and did not require self-hosting font files.
 
 ## Decision Drivers
 
@@ -47,8 +47,8 @@ font-display management, added maintenance for font updates.
 
 ## Decision
 
-We will use the following role assignments with the font files served from
-`/assets/fonts/` and loaded through the shared stylesheet:
+We will use the following role assignments with the font families loaded from
+Google Fonts in each page shell:
 
 | Role | Family | Rationale |
 |------|--------|-----------|
@@ -61,14 +61,14 @@ We will use the following role assignments with the font files served from
 
 ### Positive
 
-- Distinctive brand identity without a third-party font request
-- Font files are cacheable and available when the site is used offline
+- Distinctive brand identity without a local font bundle
+- Font responses can be cached by the browser
 
 ### Negative
 
-- The repository carries a small set of font files that must be reviewed when
-  the typography system changes
-- If local font loading fails, pages fall back to system fonts
+- Typography depends on Google Fonts availability and its request is a privacy
+  consideration
+- If Google Fonts loading fails, pages fall back to system fonts
 
 ### Risks
 

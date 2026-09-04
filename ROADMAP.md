@@ -7,12 +7,19 @@ This roadmap outlines the near-term public direction for the **AskJamie™** rep
 - Quality gates: `scripts/audit-site.py` runs clean (0 issues across 26 public
   QA paths); 35 HTML files exist on disk, including 9 excluded developer
   templates. Re-run on every meaningful HTML change.
-- Responsive QA: `node scripts/responsive-qa.mjs --static` → 208/208 pass;
-  run full Playwright pass after each major round of edits
-- Consent-gated GA4 is implemented, but visitor and funnel numbers remain
-  unknown until a read-only GA4 export or authorized connection is available.
+- Responsive QA: `node scripts/responsive-qa.mjs --static` → 192/192 pass
+  across the 24 sitemap routes; run full Playwright pass after each major
+  round of edits
+- Unconditional GA4 is the intentional policy. The page shell loads
+  `G-MT9Y10YY0G`, the Legal page discloses aggregate use, and the repository
+  contains no visitor export. Counts, engagement, conversions, and funnel rates
+  remain unknown rather than estimated from code.
+- Google Fonts are intentionally external. Mermaid 11.17.2 is vendored locally
+  under `assets/vendor/mermaid/`.
 - Twenty landscape WebP OG cards are shipped. Six utility or informational
   pages still use existing square artwork and are not blocked from publication.
+- The single current status source is
+  [`assets/docs/project-scorecard.md`](assets/docs/project-scorecard.md).
 
 ## Next
 - **Submit sitemap** to Google Search Console and Bing Webmaster Tools. This is
@@ -20,13 +27,14 @@ This roadmap outlines the near-term public direction for the **AskJamie™** rep
 - **Sister-site sync** — decide whether the documented `theme.css` / `app.js`
   changes should be applied in the OverKill Hill and Glee-fully repositories.
   No sibling repository is modified by this project.
-- **Assistive technology verification** — confirm consent, search live-region,
-  keyboard focus, theme, and Mermaid fallback behavior with human-operated
-  VoiceOver or NVDA testing.
+- **Assistive technology verification** — confirm search live-region, keyboard
+  focus, theme, and Mermaid fallback behavior with human-operated VoiceOver or
+  NVDA testing. Spoken output is currently unknown.
 - **CSP hardening** — refactor the remaining inline initialization and lazy-CSS
   handlers so `script-src 'unsafe-inline'` can be dropped.
-- **GA4 reporting** — obtain an authorized, read-only export and report
-  consented sessions only. Do not infer visitor counts from site code.
+- **GA4 reporting** — obtain an authorized, read-only export and report the
+  stated date range and measurement limitations. Do not infer visitor counts
+  from site code.
 - **Recurring hosted checks** — retain hosted smoke and public GPT probe
   results outside the static validation path.
 - **Optional OG enhancement** — create cards for the remaining pages that use
@@ -35,8 +43,6 @@ This roadmap outlines the near-term public direction for the **AskJamie™** rep
 - **Developer template maintenance** — keep the 9 `assets/templates/` files
   excluded from public QA and update them deliberately when the page shell
   changes.
-- **Self-hosted fonts** — completed on 2026-08-24; typography now loads from
-  `assets/fonts/` through `assets/css/fonts.css`.
 - **Heading-order auditor** — shipped in `scripts/audit-site.py`.
 - **Generic-link-text auditor** — shipped in `scripts/audit-site.py`.
 - **Post-merge browser checks** — queued separately from the static audit.
@@ -53,8 +59,8 @@ This roadmap outlines the near-term public direction for the **AskJamie™** rep
 - Evaluate adding a public prompt library or recipe section
 - Add progressive web app install flow (PWA manifest + service worker)
 - Audit and prune the ~75 unused brand image variants (see `assets/docs/image-usage-report.md`)
-- GA disclosure section in `legal/index.html` — shipped; retain owner/legal
-  review as needed
+- GA4 disclosure in `legal/index.html` — shipped; retain owner/legal review as
+  needed
 - Organization JSON-LD `sameAs` — add social profile URLs (LinkedIn, X, Facebook, YouTube)
 
 ## Shipped

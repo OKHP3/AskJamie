@@ -7,7 +7,9 @@ Playwright-managed Chromium binary. Visual references were captured with
 Playwright at 1280px and 390px viewport widths.
 
 This is a repeatable lab baseline, not field data. Network conditions, browser
-versions, consent state, CDN responses, and CPU load can change the results.
+versions, Google Fonts responses, analytics responses, and CPU load can change
+the results. The report records a historical capture. The current site
+intentionally uses Google Fonts and unconditional page-shell GA4.
 The raw Lighthouse reports are in
 `assets/audit/lighthouse-baseline-2026-08-22/`. The compact machine-readable
 summary is `assets/audit/lighthouse-baseline-2026-08-22.json`.
@@ -54,8 +56,9 @@ All four pages exceed the 2.5 second target:
 
 These are measurement findings only. Performance optimization is outside this
 task. The large render-delay share is a useful target for a later performance
-task, especially on pages with client-side initialization. The later typography
-migration removes the former external-font variable from future comparisons.
+task, especially on pages with client-side initialization. Future comparisons
+should record Google Fonts loading conditions rather than describe a self-hosted
+font migration that is not part of the current site.
 
 ### CLS above 0.1
 
@@ -193,9 +196,10 @@ The Universe references were refreshed after this intentional layout change.
 The diagram remains fully visible at both reference widths while the reserved
 slot prevents a post-load page shift.
 
-The capture used denied analytics consent and the light theme so that the
-reference images do not depend on a visitor decision or a system color
-preference.
+The historical capture used the then-current analytics-denial state and the
+light theme so that the reference images did not depend on a visitor decision
+or a system color preference. The denial state is no longer part of the
+runtime policy. These visual references are not analytics evidence.
 
 ## How to refresh
 

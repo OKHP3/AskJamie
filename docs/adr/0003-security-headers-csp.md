@@ -19,7 +19,7 @@ to every response.
 
 - Must prevent clickjacking and content injection without a server runtime
 - Must work with the static hosting edge (`_headers` file support)
-- Must allow Google Fonts, Google Analytics, and the Mermaid CDN without
+- Must allow Google Fonts and Google Analytics without
   loosening the policy broadly
 - Must not break existing page functionality
 
@@ -50,8 +50,9 @@ We will use **Option 3**: a `_headers` file at the repository root for edge-leve
 headers, plus per-page `<meta http-equiv="Content-Security-Policy">` tags in every
 HTML file for resilience.
 
-The policy explicitly allows: self, Google Fonts, Google Analytics, the Mermaid
-jsDelivr CDN, and Ko-fi for the support widget.
+The policy explicitly allows: self, Google Fonts, and Google Analytics. Mermaid
+is served locally from the repository. Ko-fi remains an approved outbound
+support destination.
 
 ## Consequences
 

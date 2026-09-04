@@ -46,10 +46,9 @@ assets/
   templates/           # 9 developer page templates (excluded from QA)
 scripts/
   audit-site.py        # Static-site auditor — 17+ quality gates, 0 issues
-  responsive-qa.mjs    # Playwright + static-lint QA (208 checks across 26 pages)
+  responsive-qa.mjs    # Playwright + static-lint QA (192 checks across 24 routes)
   build-search-index.py   # Regenerates assets/data/search-index.json
-  apply-modern-baseline.py # Idempotent 2026-baseline applier for new pages
-  enhance-pages.py     # Bulk-edit tool for site-wide passes
+  archive/             # Reference-only and retired maintenance scripts
 ```
 
 ## Mermaid Runtime
@@ -64,6 +63,24 @@ deliberate, reviewed step, never automatic. `scripts/validate-site.py`
 checks the VERSION pin matches the vendored bundle and that every page
 rendering a live diagram carries a CSP class that actually allows Mermaid's
 runtime-generated inline styles (see `scripts/csp.py`).
+
+## Analytics and typography
+
+GA4 is intentionally loaded unconditionally from each public page shell with
+measurement ID `G-MT9Y10YY0G`. `assets/js/app.js` provides the no-op-safe
+`askJamieTrack` wrapper and records `search_open`, `gpt_click`, and
+`inquiry_click` when the browser's analytics function is available. The Legal
+page discloses this behavior. The repository contains no visitor export, so
+it can prove the instrumentation exists but cannot prove visitor counts,
+engagement, conversions, or funnel rates.
+
+Baloo 2, Open Sans, and Kalam remain intentionally hosted by Google Fonts.
+There is no local font bundle. Browser controls and privacy extensions can
+limit analytics requests and cookies without blocking access to the public
+pages.
+
+The current shipped, conditional, deferred, and intentionally excluded work is
+tracked in [`assets/docs/project-scorecard.md`](assets/docs/project-scorecard.md).
 ## What It Builds
 
 - **Lens System** — a modular portfolio of AI case studies and GPT prototypes, each solving a real-world problem
@@ -77,17 +94,23 @@ AI is becoming the default front door for how people find and evaluate brands. A
 
 ## Quality Gates
 
-Run both validators after any HTML or content change:
+Run the release checks after any HTML or content change:
 
 ```bash
 python3 scripts/audit-site.py --quiet        # 0 issues target (17+ checks, 26 pages)
-node scripts/responsive-qa.mjs --static      # 208/208 pass target
+node scripts/responsive-qa.mjs --static      # 192/192 pass target
 python3 scripts/build-search-index.py        # rebuild after any copy change
 python3 scripts/build-search-index.py --check # verify committed index is current
 python3 scripts/prepare-pages-artifact.py    # preview the clean GitHub Pages artifact
 ```
 
 The auditor checks: title/description length, canonical links, OG fields, image alt/width/height/loading, external link `noopener noreferrer`, CSP + referrer meta, theme-color, duplicate ids, broken in-page anchors, og:image file existence, sitemap ↔ disk reconciliation, search-index ↔ disk reconciliation. The site validator also guards the first meaningful use of BrandGuard™, OKHP³, OverKill Hill P³™, and Lens System with nearby plain-language definitions.
+
+The current tree has 35 HTML files, of which 9 are developer templates excluded
+from public QA. There are 26 QA-relevant HTML paths on disk, while the
+responsive script uses the 24 sitemap routes for 192 checks. The committed
+search index contains 24 content pages, and the Pages artifact currently
+contains 313 public files after allowlisted preparation.
 
 ## Local Development
 

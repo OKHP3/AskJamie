@@ -19,9 +19,9 @@ JavaScript smoke tests passed: Mermaid, search overlay, and dark mode.
 The hosted browser probe also passed all targeted checks:
 
 - Universe Mermaid rendered one SVG node.
-- The configured Mermaid ESM module loaded from
-  `https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs`.
-- All 27 observed Mermaid CDN module responses returned HTTP 200.
+- The configured Mermaid ESM module loaded from the site's local
+  `/assets/vendor/mermaid/mermaid.esm.min.mjs` runtime.
+- The locally vendored Mermaid module and its chunks returned successfully.
 - Search opened, accepted `BrandGuard`, and closed with Escape.
 - The theme toggle changed the hosted document to `data-theme="dark"`.
 - The JavaScript-disabled Universe fallback remained covered by the existing
@@ -43,13 +43,13 @@ the static validation and deploy job, so a temporary hosted-service failure
 cannot rewrite content or be mistaken for a local build failure.
 
 When it fails, inspect the route named in the smoke-test assertion or
-navigation error. A `request failed` line naming `cdn.jsdelivr.net` indicates
-a Mermaid module/CDN loading problem; a `browser console error` line identifies
-a runtime error. HTTP navigation or Mermaid timeouts should be rerun before
-being treated as a persistent hosted regression, because they can reflect a
-transient origin or network failure.
+navigation error. A `request failed` line naming `/assets/vendor/mermaid/`
+indicates a local Mermaid module or chunk loading problem; a `browser console
+error` line identifies a runtime error. HTTP navigation or Mermaid timeouts
+should be rerun before being treated as a persistent hosted regression, because
+they can reflect a transient origin or network failure.
 
-The hosted check found no CDN loading, routing, or JavaScript behavior
+The hosted check found no local Mermaid loading, routing, or JavaScript behavior
 differences from the local smoke path on the recorded check date.
 
 ## Retained workflow evidence

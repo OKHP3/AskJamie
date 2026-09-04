@@ -9,10 +9,13 @@ sister sites:
 | Glee-fully Tools | glee-fully.tools | `.glee-main` |
 
 Both `assets/css/theme.css` and `assets/js/app.js` are shared source of truth
-for all three sites. The tooling scripts (`scripts/audit-site.py`,
-`scripts/build-search-index.py`, `scripts/apply-modern-baseline.py`) are also
-shared and must be kept in lock-step. §§ 1–5 cover CSS/JS patches from v0.9
-(Task #1). § 6 covers the tooling scripts (Task #5).
+for all three sites. The active tooling scripts in this checkout are
+`scripts/audit-site.py` and `scripts/build-search-index.py`. The baseline
+applier is reference-only here at `scripts/archive/apply-modern-baseline.py`;
+the commands in section 6 target a sibling checkout that has its own copy.
+Sections 1–5 cover CSS/JS patches from v0.9. Section 6 covers the tooling
+scripts. This guide is reference material for sibling repositories, not an
+AskJamie release command.
 
 ---
 

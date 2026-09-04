@@ -32,7 +32,7 @@ supplied export was declined on 2026-08-23. The workspace therefore still has
 no supplied GA4 export for property `G-MT9Y10YY0G`, and no GA4 key event could
 be configured from this environment.
 
-The public site contains the consent-gated GA4 implementation and the
+The public site contains the page-shell GA4 implementation and the
 `search_open`, `gpt_click`, and `inquiry_click` event definitions, but those
 facts do not provide historical visitor counts.
 
@@ -49,25 +49,27 @@ facts do not provide historical visitor counts.
 
 ### Measurement limitation
 
-GA4 is consent-gated in `assets/js/app.js`. Visitors who decline analytics are
-not sent to GA4, so any future report must describe its denominator as
-**consented sessions**, not all site visits. This is intentional privacy
-behavior; it is not a defect to be bypassed.
+The current page shell loads GA4 unconditionally. `assets/js/app.js` provides
+a no-op-safe wrapper, while browser settings, privacy extensions, network
+conditions, and Google service availability can limit collection. A future
+report must state its date range and actual GA4 denominator. The repository
+cannot prove visitor counts from source code.
 
 ### Requested review window
 
-The requested review window was **2026-08-15 through 2026-08-22**, using
-consented sessions only. No export was supplied for that window, so the
-requested measures remain unavailable. The date range must be re-confirmed if
-the owner later supplies a different export window.
+The requested review window was **2026-08-15 through 2026-08-22**. The
+historical request specified consented sessions under the then-current
+implementation. No export was supplied for that window, so the requested
+measures remain unavailable. A later review must re-confirm the date range and
+denominator under the current unconditional policy.
 
 ### Resulting evidence boundary
 
 The highest-volume funnel exit cannot be identified from the available
-evidence. Page views, consented sessions, event counts, and drop-off rates all
-remain unknown. The only evidence-backed improvement at this time is to obtain
-a read-only GA4 export or authorized connection, then review a stated date
-range using consented sessions.
+evidence. Page views, sessions, event counts, and drop-off rates all remain
+unknown. The only evidence-backed improvement at this time is to obtain a
+read-only GA4 export or authorized connection, then review a stated date range
+with the denominator documented.
 
 ## Inquiry funnel map
 
@@ -84,8 +86,8 @@ The intended visitor path is:
 The main observable exits before this review were page navigation without a
 conversion signal, external GPT navigation without a named event, and mailto
 navigation without a named event. GA4 data is needed to quantify each
-drop-off. The new events below make those points measurable for future
-consented sessions.
+drop-off. The new events below make those points measurable when collection is
+available.
 
 ## Conversion definition
 
@@ -105,17 +107,18 @@ inquiry type derived from the mailto subject or nearby heading. A click is an
 **initiated inquiry**, not proof that an email was sent or received; static
 websites cannot verify the completion of a visitor's mail client action.
 
-Both events are sent only through the existing consent-gated `gtag` loader.
-They do not load analytics or create cookies after a visitor declines consent.
-Mark `gpt_click` as a GA4 key event after enough consented traffic exists to
-make that designation meaningful. `inquiry_click` should remain a secondary
-diagnostic event unless email completion can be measured elsewhere.
+Both events are sent through the existing page-shell `gtag` loader when it is
+available. A click is not proof that an external page opened or that an email
+was sent. Mark `gpt_click` as a GA4 key event only after enough measured
+traffic exists to make that designation meaningful. `inquiry_click` should
+remain a secondary diagnostic event unless email completion can be measured
+elsewhere.
 
 The supporting `search_open` event records overlay use and includes the source
 page plus whether the visitor opened it with the button or keyboard. It supports
 the requested search-usage calculation:
-`search_open` events divided by consented sessions (or consented users, kept
-consistent across the report).
+`search_open` events divided by sessions or users, with one denominator kept
+consistent across the report and the collection limitations documented.
 
 ## Contact-path update
 
@@ -127,8 +130,8 @@ specific tag.
 
 ## Recommended next review
 
-Run a GA4 report for a clearly stated date range using consented sessions only.
-Export page sessions, average engagement time, landing-page exits, and counts
-for `gpt_click` and `inquiry_click`. Compare the three highest-entry pages
-against the funnel above and prioritize the first step with a substantial
-consented-session drop and no downstream action.
+Run a GA4 report for a clearly stated date range using the denominator shown by
+the property. Export page sessions, average engagement time, landing-page
+exits, and counts for `gpt_click` and `inquiry_click`. Compare the three
+highest-entry pages against the funnel above and prioritize the first step with
+a substantial measured drop and no downstream action.

@@ -1,6 +1,6 @@
 # AskJamie™ — Friendly AI helpdesk for You
 
-> Last-Updated: 2026-05-27
+> Last-Updated: 2026-09-04
 
 > AskJamie™ is the strategic AI persona at the top of the OverKill Hill P³™
 > ecosystem — a calm, articulate "thinking partner" that unifies how
@@ -65,6 +65,20 @@ brand.
 - [Sitemap (XML)](https://askjamie.bot/sitemap.xml)
 - [Robots policy](https://askjamie.bot/robots.txt)
 - [Internal site search index (JSON)](https://askjamie.bot/assets/data/search-index.json) — full-text excerpts for every page, ~25 KB gzipped.
+
+## Implementation notes
+
+- This is a static HTML, CSS, and JavaScript site. There is no backend,
+  database, authentication layer, or server-side form processing.
+- GA4 is loaded unconditionally from the public page shell with measurement ID
+  `G-MT9Y10YY0G`. The Legal page discloses the aggregate analytics use. The
+  repository has no visitor export, so implementation files cannot establish
+  visitor counts or funnel metrics.
+- Baloo 2, Open Sans, and Kalam are intentionally loaded from Google Fonts.
+- The Universe diagram imports Mermaid 11.17.2 from the locally vendored
+  `assets/vendor/mermaid/` runtime, not from a CDN.
+- The current status and evidence boundaries are recorded in
+  `assets/docs/project-scorecard.md`.
 
 ## How to cite
 

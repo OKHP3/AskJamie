@@ -5,13 +5,14 @@
 **Scope:** 26 HTML pages · 1 stylesheet (theme.css, 4,561 lines) · 1 JS file (app.js, 993 lines)
 **Site auditor (`scripts/audit-site.py`) result at close:** 0 issues across 26 pages
 
-> **Current-state note (2026-08-24):** This is a historical audit record, not a
-> current defect list. The repository now has 26 public QA paths and 35 HTML
-> files on disk, including 9 excluded templates. Subsequent work shipped 20
-> landscape WebP OG cards, consent-gated GA4 with named events, locally served
-> AskJamie fonts, and automated heading-order and generic-link checks. The
-> original findings below remain dated evidence; use the roadmap and current
-> validators for present status.
+> **Current-state note (2026-09-04):** This is a historical audit record, not a
+> current defect list. The repository has 26 QA-relevant HTML paths and 35 HTML files
+> on disk, including 9 excluded templates. The current contract uses
+> unconditional page-shell GA4 with a Legal-page disclosure, intentionally
+> external Google Fonts, locally vendored Mermaid, and automated
+> heading-order and generic-link checks. The original findings below remain
+> dated evidence; use the project scorecard and current validators for present
+> status.
 
 ---
 
@@ -75,10 +76,9 @@ The site entered this audit structurally sound but carrying a meaningful accumul
 - `universe/index.html` and `search/index.html` have no above-the-fold hero image, so `fetchpriority` is not applicable — both PASS
 
 ### 1.11 — Resource Hints (Preconnect)
-`[PASS — reconciled 2026-08-24]` The page shell no longer preconnects to font
-providers. Typography is served locally through `assets/css/fonts.css`.
-`https://www.googletagmanager.com` remains a separate analytics origin and is
-still handled by the consent-gated runtime.
+`[PASS — reconciled 2026-09-04]` The page shell intentionally loads Google Fonts
+from their external providers. `https://www.googletagmanager.com` remains a
+separate analytics origin and is loaded by the unconditional page-shell runtime.
 
 ### 1.12 — `<link rel="preload">` for Critical CSS
 `[FLAGGED]` `theme.css` is loaded as a standard synchronous stylesheet and is therefore render-blocking. A `<link rel="preload" href="/assets/css/theme.css" as="style">` hint would allow the browser to begin fetching it earlier in the parse cycle and improve LCP. Not added in this session because it requires testing the font-swap pattern interaction.
@@ -196,7 +196,7 @@ Zero double-initialization. The separate `analytics.js` file referenced in the a
 | No commented-out alternate GA IDs | ✓ |
 
 ### 3.5 — Event Tracking Inventory
-`[FIXED — later implementation]` Consent-gated custom GA events are now
+`[FIXED — later implementation]` Named GA4 custom events are now
 implemented in `assets/js/app.js`, including `gpt_click`, `inquiry_click`, and
 `search_open`. This section records the state observed on 2026-05-12; event
 volume and conversion reporting remain unavailable without an authorized GA4
@@ -204,7 +204,7 @@ export.
 
 ### 3.6 — Privacy / Consent Considerations
 `[FIXED — later implementation]` `legal/index.html` now describes GA4,
-consent, and the data-use boundary. This section records the pre-remediation
+aggregate measurement, browser controls, and the data-use boundary. This section records the pre-remediation
 state observed on 2026-05-12.
 
 ---
@@ -427,10 +427,10 @@ No other inline JavaScript exists. Full compliance.
 - All non-GTM scripts use `defer` or `src` without blocking
 
 ### 7.8 — CSS File Loading Audit
-`[PASS — reconciled 2026-08-24]` `theme.css` is loaded exactly once per page
-on all 26 public pages and imports the existing local `assets/css/fonts.css`.
-No page references a stylesheet that does not exist. Google Fonts async-load
-tags are no longer present.
+`[PASS — reconciled 2026-09-04]` `theme.css` is loaded exactly once per page
+on all 26 public pages. Baloo 2, Open Sans, and Kalam are intentionally loaded
+from the Google Fonts stylesheet in each page shell. No page references the
+non-existent `assets/css/fonts.css`.
 
 ---
 
@@ -468,9 +468,9 @@ tags are no longer present.
    have page-specific landscape cards. Remaining utility pages are optional
    coverage. *(Domain 2.3)*
 
-5. **GA4 reporting access** — Consent-gated events are implemented, but
-   visitor counts, event volume, and funnel exits remain unknown until an
-   authorized read-only export is available. *(Domain 3.5)*
+5. **GA4 reporting access** — Instrumentation is implemented, but visitor and
+   funnel numbers remain unknown until an authorized read-only export is
+   available. Do not infer metrics from source code. *(Domain 3.5)*
 
 7. **BrandGuard hub relative case-study links** — `okhp3-brandguard/index.html` links to case studies via relative paths (`href="lego/"` etc.). Converts to root-relative improves link-map analyzability and is consistent with site-wide convention. *(Domain 4.4)*
 
@@ -490,15 +490,15 @@ Ordered by impact-to-effort ratio:
 
 2. **CSS token refactor (rename phase only)** — Rename the 8 existing tokens that have wrong names (`--color-fg` → `--color-text`, etc.) with a find-and-replace pass. Zero visual change. Eliminates the naming gap and makes the codebase match the spec convention before adding new tokens.
 
-3. **GA4 reporting access** — Obtain an authorized export and report
-   consented sessions only. Do not infer visitor numbers from implementation
-   code.
+3. **GA4 reporting access** — Obtain an authorized export and report the
+   actual denominator and collection limitations. Do not infer visitor numbers
+   from implementation code.
 
 4. **Optional OG coverage** — Review whether the six remaining
    square-artwork pages merit custom landscape cards.
 
-5. **Assistive technology verification** — Confirm consent, search live-region,
-   keyboard focus, theme, and Mermaid fallback behavior with VoiceOver or NVDA.
+5. **Assistive technology verification** — Confirm search live-region, keyboard
+   focus, theme, and Mermaid fallback behavior with VoiceOver or NVDA.
 
 ---
 

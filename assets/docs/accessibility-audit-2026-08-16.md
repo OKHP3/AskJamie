@@ -7,6 +7,12 @@ and a dated Chromium keyboard/DOM verification matrix. Screen reader audio and
 human-operated VoiceOver/NVDA output remain unknown and are explicitly flagged
 for manual follow-up.
 
+> **Current-state note (2026-09-04):** This is historical evidence. The
+> consent-banner rows below describe the implementation present when the audit
+> was performed and do not describe the current unconditional GA4 policy. The
+> current responsive script covers 24 sitemap routes for 192 checks, and the
+> current evidence boundary is summarized in `assets/docs/project-scorecard.md`.
+
 ---
 
 ## 1. Executive Summary

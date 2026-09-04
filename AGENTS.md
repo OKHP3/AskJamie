@@ -81,8 +81,8 @@ Out of scope unless explicitly requested:
 ### Confirmed architecture
 
 - Frontend: vanilla HTML5, CSS3 custom properties, and browser JavaScript.
-- Diagramming: Mermaid.js v11 as an external ESM module, used by
-  `universe/index.html`.
+- Diagramming: Mermaid.js v11 is vendored locally under
+  `assets/vendor/mermaid/` and imported by `universe/index.html`.
 - Typography: AskJamie pages load Baloo 2, Open Sans, and Kalam from the
   Google Fonts stylesheet declared in each page shell.
 - Search: zero-dependency client-side search in `assets/js/app.js`, backed by
@@ -126,8 +126,11 @@ SECURITY.md                 Security reporting policy
 ```
 
 The repository currently contains 35 HTML files on disk. Nine are templates,
-leaving 26 paths in the responsive QA list. The 26 QA paths include utility
-pages such as `404.html` and `under-construction.html`.
+leaving 26 QA-relevant HTML paths. The responsive QA script uses the 24 routes
+in `sitemap.xml` for 192 checks; the two additional utility pages,
+`404.html` and `under-construction.html`, remain covered by structural and
+audit checks. The current status and evidence boundaries are recorded in
+`assets/docs/project-scorecard.md`.
 
 ### Agent skills
 
@@ -197,9 +200,9 @@ python3 scripts/audit-site.py --quiet
 
 `validate-site.py` is the structural validator. `check-links.py` writes a
 dated JSON report under `assets/audit/`. `responsive-qa.mjs --static` checks
-the 26 listed public paths at eight viewports without a browser. A full
-browser run requires Playwright and Chromium. `audit-site.py` is the canonical
-site audit and writes `assets/docs/audit-report.md`.
+the 24 sitemap routes at eight viewports for 192 checks without a browser. A
+full browser run requires Playwright and Chromium. `audit-site.py` is the
+canonical site audit and writes `assets/docs/audit-report.md`.
 
 ### Visual baseline updates
 
@@ -222,17 +225,14 @@ The July 24, 2026 inspection re-ran these checks against the working tree
 - `validate-site.py`: passed, 26 HTML pages clean.
 - `check-links.py`: passed, 26 pages scanned, 711 internal and 559 external
   links checked, 0 broken links, 0 style issues.
-- `responsive-qa.mjs --static`: passed, 208 of 208 checks.
-- `audit-site.py --quiet`: exited successfully but reported three findings:
-  the ignored `.DS_Store`, a stale generated search index (index.html,
-  legal/index.html, the BFS BrandGuard case study, and search/index.html are
-  all newer than `assets/data/search-index.json`), and a shape warning noting
-  the search index is a dict rather than the expected list. The 168-character
-  Universe description flagged on July 13 no longer appears, so that one item
-  has been resolved since the last inspection.
-
-These findings remain open because this context-maintenance task does not edit
-source or generated artifacts.
+- `responsive-qa.mjs --static`: passed, 208 of 208 checks in that historical
+  route inventory. The current script uses the sitemap inventory and reports
+  192 checks.
+- `audit-site.py --quiet`: exited successfully but reported historical findings
+  involving an ignored `.DS_Store`, a stale generated search index, and an
+  index-shape warning. Those findings are not the current release result. Use
+  the current scorecard and rerun the commands above instead of treating this
+  dated inspection as present state.
 
 ### Generated data and mutation rules
 
@@ -285,7 +285,7 @@ exists. The static deployment publishes the repository root. `CNAME` declares
 
 ### Mermaid pages
 
-Any page containing `<pre class="mermaid">` must include the existing
+Any page containing `<div class="mermaid">` must include the existing
 `mermaid-referral-link` affiliate note directly under the diagram, with
 `target="_blank" rel="noopener noreferrer"`. The canonical referral URL is
 `https://mermaidchart.cello.so/UhVlNtC2MlS`. The audit enforces this rule.
@@ -301,10 +301,10 @@ commands such as `git reset --hard` or `git checkout --` to discard work.
 These are current evidence-backed observations, with dated historical context
 retained where it matters:
 
-- The canonical audit is not currently at zero findings. See the exact three
-  findings in the validation section above. Run
-  `python3 scripts/build-search-index.py` to clear the stale-index finding
-  before the next content release.
+- The canonical audit is a generated release check. Rebuild
+  `assets/data/search-index.json` after copy changes, then run
+  `python3 scripts/audit-site.py --quiet`; do not report a historical finding
+  as current.
 - `scripts/README.md` classifies every maintenance script. Only the active
   scripts remain at the top level. Reference-only and retired scripts are
   preserved in `scripts/archive/` with a prominent warning because several
@@ -313,15 +313,16 @@ retained where it matters:
   `scripts/validate-site.py` for structural validation, and
   `scripts/responsive-qa.mjs` for responsive QA. Do not run archived scripts
   without reviewing their target paths and intended repository.
-- `README.md` and older sections of `replit.md` retain historical counts and
-  audit snapshots from earlier site states. Treat dated audit documents as
-  history, and use current scripts and this guide for present state.
+- `README.md`, `ROADMAP.md`, and `replit.md` state the current inventory and
+  link to the single current scorecard. Treat dated audit documents as
+  historical evidence, and rerun the relevant check before making a present
+  release claim.
 - `assets/docs/` contains historical audit and sync reports. Do not treat an
   old report as current without checking its date and rerunning the relevant
   check.
-- Browser-level responsive behavior, console errors, runtime image loading, and
-  external CDN behavior were not verified in the latest inspection because
-  Playwright was unavailable and the isolated QA run used static lint.
+- Human VoiceOver/NVDA spoken output remains unknown. Headless Chromium and
+  static checks verify DOM, keyboard, and fallback behavior only. External
+  Google Fonts and GA4 availability are also outside static QA's proof.
 - No owner-approved product roadmap or backend integration specification was
   found. Ask the owner before inferring one.
 
