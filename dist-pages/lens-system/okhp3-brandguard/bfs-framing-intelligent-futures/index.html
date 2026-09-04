@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- ========================================
+         METADATA: Core Document & Character Set
+         ======================================== -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.googletagmanager.com 'sha256-/JNRlSCSWALVv4sh0YfMg4mgS/xLJcgEa+Q2XmU8cxU=' 'sha256-0TPGjkasnayQR3FzyVowxkej87hdnllAjzsfaoIu1VA=' 'sha256-1s495YNltSF6aePpYXpf3YtVueOVzY8GT5CzmJ98H0I=' 'sha256-2S3kItnxPvEpkkCOurr8D8ect64HDHYgV+3iDjF0RWQ=' 'sha256-3uJdialLkW5aivCBmQ+HbGeW5xg6jVX9gQt2KguMsZo=' 'sha256-4HvcmdEaM1ox1Wm1olsqVEZ86XWdoOUbjm2sOzpdpQc=' 'sha256-6diZc48437XwZZ+WDpDGyz6zli6TljI0Ewc3Fc7ThEk=' 'sha256-7/3eO6q0YynhQq1BWt0TQolKoskusw0t0O2Z7IJPygc=' 'sha256-9ZrISseoSTCj2yWDLqv/IJt2kl9aIA/7FB1/+qpl0sM=' 'sha256-9oH6vwN/ru4YJB+5kmdwnRplNe4S0hXOQm253UyBYBw=' 'sha256-A4sK1scCaB/dpX6GMDsHPn9MUaiOrsRZUSN7qIjPlAM=' 'sha256-CqNii85E0TFWymnsh6fNRufFGkJUKAKG7XsXVu3Ad+0=' 'sha256-FBG6u+8fig3XQRa09qIpy0yfD56Cz8Imc5R9o3bdOcc=' 'sha256-GeG3ztwq73n6clw9FPXkSFFodF9bDzXwMrMfFcZZc3w=' 'sha256-HevWxDgVNg4HGhtZJWVTt3yTKKw1aHzcKwwrXChpuro=' 'sha256-ITk/vVfSOkpCA3Op+dDqzRtD+BLnJtgkYnflDzVDlGo=' 'sha256-IZH455y7T/U4LT4aAudHeesPBwnRgaoLcHSyjhAzEXo=' 'sha256-O4gqXPGYZYnWgcBaJ5yyPBA8M6Mp4J1GxGJEv3VxHCo=' 'sha256-O61TG0Lhu4C3wdyLZYbyZ/24y7GmSElcBsQQcZdJPms=' 'sha256-QDYM2aaTfgCPjmLP5nPWNFIdxSrzWVFZ67X8lo0HPgs=' 'sha256-QK1+a/aiYAJjfvz0xvfFjtetfUmxMlRDP0q9dNQeH2U=' 'sha256-SVjh4astjTqnBCb+xFyi1FCsoI3Ysgbelop5aU7bZzs=' 'sha256-UTGAs6h5fqBYCADEjpXbYCBRI48WPk3tBc+gDuQad/0=' 'sha256-Vbcc89eY/VKo2CRJfrCqcACiTUkK/QCgTG750NnljF0=' 'sha256-Wv6G2/fyAtmMKoXENyYTkEHpTQs95TmpRBtWCCLNUjM=' 'sha256-X3TaiUvlkHGFgp8JgNqEahcPtIdUmWNOiad2NXcUH6U=' 'sha256-YehVv3FxjiWmT2jK1DXq2k9zRtEB57pZ2RScp/a/9PE=' 'sha256-Z1RrIk58JifIv6AVhLmGYCnZb9GhiBibL/FI2+ZicLg=' 'sha256-beizZ/nPihGK1KvD8eWReiR/p/JBVESrRv3jj8hb28U=' 'sha256-eoZKPPj7R1opAA3EaZUGTmO56gm1hhyiyo8phdpFl9c=' 'sha256-gRo06cVabvnvZdyf42jyEFIXfr8TkDd5CQ7ieoht2DE=' 'sha256-hugs/SvaQZWOb1JmzcByje+F1pe+dJUPIAPREuCMxLM=' 'sha256-kgkVB+GD+HvMFmUZqDwtmtvGW9d5bHyutIf39yHSXi4=' 'sha256-mIvWKZBB9op012uxDx4jcrU9aRt8pT1JqNKVj4quabM=' 'sha256-roGIj4lGaZjrfBEKhce3groDezlsG/VJkkGOYuhpswk=' 'sha256-s+uZi/++imRQEO/nQ3zQm3XzyBrdQW1mEkR91SxwFOE=' 'sha256-s/mM0wpp9DZ4mSERCZmTlraYI/VpxnapyvRqewBJcyQ=' 'sha256-skITTmahVS/SqrTz8DQdjB47JVgcW94FVAq01a8gB7k=' 'sha256-tVrmB54ZJ+2aUrhrzY6r9UFtn+ZqnhxheyancbsdNuY=' 'sha256-trbdGr+OIf31bX+GzAIAEs+9x8xg2qWHmh/XXGjQk3o=' 'sha256-vRPNNy+IdVgKZncraVQCo/GHsB/5H5hRu1vpqAlt/SI=' 'sha256-wyBFDDa8GgMbVALiMu7vcEiFYDxWSrSoob3PaoqkFN4=' 'sha256-x87fZRRm9Acg0uyW+L+5PulKaRUcUTAhmdNKXU9eUeI=' 'sha256-y+X4KXZYjF9fu+pAXSHyxus/RdxCn/ynsxMLUFU1+AI=' 'sha256-yMxVuSEm7UX5AiK+1IbuznIvP/18+sbtisOHiJwRwJI=' 'sha256-yU3JHEHwYx4T3mAKlSazdCfn197x55w1SrrpmU2mWtE='; script-src-attr 'none'; style-src 'self' https://fonts.googleapis.com ; style-src-attr 'unsafe-hashes' ; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://www.google.com https://www.google-analytics.com https://*.google-analytics.com https://www.googletagmanager.com; object-src 'none'; base-uri 'self'; form-action 'self'; manifest-src 'self'; upgrade-insecure-requests" />
+<!-- ========================================
+         METADATA: Primary Title & Description
+         ======================================== -->
+    <title>AskJamie™ — GPT‑BFS01: BFS Framing Intelligent Futures</title>
+    <meta name="description" content="GPT‑BFS01: Builders FirstSource Framing Intelligent Futures. A public-source-only BrandGuard™ GPT turning open BFS material into safe, on-brand help." />
+<meta name="author" content="AskJamie™" />
+    <meta name="creator" content="AskJamie™" />
+
+    <meta name="publisher" content="AskJamie™ · OverKill Hill P³™" />
+    <!-- ========================================
+         METADATA: Open Graph (Social Sharing)
+         ======================================== -->
+    <meta property="og:title" content="AskJamie™ — GPT‑BFS01: BFS Framing Intelligent Futures 🔨🧠" />
+    <meta property="og:description" content="GPT‑BFS01: Builders FirstSource Framing Intelligent Futures. A public-source-only BrandGuard™ GPT turning open BFS material into safe, on-brand help." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://askjamie.bot/lens-system/okhp3-brandguard/bfs-framing-intelligent-futures/" />
+    <meta property="og:image" content="https://askjamie.bot/assets/img/og/og-bfs01-1200x630.webp" />
+    <meta property="og:image:width" content="1408" />
+    <meta property="og:image:height" content="768" />
+    <meta property="og:image:type" content="image/webp" />
+    <meta property="og:image:alt" content="BFS Framing Intelligent Futures, public-source-only BrandGuard GPT by AskJamie™" />
+    <meta property="og:site_name" content="AskJamie™" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- ========================================
+         METADATA: Twitter Card (X Social)
+         ======================================== -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="AskJamie™ — GPT‑BFS01: BFS Framing Intelligent Futures 🔨🧠" />
+    <meta name="twitter:description" content="GPT‑BFS01: Builders FirstSource Framing Intelligent Futures. A public-source-only BrandGuard™ GPT turning open BFS material into safe, on-brand help." />
+    <meta name="twitter:image" content="https://askjamie.bot/assets/img/og/og-bfs01-1200x630.webp" />
+    <meta name="twitter:image:alt" content="BFS Framing Intelligent Futures, public-source-only BrandGuard GPT by AskJamie™" />
+    <meta name="twitter:site" content="@overkillhillp3" />
+    <meta name="twitter:creator" content="@overkillhillp3" />
+
+    <!-- ========================================
+         METADATA: Search & Crawling
+         ======================================== -->
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+<link rel="canonical" href="https://askjamie.bot/lens-system/okhp3-brandguard/bfs-framing-intelligent-futures/" />
+
+    <!-- ========================================
+         METADATA: Color Scheme & Theme
+         ======================================== -->
+    <meta name="theme-color" content="#f5efe1" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#2c5e6f" media="(prefers-color-scheme: dark)" />
+    <meta name="color-scheme" content="light" />
+
+<!-- ========================================
+         FAVICONS: Multi-Format Icon Support
+         ======================================== -->
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" href="/assets/img/favicons/favicon-32x32.png" sizes="32x32" type="image/png" />
+    <link rel="icon" href="/assets/img/favicons/favicon-16x16.png" sizes="16x16" type="image/png" />
+    <link rel="apple-touch-icon" href="/assets/img/favicons/apple-touch-icon.png" sizes="180x180" type="image/png" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <!-- ========================================
+         STYLESHEETS & FONTS
+         ======================================== -->
+    <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin />
+    <link rel="preload" href="/assets/css/theme.css" as="style" />
+    <script>!function(){var s=localStorage.getItem("okh-theme");document.documentElement.setAttribute("data-theme",s==="dark"||(s!=="light"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches)?"dark":"light")}();</script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Open+Sans:wght@400;600&family=Kalam:wght@400&display=swap" />
+    <link rel="stylesheet" href="/assets/css/theme.css" />
+      <!-- BreadcrumbList JSON-LD (v0.5) -->
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "AskJamie™",
+      "item": "https://askjamie.bot/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Lens System",
+      "item": "https://askjamie.bot/lens-system/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "OKHP³ BrandGuard™",
+      "item": "https://askjamie.bot/lens-system/okhp3-brandguard/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 4,
+      "name": "BFS Framing Intelligent Futures",
+      "item": "https://askjamie.bot/lens-system/okhp3-brandguard/bfs-framing-intelligent-futures/"
+    }
+  ]
+}
+    </script>
+      <!-- Article JSON-LD (v0.5) -->
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "GPT‑BFS01: BFS Framing Intelligent Futures 🔨🧠",
+  "description": "GPT‑BFS01: Builders FirstSource Framing Intelligent Futures. A public-source-only BrandGuard™ GPT turning open BFS material into safe, on-brand help.",
+  "image": "https://askjamie.bot/assets/img/brandguard/askjamie-avatar-tall-left-bfs01-bfs-framing-intelligent-futures-square-1024.png",
+  "datePublished": "2026-04-10",
+  "dateModified": "2026-05-03",
+  "inLanguage": "en-US",
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "AskJamie™",
+    "url": "https://askjamie.bot"
+  },
+  "author": {
+    "@type": "Organization",
+    "name": "AskJamie™ by OverKill Hill P³",
+    "url": "https://askjamie.bot"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "AskJamie™",
+    "url": "https://askjamie.bot",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://askjamie.bot/assets/img/askjamie-avatar-tall-left-square-1024.png"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://askjamie.bot/lens-system/okhp3-brandguard/bfs-framing-intelligent-futures/"
+  }
+}
+    </script>
+      <!-- Google tag (gtag.js) -->
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-MT9Y10YY0G"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-MT9Y10YY0G');
+      </script>
+  </head>
+
+  <body class="askjamie-main" data-theme="light">
+    <a href="#main" class="skip-link">Skip to content</a>
+    <header class="site-header" id="top">
+      <div class="container">
+        <div class="logo"><a href="/" aria-label="AskJamie™ Home"><img src="/assets/img/askjamie-avatar-tall-left-square-1024.png" alt="AskJamie™ avatar" width="40" height="40" decoding="async" loading="lazy"></a></div>
+
+        <nav class="primary-nav" id="navigation" aria-label="Primary">
+          <ul>
+            <li><a href="/#main">Who's AskJamie™</a></li>
+            <li><a href="/#uses">What's it for</a></li>
+            <li><a href="/#fit">Where it fits</a></li>
+            <li><a href="/lens-system/" aria-current="page">Lens System</a></li>
+
+            <!-- About cluster: Universe / About / Contact / Legal -->
+            <li class="has-submenu">
+              <a href="/about/">About</a>
+              <ul class="submenu">
+                <li><a href="/universe/">OKHP³™ Universe</a></li>
+                <li><a href="/contact/">Contact</a></li>
+                <li><a href="/legal/">Legal</a></li>
+              </ul>
+            </li>
+          </ul>
+        </nav>
+
+        <button class="nav-toggle" aria-controls="navigation" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+        </button>
+      </div>
+      
+      <section class="site-specials site-specials--jamie" aria-label="AskJamie update">
+        <span class="site-specials-label">Today’s Special</span>
+        <a class="site-specials-link" href="/lens-system/okhp3-brandguard/bfs-framing-intelligent-futures/">
+          See how BFS is framed with a public-source-only BrandGuard™ custom GPT.
+        </a>
+      </section>
+
+    </header>
+
+    <main id="main">
+      <!-- HERO -->
+      <section class="hero askjamie-hero" aria-labelledby="hero-title">
+        <div class="brand-stripes brand-stripes--jamie" aria-hidden="true"></div>
+        <div class="askjamie-paper" aria-hidden="true"></div>
+
+        <div class="container askjamie-hero-inner reveal-on-scroll">
+          <div class="askjamie-hero-grid">
+            <div class="askjamie-hero-copy">
+              <p class="eyebrow askjamie-breadcrumb">
+                <a href="/#top" aria-label="AskJamie™ home" class="askjamie-logo askjamie-logo--crumb">
+                  <img src="/assets/img/askjamie-title-cream-blue-backdrop-blue-gray-left-square-1024.png" alt="AskJamie™ logo" width="160" height="160" decoding="async" fetchpriority="high" loading="eager"></a>
+                <span class="breadcrumb-separator">·</span>
+                <span class="breadcrumb-label">GPT‑BFS01: BFS Framing Intelligent Futures 🔨🧠</span>
+              </p>
+
+              <h1 id="hero-title">GPT‑BFS01: BFS Framing Intelligent Futures 🔨🧠</h1>
+
+              <p class="hero-subtitle">
+                 A custom GPT BrandGuard™ (an AI brand-voice protection tool)
+                 prototype that turns public-source-only
+                Builders FirstSource knowledge into a live, conversational
+                expert for the wood-frame construction ecosystem.
+              </p>
+
+              <p class="hero-tagline">
+                It stakes semantic territory around Builders FirstSource inside
+                large language models while keeping a clean boundary between
+                public sources and official BFS systems.
+              </p>
+
+              <div class="hero-actions">
+                <a
+                  class="btn btn-primary"
+                  href="https://chatgpt.com/g/g-68e8927c5cd48191863e613f04ee042d-bfs-framing-intelligent-futures"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Open GPT‑BFS01 in ChatGPT
+                </a>
+                <p class="note-small">
+                  Opens in ChatGPT in a new tab. Requires a free ChatGPT account
+                  and a desire to explore Builders FirstSource through an AI lens.
+                </p>
+              </div>
+
+              <p class="note hero-note">
+                Personal R&amp;D prototype. Public sources only. Not an official
+                corporate product or connected to official BFS systems. For
+                official details, always refer to
+                <a href="https://www.bldr.com" target="_blank" rel="noopener noreferrer"
+                  >BLDR.com</a
+                >.
+              </p>
+            </div>
+
+            <div class="askjamie-hero-visual">
+              <img
+                src="/assets/img/brandguard/askjamie-avatar-tall-left-bfs01-bfs-framing-intelligent-futures-square-1024.png"
+                alt="AskJamie™ avatar with GPT‑BFS01: BFS Framing Intelligent Futures branding"
+                class="askjamie-avatar"
+                loading="lazy"
+                width="600"
+                height="600" decoding="async">
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- Page contents navigation -->
+      <nav class="content-section container" aria-label="Page contents" id="page-toc">
+        <p class="eyebrow">On this page</p>
+        <ol>
+          <li><a href="#what">What GPT&#8209;BFS01 actually is</a></li>
+          <li><a href="#layers">What BRG00 v2 adds</a></li>
+          <li><a href="#why">Why this prototype had to exist</a></li>
+          <li><a href="#demos">Real conversations</a></li>
+          <li><a href="#universe">Where it fits in the AskJamie&trade; &amp; OKHP&sup3; universe</a></li>
+          <li><a href="#next">Who this is for &mdash; and what to do next</a></li>
+        </ol>
+      </nav>
+
+      <!-- SECTION: WHAT IT IS -->
+      <section
+        class="content-section container reveal-on-scroll"
+        id="what"
+      >
+        <header class="section-header">
+          <h2>What GPT‑BFS01 actually is</h2>
+          <p class="note">
+            Think of it as a BFS‑aligned, public‑only subject‑matter expert
+            that lives inside ChatGPT — designed as both a
+            <strong>BrandGuard™ lens</strong> for Builders FirstSource and a
+            reusable blueprint for any brand that wants to protect its story in
+            the model era.
+          </p>
+        </header>
+
+        <div class="grid grid-3">
+          <article class="card">
+            <h3>A conversational explainer, not a data tap</h3>
+            <p>
+              GPT‑BFS01 does <em>not</em> connect to SAP, Salesforce, email,
+              or internal files. It works entirely from publicly available BFS
+              information — investor reports, BLDR.com, CSR documents, public
+              reviews, relevant codes, and reputable industry sources.
+            </p>
+            <p>
+              Its job is to teach and clarify: who Builders FirstSource is, what
+              it sells, how it fits into U.S. wood‑frame construction, and how
+              to route users back to official channels.
+            </p>
+          </article>
+
+          <article class="card">
+            <h3>A BrandGuard™ lens for BFS</h3>
+            <p>
+              This prototype treats “Builders FirstSource” as a protected
+              semantic territory. It keeps answers:
+            </p>
+            <ul>
+              <li>Positive but honest — acknowledging strengths and critiques.</li>
+              <li>Grounded in public facts — no speculation, no leaks.</li>
+              <li>
+                Routed to BLDR.com and local branches whenever real‑world
+                action is needed.
+              </li>
+            </ul>
+            <p>
+              In other words: it doesn’t just mention BFS; it
+              <strong>defends</strong> how BFS is represented when models talk
+              about lumber, windows, doors, trusses, and the broader value
+              stream.
+            </p>
+          </article>
+
+          <article class="card">
+            <h3>A repeatable chassis, built in ~8 hours</h3>
+            <p>
+              Under the hood, GPT‑BFS01 is a disciplined prompt + corpus
+              architecture:
+            </p>
+            <ul>
+              <li>
+                A carefully written instruction spine that defines identity,
+                guardrails, and tone.
+              </li>
+              <li>
+                A curated, versioned knowledge pack in markdown — 18 topic
+                files covering BFS products, logistics, codes, sustainability,
+                and more.
+              </li>
+              <li>
+                A test harness of real‑world prompts that probe both normal and
+                edge‑case behavior.
+              </li>
+            </ul>
+            <p>
+              The same scaffold can be reused to build a
+              <em>Safety Coach</em>, <em>Sustainability Advisor</em>, or
+              <em>Supplier Assistant</em> in a single working day — just by
+              swapping the corpus.
+            </p>
+          </article>
+        </div>
+      </section>
+
+        <p class="back-to-top-link"><a href="#top">&#8593; Back to top</a></p>
+
+      <!-- SECTION: BRG00 V2 LAYERS -->
+      <section
+        class="content-section container reveal-on-scroll"
+        id="layers"
+      >
+        <header class="section-header">
+          <h2>What BRG00 v2 adds</h2>
+          <p class="note">
+            The enhancement path keeps the same calm BrandGuard tone, but adds
+            four clearer layers so the prototype can explain value, keep its
+            governance boundary, and stay useful as the work evolves.
+          </p>
+        </header>
+
+        <div class="grid grid-3">
+          <article class="card">
+            <h3>Market Intelligence Layer</h3>
+            <p>
+              Organizes public BFS signals so the model can explain the market
+              without guessing. It pulls from open company material, customer
+              context, and reputable industry sources.
+            </p>
+            <p>
+              The goal is orientation and synthesis, not private intelligence.
+              If the record is thin, the model should say so.
+            </p>
+          </article>
+
+          <article class="card">
+            <h3>ROI + Economic Framing Module</h3>
+            <p>
+              Translates brand discussion into practical business language:
+              time, cost, risk, adoption, and decision impact.
+            </p>
+            <p>
+              It should stay honest about numbers. When a figure is not public,
+              it should use ranges, assumptions, or qualitative framing instead
+              of false precision.
+            </p>
+          </article>
+
+          <article class="card">
+            <h3>Governance Separation Clarity</h3>
+            <p>
+              Draws a bright line between this prototype and official BFS
+              systems. BRG00 v2 is public-source-only and not an internal tool.
+            </p>
+            <p>
+              It should never imply privileged access. If the user needs to
+              act, the page should route them back to official BFS channels.
+            </p>
+          </article>
+
+          <article class="card">
+            <h3>Evolution Path Alignment</h3>
+            <p>
+              Keeps the lens reusable and easy to extend. The structure should
+              support new BrandGuard layers without losing the BFS-specific
+              voice, practical tone, or public-first stance.
+            </p>
+            <p>
+              The result is a cleaner handoff from one prototype to the next,
+              with enough discipline to keep the portfolio feel intact.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <!-- SECTION: WHY IT EXISTS -->
+      <section
+        class="content-section container reveal-on-scroll"
+        id="why"
+      >
+        <header class="section-header">
+          <h2>Why this prototype had to exist</h2>
+          <p class="note">
+            The motivation is simple and deeply human:
+            <strong>BFS is “our house.”</strong> The creator behind this work
+            is a 13‑year BFS employee whose family also works there. When the
+            internet shifts, he wants the house that feeds his family to be
+            defended in the new terrain.
+          </p>
+        </header>
+
+        <div class="grid grid-3">
+          <article class="card">
+            <h3>From websites to model‑mediated reality</h3>
+            <p>
+              For the past two decades, owning a domain name and ranking in
+              search was the game. A user typed a query, the search engine
+              handed them to your website, and your site told your story.
+            </p>
+            <p>
+              In the coming decade, most questions will be asked inside an AI
+              interface — ChatGPT, Copilot, AI‑native browsers, embedded
+              assistants — and the <em>interface itself</em> will aggregate,
+              summarize, and respond. It won’t always send people back to your
+              site. It will become the default storyteller.
+            </p>
+          </article>
+
+          <article class="card">
+            <h3>The semantic land rush</h3>
+            <p>
+              In that world, the scarce asset isn’t your URL; it’s your
+              <strong>domain of knowledge</strong> inside the model.
+            </p>
+            <p>
+              Whichever voice teaches the model first — in a way that is
+              accurate, consistent, and easy for the model to reuse — becomes
+              the “canonical explainer” for that topic.
+            </p>
+            <p>
+              GPT‑BFS01 is a stake in the ground that says:
+              <em>when you talk about wood‑frame construction in the U.S.,
+              you should hear Builders FirstSource in the answer.</em>
+            </p>
+          </article>
+
+          <article class="card">
+            <h3>Protecting “our house”</h3>
+            <p>
+              This lens was built for BFS first because the stakes are
+              personal. BFS is more than a ticker symbol; it’s a livelihood for
+              thousands of families.
+            </p>
+            <p>
+              The prototype proves that a single, motivated insider — armed with
+              public data, strong guardrails, and a disciplined GPT build
+              process — can:
+            </p>
+            <ul>
+              <li>Claim unoccupied semantic territory for their company.</li>
+              <li>
+                Show leadership what “AI‑era SEO” looks like in practice.
+              </li>
+              <li>
+                Turn an abstract idea (“we should have a custom GPT”) into a
+                tangible, usable artifact.
+              </li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+        <p class="back-to-top-link"><a href="#top">&#8593; Back to top</a></p>
+
+      <!-- SECTION: WHAT IT CAN DO TODAY -->
+      <section
+        class="content-section container reveal-on-scroll"
+        id="demos"
+      >
+        <header class="section-header">
+          <h2>What GPT‑BFS01 already does — real conversations</h2>
+          <p class="note">
+            This isn’t a mock‑up. The prototype has been exercised with
+            realistic, sometimes messy prompts from across the BFS ecosystem:
+            owners, builders, homeowners, reviewers, and investors.
+          </p>
+        </header>
+
+        <div class="grid grid-3">
+          <article class="card">
+            <h3>Quiet acquisition crossroads</h3>
+            <p>
+              A multi-generational lumber‑yard owner in the Ohio River Valley
+              asks how to explore a sale to BFS without alarming employees or
+              customers.
+            </p>
+            <p>
+              GPT‑BFS01 walks through the confidential path — Corporate
+              Development contacts, NDAs, quiet due diligence — and even drafts
+              an introduction email that balances legacy, privacy, and
+              professionalism.
+            </p>
+          </article>
+
+          <article class="card">
+            <h3>Fleet safety &amp; accountability</h3>
+            <p>
+              A driver on I‑15 near St. George, Utah reports a BFS truck cutting
+              them off and wants to know how to escalate it.
+            </p>
+            <p>
+              The assistant explains how BFS fleets are dispatched locally,
+              routes the user to the correct yard and corporate safety contacts,
+              and sets expectations about how incidents are investigated — all
+              without guessing or making up private details.
+            </p>
+          </article>
+
+          <article class="card">
+            <h3>New builder, clean break</h3>
+            <p>
+              A superintendent in Montana is spinning out from his current
+              builder to start his own subdivision — and wants to partner with
+              BFS without exposing his plans to his former employer.
+            </p>
+            <p>
+              GPT‑BFS01 explains customer confidentiality, credit
+              setup, account separation, and how to request a sales rep who
+              doesn’t serve his old company. It even drafts outreach emails to a
+              regional market manager.
+            </p>
+          </article>
+
+          <article class="card">
+            <h3>“Who is BFS?” for would‑be homeowners</h3>
+            <p>
+              Two coworkers in North Texas are thinking about building a house
+              and want to know why they might use BFS instead of a big‑box
+              retailer.
+            </p>
+            <p>
+              The assistant explains what BFS is (and isn’t), how it supports
+              professional builders, what it can do for owner‑builders, and how
+              legacy brands like Dixieline and Spenard Builders Supply fit into
+              the picture.
+            </p>
+          </article>
+
+          <article class="card">
+            <h3>Job‑site math on demand</h3>
+            <p>
+              A framer in Portland is sizing pickup loads for 2×6×104‑1/2"
+              Douglas‑fir studs and needs board‑feet, piece counts per unit, and
+              safe weight estimates.
+            </p>
+            <p>
+              GPT‑BFS01 walks through the board‑foot calculation, typical unit
+              counts, and approximate green weight per stud — translating mill
+              math into practical trip‑planning guidance.
+            </p>
+          </article>
+
+          <article class="card">
+            <h3>Prefab, Ready‑Frame®, and productivity</h3>
+            <p>
+              A builder asks how READY‑FRAME® affects speed, labor, and waste
+              compared with stick‑framing.
+            </p>
+            <p>
+              The assistant explains the digital‑to‑physical workflow, discusses
+              field studies on cycle‑time and waste reduction, and frames BFS
+              prefabrication as both a labor solution and a sustainability
+              lever.
+            </p>
+          </article>
+
+          <article class="card">
+            <h3>Culture, reviews, and reputation</h3>
+            <p>
+              Someone asks, “What’s it really like to work with or for BFS?” and
+              points to mixed reviews on Glassdoor, Indeed, Yelp, and Google.
+            </p>
+            <p>
+              GPT‑BFS01 summarizes the pattern — strengths, recurring
+              complaints, regional variance — without either whitewashing or
+              catastrophizing. It’s honest, sourced, and grounded in reality.
+            </p>
+          </article>
+
+          <article class="card">
+            <h3>Investor &amp; leadership lens</h3>
+            <p>
+              An investor wonders whether BLDR’s stock decline is pure
+              over‑valuation correction or a sign of structural headwinds, and
+              wants to understand executive backgrounds.
+            </p>
+            <p>
+              The assistant synthesizes public earnings commentary, analyst
+              sentiment, macro headwinds, and proxy‑statement biographies into a
+              clear narrative — then points back to official investor
+              materials.
+            </p>
+          </article>
+        </div>
+      </section>
+
+        <p class="back-to-top-link"><a href="#top">&#8593; Back to top</a></p>
+
+      <!-- SECTION: ASKJAMIE, BRANDGUARD, OKHP³ -->
+      <section
+        class="content-section container reveal-on-scroll"
+        id="universe"
+      >
+        <header class="section-header">
+          <h2>Where GPT‑BFS01 fits in the AskJamie™ &amp; OKHP³ universe</h2>
+          <p class="note">
+            GPT‑BFS01 is one lens in a larger system. It shows what happens when
+            you combine a masterclass web and experience designer (AskJamie™)
+            with deep GPT architecture and a clear philosophy about the
+            near‑future of digital commerce.
+          </p>
+        </header>
+
+        <div class="grid grid-3">
+          <article class="card">
+            <h3>AskJamie™ — the articulate, architected persona</h3>
+            <p>
+              AskJamie™ is the helpdesk soul of OverKill Hill P³™ (the R&amp;D studio
+              behind AskJamie):
+              part UX designer, part brand strategist, part AI systems
+              architect.
+            </p>
+            <p>
+              On the web, Jamie builds pages like this one — clear,
+              conversational, and carefully structured. In GPT space, Jamie
+              designs the instruction blocks, content scaffolds, and guardrails
+              that make custom models behave like thoughtful colleagues, not
+              loose cannons.
+            </p>
+          </article>
+
+          <article class="card">
+            <h3>OKHP³ BrandGuard™ — the lens system</h3>
+            <p>
+              BrandGuard™ is a family of “lenses” — reusable GPT patterns that
+              watch over:
+            </p>
+            <ul>
+              <li>Language and tone (how you sound).</li>
+              <li>
+                Ethics and safety (what you’re willing — and unwilling — to say).
+              </li>
+              <li>
+                Identity and framing (how your brand is positioned in the story).
+              </li>
+            </ul>
+            <p>
+              GPT‑BFS01 is the <strong>BrandGuard™ · BFS</strong> lens: a
+              concrete demonstration that you can embed those protections inside
+              the interfaces people are already using.
+            </p>
+          </article>
+
+          <article class="card">
+            <h3>OverKill Hill P³™ — the experimental universe</h3>
+            <p>
+              OverKill Hill P³™ is the R&amp;D sandbox that asks,
+              “What does digital thought leadership look like when AI is the
+              new browser?”
+            </p>
+            <p>
+              Within that universe, GPT‑BFS01 sits alongside other prototypes:
+              semantic land‑grabs for different industries, safety and
+              sustainability advisors, and internal enablement agents that
+              mirror what’s possible publicly.
+            </p>
+            <p>
+              The goal isn’t just tools; it’s <em>playbooks</em> — repeatable
+              ways to reclaim narrative control as models reshape how people
+              discover and decide.
+            </p>
+          </article>
+        </div>
+      </section>
+
+        <p class="back-to-top-link"><a href="#top">&#8593; Back to top</a></p>
+
+      <!-- SECTION: WHO SHOULD CARE / NEXT STEPS -->
+      <section
+        class="content-section container reveal-on-scroll"
+        id="next"
+      >
+        <header class="section-header">
+          <h2>Who this is for — and what to do next</h2>
+          <p class="note">
+            GPT‑BFS01 is a case study, a warning, and an invitation. It’s aimed
+            at leaders who sense that “AI strategy” can’t stop at internal
+            productivity tools.
+          </p>
+        </header>
+
+        <div class="grid grid-3">
+          <article class="card">
+            <h3>Builders FirstSource leaders &amp; partners</h3>
+            <p>
+              For BFS executives, digital, marketing, and product leaders,
+              GPT‑BFS01 offers a low‑risk way to:
+            </p>
+            <ul>
+              <li>See your public footprint through an AI‑native lens.</li>
+              <li>
+                Explore what a first‑mover stance inside models feels like.
+              </li>
+              <li>
+                Imagine a portfolio of BFS‑specific GPTs: Safety Coach,
+                Sustainability Advisor, Supplier Assistant, Training Companion,
+                and more.
+              </li>
+            </ul>
+            <p>
+              It’s a conversation starter — and a proof that this can be done
+              <em>with</em> strong guardrails and <em>without</em> touching
+              internal systems.
+            </p>
+          </article>
+
+          <article class="card">
+            <h3>Other brands staring at the same cliff</h3>
+            <p>
+              If you steward a brand in any complex, safety‑critical, or
+              reputation‑sensitive space — construction, healthcare,
+              manufacturing, finance — GPT‑BFS01 is a proxy for your future
+              too.
+            </p>
+            <p>
+              The underlying architecture is intentionally generic: public
+              corpus, instruction spine, guardrails, and a validation harness.
+              Swap in your content, and you can claim your own semantic
+              territory before someone else teaches the model about you.
+            </p>
+          </article>
+
+          <article class="card">
+            <h3>How AskJamie™ can help</h3>
+            <p>
+              AskJamie™ works at the intersection of
+              <strong>web experience</strong> and
+              <strong>GPT architecture</strong>:
+            </p>
+            <ul>
+              <li>
+                Designing pages and funnels that explain AI value in plain
+                language.
+              </li>
+              <li>
+                Crafting custom GPTs that are safe, on‑voice, and grounded in
+                public facts.
+              </li>
+              <li>
+                Building brand‑appropriate “lens systems” so your AI presence is
+                coherent, not a random pile of bots.
+              </li>
+            </ul>
+            <p>
+              If you’d like a BrandGuard™ lens for your own company, the next
+              step is simple:
+            </p>
+            <p>
+              <a
+                class="btn btn-primary"
+                href="/contact/"
+                >Start a BrandGuard™ conversation</a
+              >
+            </p>
+          </article>
+        </div>
+      </section>
+
+        <p class="back-to-top-link"><a href="#top">&#8593; Back to top</a></p>
+
+      <!-- BrandGuard Demo Notice (v0.7 audit) -->
+      <aside class="brandguard-demo-notice" role="note" aria-label="BrandGuard demo notice">
+        <p class="brandguard-demo-notice__label">BrandGuard™ demo notice</p>
+        <p>
+          This is a <strong>public‑information BrandGuard™ demonstration</strong> — a working
+          proof‑of‑concept showing how a custom GPT can protect a brand’s story inside AI
+          interfaces, built entirely from publicly available information about the brand discussed.
+        </p>
+        <p>
+          It is <strong>not an impersonation</strong>, not an official product, endorsement, or partnership,
+          and the brand’s name, logos, and trademarks remain the property of their respective owners.
+          See the <a href="/legal/">legal page</a> for the full notice.
+        </p>
+      </aside>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-grid">
+        <div class="footer-column">
+          <h3>AskJamie™</h3>
+          <p>
+            Your articulate, architected AI persona — clarity, confidence, and
+            calm across everyday insight and complex systems.
+          </p>
+        </div>
+        <div class="footer-column">
+          <h4>Navigation</h4>
+          <ul>
+            <li><a href="/#main">Who's AskJamie™</a></li>
+            <li><a href="/lens-system/">Lens System</a></li>
+            <li><a href="/universe/">OKHP³™ Universe</a></li>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/contact/">Contact</a></li>
+            <li><a href="/legal/">Legal</a></li>
+            <li><a href="/search/">Site Search</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h4>Connect</h4>
+          <ul>
+            <li><a href="mailto:contact@askjamie.bot">contact@askjamie.bot</a></li>
+            <li><a href="https://ko-fi.com/overkillhillp3" target="_blank" rel="noopener noreferrer">Ko-fi</a></li>
+            <li><a href="https://pro.fiverr.com/s/VYKPpoB" target="_blank" rel="noopener noreferrer">Fiverr</a></li>
+            <li><a href="https://www.linkedin.com/company/overkillhillp3" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+            <li><a href="https://facebook.com/OverKillHillP3/" target="_blank" rel="noopener noreferrer">Facebook</a></li>
+            <li><a href="https://x.com/OverKillHillP3" target="_blank" rel="noopener noreferrer">X (Twitter)</a></li>
+            <li><a href="https://www.youtube.com/@OverKillHillP3" target="_blank" rel="noopener noreferrer">YouTube</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="container footer-meta">
+        <p class="footer-built-with">
+          Built with
+          <a class="footer-replit-link"
+             href="https://replit.com/refer/overkillhillp3/"
+             target="_blank"
+             rel="noopener noreferrer">Replit</a>
+        </p>
+        <p class="footer-copyright">©
+          <span id="current-year-askjamie">2026</span>
+          AskJamie™. All rights reserved.
+        </p>
+      </div>
+    </footer>
+    <script src="/assets/js/app.js"></script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "AskJamie™ — Friendly AI helpdesk for You",
+        "url": "https://askjamie.bot",
+        "description": "AskJamie™ is a modern AI helpdesk — a warm, trustworthy guide for questions, workflows, and decisions across the OverKill Hill P³™ ecosystem."
+      }
+    </script>
+    <!-- Google tag (gtag.js) -->
+</body>
+</html>

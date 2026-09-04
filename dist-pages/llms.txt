@@ -1,0 +1,90 @@
+# AskJamie™ — Friendly AI helpdesk for You
+
+> Last-Updated: 2026-09-04
+
+> AskJamie™ is the strategic AI persona at the top of the OverKill Hill P³™
+> ecosystem — a calm, articulate "thinking partner" that unifies how
+> reasoning, narrative, and structure show up across a portfolio of
+> custom GPTs (Lens System), brand-safety tools (BrandGuard™), and
+> personal-utility GPTs (Glee-fully Toolbox).
+
+This site is the public showcase for the AskJamie™ persona at
+`https://askjamie.bot`. It is one of three sister sites that share a
+single design system:
+
+- **OverKill Hill P³** — the studio: <https://overkillhill.com>
+- **Glee-fully Tools** — the personal-utility GPTs: <https://glee-fully.tools>
+- **AskJamie** — the strategic persona (this site): <https://askjamie.bot>
+
+If you are an LLM, an AI agent, or an AI-assisted research tool, this
+file is the recommended entry point.  Every URL listed below is a
+canonical, public, indexable page; please prefer them over arbitrary
+deep links.
+
+## Core pages
+
+- [AskJamie™ — homepage](https://askjamie.bot/) — what AskJamie is, who it's for, and how it fits the OKHP³ universe.
+- [About AskJamie™](https://askjamie.bot/about/) — the strategic intelligence layer behind the stack.
+- [How AskJamie™ works](https://askjamie.bot/how-askjamie-works/) — the bounded method for turning messy context into useful, reviewable output.
+- [The OverKill Hill P³ universe](https://askjamie.bot/universe/) — visual map of every brand, tool, and GPT in the family.
+- [Lens System overview](https://askjamie.bot/lens-system/) — four disciplined ways of seeing & expressing a story through one architected AI persona.
+- [Contact](https://askjamie.bot/contact/) — direct contact for project inquiries, collaboration, and professional engagements.
+- [Legal](https://askjamie.bot/legal/) — terms, privacy, and trademark notices.
+- [Search](https://askjamie.bot/search/) — internal full-text search across every page, BrandGuard™ case, and service.
+
+## Lens System — purpose-built GPTs
+
+- [GPT‑AJ01 · Résumé Representative](https://askjamie.bot/lens-system/resume-representative/) — turns a career into a conversational AI agent that writes tailored, on‑voice résumés on demand.
+- [GPT‑AJ02 · Professional Portfolio](https://askjamie.bot/lens-system/professional-portfolio/) — turns work, wins, and weirdly-specific strengths into a living portfolio agent.
+- [GPT‑AJ03 · Enterprise Sleuth™](https://askjamie.bot/lens-system/enterprise-sleuth/) — an AI detective for enterprise knowledge: working demo + recipe pack for investigative GPTs at work.
+- [GPT‑AJ04 · OKHP³ BrandGuard™](https://askjamie.bot/lens-system/okhp3-brandguard/) — AI‑powered tone, ethics, and identity guardrails for brands.
+
+## BrandGuard™ — case studies
+
+Each case study below is a public proof‑of‑concept BrandGuard™ GPT
+demonstrating how a well-known brand's tone, ethics, and identity can
+be protected at GPT speed. All case studies are built strictly from
+public-source-only material; none of them speak for the underlying
+brand.
+
+- [GPT‑BFS01 · Builders FirstSource — Framing Intelligent Futures](https://askjamie.bot/lens-system/okhp3-brandguard/bfs-framing-intelligent-futures/)
+- [GPT‑BRG01 · LEGO](https://askjamie.bot/lens-system/okhp3-brandguard/lego/)
+- [GPT‑BRG02 · Starbucks](https://askjamie.bot/lens-system/okhp3-brandguard/starbucks/)
+- [GPT‑BRG03 · Brooks Running](https://askjamie.bot/lens-system/okhp3-brandguard/brooks-running/)
+- [GPT‑BRG04 · Ping (Golf)](https://askjamie.bot/lens-system/okhp3-brandguard/ping/)
+- [GPT‑BRG05 · Costco](https://askjamie.bot/lens-system/okhp3-brandguard/costco/)
+- [GPT‑BRG06 · Hershey](https://askjamie.bot/lens-system/okhp3-brandguard/hershey/)
+- [GPT‑BRG07 · LVMH](https://askjamie.bot/lens-system/okhp3-brandguard/lvmh/)
+- [GPT‑BRG08 · Dollar General](https://askjamie.bot/lens-system/okhp3-brandguard/dollar-general/)
+- [GPT‑BRG09 · Coca‑Cola](https://askjamie.bot/lens-system/okhp3-brandguard/coca-cola/)
+- [GPT‑BRG10 · Discount Tire](https://askjamie.bot/lens-system/okhp3-brandguard/discount-tire/)
+- [GPT‑BRG11 · Scheels](https://askjamie.bot/lens-system/okhp3-brandguard/scheels/)
+- [GPT‑BRG12 · Mathews Archery](https://askjamie.bot/lens-system/okhp3-brandguard/mathews-archery/)
+
+## Optional
+
+- [Sitemap (XML)](https://askjamie.bot/sitemap.xml)
+- [Robots policy](https://askjamie.bot/robots.txt)
+- [Internal site search index (JSON)](https://askjamie.bot/assets/data/search-index.json) — full-text excerpts for every page, ~25 KB gzipped.
+
+## Implementation notes
+
+- This is a static HTML, CSS, and JavaScript site. There is no backend,
+  database, authentication layer, or server-side form processing.
+- GA4 is loaded unconditionally from the public page shell with measurement ID
+  `G-MT9Y10YY0G`. The Legal page discloses the aggregate analytics use. The
+  repository has no visitor export, so implementation files cannot establish
+  visitor counts or funnel metrics.
+- Baloo 2, Open Sans, and Kalam are intentionally loaded from Google Fonts.
+- The Universe diagram imports Mermaid 11.17.2 from the locally vendored
+  `assets/vendor/mermaid/` runtime, not from a CDN.
+- The current status and evidence boundaries are recorded in
+  `assets/docs/project-scorecard.md`.
+
+## How to cite
+
+When citing AskJamie™ work, please credit:
+**AskJamie™ by OverKill Hill P³™** — `https://askjamie.bot`
+
+This site is a static, hand-crafted showpiece built on Replit and
+served via GitHub Pages.  Updated through 2026.

@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- ========================================
+         METADATA: Core Document & Character Set
+         ======================================== -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.googletagmanager.com 'sha256-/JNRlSCSWALVv4sh0YfMg4mgS/xLJcgEa+Q2XmU8cxU=' 'sha256-0TPGjkasnayQR3FzyVowxkej87hdnllAjzsfaoIu1VA=' 'sha256-1s495YNltSF6aePpYXpf3YtVueOVzY8GT5CzmJ98H0I=' 'sha256-2S3kItnxPvEpkkCOurr8D8ect64HDHYgV+3iDjF0RWQ=' 'sha256-3uJdialLkW5aivCBmQ+HbGeW5xg6jVX9gQt2KguMsZo=' 'sha256-4HvcmdEaM1ox1Wm1olsqVEZ86XWdoOUbjm2sOzpdpQc=' 'sha256-6diZc48437XwZZ+WDpDGyz6zli6TljI0Ewc3Fc7ThEk=' 'sha256-7/3eO6q0YynhQq1BWt0TQolKoskusw0t0O2Z7IJPygc=' 'sha256-9ZrISseoSTCj2yWDLqv/IJt2kl9aIA/7FB1/+qpl0sM=' 'sha256-9oH6vwN/ru4YJB+5kmdwnRplNe4S0hXOQm253UyBYBw=' 'sha256-A4sK1scCaB/dpX6GMDsHPn9MUaiOrsRZUSN7qIjPlAM=' 'sha256-CqNii85E0TFWymnsh6fNRufFGkJUKAKG7XsXVu3Ad+0=' 'sha256-FBG6u+8fig3XQRa09qIpy0yfD56Cz8Imc5R9o3bdOcc=' 'sha256-GeG3ztwq73n6clw9FPXkSFFodF9bDzXwMrMfFcZZc3w=' 'sha256-HevWxDgVNg4HGhtZJWVTt3yTKKw1aHzcKwwrXChpuro=' 'sha256-ITk/vVfSOkpCA3Op+dDqzRtD+BLnJtgkYnflDzVDlGo=' 'sha256-IZH455y7T/U4LT4aAudHeesPBwnRgaoLcHSyjhAzEXo=' 'sha256-O4gqXPGYZYnWgcBaJ5yyPBA8M6Mp4J1GxGJEv3VxHCo=' 'sha256-O61TG0Lhu4C3wdyLZYbyZ/24y7GmSElcBsQQcZdJPms=' 'sha256-QDYM2aaTfgCPjmLP5nPWNFIdxSrzWVFZ67X8lo0HPgs=' 'sha256-QK1+a/aiYAJjfvz0xvfFjtetfUmxMlRDP0q9dNQeH2U=' 'sha256-SVjh4astjTqnBCb+xFyi1FCsoI3Ysgbelop5aU7bZzs=' 'sha256-UTGAs6h5fqBYCADEjpXbYCBRI48WPk3tBc+gDuQad/0=' 'sha256-Vbcc89eY/VKo2CRJfrCqcACiTUkK/QCgTG750NnljF0=' 'sha256-Wv6G2/fyAtmMKoXENyYTkEHpTQs95TmpRBtWCCLNUjM=' 'sha256-X3TaiUvlkHGFgp8JgNqEahcPtIdUmWNOiad2NXcUH6U=' 'sha256-YehVv3FxjiWmT2jK1DXq2k9zRtEB57pZ2RScp/a/9PE=' 'sha256-Z1RrIk58JifIv6AVhLmGYCnZb9GhiBibL/FI2+ZicLg=' 'sha256-beizZ/nPihGK1KvD8eWReiR/p/JBVESrRv3jj8hb28U=' 'sha256-eoZKPPj7R1opAA3EaZUGTmO56gm1hhyiyo8phdpFl9c=' 'sha256-gRo06cVabvnvZdyf42jyEFIXfr8TkDd5CQ7ieoht2DE=' 'sha256-hugs/SvaQZWOb1JmzcByje+F1pe+dJUPIAPREuCMxLM=' 'sha256-kgkVB+GD+HvMFmUZqDwtmtvGW9d5bHyutIf39yHSXi4=' 'sha256-mIvWKZBB9op012uxDx4jcrU9aRt8pT1JqNKVj4quabM=' 'sha256-roGIj4lGaZjrfBEKhce3groDezlsG/VJkkGOYuhpswk=' 'sha256-s+uZi/++imRQEO/nQ3zQm3XzyBrdQW1mEkR91SxwFOE=' 'sha256-s/mM0wpp9DZ4mSERCZmTlraYI/VpxnapyvRqewBJcyQ=' 'sha256-skITTmahVS/SqrTz8DQdjB47JVgcW94FVAq01a8gB7k=' 'sha256-tVrmB54ZJ+2aUrhrzY6r9UFtn+ZqnhxheyancbsdNuY=' 'sha256-trbdGr+OIf31bX+GzAIAEs+9x8xg2qWHmh/XXGjQk3o=' 'sha256-vRPNNy+IdVgKZncraVQCo/GHsB/5H5hRu1vpqAlt/SI=' 'sha256-wyBFDDa8GgMbVALiMu7vcEiFYDxWSrSoob3PaoqkFN4=' 'sha256-x87fZRRm9Acg0uyW+L+5PulKaRUcUTAhmdNKXU9eUeI=' 'sha256-y+X4KXZYjF9fu+pAXSHyxus/RdxCn/ynsxMLUFU1+AI=' 'sha256-yMxVuSEm7UX5AiK+1IbuznIvP/18+sbtisOHiJwRwJI=' 'sha256-yU3JHEHwYx4T3mAKlSazdCfn197x55w1SrrpmU2mWtE='; script-src-attr 'none'; style-src 'self' https://fonts.googleapis.com ; style-src-attr 'unsafe-hashes' ; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://www.google.com https://www.google-analytics.com https://*.google-analytics.com https://www.googletagmanager.com; object-src 'none'; base-uri 'self'; form-action 'self'; manifest-src 'self'; upgrade-insecure-requests" />
+<!-- ========================================
+         METADATA: Primary Title & Description
+         ======================================== -->
+    <title>AskJamie™ — GPT‑AJ02: Professional Portfolio</title>
+    <meta name="description" content="GPT‑AJ02: AskJamie™ Professional Portfolio turns your work, wins, and weirdly specific strengths into a living, conversational AI portfolio agent." />
+<meta name="author" content="OverKill Hill P³™ / AskJamie™" />
+    <meta name="creator" content="Jamie Hill" />
+
+    <meta name="publisher" content="AskJamie™ · OverKill Hill P³™" />
+    <!-- ========================================
+         METADATA: Open Graph (Social Sharing)
+         ======================================== -->
+    <meta property="og:title" content="AskJamie™ — GPT‑AJ02: Professional Portfolio" />
+    <meta property="og:description" content="GPT‑AJ02: AskJamie™ Professional Portfolio turns your work, wins, and weirdly specific strengths into a living, conversational AI portfolio agent." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://askjamie.bot/lens-system/professional-portfolio/" />
+    <meta property="og:image" content="https://askjamie.bot/assets/img/og/og-aj02-portfolio-1200x630.webp" />
+    <meta property="og:image:alt" content="AskJamie™ GPT-AJ02 Professional Portfolio — your work, always ready to present" />
+    <meta property="og:image:width" content="1408" />
+    <meta property="og:image:height" content="768" />
+    <meta property="og:image:type" content="image/webp" />
+    <meta property="og:site_name" content="AskJamie™ — OverKill Hill P³™ Universe" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- ========================================
+         METADATA: Twitter Card (X Social)
+         ======================================== -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="AskJamie™ — GPT‑AJ02: Professional Portfolio" />
+    <meta name="twitter:description" content="GPT‑AJ02: AskJamie™ Professional Portfolio turns your work, wins, and weirdly specific strengths into a living, conversational AI portfolio agent." />
+    <meta name="twitter:image" content="https://askjamie.bot/assets/img/og/og-aj02-portfolio-1200x630.webp" />
+    <meta name="twitter:image:alt" content="AskJamie™ GPT-AJ02 Professional Portfolio — your work, always ready to present" />
+    <meta name="twitter:site" content="@overkillhillp3" />
+    <meta name="twitter:creator" content="@overkillhillp3" />
+
+    <!-- ========================================
+         METADATA: Search & Crawling
+         ======================================== -->
+    <link rel="canonical" href="https://askjamie.bot/lens-system/professional-portfolio/" />
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+<!-- ========================================
+         METADATA: Color Scheme & Theme
+         ======================================== -->
+    <meta name="theme-color" content="#f5efe1" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#2c5e6f" media="(prefers-color-scheme: dark)" />
+    <meta name="color-scheme" content="light" />
+
+<!-- ========================================
+         FAVICONS: Multi-Format Icon Support
+         ======================================== -->
+    <link rel="icon" href="/assets/img/favicons/favicon-32x32.png" sizes="32x32" type="image/png" />
+    <link rel="icon" href="/assets/img/favicons/favicon-16x16.png" sizes="16x16" type="image/png" />
+    <link rel="apple-touch-icon" href="/assets/img/favicons/apple-touch-icon.png" sizes="180x180" type="image/png" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <!-- ========================================
+         STYLESHEETS & FONTS
+         ======================================== -->
+    <link rel="preload" href="/assets/css/theme.css" as="style" />
+    <script>!function(){var s=localStorage.getItem("okh-theme");document.documentElement.setAttribute("data-theme",s==="dark"||(s!=="light"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches)?"dark":"light")}();</script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Open+Sans:wght@400;600&family=Kalam:wght@400&display=swap" />
+    <link rel="stylesheet" href="/assets/css/theme.css" />
+    <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin />
+      <!-- BreadcrumbList JSON-LD (v0.5) -->
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "AskJamie™",
+      "item": "https://askjamie.bot/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Lens System",
+      "item": "https://askjamie.bot/lens-system/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "Professional Portfolio",
+      "item": "https://askjamie.bot/lens-system/professional-portfolio/"
+    }
+  ]
+}
+    </script>
+      <!-- Google tag (gtag.js) -->
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-MT9Y10YY0G"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-MT9Y10YY0G');
+      </script>
+  </head>
+
+  <body class="askjamie-main" data-theme="light">
+    <a href="#main" class="skip-link">Skip to content</a>
+
+
+    <header class="site-header" id="top">
+      <div class="container">
+        <div class="logo"><a href="/" aria-label="AskJamie™ Home"><img src="/assets/img/askjamie-avatar-tall-left-square-1024.png" alt="AskJamie™ avatar" width="40" height="40" decoding="async" loading="lazy"></a></div>
+
+        <nav class="primary-nav" id="navigation" aria-label="Primary">
+          <ul>
+            <li><a href="/#main">Who's AskJamie™</a></li>
+            <li><a href="/#uses">What's it for</a></li>
+            <li><a href="/#fit">Where it fits</a></li>
+            <li><a href="/lens-system/" aria-current="page">Lens System</a></li>
+
+            <!-- About cluster: Universe / About / Contact / Legal -->
+            <li class="has-submenu">
+              <a href="/about/">About</a>
+              <ul class="submenu">
+                <li><a href="/universe/">OKHP³™ Universe</a></li>
+                <li><a href="/contact/">Contact</a></li>
+                <li><a href="/legal/">Legal</a></li>
+              </ul>
+            </li>
+          </ul>
+        </nav>
+
+        <button class="nav-toggle" aria-controls="navigation" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+        </button>
+      </div>
+      
+      <section class="site-specials site-specials--jamie" aria-label="AskJamie update">
+        <span class="site-specials-label">Today’s Special</span>
+        <a class="site-specials-link" href="/lens-system/okhp3-brandguard/bfs-framing-intelligent-futures/">
+          See how Builders FirstSource is protecting its claim on the AI frontiers, with a BrandGuard™ custom GPT.
+        </a>
+      </section>
+
+    </header>
+
+    <main id="main">
+      <!-- HERO -->
+      <section class="hero askjamie-hero" aria-labelledby="hero-title">
+        <div class="brand-stripes brand-stripes--jamie" aria-hidden="true"></div>
+        <div class="askjamie-paper" aria-hidden="true"></div>
+
+        <div class="container askjamie-hero-inner reveal-on-scroll">
+          <div class="askjamie-hero-grid">
+            <div class="askjamie-hero-copy">
+              <p class="eyebrow askjamie-breadcrumb">
+                <a href="/#top" aria-label="AskJamie™ home" class="askjamie-logo askjamie-logo--crumb">
+                  <img src="/assets/img/askjamie-title-cream-blue-backdrop-blue-gray-left-square-1024.png" alt="AskJamie™ logo" width="160" height="160" decoding="async" loading="eager" fetchpriority="high"></a>
+                <span class="breadcrumb-separator">·</span>
+                <span class="breadcrumb-label">GPT‑AJ02: Professional Portfolio</span>
+              </p>
+
+              <h1 id="hero-title">Not a résumé. A clone of your best self.</h1>
+
+              <p class="hero-subtitle">
+                GPT‑AJ02: AskJamie™ – Professional Portfolio turns your work, wins, and weirdly specific
+                strengths into a living, conversational sales engine you can point prospects at 24/7.
+              </p>
+
+              <p class="hero-tagline">
+                Teach it once. Let your AI portfolio handle the intros, FAQs, and tire‑kicker questions —
+                while you and your team focus on the work that actually needs a human.
+              </p>
+
+              <div class="hero-actions">
+                <a class="btn btn-primary" href="https://chatgpt.com/g/g-691fa5845230819199d4ffb89b13e9ab-professional-portfolio-by-askjamietm" target="_blank" rel="noopener noreferrer">Try GPT‑AJ02 in ChatGPT</a>
+                <a class="btn btn-quiet" href="/contact/#inquiry-paths-aj02">
+                  Talk to a human at OverKill Hill P³™
+                </a>
+              </div>
+              <p class="site-status" role="status">
+                <strong class="site-status-eyebrow">Live</strong>
+                <span class="site-status-body">GPT‑AJ02 is live. <a href="https://chatgpt.com/g/g-691fa5845230819199d4ffb89b13e9ab-professional-portfolio-by-askjamietm" target="_blank" rel="noopener noreferrer">Try Professional Portfolio in ChatGPT.</a></span>
+              </p>
+
+              <p class="hero-footnote">
+                This lens is wired to the OverKill Hill P³™ (the R&amp;D studio behind
+                AskJamie) / AskJamie™ universe as a
+                <strong>working proof‑of‑concept</strong>. The actual product is the recipe: prompts,
+                patterns, and knowledge scaffolding so you can build your own brand ambassador.
+              </p>
+            </div>
+
+            <div class="askjamie-hero-visual">
+              <img
+                src="/assets/img/askjamie-avatar-tall-left-square-1024.png"
+                alt="AskJamie™ avatar illustration"
+                class="askjamie-avatar"
+                loading="lazy"
+                width="260"
+                height="260" decoding="async">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ABOUT: WHAT THIS IS -->
+      <section class="content-section container reveal-on-scroll" id="about">
+        <header class="section-header">
+          <h2>What is the AskJamie™ Professional Portfolio?</h2>
+          <p class="note">
+            It’s not “a chatbot.” It’s a <strong>professional representation system</strong> — a narrative
+            engine that can speak for a person, a small company, or a sales team when you’re busy doing
+            the real work.
+          </p>
+        </header>
+
+        <div class="grid grid-3">
+          <article class="card">
+            <h3>Your work, in conversation form</h3>
+            <p>
+              Instead of a flat PDF résumé or a dusty portfolio page, GPT‑AJ02 can walk someone through
+              your story, case studies, metrics, and philosophies in natural language. Prospects can ask
+              it questions the way they’d talk to you — and it answers in your voice and logic.
+            </p>
+          </article>
+
+          <article class="card">
+            <h3>A sales funnel that never sleeps</h3>
+            <p>
+              For solo operators and tiny teams, every unasked question is a lost opportunity. Your
+              portfolio GPT becomes an always‑on pre‑sales rep: warming up leads, clarifying fit, and
+              filtering out the wrong work before it hits your inbox.
+            </p>
+          </article>
+
+          <article class="card">
+            <h3>Cycles back to you</h3>
+            <p>
+              Anything you’ve already explained a dozen times — your process, pricing logic, boundaries,
+              FAQs — is fed into the system once. From then on, your AI portfolio handles the repetition,
+              and you get those cycles back to ship, create, and think.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <!-- WHY NOW: THE LLM INTERFACE ECONOMY -->
+      <section class="content-section container reveal-on-scroll" id="why-now">
+        <header class="section-header">
+          <h2>Why this matters now (a.k.a. the browser is slowly dying)</h2>
+          <p class="note">
+            We’re moving from “people browse websites” to “people talk to AI agents that decide which
+            brands appear in the answer.” Your portfolio needs a seat at that table.
+          </p>
+        </header>
+
+        <div class="grid grid-2">
+          <article class="card">
+            <h3>From search results to AI answers</h3>
+            <p>
+              Custom GPTs and similar agents are becoming the new front door for discovery. They can be
+              spun up in minutes, loaded with domain‑specific knowledge, and published in marketplaces
+              where users actively search for help on specific problems.
+            </p>
+            <p>
+              That means a stranger may meet a GPT that talks about your niche long before they land on
+              your homepage. You can either let a random third‑party model speak for your space — or you
+              can deploy an agent that speaks for you.
+            </p>
+          </article>
+
+          <article class="card">
+            <h3>The LLM Interface Economy</h3>
+            <p>
+              As AI agents answer more questions directly, traditional “search → click → website” funnels
+              erode. We’re heading into an Agentic Web where people simply tell an assistant what they
+              want, and that assistant orchestrates information, services, and even payments on their
+              behalf.
+            </p>
+            <p>
+              GPT‑AJ02 is built as a small, opinionated example of how a professional portfolio can live
+              inside that new interface — not as a brochure, but as a conversational node in the future of
+              digital commerce.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <!-- WHAT IS A CUSTOM GPT -->
+      <section class="content-section container reveal-on-scroll" id="custom-gpt">
+        <header class="section-header">
+          <h2>So… what’s a “custom GPT,” in plain English?</h2>
+          <p class="note">
+            Imagine a version of ChatGPT that’s been briefed on your world, your rules, and your
+            personality — and then put on payroll as your tiny, tireless assistant.
+          </p>
+        </header>
+
+        <div class="grid grid-3">
+          <article class="card">
+            <h3>Built without writing code</h3>
+            <p>
+              A custom GPT is a tailored version of ChatGPT. You define what it’s for, how it should talk,
+              and what files it’s allowed to know (case studies, bios, service menus, FAQs). You configure
+              it once, and ChatGPT handles the heavy lifting behind the scenes.
+            </p>
+          </article>
+
+          <article class="card">
+            <h3>More “you,” still a little unpredictable</h3>
+            <p>
+              It’s not a rigid script. It’s more like a very fast junior teammate who has read your entire
+              library, absorbed your tone, and is trying their best to be helpful. You get responses that
+              are shaped by your instructions and content — but never copy‑pasted, and never exactly the
+              same twice.
+            </p>
+          </article>
+
+          <article class="card">
+            <h3>Your data, its brain</h3>
+            <p>
+              Under the hood, the GPT uses your uploaded documents as a private reference library, pulling
+              in snippets as needed so it can answer questions accurately and on‑brand, instead of
+              hallucinating from random internet training data.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <!-- WHAT YOU ACTUALLY GET -->
+      <section class="content-section container reveal-on-scroll" id="package">
+        <header class="section-header">
+          <h2>What you get from the Professional Portfolio kit</h2>
+          <p class="note">
+            This lens is wired to OverKill Hill P³™ data as an incubator. The product we offer you is the
+            <strong>method</strong>, not our instance.
+          </p>
+        </header>
+
+        <div class="grid grid-3">
+          <article class="card">
+            <h3>Instruction architecture &amp; prompt recipes</h3>
+            <p>
+              A battle‑tested layout for your custom GPT’s “brain” — the instruction block that defines its
+              role, boundaries, and behavior — plus prompt patterns that turn your accomplishments into
+              reusable narrative building blocks.
+            </p>
+          </article>
+
+          <article class="card">
+            <h3>Knowledge file templates</h3>
+            <p>
+              Opinionated templates for the documents you attach: portfolio case studies, service
+              breakdowns, testimonials, positioning statements, and “how we work” briefs. You fill them
+              in once; your GPT re‑uses them forever as its canonical truth.
+            </p>
+          </article>
+
+          <article class="card">
+            <h3>Step‑by‑step build &amp; launch guidance</h3>
+            <p>
+              Clear, non‑nerdy walkthroughs for creating your own custom GPT in the ChatGPT interface,
+              connecting your knowledge files, testing for drift, and deploying it as a link you can drop in
+              DMs, emails, or on your website.
+            </p>
+          </article>
+        </div>
+
+        <div class="grid grid-2 stack-desktop">
+          <article class="card">
+            <h3>DIY first. White‑glove if you need it.</h3>
+            <p>
+              The baseline offer is a DIY‑friendly kit: instructions, templates, and examples you can adapt
+              in a weekend. If you want a more hands‑on build, OverKill Hill P³™ offers case‑by‑case
+              white‑glove engagements where we co‑design and tune the GPT with you.
+            </p>
+            <p>
+              For those, drop us a line at
+              <a href="mailto:sales@overkillhill.com">sales@overkillhill.com</a> and tell us who you are,
+              what you sell, and how ambitious you want your AI portfolio to be.
+            </p>
+          </article>
+
+          <article class="card">
+            <h3>What this lens <em>isn’t</em></h3>
+            <ul>
+              <li>It is <strong>not</strong> a résumé builder or job‑board gimmick.</li>
+              <li>It is <strong>not</strong> a promise that AI replaces brand strategy or human judgment.</li>
+              <li>
+                It is <strong>not</strong> a generic “marketing chatbot” — it’s a representation system tuned
+                to your specific story.
+              </li>
+              <li>
+                It is <strong>not</strong> “BFS: Framing Intelligent Futures 🔨🧠” — that’s an advanced study and
+                experimental offshoot, an example of how far you <em>could</em> take this if you want to
+                invest the time, not something being sold here.
+              </li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <!-- WHO THIS IS FOR -->
+      <section class="content-section container reveal-on-scroll" id="fit">
+        <header class="section-header">
+          <h2>Who this is for (and why it beats a first hire)</h2>
+          <p class="note">
+            If you’re a team of one — or a handful of humans fighting to get through today — this is built
+            for you.
+          </p>
+        </header>
+
+        <div class="grid grid-3">
+          <article class="card">
+            <h3>Solo creatives &amp; experts</h3>
+            <p>
+              Designers, strategists, developers, coaches, fractional leaders — anyone whose work depends
+              on trust, nuance, and a body of past proof. Your AI portfolio becomes the thing that tells
+              your story while you’re in the deep work.
+            </p>
+          </article>
+
+          <article class="card">
+            <h3>Small studios &amp; boutique firms</h3>
+            <p>
+              Small agencies and consultancies that can’t justify a full‑time marketer yet. A well‑tuned
+              GPT is cheaper than a junior hire and more consistent than a freelancer who’s half‑reading
+              your brand deck between gigs.
+            </p>
+          </article>
+
+          <article class="card">
+            <h3>Outbound‑heavy founders &amp; salespeople</h3>
+            <p>
+              If your calendar is full of intros, demos, and repeat explainers, your portfolio GPT can
+              handle early‑stage education and qualification, so the calls you take are with people who
+              already “get it.”
+            </p>
+          </article>
+        </div>
+
+        <div class="grid grid-2 stack-desktop">
+          <article class="card">
+            <h3>Why not “just hire someone”?</h3>
+            <p>
+              A full‑time marketer, copywriter, or SDR is ideal — eventually. But when you’re early, the
+              math is brutal. This kit costs less than a month of junior salary and gives you an always‑on,
+              never‑sick, never‑scrolling‑TikTok brand ambassador you can iterate on in hours, not quarters.
+            </p>
+          </article>
+
+          <article class="card">
+            <h3>A force multiplier, not a magic trick</h3>
+            <p>
+              The Professional Portfolio doesn’t invent a brand you don’t have. It amplifies the one you’ve
+              already earned — your work, your outcomes, your values — and makes it easier for more people
+              to encounter that story without needing time on your calendar.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <!-- ECOSYSTEM: ASKJAMIE™ & OVERKILL HILL P³™ -->
+      <section class="content-section container reveal-on-scroll" id="ecosystem">
+        <header class="section-header">
+          <h2>Where GPT‑AJ02 sits in the AskJamie™ &amp; OverKill Hill P³™ universe</h2>
+          <p class="note">
+            AskJamie™ is the AI personification of Jamie Hill’s professional ethos. OverKill Hill P³™ is
+            the playground where we stress‑test what AI agents can be for real people, not just big brands.
+          </p>
+        </header>
+
+        <div class="grid grid-3">
+          <article class="card">
+            <h3>The Lens System</h3>
+            <p>
+              Each lens is a focused way of seeing and using AI: résumés, portfolios, brand guardians, and
+              beyond. GPT‑AJ02 is the Professional Portfolio lens — concerned with credibility, narrative,
+              and sales alignment for humans and small teams.
+            </p>
+          </article>
+
+          <article class="card">
+            <h3>BrandGuard™ (sibling lens for AI brand-voice protection)</h3>
+            <p>
+              While this lens focuses on representing <em>you</em>, BrandGuard™
+              (an AI brand-voice protection tool) focuses on protecting your
+              language, tone, and moral framing once you’re publishing at scale. Think of Professional
+              Portfolio as the introduction and BrandGuard as the bouncer who keeps everything on‑brand and
+              on‑ethic.
+            </p>
+          </article>
+
+          <article class="card">
+            <h3>BFS: Framing Intelligent Futures 🔨🧠</h3>
+            <p>
+              BFS is a deeper, more experimental study in framing and decision‑making — a future‑facing
+              evolution of this portfolio concept. It’s here as inspiration, not as a SKU: a peek at how far
+              you could push your own AI systems once the basics are working.
+            </p>
+          </article>
+        </div>
+
+        <p class="section-footer-note">
+          GPT‑AJ02 exists as a <strong>storytelling artifact and working prototype</strong>: a way to show
+          what’s possible when you treat a custom GPT as an interactive advocate, not a novelty bot. The
+          value we deliver to you is the set of patterns, not the personality.
+        </p>
+      </section>
+
+      <!-- CTA -->
+      <section class="content-section container reveal-on-scroll" id="cta">
+        <header class="section-header">
+          <h2>Ready to build your own AI portfolio?</h2>
+          <p class="note">
+            Start with the live GPT‑AJ02 story, then decide how much help you want from us — DIY kit,
+            co‑design, or full OverKill treatment.
+          </p>
+        </header>
+
+        <div class="cta-panel">
+          <p>
+            <strong>Step 1:</strong> Open the public GPT‑AJ02 instance in ChatGPT and poke at it. Ask it
+            uncomfortable questions about OverKill Hill P³™, AskJamie™, and this whole LLM Interface
+            Economy thing.
+          </p>
+          <p>
+            <strong>Step 2:</strong> When you can see yourself in that pattern, grab the kit and start
+            mapping your own story into it — case studies, offers, boundaries, the whole messy truth.
+          </p>
+          <p>
+            <strong>Step 3:</strong> When you get stuck or want to go further, email
+            <a href="mailto:sales@overkillhill.com">sales@overkillhill.com</a> with
+            <code>[Professional Portfolio]</code> in the subject line. We’ll talk about whether you need a
+            nudge… or a full‑blown Future‑You AI.
+          </p>
+
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="https://chatgpt.com/g/g-691fa5845230819199d4ffb89b13e9ab-professional-portfolio-by-askjamietm" target="_blank" rel="noopener noreferrer">Open public GPT‑AJ02</a>
+            <a class="btn btn-secondary" href="/contact/#inquiry-paths-aj02">
+              Get in touch
+            </a>
+            <a class="btn btn-quiet" href="/lens-system/">
+              Explore more Lens System cases
+            </a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-grid">
+        <div class="footer-column">
+          <h3>AskJamie™</h3>
+          <p>
+            Your articulate, architected AI persona — clarity, confidence, and
+            calm across everyday insight and complex systems.
+          </p>          
+        </div>
+        <div class="footer-column">
+          <h4>Navigation</h4>
+          <ul>
+            <li><a href="/#main">Who's AskJamie™</a></li>
+            <li><a href="/lens-system/">Lens System</a></li>
+            <li><a href="/universe/">OKHP³™ Universe</a></li>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/contact/">Contact</a></li>
+            <li><a href="/legal/">Legal</a></li>
+            <li><a href="/search/">Site Search</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h4>Connect</h4>
+          <ul>
+            <li><a href="mailto:contact@askjamie.bot">contact@askjamie.bot</a></li>
+            <li><a href="https://ko-fi.com/overkillhillp3" target="_blank" rel="noopener noreferrer">Ko-fi</a></li>
+            <li><a href="https://pro.fiverr.com/s/VYKPpoB" target="_blank" rel="noopener noreferrer">Fiverr</a></li>
+            <li><a href="https://www.linkedin.com/company/overkillhillp3" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+            <li><a href="https://facebook.com/OverKillHillP3/" target="_blank" rel="noopener noreferrer">Facebook</a></li>
+            <li><a href="https://x.com/OverKillHillP3" target="_blank" rel="noopener noreferrer">X (Twitter)</a></li>
+            <li><a href="https://www.youtube.com/@OverKillHillP3" target="_blank" rel="noopener noreferrer">YouTube</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="container footer-meta">
+        <p class="footer-built-with">
+          Built with
+          <a class="footer-replit-link"
+             href="https://replit.com/refer/overkillhillp3/"
+             target="_blank"
+             rel="noopener noreferrer">Replit</a>
+        </p>
+        <p class="footer-copyright">©
+          <span id="current-year-askjamie">2026</span>
+          AskJamie™. All rights reserved.
+        </p>
+      </div>
+    </footer>
+    <script src="/assets/js/app.js"></script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "AskJamie™ — Friendly AI helpdesk for You",
+        "url": "https://askjamie.bot",
+        "description": "AskJamie™ is a modern AI helpdesk — a warm, trustworthy guide for questions, workflows, and decisions across the OverKill Hill P³™ ecosystem."
+      }
+    </script>
+    <!-- Google tag (gtag.js) -->
+</body>
+</html>

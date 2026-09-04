@@ -1,0 +1,25 @@
+{
+  "files": 315,
+  "sha256": "7fd653301810da7f2eccd6ace28c786257fe4157398f2a4f2c38194d8110a64c",
+  "root_files": [
+    "404.html",
+    "CNAME",
+    "_headers",
+    "favicon.ico",
+    "humans.txt",
+    "index.html",
+    "llms.txt",
+    "robots.txt",
+    "site.webmanifest",
+    "sitemap.xml",
+    "under-construction.html"
+  ],
+  "asset_directories": [
+    "css",
+    "data",
+    "fonts",
+    "img",
+    "js",
+    "vendor"
+  ]
+}

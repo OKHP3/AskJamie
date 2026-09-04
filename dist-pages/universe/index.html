@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- ========================================
+       METADATA: Core Document & Character Set
+       ======================================== -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.googletagmanager.com 'sha256-9leCdhSeX49HW/R2aDl+OA5QPl/ueIkIjNdeDmy3jz4=' 'sha256-9oH6vwN/ru4YJB+5kmdwnRplNe4S0hXOQm253UyBYBw=' 'sha256-eoZKPPj7R1opAA3EaZUGTmO56gm1hhyiyo8phdpFl9c=' 'sha256-s+uZi/++imRQEO/nQ3zQm3XzyBrdQW1mEkR91SxwFOE='; script-src-attr 'none'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; style-src-attr 'unsafe-inline'; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://www.google.com https://www.google-analytics.com https://*.google-analytics.com https://www.googletagmanager.com; object-src 'none'; base-uri 'self'; form-action 'self'; manifest-src 'self'; upgrade-insecure-requests" />
+<!-- ========================================
+       METADATA: Primary Title & Description
+       ======================================== -->
+    <title>AskJamie™ — OKHP³ Universe Map</title>
+    <meta name="description" content="Visual map of the OverKill Hill P³™ universe. See how AskJamie™, Glee-fully Tools, BrandGuard™, BFS work, and narrative experiments interconnect." />
+<meta name="author" content="Jamie / AskJamie™" />
+    <meta name="creator" content="Jamie / AskJamie™" />
+    <meta name="publisher" content="AskJamie™ · OverKill Hill P³™" />
+    <link rel="canonical" href="https://askjamie.bot/universe/" />
+
+    <!-- ========================================
+       METADATA: Open Graph (Social Sharing)
+       ======================================== -->
+    <meta property="og:title" content="AskJamie™ — OKHP³ Universe Map" />
+    <meta property="og:description" content="Visual map of the OverKill Hill P³™ universe. See how AskJamie™, Glee-fully Tools, BrandGuard™, BFS work, and narrative experiments interconnect." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://askjamie.bot/universe/" />
+    <meta property="og:image" content="https://askjamie.bot/assets/img/askjamie-avatar-tall-left-square-1024.png" />
+    <meta property="og:image:width" content="1024" />
+    <meta property="og:image:height" content="1024" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:alt" content="AskJamie™ avatar" />
+    <meta property="og:site_name" content="AskJamie™" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- ========================================
+       METADATA: Twitter Card (X Social)
+       ======================================== -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="AskJamie™ — OKHP³ Universe Map" />
+    <meta name="twitter:description" content="Visual map of the OverKill Hill P³™ universe. See how AskJamie™, Glee-fully Tools, BrandGuard™, BFS work, and narrative experiments interconnect." />
+    <meta name="twitter:image" content="https://askjamie.bot/assets/img/askjamie-avatar-tall-left-square-1024.png" />
+    <meta name="twitter:image:alt" content="AskJamie™ avatar" />
+    <meta name="twitter:site" content="@overkillhillp3" />
+    <meta name="twitter:creator" content="@overkillhillp3" />
+
+    <!-- ========================================
+       METADATA: Search & Crawling
+       ======================================== -->
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+<link rel="sitemap" href="https://askjamie.bot/sitemap.xml" />
+
+    <!-- ========================================
+       METADATA: Color Scheme & Theme
+       ======================================== -->
+    <meta name="theme-color" content="#f5efe1" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#2c5e6f" media="(prefers-color-scheme: dark)" />
+    <meta name="color-scheme" content="light" />
+
+<!-- ========================================
+       FAVICONS: Multi-Format Icon Support
+       ======================================== -->
+    <link rel="icon" href="/assets/img/favicons/favicon-32x32.png" sizes="32x32" type="image/png" />
+    <link rel="icon" href="/assets/img/favicons/favicon-16x16.png" sizes="16x16" type="image/png" />
+    <link rel="apple-touch-icon" href="/assets/img/favicons/apple-touch-icon.png" sizes="180x180" type="image/png" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <!-- ========================================
+       STYLESHEETS & FONTS
+       ======================================== -->
+    <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin />
+    <link rel="preload" href="/assets/css/theme.css" as="style" />
+    <script>!function(){var s=localStorage.getItem("okh-theme");document.documentElement.setAttribute("data-theme",s==="dark"||(s!=="light"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches)?"dark":"light")}();</script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Open+Sans:wght@400;600&family=Kalam:wght@400&display=fallback" as="style" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Open+Sans:wght@400;600&family=Kalam:wght@400&display=fallback" media="not all" data-deferred-fonts />
+    <link rel="stylesheet" href="/assets/css/theme.css" />
+
+      <!-- BreadcrumbList JSON-LD (v0.5) -->
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "AskJamie™",
+      "item": "https://askjamie.bot/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Universe",
+      "item": "https://askjamie.bot/universe/"
+    }
+  ]
+}
+    </script>
+      <!-- Google tag (gtag.js) -->
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-MT9Y10YY0G"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-MT9Y10YY0G');
+      </script>
+  </head>
+
+  <body class="askjamie-main" data-theme="light">
+    <a href="#main" class="skip-link">Skip to content</a>
+    <header class="site-header" id="top">
+      <section class="site-specials site-specials--jamie" aria-label="AskJamie update">
+        <span class="site-specials-label">Today’s Special</span>
+        <a class="site-specials-link" href="/lens-system/okhp3-brandguard/bfs-framing-intelligent-futures/">
+          See how BFS is framed with a public-source-only BrandGuard™ custom GPT.
+        </a>
+      </section>
+
+      <div class="container">
+        <div class="logo"><a href="/" aria-label="AskJamie™ Home"><img src="/assets/img/askjamie-avatar-tall-left-square-1024.png" alt="AskJamie™ avatar" width="40" height="40" decoding="async" loading="lazy"></a></div>
+
+        <nav class="primary-nav" id="navigation" aria-label="Primary">
+          <ul>
+            <li><a href="/#main">Who's AskJamie™</a></li>
+            <li><a href="/#uses">What's it for</a></li>
+            <li><a href="/#fit">Where it fits</a></li>
+            <li><a href="/lens-system/">Lens System</a></li>
+            <li><a href="/how-askjamie-works/">How it works</a></li>
+
+            <!-- About cluster: Universe / About / Contact / Legal -->
+            <li class="has-submenu">
+              <a href="/about/">About</a>
+              <ul class="submenu">
+                <li><a href="/universe/" aria-current="page">OKHP³™ Universe</a></li>
+                <li><a href="/contact/">Contact</a></li>
+                <li><a href="/legal/">Legal</a></li>
+              </ul>
+            </li>
+          </ul>
+        </nav>
+
+        <button class="nav-toggle" aria-controls="navigation" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+        </button>
+      </div>
+    </header>
+
+    <main id="main">
+      <!-- HERO: angled paper + large mermaid universe diagram -->
+      <section class="hero askjamie-hero askjamie-hero--universe" aria-labelledby="hero-title" >
+        <div class="brand-stripes brand-stripes--jamie" aria-hidden="true"></div>
+        <div class="askjamie-paper" aria-hidden="true"></div>
+        <div class="container askjamie-hero-inner reveal-on-scroll">
+          <div class="askjamie-hero-grid">
+            <div class="askjamie-hero-copy">
+              <p class="eyebrow h-accent">AskJamie™</p>
+              <div class="askjamie-hero-content">
+                <h1 id="hero-title" class="askjamie-hero-title">
+                  The OverKill Hill P³ universe, at a glance.
+                </h1>
+                <p class="hero-subtitle">
+                  This is Jamie’s mental map—how the brands, tools, and experimental GPTs
+                  hang together behind the scenes.
+                </p>
+                <p class="askjamie-hero-tagline">
+                   A visual map of the OverKill Hill P³™ (the R&amp;D studio behind
+                   AskJamie) universe from AskJamie’s
+                  perspective, showing how OverKill Hill, Glee‑fully Tools,
+                   BrandGuard (our AI brand-voice protection tool), public-source-only
+                   BFS work, and narrative experiments connect.
+                </p>
+              </div>
+              <div class="hero-actions">
+                <a href="/" class="btn btn-quiet">Back to the main page</a>
+                <a
+                  href="https://chatgpt.com/g/g-691fa5845230819199d4ffb89b13e9ab-professional-portfolio-by-askjamietm"
+                  class="btn btn-primary"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  >Open Professional Portfolio by AskJamie™</a>
+              </div>
+            </div>
+            <div class="askjamie-hero-visual">
+              <figure class="askjamie-mermaid-shell">
+                <div class="mermaid-scroll-wrap" aria-hidden="true">
+                <div class="mermaid">
+                  graph LR
+
+                    OKH["OverKill Hill P³™"]
+                    GPT["Glee&#8209;fully Personalizable Tools™"]
+                    GTTB00["00 — Glee&#8209;fully Toolbox"]
+                    GTDC01["01 — Discovered Careers"]
+                    GTTF02["02 — Treasured Finds"]
+                    GTTT03["03 — Tasty Tracker"]
+                    GTTG04["04 — Traveler’s Guide"]
+                    GTOL05["05 — Organized Life"]
+                    GTHB06["06 — Healthy Bee‑ing"]
+                    GTIK07["07 — Identity Known"]
+                    ASJ["AskJamie™"]
+                    AJ01["AJ01 — Résumé Representative"]
+                    AJ02["AJ02 — Professional Portfolio"]
+                    AJ03["AJ03 — Enterprise Sleuth"]
+                    AJ04["AJ04 — OKHP³ BrandGuard™"]
+                    BRG00["BRG00 · BFS Framing Intelligent Futures"]
+                    BRG01["BRG01 — LEGO"]
+                    BRG02["BRG02 — Starbucks"]
+                    BRG03["BRG03 — Brooks Running"]
+                    BRG04["BRG04 — Ping"]
+                    BRG05["BRG05 — Costco"]
+                    BRG06["BRG06 — Hershey"]
+                    BRG07["BRG07 — LVMH"]
+                    BRG08["BRG08 — Dollar General"]
+                    BRG09["BRG09 — Coca-Cola"]
+                    BRG10["BRG10 — Discount Tire"]
+                    BRG11["BRG11 — Scheels"]
+                    BRG12["BRG12 — Mathews Archery"]
+                    BFS01["BFS — Framing Intelligent Futures"]
+                    UNT00["UNT00 — Un‑NOCKed Truth"]
+                    UNT01["UNT01 — Geared-Up"]
+                    UNT02["UNT02 — Dialed-In"]
+                    UNT03["UNT03 — Hunted-Down"]
+                    PSR00["PSR00 — PathScrib-R"]
+                    ARE00["ARE00 — Abrahamic Reference Engine"]
+                    HMT00["HMT00 — HomeTools"]
+                    HMT01["HMT01 — Homestead‑R"]
+                    HMT02["HMT01 — HomeVisual-R"]
+                    HMT03["HMT01 — FloorPlan-R"]
+                    HMT04["HMT01 — HomeEstimate-R"]
+                    FDY00["FDY00 — The Found-Rᵧ"]
+                    FDY99["GPTs to build GPTs"]
+                    WRIT["Writing & Narrative Experiments"]
+                    KNO["Knowledge Files"]
+                    PRO["Protocols & Promptcraft"]
+                    MPS["Magnus Progenitor Saga"]
+                    BAC["Biases as Constants"]
+
+                    OKH --> GPT
+                    GPT --> GTTB00
+                    GTTB00 --> GTDC01
+                    GTTB00 --> GTTF02
+                    GTTB00 --> GTTT03
+                    GTTB00 --> GTTG04
+                    GTTB00 --> GTOL05
+                    GTTB00 --> GTHB06
+                    GTTB00 --> GTIK07
+                    OKH --> ASJ
+                    ASJ --> AJ01
+                    ASJ --> AJ02
+                    ASJ --> AJ03
+                    ASJ --> AJ04
+                    AJ04 --> BRG00
+                    AJ04 --> BRG01
+                    AJ04 --> BRG02
+                    AJ04 --> BRG03
+                    AJ04 --> BRG04
+                    AJ04 --> BRG05
+                    AJ04 --> BRG06
+                    AJ04 --> BRG07
+                    AJ04 --> BRG08
+                    AJ04 --> BRG09
+                    AJ04 --> BRG10
+                    AJ04 --> BRG11
+                    AJ04 --> BRG12
+                    OKH --> BFS01
+                    OKH --> UNT00
+                    UNT00 --> UNT01
+                    UNT00 --> UNT02
+                    UNT00 --> UNT03
+                    OKH --> PSR00
+                    OKH --> ARE00
+                    OKH --> HMT00
+                    HMT00 --> HMT01
+                    HMT00 --> HMT02
+                    HMT00 --> HMT03
+                    HMT00 --> HMT04
+                    OKH --> FDY00
+                    FDY00 --> FDY99
+                    OKH --> WRIT
+                    WRIT --> KNO
+                    WRIT --> PRO
+                    WRIT --> MPS
+                    WRIT --> BAC
+
+                    %% Clickable links
+                      click GPT "https://glee-fully.tools/" "Visit Glee&#8209;fully Tools™" _blank
+                      click GTTB00 "https://glee-fully.tools/toolbox/" "Open the Toolbox hub" _self
+                      click GTDC01 "https://glee-fully.tools/toolbox/01-discovered-careers/" "Open Discovered Careers" _self
+                      click GTTF02 "https://glee-fully.tools/toolbox/02-treasured-finds/" "Open Treasured Finds" _self
+                      click GTTT03 "https://glee-fully.tools/toolbox/03-tasty-tracker/" "Open Tasty Tracker" _self
+                      click GTTG04 "https://glee-fully.tools/toolbox/04-travelers-guide/" "Open Traveler’s Guide" _self
+                      click GTOL05 "https://glee-fully.tools/toolbox/05-organized-life/" "Open Organized Life" _self
+                      click GTHB06 "https://glee-fully.tools/toolbox/06-healthy-bee-ing/" "Open Healthy Bee‑ing" _self
+                      click GTIK07 "https://glee-fully.tools/toolbox/07-identity-known/" "Open Identity Known" _self
+                      click ASJ "https://askjamie.bot/" "Visit AskJamie™" _blank
+                      click AJ01 "https://askjamie.bot/lens-system/resume-representative/" "Open Résumé Representative" _self
+                      click AJ02 "https://askjamie.bot/lens-system/professional-portfolio/" "Open Professional Portfolio by AskJamie™" _blank
+                      click AJ03 "https://askjamie.bot/lens-system/enterprise-sleuth/" "Open Enterprise Sleuth" _self
+                      click AJ04 "https://askjamie.bot/lens-system/okhp3-brandguard/" "Open OKHP³™ BrandGuard™" _self
+                      click BRG00 "https://askjamie.bot/lens-system/okhp3-brandguard/bfs-framing-intelligent-futures/" "Open BFS Framing Intelligent Futures" _self
+                      click BRG01 "https://askjamie.bot/lens-system/okhp3-brandguard/lego/" "Open LEGO" _self
+                      click BRG02 "https://askjamie.bot/lens-system/okhp3-brandguard/starbucks/" "Open Starbucks" _self
+                      click BRG03 "https://askjamie.bot/lens-system/okhp3-brandguard/brooks-running/" "Open Brooks Running" _self
+                      click BRG04 "https://askjamie.bot/lens-system/okhp3-brandguard/ping/" "Open Ping" _self
+                      click BRG05 "https://askjamie.bot/lens-system/okhp3-brandguard/costco/" "Open Costco" _self
+                      click BRG06 "https://askjamie.bot/lens-system/okhp3-brandguard/hershey/" "Open Hershey" _self
+                      click BRG07 "https://askjamie.bot/lens-system/okhp3-brandguard/lvmh/" "Open LVMH" _self
+                      click BRG08 "https://askjamie.bot/lens-system/okhp3-brandguard/dollar-general/" "Open Dollar General" _self
+                      click BRG09 "https://askjamie.bot/lens-system/okhp3-brandguard/coca-cola/" "Open Coca-Cola" _self
+                      click BRG10 "https://askjamie.bot/lens-system/okhp3-brandguard/discount-tire/" "Open Discount Tire" _self
+                      click BRG11 "https://askjamie.bot/lens-system/okhp3-brandguard/scheels/" "Open Scheels" _self
+                      click BRG12 "https://askjamie.bot/lens-system/okhp3-brandguard/mathews-archery/" "Open Mathews Archery" _self
+                      click OKH "https://overkillhill.com/" "Visit OverKill Hill P³™" _blank
+                      click BFS01 "https://overkillhill.com/projects/bfs-framing-intelligent-futures/" "Open BFS – Framing Intelligent Futures" _self
+                      click UNT00 "https://overkillhill.com/projects/un-nocked-truth/" "Open Un‑NOCKed Truth" _blank
+                      click ARE00 "https://overkillhill.com/projects/abrahamic-reference-engine/" "Open Abrahamic Reference Engine" _blank
+                      click PSR00 "https://overkillhill.com/projects/pathscrib-r/" "Open PathScrib‑R" _blank
+                      click HMT00 "https://overkillhill.com/projects/hometools/" "Open HomeTools" _blank
+                      click FDY00 "https://overkillhill.com/found-ry/" "Open The Found-Rᵧ" _blank
+                      click MPS "https://overkillhill.com/writings/magnus-saga/" "Open Magnus Progenitor Saga" _blank
+                      click BAC "https://overkillhill.com/writings/biases-as-constants/" "Open Biases as Constants" _blank
+
+                </div>
+                </div>
+                <noscript>
+                  <div class="mermaid-noscript">
+                    <strong>Static ecosystem map</strong>
+                    <p>
+                      JavaScript is required for the interactive map. OverKill Hill
+                      P³™ is the engineering spine; AskJamie™ is the voice layer;
+                      Glee‑fully Tools™ is the everyday-tools layer; BrandGuard™,
+                      public-source-only BFS work, and narrative experiments are
+                      connected projects in the wider universe.
+                    </p>
+                    <p><a href="/contact/">Contact Jamie with questions about the map.</a></p>
+                  </div>
+                </noscript>
+                <figcaption class="sr-only">
+                  Diagram of the OverKill Hill P³™ universe, showing connections
+                  between OverKill Hill, AskJamie™, Glee‑fully Personalizable Tools™,
+                  BrandGuard™, public-source-only BFS work, and narrative experiments like Magnus Progenitor Saga.
+                  
+                </figcaption>
+                <p class="hero-tagline">
+                    Use it as an orientation layer. When you jump between AskJamie™, Glee‑fully,
+                    and OverKill Hill P³™, this diagram is the “you are here” marker.
+                </p>
+                <p class="mermaid-referral-note">
+                    Diagram rendered with Mermaid.js.
+                    <a href="https://mermaidchart.cello.so/UhVlNtC2MlS" class="mermaid-referral-link" target="_blank" rel="noopener noreferrer">Try Mermaid.AI &#8594;</a>
+                    if you want to explore the syntax yourself.
+                </p>
+              </figure>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- Body content: brief explanation + next places to explore -->
+      <section class="content-section container reveal-on-scroll">
+        <header class="section-header">
+          <h2>How to read this map</h2>
+          <p>
+            Each node is a pillar in the OverKill Hill P³™ stack. Some are live today,
+            others are active experiments. AskJamie™ sits alongside OverKill Hill and
+            Glee‑fully, acting as the calm voice that explains how everything works.
+          </p>
+        </header>
+
+        <div class="grid grid-3">
+          <article class="card">
+            <h3>OverKill Hill P³™</h3>
+            <p>
+              The engineering spine. Frameworks, canon, and governance for how tools,
+              prompts, and GPT ecosystems are designed.
+            </p>
+          </article>
+          <article class="card">
+            <h3>AskJamie™</h3>
+            <p>
+              The voice layer. A helpdesk persona that narrates, clarifies,
+              and walks you through decisions across the system.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Glee‑fully Tools™</h3>
+            <p>
+              The joy layer. Personalizable tools built for everyday life, infused with
+              Glee’s color, warmth, and playful structure.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="content-section container reveal-on-scroll">
+        <header class="section-header">
+          <h2>Where to explore next</h2>
+        </header>
+        <ul class="link-list">
+          <li>
+            <strong>OverKill Hill P³™:</strong>
+            long‑form systems thinking, frameworks, and project ecosystems.
+          </li>
+          <li>
+            <strong>Glee‑fully Personalizable Tools™:</strong>
+            cozy, colorful tools that turn everyday logistics into something more playful.
+          </li>
+          <li>
+            <strong>AskJamie™ modules AJ01–AJ04:</strong>
+            résumé representative, professional portfolio, enterprise sleuth, and BrandGuard™.
+          </li>
+        </ul>
+        <div class="hero-actions">
+          <a href="/how-askjamie-works/" class="btn btn-primary">How AskJamie works &#8594;</a>
+          <a href="/lens-system/" class="btn btn-primary">Explore the Lens System &#8594;</a>
+          <a href="/contact/" class="btn btn-secondary">Get in touch &#8594;</a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-grid">
+        <div class="footer-column">
+          <h3>AskJamie™</h3>
+          <p>
+            Your articulate, architected AI persona — clarity, confidence, and
+            calm across everyday insight and complex systems.
+          </p>          
+        </div>
+        <div class="footer-column">
+          <h4>Navigation</h4>
+          <ul>
+            <li><a href="/#main">Who's AskJamie™</a></li>
+            <li><a href="/how-askjamie-works/">How it works</a></li>
+            <li><a href="/lens-system/">Lens System</a></li>
+            <li><a href="/universe/">OKHP³™ Universe</a></li>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/contact/">Contact</a></li>
+            <li><a href="/legal/">Legal</a></li>
+            <li><a href="/search/">Site Search</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h4>Connect</h4>
+          <ul>
+            <li><a href="mailto:contact@askjamie.bot">contact@askjamie.bot</a></li>
+            <li><a href="https://ko-fi.com/overkillhillp3" target="_blank" rel="noopener noreferrer">Ko-fi</a></li>
+            <li><a href="https://pro.fiverr.com/s/VYKPpoB" target="_blank" rel="noopener noreferrer">Fiverr</a></li>
+            <li><a href="https://www.linkedin.com/company/overkillhillp3" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+            <li><a href="https://facebook.com/OverKillHillP3/" target="_blank" rel="noopener noreferrer">Facebook</a></li>
+            <li><a href="https://x.com/OverKillHillP3" target="_blank" rel="noopener noreferrer">X (Twitter)</a></li>
+            <li><a href="https://www.youtube.com/@OverKillHillP3" target="_blank" rel="noopener noreferrer">YouTube</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="container footer-meta">
+        <p class="footer-built-with">
+          Built with
+          <a class="footer-replit-link"
+             href="https://replit.com/refer/overkillhillp3/"
+             target="_blank"
+             rel="noopener noreferrer">Replit</a>
+        </p>
+        <p class="footer-copyright">©
+          <span id="current-year-askjamie">2026</span>
+          AskJamie™. All rights reserved.
+        </p>
+      </div>
+    </footer>
+    <script defer src="/assets/js/deferred-fonts.js"></script>
+    <script defer src="/assets/js/app.js"></script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "AskJamie™ — Friendly AI helpdesk for You",
+        "url": "https://askjamie.bot",
+        "description": "AskJamie™ is a modern AI helpdesk — a warm, trustworthy guide for questions, workflows, and decisions across the OverKill Hill P³™ ecosystem."
+      }
+    </script>
+    <!-- Google tag (gtag.js) -->
+<script type="module" src="/assets/js/mermaid-init.js"></script>
+  </body>
+</html>

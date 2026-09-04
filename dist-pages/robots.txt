@@ -1,0 +1,20 @@
+User-agent: *
+Allow: /
+
+# Block utility/template pages from indexation
+Disallow: /under-construction.html
+
+# AI training crawlers — retrieval welcome, bulk scraping not
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+Sitemap: https://askjamie.bot/sitemap.xml
