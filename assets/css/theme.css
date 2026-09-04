@@ -7409,6 +7409,14 @@ html[data-color-scheme="dark"] .askjamie-main .mermaid .edgePath path {
   aspect-ratio: 1 / 2.1;
 }
 
+/* BrandGuard is a long portfolio page. Keep below-the-fold sections out of
+   the initial mobile render while reserving stable space for fast scrolling. */
+.askjamie-brandguard-page > main > section.content-section,
+.askjamie-brandguard-page > main > section.stripe-bg {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 680px;
+}
+
 @media (min-width: 900px) {
   .askjamie-hero-visual {
     justify-content: flex-end;

@@ -6,20 +6,29 @@
 // Performance: on pages with many diagrams (e.g. the v0.3 article) we use
 // IntersectionObserver to defer rendering until each diagram approaches the
 // viewport. Falls back to immediate render where the API is unavailable.
-import mermaid from "/assets/vendor/mermaid/mermaid.esm.min.mjs";
-
-mermaid.initialize({
-  startOnLoad: false,
-  securityLevel: "loose",
-  flowchart: {
-    curve: "basis",
-    nodeSpacing: 55,
-    rankSpacing: 65,
-    htmlLabels: true,
-  },
-});
-
 const diagrams = Array.from(document.querySelectorAll(".mermaid"));
+let mermaidPromise = null;
+
+function loadMermaid() {
+  if (!mermaidPromise) {
+    mermaidPromise = import("/assets/vendor/mermaid/mermaid.esm.min.mjs").then(
+      ({ default: mermaid }) => {
+        mermaid.initialize({
+          startOnLoad: false,
+          securityLevel: "loose",
+          flowchart: {
+            curve: "basis",
+            nodeSpacing: 55,
+            rankSpacing: 65,
+            htmlLabels: true,
+          },
+        });
+        return mermaid;
+      }
+    );
+  }
+  return mermaidPromise;
+}
 
 function enhanceMermaidLinks(node) {
   node.querySelectorAll("svg a").forEach((link) => {
@@ -47,11 +56,11 @@ function enhanceMermaidLinks(node) {
   });
 }
 
-function renderOne(node) {
+async function renderOne(node) {
   if (node.dataset.mermaidRendered === "1") return;
   node.dataset.mermaidRendered = "1";
-  mermaid
-    .run({ nodes: [node] })
+  loadMermaid()
+    .then((mermaid) => mermaid.run({ nodes: [node] }))
     .then(() => enhanceMermaidLinks(node))
     .catch((err) => {
       console.warn("[mermaid-init] render error:", err);
@@ -60,16 +69,21 @@ function renderOne(node) {
 
 function scheduleRender(node) {
   if (typeof requestIdleCallback === "function") {
-    requestIdleCallback(() => renderOne(node), { timeout: 1200 });
+    requestIdleCallback(() => renderOne(node), { timeout: 2500 });
   } else {
-    setTimeout(() => renderOne(node), 0);
+    setTimeout(() => renderOne(node), 1500);
   }
 }
 
-// If only a few diagrams, or no IntersectionObserver, render immediately.
-if (diagrams.length <= 2 || typeof IntersectionObserver === "undefined") {
+// On small screens the Universe diagram follows a substantial text block and
+// is normally below the first viewport. Avoid importing and evaluating the
+// large Mermaid bundle until the diagram is actually approached. Desktop
+// retains a generous prefetch margin so the side-by-side hero stays seamless.
+if (typeof IntersectionObserver === "undefined") {
   diagrams.forEach(scheduleRender);
 } else {
+  const isSmallScreen =
+    typeof matchMedia === "function" && matchMedia("(max-width: 768px)").matches;
   const io = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
@@ -79,7 +93,7 @@ if (diagrams.length <= 2 || typeof IntersectionObserver === "undefined") {
         }
       });
     },
-    { rootMargin: "400px 0px", threshold: 0.01 }
+    { rootMargin: isSmallScreen ? "0px" : "400px 0px", threshold: 0.01 }
   );
   diagrams.forEach((node) => io.observe(node));
 }

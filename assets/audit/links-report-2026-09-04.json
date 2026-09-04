@@ -2,7 +2,7 @@
   "generated": "2026-09-04",
   "pages_scanned": 26,
   "internal_links": 713,
-  "external_links": 521,
+  "external_links": 523,
   "broken_links": [],
   "style_issues": [],
   "sitemap": {
@@ -85,7 +85,7 @@
     {
       "path": "lens-system/okhp3-brandguard/index.html",
       "internal_links": 45,
-      "external_links": 18
+      "external_links": 19
     },
     {
       "path": "lens-system/okhp3-brandguard/lego/index.html",
@@ -140,7 +140,7 @@
     {
       "path": "universe/index.html",
       "internal_links": 28,
-      "external_links": 17
+      "external_links": 18
     }
   ]
 }

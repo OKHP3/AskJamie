@@ -23,6 +23,7 @@ async function capturePage(path, selector, filename, viewport) {
   await page.goto(`${baseUrl}${path}`, { waitUntil: "networkidle" });
   const target = page.locator(selector).first();
   await target.waitFor({ state: "visible", timeout: 15000 });
+  await target.scrollIntoViewIfNeeded();
   await target.screenshot({ path: `${outputDir}/${filename}-${viewport.width}.png` });
   await page.close();
 }
@@ -40,6 +41,7 @@ for (const viewport of viewports) {
   await page.setViewportSize(viewport);
   await page.goto(`${baseUrl}/universe/`, { waitUntil: "networkidle" });
   const diagram = page.locator(".askjamie-mermaid-shell");
+  await diagram.scrollIntoViewIfNeeded();
   await diagram.locator("svg").first().waitFor({ state: "visible", timeout: 20000 });
   await diagram.screenshot({
     path: `${outputDir}/universe-diagram-${viewport.name}-${viewport.width}.png`,

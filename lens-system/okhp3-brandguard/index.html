@@ -71,7 +71,8 @@
     <script>!function(){var s=localStorage.getItem("okh-theme");document.documentElement.setAttribute("data-theme",s==="dark"||(s!=="light"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches)?"dark":"light")}();</script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Open+Sans:wght@400;600&family=Kalam:wght@400&display=swap" />
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Open+Sans:wght@400;600&family=Kalam:wght@400&display=fallback" as="style" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Open+Sans:wght@400;600&family=Kalam:wght@400&display=fallback" media="not all" data-deferred-fonts />
     <link rel="stylesheet" href="/assets/css/theme.css" />
       <!-- BreadcrumbList JSON-LD (v0.5) -->
     <script type="application/ld+json">
@@ -110,7 +111,7 @@
       </script>
   </head>
   
-  <body class="askjamie-main" data-theme="light">
+  <body class="askjamie-main askjamie-brandguard-page" data-theme="light">
     <a href="#main" class="skip-link">Skip to content</a>
 
     <header class="site-header" id="top">
@@ -817,6 +818,7 @@
         </p>
       </div>
     </footer>
+    <script defer src="/assets/js/deferred-fonts.js"></script>
     <script defer src="/assets/js/app.js"></script>
     <script type="application/ld+json">
       {

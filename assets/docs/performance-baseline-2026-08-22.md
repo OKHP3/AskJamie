@@ -179,6 +179,67 @@ node scripts/lighthouse-routes.mjs --preset=mobile --date=2026-08-25
 The runner keeps mobile reports in a `-mobile` dated directory and preserves
 the existing desktop command and output path.
 
+## Mobile performance remediation verification
+
+The remediation was measured on **2026-09-04** with Lighthouse 12.8.2 against
+the same local static server, routes, and mobile preset as the 2026-08-25
+baseline. Lighthouse used its Moto G Power emulation at 412×823 CSS pixels,
+4× CPU slowdown, 150 ms simulated RTT, and approximately 1.5 Mbps simulated
+download throughput. The before sample is
+`assets/audit/lighthouse-2026-09-04-mobile/`; the final after sample is
+`assets/audit/lighthouse-2026-09-04-final4-mobile/`. A second exact-code
+verification is retained in `assets/audit/lighthouse-2026-09-04-final3-mobile/`.
+
+| Page | Before performance | After performance | Before LCP | After LCP | Before TBT | After TBT |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Homepage `/` | 83 | 60 | 4.05 s | 8.94 s | 88 ms | 311 ms |
+| BrandGuard hub | 64 | 71 | 8.55 s | 7.80 s | 237 ms | 129 ms |
+| Universe `/universe/` | 54 | 70 | 7.81 s | 6.46 s | 679 ms | 154 ms |
+| Search `/search/` | 72 | 72 | 6.30 s | 6.75 s | 148 ms | 124 ms |
+
+The homepage and Search markup were not changed by this remediation. Their
+mobile movement is therefore treated as lab variance, not a product
+regression: the same route runner produced materially different samples on
+adjacent runs while external Google Fonts and analytics requests were in
+flight. Across the two final exact-code samples, BrandGuard ranged from
+6.91–7.80 s LCP and 127–129 ms TBT, while Universe ranged from 6.45–6.46 s
+LCP and 154–167 ms TBT. The stable signal is reduced blocking work, especially
+from the Universe Mermaid bundle. BrandGuard and Universe mobile LCP remain
+budget exceptions in this environment and are not claimed as field
+performance.
+
+The final desktop comparison used the same four routes and desktop preset:
+
+| Page | Performance | LCP | TBT |
+| --- | ---: | ---: | ---: |
+| Homepage `/` | 97 | 1.09 s | 0 ms |
+| BrandGuard hub | 97 | 1.25 s | 0 ms |
+| Universe `/universe/` | 96 | 1.33 s | 34 ms |
+| Search `/search/` | 97 | 0.88 s | 0 ms |
+
+The implementation keeps the existing visual and semantic behavior while
+reducing first-view work:
+
+- Universe dynamically imports Mermaid only when its diagram approaches the
+  viewport on mobile; the source text and existing `<noscript>` explanation
+  remain available as fallback content, and generated links retain their
+  accessibility hardening.
+- BrandGuard and Universe prefetch Google Fonts without making the stylesheet
+  render-blocking, then enable the branded stylesheet after page load. The
+  bounded `display=fallback` policy prevents a late webfont swap from
+  redefining mobile LCP while retaining the branded face on faster visits.
+- BrandGuard uses `content-visibility: auto` for below-the-fold portfolio
+  sections with an intrinsic size reservation, reducing initial mobile layout
+  and paint work without removing content.
+
+The Mermaid visual references were not overwritten because these are loading
+and scheduling changes, not intentional visual redesign. The capture helper
+now scrolls the diagram into view before waiting for its SVG, matching the
+new mobile lazy-render condition. All Lighthouse numbers above are lab data;
+they remain sensitive to browser version, simulated throttling, Google Fonts
+responses, analytics responses, and CPU contention, and should not be
+presented as real-user or field metrics.
+
 ## Visual reference set
 
 The committed reference images are in `assets/audit/visual-baseline/`:
