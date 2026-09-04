@@ -25,6 +25,7 @@ deep links.
 
 - [AskJamie™ — homepage](https://askjamie.bot/) — what AskJamie is, who it's for, and how it fits the OKHP³ universe.
 - [About AskJamie™](https://askjamie.bot/about/) — the strategic intelligence layer behind the stack.
+- [How AskJamie™ works](https://askjamie.bot/how-askjamie-works/) — the bounded method for turning messy context into useful, reviewable output.
 - [The OverKill Hill P³ universe](https://askjamie.bot/universe/) — visual map of every brand, tool, and GPT in the family.
 - [Lens System overview](https://askjamie.bot/lens-system/) — four disciplined ways of seeing & expressing a story through one architected AI persona.
 - [Contact](https://askjamie.bot/contact/) — direct contact for project inquiries, collaboration, and professional engagements.

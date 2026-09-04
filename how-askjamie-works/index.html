@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.googletagmanager.com 'sha256-/JNRlSCSWALVv4sh0YfMg4mgS/xLJcgEa+Q2XmU8cxU=' 'sha256-0TPGjkasnayQR3FzyVowxkej87hdnllAjzsfaoIu1VA=' 'sha256-9oH6vwN/ru4YJB+5kmdwnRplNe4S0hXOQm253UyBYBw=' 'sha256-eoZKPPj7R1opAA3EaZUGTmO56gm1hhyiyo8phdpFl9c=' 'sha256-OYq1J//R4Pk995hi3yDt0xedAkajrMImt3Jb0t8CzMk='; script-src-attr 'none'; style-src 'self' https://fonts.googleapis.com; style-src-attr 'unsafe-hashes'; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://www.google.com https://www.google-analytics.com https://*.google-analytics.com https://www.googletagmanager.com; object-src 'none'; base-uri 'self'; form-action 'self'; manifest-src 'self'; upgrade-insecure-requests" />
+    <title>How AskJamie™ Works — From Context to Clarity</title>
+    <meta name="description" content="How AskJamie™ turns messy context into useful, bounded output through an interpretive layer, focused lenses, and public proof-of-concept GPTs." />
+    <meta name="author" content="AskJamie™ / OverKill Hill P³™" />
+    <meta name="publisher" content="AskJamie™ · OverKill Hill P³™" />
+    <link rel="canonical" href="https://askjamie.bot/how-askjamie-works/" />
+    <meta property="og:title" content="How AskJamie™ Works — From Context to Clarity" />
+    <meta property="og:description" content="How AskJamie™ turns messy context into useful, bounded output through an interpretive layer, focused lenses, and public proof-of-concept GPTs." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://askjamie.bot/how-askjamie-works/" />
+    <meta property="og:image" content="https://askjamie.bot/assets/img/og/og-lens-system-1200x630.webp" />
+    <meta property="og:image:width" content="1408" />
+    <meta property="og:image:height" content="768" />
+    <meta property="og:image:type" content="image/webp" />
+    <meta property="og:image:alt" content="AskJamie™ interpretive lens system" />
+    <meta property="og:site_name" content="AskJamie™" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="How AskJamie™ Works — From Context to Clarity" />
+    <meta name="twitter:description" content="How AskJamie™ turns messy context into useful, bounded output through an interpretive layer, focused lenses, and public proof-of-concept GPTs." />
+    <meta name="twitter:image" content="https://askjamie.bot/assets/img/og/og-lens-system-1200x630.webp" />
+    <meta name="twitter:image:alt" content="AskJamie™ interpretive lens system" />
+    <meta name="twitter:creator" content="@overkillhillp3" />
+    <meta name="twitter:site" content="@overkillhillp3" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="theme-color" content="#f5efe1" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#2c5e6f" media="(prefers-color-scheme: dark)" />
+    <meta name="color-scheme" content="light" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" href="/assets/img/favicons/favicon-32x32.png" sizes="32x32" type="image/png" />
+    <link rel="icon" href="/assets/img/favicons/favicon-16x16.png" sizes="16x16" type="image/png" />
+    <link rel="apple-touch-icon" href="/assets/img/favicons/apple-touch-icon.png" sizes="180x180" type="image/png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin />
+    <link rel="preload" href="/assets/css/theme.css" as="style" />
+    <script>!function(){var s=localStorage.getItem("okh-theme");document.documentElement.setAttribute("data-theme",s==="dark"||(s!=="light"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches)?"dark":"light")}();</script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Open+Sans:wght@400;600&family=Kalam:wght@400&display=swap" />
+    <link rel="stylesheet" href="/assets/css/theme.css" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-MT9Y10YY0G"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-MT9Y10YY0G');
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {"@type": "ListItem", "position": 1, "name": "AskJamie™", "item": "https://askjamie.bot/"},
+          {"@type": "ListItem", "position": 2, "name": "How AskJamie™ Works", "item": "https://askjamie.bot/how-askjamie-works/"}
+        ]
+      }
+    </script>
+  </head>
+  <body class="askjamie-main" data-theme="light">
+    <a href="#main" class="skip-link">Skip to content</a>
+    <header class="site-header" id="top">
+      <div class="container">
+        <div class="logo"><a href="/" aria-label="AskJamie™ Home"><img src="/assets/img/askjamie-avatar-tall-left-square-1024.png" alt="AskJamie™ avatar" width="40" height="40" decoding="async" loading="lazy"></a></div>
+        <nav class="primary-nav" id="navigation" aria-label="Primary">
+          <ul>
+            <li><a href="/#main">Who's AskJamie™</a></li>
+            <li><a href="/#uses">What's it for</a></li>
+            <li><a href="/#fit">Where it fits</a></li>
+            <li><a href="/lens-system/">Lens System</a></li>
+            <li><a href="/how-askjamie-works/" aria-current="page">How it works</a></li>
+            <li class="has-submenu">
+              <a href="/about/">About</a>
+              <ul class="submenu">
+                <li><a href="/universe/">OKHP³™ Universe</a></li>
+                <li><a href="/contact/">Contact</a></li>
+                <li><a href="/legal/">Legal</a></li>
+              </ul>
+            </li>
+          </ul>
+        </nav>
+        <button class="nav-toggle" aria-controls="navigation" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+        </button>
+      </div>
+      <section class="site-specials site-specials--jamie" aria-label="AskJamie update">
+        <span class="site-specials-label">A note from the desk</span>
+        <a class="site-specials-link" href="/lens-system/">See the focused lenses that turn this method into public demonstrations.</a>
+      </section>
+    </header>
+
+    <main id="main">
+      <section class="hero askjamie-hero" aria-labelledby="hero-title">
+        <div class="brand-stripes brand-stripes--jamie" aria-hidden="true"></div>
+        <div class="askjamie-paper" aria-hidden="true"></div>
+        <div class="container askjamie-hero-inner reveal-on-scroll">
+          <div class="askjamie-hero-grid">
+            <div class="askjamie-hero-copy">
+              <p class="eyebrow askjamie-breadcrumb">
+                <a href="/#top" aria-label="AskJamie™ home" class="askjamie-logo askjamie-logo--crumb"><img src="/assets/img/askjamie-title-cream-blue-backdrop-blue-gray-left-square-1024.png" alt="AskJamie™ logo" width="160" height="160" decoding="async" loading="eager"></a>
+                <span class="breadcrumb-separator">·</span>
+                <span class="breadcrumb-label">How AskJamie™ Works</span>
+              </p>
+              <h1 id="hero-title">From messy context to a useful next move.</h1>
+              <p class="hero-subtitle">AskJamie™ is an interpretive layer: a calm way to examine a story, challenge, or body of information before deciding how to express it.</p>
+              <p class="hero-tagline">The method does not promise an all-purpose answer. It gives the right question a focused lens, clear boundaries, and an output you can inspect, share, and act on. BrandGuard™ demonstrations use brand-voice protection patterns to make those boundaries visible.</p>
+              <div class="hero-actions">
+                <a href="#journey" class="btn btn-primary">Follow the method</a>
+                <a href="/lens-system/" class="btn btn-secondary">Explore the Lens System</a>
+              </div>
+            </div>
+            <div class="askjamie-hero-visual">
+              <img src="/assets/img/askjamie-avatar-tall-left-square-1024.png" alt="AskJamie™ avatar illustration" class="askjamie-avatar" width="260" height="260" loading="eager" fetchpriority="high" decoding="async">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="journey" class="content-section container reveal-on-scroll" aria-labelledby="journey-heading">
+        <header class="section-header">
+          <h2 id="journey-heading">The four-part journey</h2>
+          <p class="note">AskJamie starts with the material you already have. The work is not magic; it is disciplined framing.</p>
+        </header>
+        <div class="grid grid-3">
+          <article class="card">
+            <h3>1. Bring the mess</h3>
+            <p>Share the draft, question, experience, research, or competing priorities. Context is useful even when it is incomplete.</p>
+          </article>
+          <article class="card">
+            <h3>2. Choose a lens</h3>
+            <p>Select the focused way of seeing that fits the moment: career identity, portfolio proof, enterprise signals, or brand fidelity.</p>
+          </article>
+          <article class="card">
+            <h3>3. Interpret with guardrails</h3>
+            <p>The lens separates evidence from assumption, names tradeoffs, and keeps its tone and scope visible instead of pretending every question is the same.</p>
+          </article>
+          <article class="card">
+            <h3>4. Leave with something usable</h3>
+            <p>The output may be a clearer explanation, decision tree, brief, checklist, or next question — something ready for human review and the next conversation.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="lens-system" class="content-section stripe-bg" aria-labelledby="lens-heading">
+        <div class="container reveal-on-scroll">
+          <header class="section-header">
+            <h2 id="lens-heading">The Lens System keeps the voice consistent</h2>
+            <p class="note">A lens is a focused method for examining and expressing a story or challenge. The lenses share an interpretive standard, not hidden memory or a connected data pipeline.</p>
+          </header>
+          <div class="two-column">
+            <div>
+              <p>That distinction matters. Résumé Representative does not silently inform Professional Portfolio. Enterprise Sleuth does not make a claim on behalf of a company. Each lens has a job, a boundary, and a public page that explains what it demonstrates.</p>
+              <p><a class="btn btn-primary" href="/lens-system/">See all four lenses</a></p>
+            </div>
+            <div class="card">
+              <h3>One voice, different jobs</h3>
+              <ul class="feature-list">
+                <li><strong>Represent:</strong> make professional value legible.</li>
+                <li><strong>Frame:</strong> organize proof and a work story.</li>
+                <li><strong>Investigate:</strong> connect enterprise signals carefully.</li>
+                <li><strong>Protect:</strong> test tone, ethics, and identity before release.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="brandguard" class="content-section container reveal-on-scroll" aria-labelledby="brandguard-heading">
+        <header class="section-header">
+          <h2 id="brandguard-heading">BrandGuard shows the method in public</h2>
+          <p class="note">BrandGuard™ is a brand-voice protection tool: a demonstration of how tone, ethics, and identity can be made explicit around a GPT.</p>
+        </header>
+        <div class="two-column">
+          <div>
+            <p>The BrandGuard case studies use publicly available information about recognizable brands. They are proofs of concept, not official brand systems, endorsements, partnerships, or impersonations. The brand names and marks remain with their owners.</p>
+            <p><a class="btn btn-secondary" href="/lens-system/okhp3-brandguard/">Browse BrandGuard demonstrations</a></p>
+          </div>
+          <div class="card">
+            <h3>A visible boundary</h3>
+            <p>Public-source-only material can demonstrate a method. It cannot prove access to private strategy, internal policy, legal approval, or a brand’s current position. Those claims stay outside the demo.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="boundaries" class="content-section stripe-bg" aria-labelledby="boundaries-heading">
+        <div class="container reveal-on-scroll">
+          <header class="section-header">
+            <h2 id="boundaries-heading">What the public experience can and cannot promise</h2>
+          </header>
+          <div class="grid grid-3">
+            <article class="card">
+              <h3 class="site-status-eyebrow">Live</h3>
+              <p>AJ01–AJ04 and the linked BrandGuard demonstrations are published destinations when their external ChatGPT pages are available.</p>
+            </article>
+            <article class="card">
+              <h3 class="site-status-eyebrow">Demonstrative</h3>
+              <p>The public case studies show a design pattern and a reasoning approach. They are not a guarantee of production performance or a substitute for professional review.</p>
+            </article>
+            <article class="card">
+              <h3 class="site-status-eyebrow">External and owner-dependent</h3>
+              <p>Try links open ChatGPT, a third-party service. Availability, login requirements, permissions, and publication status can change outside this site.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="content-section container reveal-on-scroll" aria-labelledby="next-heading">
+        <header class="section-header">
+          <h2 id="next-heading">Where to go next</h2>
+          <p class="note">There is no general AskJamie chat box on this site. Choose the experience that matches your question, or contact the owner when the right path is not yet public.</p>
+        </header>
+        <div class="hero-actions">
+          <a href="/lens-system/" class="btn btn-primary">Choose a lens</a>
+          <a href="/universe/" class="btn btn-secondary">See the wider universe</a>
+          <a href="/contact/" class="btn btn-quiet">Ask about a project</a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-grid">
+        <div class="footer-column">
+          <h3>AskJamie™</h3>
+          <p>Your articulate, architected AI persona — clarity, confidence, and calm across everyday insight and complex systems.</p>
+        </div>
+        <div class="footer-column">
+          <h4>Navigation</h4>
+          <ul>
+            <li><a href="/#main">Who's AskJamie™</a></li>
+            <li><a href="/how-askjamie-works/">How it works</a></li>
+            <li><a href="/lens-system/">Lens System</a></li>
+            <li><a href="/universe/">OKHP³™ Universe</a></li>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/contact/">Contact</a></li>
+            <li><a href="/legal/">Legal</a></li>
+            <li><a href="/search/">Site Search</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h4>Connect</h4>
+          <ul>
+            <li><a href="mailto:contact@askjamie.bot">contact@askjamie.bot</a></li>
+            <li><a href="https://ko-fi.com/overkillhillp3" target="_blank" rel="noopener noreferrer">Ko-fi</a></li>
+            <li><a href="https://www.linkedin.com/company/overkillhillp3" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="container footer-meta">
+        <p class="footer-built-with">Built with <a class="footer-replit-link" href="https://replit.com/refer/overkillhillp3/" target="_blank" rel="noopener noreferrer">Replit</a></p>
+        <p class="footer-copyright">© <span id="current-year-askjamie">2026</span> AskJamie™. All rights reserved.</p>
+      </div>
+    </footer>
+    <script defer src="/assets/js/app.js"></script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "HowTo",
+        "name": "How AskJamie™ works",
+        "description": "A bounded, four-part interpretive method for turning messy context into useful output.",
+        "step": [
+          {"@type": "HowToStep", "name": "Bring the mess", "text": "Share the draft, question, experience, research, or competing priorities."},
+          {"@type": "HowToStep", "name": "Choose a lens", "text": "Select the focused way of seeing that fits the moment."},
+          {"@type": "HowToStep", "name": "Interpret with guardrails", "text": "Separate evidence from assumption and keep the scope visible."},
+          {"@type": "HowToStep", "name": "Leave with something usable", "text": "Turn the interpretation into a clear output for human review and the next conversation."}
+        ]
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "AskJamie™ — Friendly AI helpdesk for You",
+        "url": "https://askjamie.bot",
+        "description": "AskJamie™ is a modern AI helpdesk — a warm, trustworthy guide for questions, workflows, and decisions across the OverKill Hill P³™ ecosystem."
+      }
+    </script>
+  </body>
+</html>

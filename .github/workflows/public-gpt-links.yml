@@ -11,7 +11,7 @@ permissions:
 jobs:
   public-gpt-links:
     runs-on: ubuntu-latest
-    name: Check owner-verified AJ01-AJ03 destinations
+    name: Check represented public GPT destinations
     timeout-minutes: 5
 
     steps:
@@ -53,7 +53,7 @@ jobs:
           } | tee artifacts/public-gpt-links/summary.md >> "$GITHUB_STEP_SUMMARY"
 
           if grep -Eq 'broken_or_unpublished|authentication_or_private|unexpected_response' artifacts/public-gpt-links/results.txt; then
-            echo "::error::An owner-verified GPT destination returned an actionable status; see the lens ID and URL above."
+            echo "::error::A represented public GPT destination returned an actionable status; see the lens ID and URL above."
             exit 1
           fi
           if grep -Eq 'transient_network|transient_service' artifacts/public-gpt-links/results.txt; then

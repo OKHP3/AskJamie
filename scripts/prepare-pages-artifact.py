@@ -35,6 +35,7 @@ PUBLIC_ASSET_DIRS = {"css", "data", "fonts", "img", "js", "vendor"}
 PUBLIC_PAGE_DIRS = {
     "about",
     "contact",
+    "how-askjamie-works",
     "legal",
     "lens-system",
     "search",
