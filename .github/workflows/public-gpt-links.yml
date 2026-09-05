@@ -46,10 +46,10 @@ jobs:
             echo
             echo "## Interpretation"
             echo
-            echo "- `reachable`: destination returned HTTP 2xx or 3xx."
-            echo "- `broken_or_unpublished`: investigate the affected lens and URL immediately."
-            echo "- `authentication_or_private`: investigate publication/privacy settings for the affected lens."
-            echo "- `transient_network` or `transient_service`: retry separately; do not label the GPT broken."
+            echo '- `reachable`: destination returned HTTP 2xx or 3xx.'
+            echo '- `broken_or_unpublished`: investigate the affected lens and URL immediately.'
+            echo '- `authentication_or_private`: investigate publication/privacy settings for the affected lens.'
+            echo '- `transient_network` or `transient_service`: retry separately; do not label the GPT broken.'
           } | tee artifacts/public-gpt-links/summary.md >> "$GITHUB_STEP_SUMMARY"
 
           if grep -Eq 'broken_or_unpublished|authentication_or_private|unexpected_response' artifacts/public-gpt-links/results.txt; then
