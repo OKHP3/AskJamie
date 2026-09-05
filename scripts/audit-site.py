@@ -82,7 +82,7 @@ from xml.etree import ElementTree as ET
 
 ROOT = Path(__file__).resolve().parent.parent
 EXCLUDE_DIRS = {".local", ".agents", "attached_assets", "node_modules", ".cache", ".git",
-                "templates"}
+                "templates", "dist-pages"}
 EXCLUDE_FROM_SITEMAP = {"404.html", "under-construction.html"}
 
 # Title / description recommended length budgets
@@ -562,22 +562,27 @@ def scan_repo_cruft() -> List[str]:
 
 
 def check_search_index_freshness(html_files: List[Path]) -> List[str]:
-    """Report any HTML file modified after search-index.json was built."""
+    """Compare index content; checkout timestamps do not imply content drift."""
+    import importlib.util
+
     idx = ROOT / "assets/data/search-index.json"
     if not idx.exists():
         return []  # missing-index is already caught by reconcile_search_index
-    idx_mtime = idx.stat().st_mtime
-    stale: List[str] = []
-    for p in html_files:
-        if p.stat().st_mtime > idx_mtime:
-            stale.append(p.relative_to(ROOT).as_posix())
-    if not stale:
-        return []
-    head = stale[:5]
-    suffix = "" if len(stale) <= 5 else f" (and {len(stale)-5} more)"
+    spec = importlib.util.spec_from_file_location(
+        "search_index_builder", Path(__file__).with_name("build-search-index.py")
+    )
+    builder = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(builder)
+    builder.REPO_ROOT = str(ROOT)
+    try:
+        committed = json.loads(idx.read_text(encoding="utf-8"))
+        expected = builder.build_index_document()
+        if builder.canonical_for_check(committed) == builder.canonical_for_check(expected):
+            return []
+    except (OSError, ValueError, TypeError, AttributeError) as exc:
+        return [f"search-index.json freshness check failed: {exc}"]
     return [
-        "search-index.json is stale — rebuild with `python3 scripts/build-search-index.py`. "
-        f"Pages newer than the index: {', '.join(head)}{suffix}"
+        "search-index.json is stale. Rebuild with `python3 scripts/build-search-index.py`."
     ]
 
 

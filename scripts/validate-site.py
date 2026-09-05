@@ -33,7 +33,7 @@ from urllib.parse import urlparse, unquote
 from csp import build_policies, page_class
 
 ROOT = Path(__file__).resolve().parent.parent
-SKIP_DIRS = {".local", ".git", "node_modules", "attached_assets", "dist", "templates", ".agents"}
+SKIP_DIRS = {".local", ".git", "node_modules", "attached_assets", "dist", "dist-pages", "templates", ".agents"}
 SITEMAP = ROOT / "sitemap.xml"
 MERMAID_VENDOR_ROOT = ROOT / "assets/vendor/mermaid"
 MERMAID_VENDOR_ENTRY = MERMAID_VENDOR_ROOT / "mermaid.esm.min.mjs"
