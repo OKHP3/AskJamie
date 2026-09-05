@@ -28,11 +28,11 @@ def test_public_pages_load_google_analytics_from_the_page_shell():
 
 
 def test_analytics_tracker_and_privacy_disclosure_are_present():
-    app_js = (ROOT / "assets/js/app.js").read_text(encoding="utf-8")
+    analytics_js = (ROOT / "assets/js/askjamie-analytics.js").read_text(encoding="utf-8")
     legal = (ROOT / "legal/index.html").read_text(encoding="utf-8")
 
-    assert "window.askJamieTrack" in app_js
-    assert 'typeof window.gtag !== "function"' in app_js
+    assert "window.askJamieTrack" in analytics_js
+    assert 'typeof window.gtag !== "function"' in analytics_js
     assert 'id="privacy"' in legal
     assert "Google Analytics 4" in legal
     assert "Browser controls" in legal
