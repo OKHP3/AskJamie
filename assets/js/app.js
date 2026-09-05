@@ -571,13 +571,14 @@ document.addEventListener("DOMContentLoaded", () => {
 (function () {
   "use strict";
 
-  const SEARCH_INDEXES = {
-    de: "/assets/data/search-index.de.json",
-    es: "/assets/data/search-index.es.json",
-    fr: "/assets/data/search-index.fr.json",
-  };
+  // French is the only reviewed, indexable locale. German and Spanish remain
+  // noindex drafts with intentionally empty indexes, so they search the
+  // English catalog until their publication gate explicitly promotes them.
+  const SEARCH_INDEXES = { fr: "/assets/data/search-index.fr.json" };
   const pageLocale = (document.documentElement.lang || "en").toLowerCase().split("-", 1)[0];
   const INDEX_URL = SEARCH_INDEXES[pageLocale] || "/assets/data/search-index.json";
+  const usesEnglishFallback = pageLocale === "de" || pageLocale === "es";
+  const scopeNotice = usesEnglishFallback ? " Search English content." : "";
 
   // ----- index loader (cached promise) -----
   let _indexPromise = null;
@@ -985,8 +986,8 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!q) {
         list.innerHTML = "";
         if (stats) stats.textContent = entries.length
-          ? "Type to search " + entries.length + " indexed entries."
-          : "Loading index…";
+          ? "Type to search " + entries.length + " indexed entries." + scopeNotice
+          : "Loading index…" + scopeNotice;
         return;
       }
       if (indexLoadError) {
@@ -1006,7 +1007,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       if (stats) stats.textContent =
         results.length + " result" + (results.length === 1 ? "" : "s") +
-        " for \u201c" + q + "\u201d";
+        " for \u201c" + q + "\u201d" + scopeNotice;
       list.innerHTML = results.map((r) => (
         '<a class="okh-search-result" href="' + escapeHtml(r.entry.url) + '">' +
           renderResultHtml(r, tokens) +
