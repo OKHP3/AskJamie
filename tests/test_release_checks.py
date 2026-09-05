@@ -345,6 +345,16 @@ def test_csp_ignores_tracked_generated_pages(monkeypatch):
     assert module.all_pages() == [ROOT / "index.html"]
 
 
+def test_csp_allows_the_configured_google_analytics_pixel():
+    spec = importlib.util.spec_from_file_location("csp_policies", ROOT / "scripts/csp.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+
+    expected = "img-src 'self' data: https://www.googletagmanager.com;"
+    assert all(expected in policy for policy in module.build_policies().values())
+    assert expected in module.build_edge_policy()
+
+
 def test_index_freshness_checks_content_instead_of_checkout_times(tmp_path, monkeypatch):
     def load(filename):
         spec = importlib.util.spec_from_file_location(filename, ROOT / "scripts" / filename)
