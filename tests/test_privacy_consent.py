@@ -42,7 +42,7 @@ def test_analytics_tracker_and_privacy_disclosure_are_present():
 def test_public_csp_uses_only_the_scoped_theme_script_hash():
     theme_hash = "sha256-" + base64.b64encode(
         hashlib.sha256(
-            b'!function(){var s=localStorage.getItem("okh-theme");document.documentElement.setAttribute("data-theme",s==="dark"||(s!=="light"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches)?"dark":"light")}();'
+            b'!function(){try{var s=localStorage.getItem("askjamie-color-scheme");document.documentElement.setAttribute("data-theme","light");if(s==="dark"||s==="light")document.documentElement.setAttribute("data-color-scheme",s);else document.documentElement.removeAttribute("data-color-scheme")}catch(e){document.documentElement.setAttribute("data-theme","light")}}();'
         ).digest()
     ).decode()
     csp_re = re.compile(
@@ -66,7 +66,7 @@ def test_public_csp_uses_only_the_scoped_theme_script_hash():
             f"scoped theme hash missing from {path.relative_to(ROOT)}"
         )
         theme_scripts = [
-            body for body in theme_script_re.findall(raw) if "okh-theme" in body
+            body for body in theme_script_re.findall(raw) if "askjamie-color-scheme" in body
         ]
         assert len(theme_scripts) == 1, (
             f"expected one theme bootstrap on {path.relative_to(ROOT)}"

@@ -82,20 +82,33 @@ try {
   );
   await page.keyboard.press("Escape");
 
-  await page.addInitScript(() => window.localStorage.setItem("okh-theme", "light"));
   const aboutPath = "/about/";
-  try {
-    await page.goto(`${baseUrl}${aboutPath}`, { waitUntil: "domcontentloaded" });
-  } catch (error) {
-    throw new Error(`${aboutPath}: ${error.message}`);
+  for (const colorScheme of ["light", "dark"]) {
+    const schemeContext = await browser.newContext({ colorScheme });
+    await schemeContext.addInitScript(() => {
+      if (localStorage.getItem("askjamie-color-scheme") === null) {
+        localStorage.setItem("askjamie-color-scheme", "light");
+      }
+    });
+    const schemePage = await schemeContext.newPage();
+    await schemePage.goto(`${baseUrl}${aboutPath}`, { waitUntil: "domcontentloaded" });
+    const schemeToggle = schemePage.locator(".glee-color-toggle");
+    await waitFor(schemeToggle, { state: "visible", timeout: 5000 }, aboutPath, "Color-scheme toggle unavailable");
+    check(await schemePage.locator("html").getAttribute("data-theme") === "light", "AskJamie must keep data-theme light");
+    check(await schemePage.locator("html").getAttribute("data-color-scheme") === "light", "Stored light scheme was not applied before paint");
+    const lightBody = await schemePage.locator("body").evaluate((el) => getComputedStyle(el).backgroundColor);
+    const lightFooter = await schemePage.locator(".site-footer").evaluate((el) => getComputedStyle(el).backgroundColor);
+    await schemeToggle.click();
+    check(await schemePage.locator("html").getAttribute("data-color-scheme") === "dark", "Toggle did not apply dark scheme");
+    const darkBody = await schemePage.locator("body").evaluate((el) => getComputedStyle(el).backgroundColor);
+    const darkFooter = await schemePage.locator(".site-footer").evaluate((el) => getComputedStyle(el).backgroundColor);
+    check(lightBody !== darkBody || lightFooter !== darkFooter, `Visible scheme did not change under ${colorScheme} OS preference`);
+    await schemePage.reload({ waitUntil: "domcontentloaded" });
+    check(await schemePage.locator("html").getAttribute("data-color-scheme") === "dark", "Dark preference did not persist across reload");
+    await schemePage.locator(".glee-color-toggle").click();
+    check(await schemePage.locator("html").getAttribute("data-color-scheme") === null, "Auto scheme did not remove the explicit attribute");
+    await schemeContext.close();
   }
-  const themeToggle = page.locator(".theme-toggle");
-  await waitFor(themeToggle, { state: "visible", timeout: 5000 }, aboutPath, "Theme toggle unavailable");
-  await themeToggle.click();
-  check(
-    (await page.locator("html").getAttribute("data-theme")) === "dark",
-    "Theme toggle did not set data-theme to dark"
-  );
 } catch (error) {
   failures.push(error.message);
 } finally {
