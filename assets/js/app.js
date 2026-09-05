@@ -63,6 +63,17 @@ document.addEventListener("DOMContentLoaded", () => {
   );
   const body = document.body;
 
+  document.addEventListener("click", (event) => {
+    const trigger = event.target instanceof Element ? event.target.closest("[data-gtag-event]") : null;
+    if (!trigger) return;
+    const eventName = trigger.dataset.gtagEvent;
+    if (!eventName || typeof window.gtag !== "function") return;
+    const payload = {};
+    if (trigger.dataset.gtagCategory) payload.event_category = trigger.dataset.gtagCategory;
+    if (trigger.dataset.gtagLabel) payload.event_label = trigger.dataset.gtagLabel;
+    window.gtag("event", eventName, payload);
+  });
+
   // Mobile nav
   if (navToggle && header) {
     const mobileNavQuery = window.matchMedia("(max-width: 768px)");
