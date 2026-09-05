@@ -160,9 +160,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Glee keeps its three-state brand scheme. AskJamie uses the shared
-  // light/dark/system control expected by its existing page contract.
-  const brandLocked = body.classList.contains("glee-main");
+  // Brand sites keep data-theme="light" for shared rules while their
+  // auto/light/dark preference is expressed through data-color-scheme.
+  const brandLocked =
+    body.classList.contains("glee-main") ||
+    body.classList.contains("askjamie-main");
 
   const readStorage = (key) => {
     try {
