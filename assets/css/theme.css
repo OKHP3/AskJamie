@@ -904,6 +904,11 @@ button {
   margin-bottom: 1.5rem;
 }
 
+html[data-theme="dark"] body:not(.glee-main):not(.askjamie-main) .hero-subline {
+  color: #17110d;
+  font-weight: 600;
+}
+
 html[data-theme="light"] body:not(.glee-main):not(.askjamie-main) .hero-subline {
   display: inline-flex;
   align-items: center;
