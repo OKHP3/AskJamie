@@ -336,6 +336,15 @@ def test_source_checks_ignore_generated_pages(tmp_path, monkeypatch):
         sys.path.pop(0)
 
 
+def test_csp_ignores_tracked_generated_pages(monkeypatch):
+    spec = importlib.util.spec_from_file_location("csp_inventory", ROOT / "scripts/csp.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    monkeypatch.setattr(module.subprocess, "run", lambda *args, **kwargs:
+                        subprocess.CompletedProcess(args, 0, stdout="index.html\ndist-pages/index.html\nassets/templates/example.html\n"))
+    assert module.all_pages() == [ROOT / "index.html"]
+
+
 def test_index_freshness_checks_content_instead_of_checkout_times(tmp_path, monkeypatch):
     def load(filename):
         spec = importlib.util.spec_from_file_location(filename, ROOT / "scripts" / filename)
