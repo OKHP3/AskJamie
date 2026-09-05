@@ -160,10 +160,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Theme toggle – only for core OverKill Hill pages (brand-locked sites force light)
-  const brandLocked =
-    body.classList.contains("glee-main") ||
-    body.classList.contains("askjamie-main");
+  // Glee keeps its three-state brand scheme. AskJamie uses the shared
+  // light/dark/system control expected by its existing page contract.
+  const brandLocked = body.classList.contains("glee-main");
 
   const readStorage = (key) => {
     try {
