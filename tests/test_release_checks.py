@@ -314,3 +314,46 @@ def test_post_merge_cleans_up_temporary_server_after_browser_failure(tmp_path):
     assert server_pid_file.exists()
     pid = int(server_pid_file.read_text(encoding="utf-8"))
     assert subprocess.run(["kill", "-0", str(pid)]).returncode != 0
+
+
+def test_source_checks_ignore_generated_pages(tmp_path, monkeypatch):
+    # A generated artifact may exist before validation or index generation.
+    sys.path.insert(0, str(ROOT / "scripts"))
+    try:
+        for filename, root_name, collector in (
+            ("validate-site.py", "ROOT", "find_html_files"),
+            ("audit-site.py", "ROOT", "iter_public_files"),
+            ("build-search-index.py", "REPO_ROOT", "collect_pages"),
+        ):
+            spec = importlib.util.spec_from_file_location(filename, ROOT / "scripts" / filename)
+            module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(module)
+            (tmp_path / "dist-pages").mkdir(exist_ok=True)
+            (tmp_path / "dist-pages/index.html").write_text("<title>Generated duplicate</title>")
+            monkeypatch.setattr(module, root_name, tmp_path)
+            assert list(getattr(module, collector)()) == []
+    finally:
+        sys.path.pop(0)
+
+
+def test_index_freshness_checks_content_instead_of_checkout_times(tmp_path, monkeypatch):
+    def load(filename):
+        spec = importlib.util.spec_from_file_location(filename, ROOT / "scripts" / filename)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module
+
+    builder = load("build-search-index.py")
+    audit = load("audit-site.py")
+    monkeypatch.setattr(builder, "REPO_ROOT", str(tmp_path))
+    monkeypatch.setattr(audit, "ROOT", tmp_path)
+    page = tmp_path / "index.html"
+    page.write_text('<html><head><title>Original</title></head><body><h1>Original</h1><main>Original text</main></body></html>')
+    index = tmp_path / "assets/data/search-index.json"
+    index.parent.mkdir(parents=True)
+    index.write_text(json.dumps(builder.build_index_document()))
+    os.utime(index, (1, 1))
+    assert audit.check_search_index_freshness([page]) == []
+    page.write_text(page.read_text().replace("Original", "Changed"))
+    os.utime(page, (0, 0))
+    assert "stale" in audit.check_search_index_freshness([page])[0]

@@ -22,6 +22,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 SKIP_DIRS = {
+    "dist-pages",
     "node_modules",
     ".local",
     ".git",
