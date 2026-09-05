@@ -11,6 +11,7 @@ cannot be mistaken for current pipeline commands.
 | --- | --- | --- |
 | `audit-site.py` | active | Canonical site audit |
 | `build-search-index.py` | active | Rebuild the generated search index |
+| `cache-bust.py` | active | Generate/check LF-normalized shared asset hashes, deferred app loading, and the brand import map |
 | `check-links.py` | active | Check internal and external links |
 | `prepare-pages-artifact.py` | active | Build the allowlisted static release artifact |
 | `validate-site.py` | active | Structural site validation, including external-font-origin regression checks |
@@ -24,7 +25,7 @@ cannot be mistaken for current pipeline commands.
 The following scripts are **reference-only**. They may still be useful for a
 deliberately scoped maintenance or migration task, but they are not part of
 the current validation or release pipeline: `apply-modern-baseline.py`,
-`audit-assets.py`, `audit-meta-versions.py`, `cache-bust.py`,
+`audit-assets.py`, `audit-meta-versions.py`,
 `check-accent-contrast.py`, `cross-site-sync.py`, `enhance-pages.py`,
 `extract-templates.py`, `fix-image-performance.py`,
 `fix-placeholder-gpt-links.py`, `generate-illustrations.py`,
@@ -49,6 +50,18 @@ Read their headers and review their target paths before adapting any of them.
 The release-check regression test uses the active table above as its command
 allowlist and scans CI plus `post-merge.sh`; historical documentation is not
 part of that executable-command check.
+
+## Shared asset freshness
+
+After changing a shared CSS/JS asset, run `python3 scripts/cache-bust.py`,
+then `python3 scripts/generate-csp.py` to refresh the inline import-map hash.
+CI runs `python3 scripts/cache-bust.py --check` without writing files.
+The generator owns `AUTOGEN:SHARED-ASSETS` references and the
+`AUTOGEN:BRAND-IMPORT-MAP` block in tracked production pages and templates.
+It preserves shared asset bytes and routes; SHA-256 prefixes normalize CRLF/LF.
+The import map versions the brand module loaded by the shared app, keeping
+analytics initialization in the existing dynamic-import order.
+The archived cache tool remains historical provenance only.
 
 ## Public GPT reachability
 
