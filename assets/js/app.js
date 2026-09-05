@@ -3,57 +3,13 @@
 //
 //  Sections (in load order):
 //   1. GLOBAL   · Reading-progress bar (article pages)
-//   2. GLOBAL   · DOMContentLoaded: nav, year stamps, theme toggle,
+//   2. GLOBAL   · DOMContentLoaded: nav, year stamps, theme controls,
 //                 scroll reveal, smooth anchors
-//   3. GLEE     · Under-construction overlay gate (toolbox WIP pages)
-//   4. GLOBAL   · Sticky TOC scroll-follow (article pages, ≥1024px)
-//   5. OKH      · Site search — overlay + dedicated /search/ page
+//   3. GLOBAL   · Under-construction overlay gate (when present)
+//   4. GLOBAL   · Sticky TOC scroll-follow + scrollspy (article pages, ≥1024px)
+//   5. GLOBAL   · Search — overlay + dedicated /search/ page
 //                 (search.js consolidated here 2026-05-03)
 // ════════════════════════════════════════════════════════════════════════════
-
-// ── Analytics ─────────────────────────────────────────────────────────────
-// GA4 loads unconditionally via a <script> tag in page markup (same pattern
-// as overkill-hill and glee-fully.tools). askJamieTrack is a thin wrapper so
-// the event-tracking listeners below have a stable no-op-safe call target.
-window.askJamieTrack = function (eventName, parameters) {
-  if (typeof window.gtag !== "function") return;
-  window.gtag("event", eventName, parameters || {});
-};
-
-// ── Analytics events: measurable inquiry funnel actions ──────────────────────
-// askJamieTrack is a no-op if gtag hasn't defined itself yet (e.g. ad blockers).
-(function () {
-  "use strict";
-
-  function track(eventName, link, extra) {
-    window.askJamieTrack(eventName, Object.assign({
-      link_url: link.href,
-      link_text: (link.textContent || "").trim().slice(0, 100),
-      page_path: window.location.pathname
-    }, extra || {}));
-  }
-
-  document.querySelectorAll('a[href*="chatgpt.com/g/"]').forEach(function (link) {
-    link.addEventListener("click", function () {
-      track("gpt_click", link, {
-        destination: "chatgpt",
-        lens: document.title.replace(/\s*[|—-].*$/, "").trim()
-      });
-    });
-  });
-
-  document.querySelectorAll('a[href^="mailto:"]').forEach(function (link) {
-    link.addEventListener("click", function () {
-      var card = link.closest("article, section");
-      var heading = card && card.querySelector("h2, h3");
-      var subject = new URL(link.href).searchParams.get("subject");
-      track("inquiry_click", link, {
-        destination: "email",
-        inquiry_type: subject || (heading ? heading.textContent.trim() : "general")
-      });
-    });
-  });
-}());
 
 // ── 1. Reading progress bar ─────────────────────────────────────────────────
 (function () {
@@ -75,6 +31,29 @@ window.askJamieTrack = function (eventName, parameters) {
   );
 })();
 
+// ── 1b. Mermaid text alternatives ───────────────────────────────────────────
+// This runs before deferred Mermaid modules on pages that use inline Mermaid
+// setup, and also covers pages using the shared mermaid-init module.
+(function () {
+  const diagrams = document.querySelectorAll(".mermaid");
+  diagrams.forEach((node, index) => {
+    if (node.getAttribute("aria-label") || node.getAttribute("aria-describedby")) return;
+    const source = node.textContent.replace(/\s+/g, " ").trim();
+    const labels = [...source.matchAll(/["']([^"']{2,120})["']/g)]
+      .map((match) => match[1].replace(/\\n/g, " "))
+      .filter((label, position, all) => all.indexOf(label) === position)
+      .slice(0, 24);
+    node.setAttribute(
+      "aria-label",
+      node.dataset.diagramLabel
+        || `Diagram ${index + 1}: ${
+          labels.join("; ") || "Diagram source is available in the page markup."
+        }`,
+    );
+    node.setAttribute("role", "img");
+  });
+})();
+
 // ── 2. Page interactions: nav, year, theme toggle, scroll reveal ───────────
 document.addEventListener("DOMContentLoaded", () => {
   const header = document.querySelector(".site-header");
@@ -86,11 +65,54 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Mobile nav
   if (navToggle && header) {
+    const mobileNavQuery = window.matchMedia("(max-width: 768px)");
+    const primaryNav = document.getElementById(navToggle.getAttribute("aria-controls"));
+    let navWasOpen = false;
+
+    function setNavAccessibility(open) {
+      if (!primaryNav) return;
+      const hidden = mobileNavQuery.matches && !open;
+      primaryNav.setAttribute("aria-hidden", String(hidden));
+      primaryNav.toggleAttribute("inert", hidden);
+    }
+
+    function setNavOpen(open, returnFocus) {
+      navWasOpen = open;
+      header.classList.toggle("nav-open", open);
+      navToggle.setAttribute("aria-expanded", String(open));
+      setNavAccessibility(open);
+      if (!open && returnFocus) navToggle.focus();
+      if (open && primaryNav) {
+        const firstLink = primaryNav.querySelector("a[href]");
+        if (firstLink) setTimeout(() => firstLink.focus(), 0);
+      }
+    }
+
+    setNavAccessibility(false);
     navToggle.addEventListener("click", () => {
-      header.classList.toggle("nav-open");
-      const expanded = navToggle.getAttribute("aria-expanded") === "true";
-      navToggle.setAttribute("aria-expanded", String(!expanded));
+      setNavOpen(!navWasOpen, true);
     });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && navWasOpen && mobileNavQuery.matches) {
+        event.preventDefault();
+        setNavOpen(false, true);
+      }
+    });
+
+    const syncNavOnViewportChange = () => {
+      if (!mobileNavQuery.matches) {
+        navWasOpen = false;
+        header.classList.remove("nav-open");
+        navToggle.setAttribute("aria-expanded", "false");
+      }
+      setNavAccessibility(navWasOpen);
+    };
+    if (typeof mobileNavQuery.addEventListener === "function") {
+      mobileNavQuery.addEventListener("change", syncNavOnViewportChange);
+    } else {
+      mobileNavQuery.addListener(syncNavOnViewportChange);
+    }
   }
 
   // Header shadow
@@ -127,9 +149,32 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Glee-fully keeps its brand-locked light presentation; AskJamie supports
-  // the shared light/dark/system theme control.
-  const brandLocked = body.classList.contains("glee-main");
+  // Theme toggle – only for core OverKill Hill pages (brand-locked sites force light)
+  const brandLocked =
+    body.classList.contains("glee-main") ||
+    body.classList.contains("askjamie-main");
+
+  const readStorage = (key) => {
+    try {
+      return localStorage.getItem(key);
+    } catch (_) {
+      return null;
+    }
+  };
+  const writeStorage = (key, value) => {
+    try {
+      localStorage.setItem(key, value);
+    } catch (_) {
+      // Private browsing and disabled storage must not break the page.
+    }
+  };
+  const removeStorage = (key) => {
+    try {
+      localStorage.removeItem(key);
+    } catch (_) {
+      // Private browsing and disabled storage must not break the page.
+    }
+  };
 
   if (!brandLocked) {
     const STATES      = ["system", "light", "dark"];
@@ -144,7 +189,7 @@ document.addEventListener("DOMContentLoaded", () => {
       dark:   "Switch to system mode",
     };
 
-    const savedTheme = localStorage.getItem("okh-theme");
+    const savedTheme = readStorage("okh-theme");
     let currentState = STATES.includes(savedTheme) ? savedTheme : "system";
 
     function applyThemeState(state) {
@@ -177,16 +222,137 @@ document.addEventListener("DOMContentLoaded", () => {
       themeToggle.setAttribute("aria-label", STATE_ARIA[currentState]);
       themeToggle.innerHTML = STATE_ICONS[currentState];
       applyThemeState(currentState);
-      localStorage.setItem("okh-theme", currentState);
+      writeStorage("okh-theme", currentState);
     });
 
-    window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
+    const systemThemeQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const syncSystemTheme = () => {
       if (currentState === "system") applyThemeState("system");
-    });
+    };
+    if (typeof systemThemeQuery.addEventListener === "function") {
+      systemThemeQuery.addEventListener("change", syncSystemTheme);
+    } else {
+      systemThemeQuery.addListener(syncSystemTheme);
+    }
   } else {
-    // Brand-locked subsites stay on their "light" look
+    // Glee-fully and AskJamie keep data-theme="light" for shared light rules,
+    // while their optional dark scheme is controlled independently.
     document.documentElement.setAttribute("data-theme", "light");
+
+    const isGlee = body.classList.contains("glee-main");
+    const schemeKey = isGlee ? "glee-color-scheme" : "askjamie-color-scheme";
+    const schemeStates = ["auto", "light", "dark"];
+    const schemeColors = isGlee
+      ? { light: "#d35b2d", dark: "#1e1b19" }
+      : { light: "#f5efe1", dark: "#2c5e6f" };
+    const schemeIcons = {
+      auto: '<svg class="tt-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>',
+      light: '<svg class="tt-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>',
+      dark: '<svg class="tt-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>',
+    };
+    const schemeLabels = {
+      auto: "Color scheme: following your device — click to pin light",
+      light: "Color scheme: pinned light — click to switch to dark",
+      dark: "Color scheme: pinned dark — click to follow device",
+    };
+    const savedScheme = readStorage(schemeKey);
+    let schemeState = schemeStates.includes(savedScheme) ? savedScheme : "auto";
+
+    function applySchemeState(state) {
+      if (state === "auto") {
+        document.documentElement.removeAttribute("data-color-scheme");
+      } else {
+        document.documentElement.setAttribute("data-color-scheme", state);
+      }
+
+      document.querySelectorAll('meta[name="theme-color"]').forEach((meta) => {
+        if (state !== "auto") {
+          meta.setAttribute("content", schemeColors[state]);
+          return;
+        }
+        const media = meta.getAttribute("media") || "";
+        meta.setAttribute(
+          "content",
+          media.includes("prefers-color-scheme: dark")
+            ? schemeColors.dark
+            : schemeColors.light
+        );
+      });
+    }
+
+    applySchemeState(schemeState);
+    const schemeToggle = document.createElement("button");
+    schemeToggle.type = "button";
+    schemeToggle.className = "glee-color-toggle";
+    schemeToggle.dataset.state = schemeState;
+    schemeToggle.setAttribute("aria-label", schemeLabels[schemeState]);
+    schemeToggle.innerHTML = schemeIcons[schemeState];
+    if (headerControls) {
+      headerControls.appendChild(schemeToggle);
+    } else if (header && header.querySelector(".container")) {
+      header.querySelector(".container").appendChild(schemeToggle);
+    }
+
+    schemeToggle.addEventListener("click", () => {
+      const currentIndex = schemeStates.indexOf(schemeState);
+      schemeState = schemeStates[(currentIndex + 1) % schemeStates.length];
+      schemeToggle.dataset.state = schemeState;
+      schemeToggle.setAttribute("aria-label", schemeLabels[schemeState]);
+      schemeToggle.innerHTML = schemeIcons[schemeState];
+      applySchemeState(schemeState);
+      if (schemeState === "auto") {
+        removeStorage(schemeKey);
+      } else {
+        writeStorage(schemeKey, schemeState);
+      }
+    });
   }
+
+  // Language switcher dropdown (i18n pilot pages only -- the markup only
+  // exists on the four pilot routes and their /fr/, /de/, /es/
+  // equivalents, so this is a no-op everywhere else). Same disclosure
+  // shape as the theme toggle above: a small button shows the current
+  // state (here, the active page's language flag) and a click reveals
+  // the other options. Unlike the theme toggle this doesn't hold its own
+  // state -- each option is a real link to a different page.
+  document.querySelectorAll(".lang-switch").forEach((wrap) => {
+    const toggle = wrap.querySelector(".lang-switch-toggle");
+    const menu = wrap.querySelector(".lang-switch-menu");
+    if (!toggle || !menu) return;
+
+    const closeMenu = () => {
+      menu.hidden = true;
+      toggle.setAttribute("aria-expanded", "false");
+    };
+    const openMenu = () => {
+      menu.hidden = false;
+      toggle.setAttribute("aria-expanded", "true");
+    };
+
+    toggle.addEventListener("click", (event) => {
+      event.stopPropagation();
+      if (menu.hidden) {
+        openMenu();
+      } else {
+        closeMenu();
+      }
+    });
+
+    wrap.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && !menu.hidden) {
+        closeMenu();
+        toggle.focus();
+      }
+    });
+
+    document.addEventListener("click", (event) => {
+      if (!menu.hidden && !wrap.contains(event.target)) closeMenu();
+    });
+
+    document.addEventListener("focusin", (event) => {
+      if (!menu.hidden && !wrap.contains(event.target)) closeMenu();
+    });
+  });
 
   // Scroll reveal
   const prefersReducedMotion = window.matchMedia(
@@ -232,7 +398,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const constructionOverlay = document.querySelector(".construction-overlay");
 
   if (constructionOverlay) {
-    const body = document.body;
+    constructionOverlay.setAttribute("role", "dialog");
+    constructionOverlay.setAttribute("aria-modal", "true");
+    constructionOverlay.setAttribute("aria-label", "Work-in-progress page notice");
+    const opener = document.activeElement &&
+      document.activeElement !== document.body &&
+      document.activeElement !== document.documentElement
+      ? document.activeElement
+      : null;
     const wipKey =
       constructionOverlay.getAttribute("data-wip-key") ||
       window.location.pathname;
@@ -240,24 +413,37 @@ document.addEventListener("DOMContentLoaded", () => {
     const storageKey = `glee-wip-dismissed:${wipKey}`;
 
     // If user already dismissed this specific WIP page, hide overlay
-    if (localStorage.getItem(storageKey) === "true") {
+    if (readStorage(storageKey) === "true") {
       body.classList.add("construction-dismissed");
-      constructionOverlay.setAttribute("hidden", "true");
+      constructionOverlay.setAttribute("hidden", "");
     } else {
-      // Wire up dismiss buttons
+      const dismissOverlay = () => {
+        body.classList.add("construction-dismissed");
+        constructionOverlay.setAttribute("aria-hidden", "true");
+        constructionOverlay.setAttribute("hidden", "");
+        writeStorage(storageKey, "true");
+
+        if (opener && opener.isConnected && !constructionOverlay.contains(opener)) {
+          opener.focus();
+          return;
+        }
+        const mainTarget = document.querySelector("#main h1, #main");
+        if (mainTarget) {
+          if (!mainTarget.hasAttribute("tabindex")) {
+            mainTarget.setAttribute("tabindex", "-1");
+          }
+          mainTarget.focus({ preventScroll: true });
+        }
+      };
+
       const dismissButtons = constructionOverlay.querySelectorAll(
         "[data-wip-dismiss]"
       );
 
       dismissButtons.forEach((btn) => {
-        btn.addEventListener("click", () => {
-          body.classList.add("construction-dismissed");
-          constructionOverlay.setAttribute("aria-hidden", "true");
-          localStorage.setItem(storageKey, "true");
-        });
+        btn.addEventListener("click", dismissOverlay);
       });
 
-      // Optional: clicking the dark scrim (outside the card) also dismisses
       constructionOverlay.addEventListener("click", (event) => {
         if (event.target === constructionOverlay) {
           const primaryDismiss = constructionOverlay.querySelector(
@@ -266,63 +452,87 @@ document.addEventListener("DOMContentLoaded", () => {
           if (primaryDismiss) primaryDismiss.click();
         }
       });
+
+      const overlayFocusable = Array.from(
+        constructionOverlay.querySelectorAll(
+          'button:not([disabled]), [href], input:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        )
+      );
+      if (overlayFocusable.length) {
+        requestAnimationFrame(() => overlayFocusable[0].focus());
+      }
+      constructionOverlay.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          event.preventDefault();
+          dismissOverlay();
+          return;
+        }
+        if (event.key !== "Tab" || !overlayFocusable.length) return;
+        const first = overlayFocusable[0];
+        const last = overlayFocusable[overlayFocusable.length - 1];
+        if (event.shiftKey) {
+          if (document.activeElement === first) {
+            event.preventDefault();
+            last.focus();
+          }
+        } else if (document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      });
     }
   }
 
 });
 
 // ── 4. Sticky TOC: smooth-lerp scroll-follow for #toc-widget ───────────────
-// Only activates on wide viewports (≥1024 px) when widget exists.
-// No-op on every other page (return on missing element).
+// Only activates on wide viewports (≥1024px) when the widget and footer exist.
 (function () {
   if (window.innerWidth < 1024) return;
 
-  var toc    = document.getElementById('toc-widget');
-  var footer = document.querySelector('.site-footer');
+  const toc = document.getElementById("toc-widget");
+  const footer = document.querySelector(".site-footer");
   if (!toc || !footer) return;
 
-  var lerpedY = 0;
-  var targetY = 0;
-  var SPEED   = 0.08;   /* 0 = no movement, 1 = instant */
-  var NAV_H   = 112;    /* minimum px from viewport top — clears sticky nav */
-  var PAD     = 32;     /* px breathing room above the footer */
+  let lerpedY = 0;
+  let targetY = 0;
+  const SPEED = 0.08;
+  const NAV_H = 112;
+  const PAD = 32;
 
-  function lerp(a, b, t) { return a + (b - a) * t; }
-
-  /* Natural document position of the TOC widget before any transforms */
-  function getNaturalTop(el) {
-    var top = 0;
-    while (el) { top += el.offsetTop; el = el.offsetParent; }
+  function lerp(a, b, t) {
+    return a + (b - a) * t;
+  }
+  function getNaturalTop(element) {
+    let top = 0;
+    while (element) {
+      top += element.offsetTop;
+      element = element.offsetParent;
+    }
     return top;
   }
 
-  var tocNaturalTop = getNaturalTop(toc);
-  var tocH          = toc.offsetHeight;
+  let tocNaturalTop = getNaturalTop(toc);
+  let tocHeight = toc.offsetHeight;
 
   function tick() {
-    var scrollY   = window.scrollY;
-    var footerTop = footer.offsetTop;
-
-    var centeredOffset = Math.max(NAV_H, (window.innerHeight - tocH) / 2);
-    var raw = Math.max(0, scrollY + centeredOffset - tocNaturalTop);
-    var max = Math.max(0, footerTop - PAD - tocNaturalTop - tocH);
+    const scrollY = window.scrollY;
+    const footerTop = footer.offsetTop;
+    const centeredOffset = Math.max(NAV_H, (window.innerHeight - tocHeight) / 2);
+    const raw = Math.max(0, scrollY + centeredOffset - tocNaturalTop);
+    const max = Math.max(0, footerTop - PAD - tocNaturalTop - tocHeight);
     targetY = Math.min(raw, max);
-
     lerpedY = lerp(lerpedY, targetY, SPEED);
-    toc.style.transform = 'translateY(' + lerpedY.toFixed(2) + 'px)';
-
+    toc.style.transform = `translateY(${lerpedY.toFixed(2)}px)`;
     requestAnimationFrame(tick);
   }
 
   requestAnimationFrame(tick);
-
-  window.addEventListener('resize', function () {
-    if (window.innerWidth < 1024) {
-      toc.style.transform = '';
-    } else {
-      toc.style.transform = '';
+  window.addEventListener("resize", () => {
+    toc.style.transform = "";
+    if (window.innerWidth >= 1024) {
       tocNaturalTop = getNaturalTop(toc);
-      tocH = toc.offsetHeight;
+      tocHeight = toc.offsetHeight;
     }
   });
 }());
@@ -361,7 +571,13 @@ document.addEventListener("DOMContentLoaded", () => {
 (function () {
   "use strict";
 
-  const INDEX_URL = "/assets/data/search-index.json";
+  const SEARCH_INDEXES = {
+    de: "/assets/data/search-index.de.json",
+    es: "/assets/data/search-index.es.json",
+    fr: "/assets/data/search-index.fr.json",
+  };
+  const pageLocale = (document.documentElement.lang || "en").toLowerCase().split("-", 1)[0];
+  const INDEX_URL = SEARCH_INDEXES[pageLocale] || "/assets/data/search-index.json";
 
   // ----- index loader (cached promise) -----
   let _indexPromise = null;
@@ -372,7 +588,11 @@ document.addEventListener("DOMContentLoaded", () => {
           if (!r.ok) throw new Error("Index fetch failed: " + r.status);
           return r.json();
         })
-        .then((d) => Array.isArray(d.entries) ? d.entries : (Array.isArray(d.pages) ? d.pages : []))
+        .then((d) => {
+          if (Array.isArray(d.entries)) return d.entries;
+          if (Array.isArray(d.pages)) return d.pages;
+          return [];
+        })
         .catch((err) => {
           console.warn("[okh-search] index load failed:", err);
           return [];
@@ -435,13 +655,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }[c]));
   }
   function snippetFor(entry, tokens, length) {
-    const description = (entry.description || "").trim();
-    const body = entry.body || "";
-    const descriptionLower = description.toLowerCase();
-    const useDescription = description && tokens.some((t) => descriptionLower.includes(t));
-    const source = useDescription ? description : (body || description);
-    if (!source) return "";
-    const lower = source.toLowerCase();
+    const body = entry.body || entry.description || "";
+    if (!body) return "";
+    const lower = body.toLowerCase();
     let bestIdx = -1;
     for (const t of tokens) {
       const i = lower.indexOf(t);
@@ -449,9 +665,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     let start = 0;
     if (bestIdx > 80) start = Math.max(0, bestIdx - 60);
-    let snip = source.slice(start, start + (length || 220));
+    let snip = body.slice(start, start + (length || 220));
     if (start > 0) snip = "…" + snip;
-    if (start + (length || 220) < source.length) snip += "…";
+    if (start + (length || 220) < body.length) snip += "…";
     return snip;
   }
   function highlight(text, tokens) {
@@ -485,13 +701,7 @@ document.addEventListener("DOMContentLoaded", () => {
     wrap.className = "okh-search-overlay";
     wrap.setAttribute("role", "dialog");
     wrap.setAttribute("aria-modal", "true");
-    const isAskJamie = document.body.classList.contains("askjamie-main");
-    const isGlee     = document.body.classList.contains("glee-main");
-    const searchBrand = isAskJamie ? "AskJamie" : isGlee ? "Glee-fully" : "OverKill Hill";
-    const searchPlaceholder = isAskJamie
-      ? "Search AskJamie — pages, cases, and services…"
-      : "Search the Forge — articles, projects, ideas…";
-    wrap.setAttribute("aria-label", "Search " + searchBrand);
+    wrap.setAttribute("aria-label", "Search OverKill Hill");
     wrap.innerHTML = (
       '<div class="okh-search-panel" role="document">' +
         '<div class="okh-search-input-row">' +
@@ -499,11 +709,11 @@ document.addEventListener("DOMContentLoaded", () => {
             '<circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" />' +
           "</svg>" +
           '<input type="search" class="okh-search-input" autocomplete="off" spellcheck="false" ' +
-            'placeholder="' + searchPlaceholder + '" aria-label="Search" />' +
+            'placeholder="Search the Forge — articles, projects, ideas…" aria-label="Search" />' +
           '<button type="button" class="okh-search-close" aria-label="Close search">Esc</button>' +
         "</div>" +
-        '<div role="status" aria-live="polite" aria-atomic="true" class="okh-search-status sr-only"></div>' +
         '<div class="okh-search-results" role="list" aria-label="Search results"></div>' +
+        '<div class="okh-search-status sr-only" role="status" aria-live="polite" aria-atomic="true"></div>' +
         '<div class="okh-search-footer">' +
           '<div class="okh-search-keys">' +
             "<span><kbd>↑</kbd><kbd>↓</kbd> navigate</span>" +
@@ -539,6 +749,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!overlay) return;
     const input    = overlay.querySelector(".okh-search-input");
     const list     = overlay.querySelector(".okh-search-results");
+    const status   = overlay.querySelector(".okh-search-status");
     const closeBtn = overlay.querySelector(".okh-search-close");
 
     let entries        = [];
@@ -546,6 +757,20 @@ document.addEventListener("DOMContentLoaded", () => {
     let currentResults = [];
     let lastTokens     = [];
     let lastFocus      = null;
+
+    function setLoadError(error) {
+      list.innerHTML =
+        '<div class="okh-search-noresults okh-search-noresults--error">' +
+          "<p>Search could not load the index.</p>" +
+          '<button type="button" class="okh-search-retry">Retry search index</button>' +
+        "</div>";
+      status.textContent = "Search index failed to load.";
+      console.warn("[okh-search] overlay index load failed:", error);
+      list.querySelector(".okh-search-retry").addEventListener("click", () => {
+        list.innerHTML = '<p class="okh-search-loading">Loading search index…</p>';
+        loadIndex(true).then((d) => { entries = d; renderEmpty(); }).catch(setLoadError);
+      });
+    }
 
     function focusableInPanel() {
       return Array.from(overlay.querySelectorAll(
@@ -557,14 +782,8 @@ document.addEventListener("DOMContentLoaded", () => {
       if (overlay.dataset.open === "true") return;
       lastFocus = document.activeElement;
       overlay.dataset.open = "true";
-      window.askJamieTrack("search_open", {
-        page_path: window.location.pathname,
-        trigger: lastFocus && lastFocus.classList.contains("okh-search-trigger")
-          ? "button"
-          : "keyboard"
-      });
       document.documentElement.style.overflow = "hidden";
-      loadIndex().then((d) => { entries = d; renderEmpty(); });
+      loadIndex().then((d) => { entries = d; renderEmpty(); }).catch(setLoadError);
       setTimeout(() => input.focus(), 30);
     }
     function close() {
@@ -577,6 +796,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     function renderEmpty() {
       list.innerHTML = emptyStateHtml();
+      status.textContent = "Search ready. Enter a term or choose a suggested search.";
       list.querySelectorAll("button[data-q]").forEach((btn) => {
         btn.addEventListener("click", () => {
           input.value = btn.getAttribute("data-q") || "";
@@ -597,16 +817,9 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       });
     }
-    const statusEl = overlay.querySelector(".okh-search-status");
-    function announce(msg) {
-      if (!statusEl) return;
-      statusEl.textContent = "";
-      // Force a DOM flush so screen readers re-announce even identical text
-      requestAnimationFrame(() => { statusEl.textContent = msg; });
-    }
     function render() {
       const q = input.value.trim();
-      if (!q) { renderEmpty(); currentResults = []; lastTokens = []; announce(""); return; }
+      if (!q) { renderEmpty(); currentResults = []; lastTokens = []; return; }
       lastTokens     = tokenize(q);
       currentResults = search(entries, q, 12);
       if (!currentResults.length) {
@@ -614,7 +827,7 @@ document.addEventListener("DOMContentLoaded", () => {
           '<div class="okh-search-noresults"><p>No matches for <strong>' +
           escapeHtml(q) + "</strong>.</p><p>Try <em>mermaid</em>, <em>ROY</em>, " +
           "<em>council</em>, or <em>manifesto</em>.</p></div>";
-        announce("No results for " + q);
+        status.textContent = "No search results for " + q + ".";
         return;
       }
       list.innerHTML = currentResults.map((r) => (
@@ -622,8 +835,10 @@ document.addEventListener("DOMContentLoaded", () => {
           renderResultHtml(r, lastTokens) +
         "</a>"
       )).join("");
+      status.textContent = currentResults.length +
+        (currentResults.length === 1 ? " result" : " results") +
+        " found for " + q + ".";
       setActive(0);
-      announce(currentResults.length + " result" + (currentResults.length === 1 ? "" : "s") + " for " + q);
     }
     input.addEventListener("input", render);
     input.addEventListener("keydown", (ev) => {
@@ -711,52 +926,87 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let entries        = [];
     let activeCategory = "all";
+    let indexLoadError = null;
 
-    // Mirror the overlay's announce() pattern: clear first so screen readers
-    // re-announce even when the new message text is identical to the previous one.
-    function announceStats(msg) {
-      if (!stats) return;
-      stats.textContent = "";
-      requestAnimationFrame(() => { stats.textContent = msg; });
+    function setIndexLoadError(error) {
+      indexLoadError = error || null;
+      if (error) {
+        list.innerHTML =
+          '<div class="okh-search-noresults okh-search-noresults--error">' +
+            "<p>Search could not load the index.</p>" +
+            "<p>Check your connection, then try again.</p>" +
+            '<a class="okh-search-retry" href="' +
+              escapeHtml(window.location.pathname + window.location.search) +
+            '">Retry search index</a>' +
+          "</div>";
+        if (stats) stats.textContent = "Search index failed to load.";
+        return true;
+      }
+      return false;
     }
 
     function readQueryFromURL() {
-      return new URL(window.location.href).searchParams.get("q") || "";
+      const params = new URL(window.location.href).searchParams;
+      return {
+        q: params.get("q") || "",
+        category: params.get("cat") || "all",
+      };
     }
-    function writeQueryToURL(q) {
+    function writeQueryToURL(q, category, replace) {
       const url = new URL(window.location.href);
       if (q) url.searchParams.set("q", q); else url.searchParams.delete("q");
-      window.history.replaceState({}, "", url.toString());
+      if (category && category !== "all") url.searchParams.set("cat", category);
+      else url.searchParams.delete("cat");
+      const method = replace ? "replaceState" : "pushState";
+      window.history[method]({}, "", url.toString());
     }
 
-    function render() {
+    function normalizeCategory(category) {
+      if (!cats || category === "all") return "all";
+      return Array.from(cats.querySelectorAll("button")).some((button) =>
+        button.getAttribute("data-cat") === category
+      ) ? category : "all";
+    }
+
+    function syncCategoryButtons() {
+      if (!cats) return;
+      cats.querySelectorAll("button").forEach((button) =>
+        button.setAttribute(
+          "aria-pressed",
+          (button.getAttribute("data-cat") || "all") === activeCategory ? "true" : "false"
+        )
+      );
+    }
+
+    function render(options) {
+      const historyMode = options && options.historyMode === "push" ? "push" : "replace";
       const q = input.value.trim();
-      writeQueryToURL(q);
+      writeQueryToURL(q, activeCategory, historyMode === "replace");
       if (!q) {
         list.innerHTML = "";
-        announceStats(entries.length
+        if (stats) stats.textContent = entries.length
           ? "Type to search " + entries.length + " indexed entries."
-          : "Loading index…");
+          : "Loading index…";
+        return;
+      }
+      if (indexLoadError) {
+        setIndexLoadError(indexLoadError);
         return;
       }
       const tokens = tokenize(q);
-      let results  = search(entries, q, 60);
-      if (activeCategory !== "all") {
-        results = results.filter((r) =>
-          (r.entry.category || "").toLowerCase() === activeCategory.toLowerCase()
-        );
-      }
+      const results  = search(entries, q, { limit: 60, category: activeCategory });
       if (!results.length) {
         list.innerHTML =
           '<div class="search-empty-state"><p>No matches for <strong>' +
           escapeHtml(q) + "</strong>" +
           (activeCategory !== "all" ? ' in <em>' + escapeHtml(activeCategory) + "</em>" : "") +
           ".</p></div>";
-        announceStats("0 results for " + q);
+        if (stats) stats.textContent = "0 results";
         return;
       }
-      announceStats(results.length + " result" + (results.length === 1 ? "" : "s") +
-        " for \u201c" + q + "\u201d");
+      if (stats) stats.textContent =
+        results.length + " result" + (results.length === 1 ? "" : "s") +
+        " for \u201c" + q + "\u201d";
       list.innerHTML = results.map((r) => (
         '<a class="okh-search-result" href="' + escapeHtml(r.entry.url) + '">' +
           renderResultHtml(r, tokens) +
@@ -784,25 +1034,58 @@ document.addEventListener("DOMContentLoaded", () => {
           cats.querySelectorAll("button").forEach((x) =>
             x.setAttribute("aria-pressed", x === b ? "true" : "false")
           );
-          render();
+          render({ historyMode: "push" });
         });
       });
     }
 
+    function syncFromURL(skipFocus) {
+      const urlState = readQueryFromURL();
+      input.value = urlState.q;
+      activeCategory = normalizeCategory(urlState.category || "all");
+      syncCategoryButtons();
+      if (!skipFocus) input.focus();
+      render({ historyMode: "replace" });
+    }
+
+    window.addEventListener("popstate", () => {
+      syncFromURL(true);
+    });
+
     loadIndex().then((d) => {
       entries = d;
+      const initial = readQueryFromURL();
+      input.value = initial.q;
+      activeCategory = initial.category || "all";
       buildCategoryChips();
-      const initialQ = readQueryFromURL();
-      if (initialQ) input.value = initialQ;
+      activeCategory = normalizeCategory(activeCategory);
+      syncCategoryButtons();
       input.focus();
       render();
+    }).catch((err) => {
+      setIndexLoadError(err);
     });
 
     input.addEventListener("input", render);
   }
 
   // ── Bootstrap ────────────────────────────────────────────────────────────
+  function loadBrandModule() {
+    const body = document.body;
+    const moduleUrl = body.classList.contains("glee-main")
+      ? "/assets/js/glee-site-enhancements.js"
+      : body.classList.contains("askjamie-main")
+        ? "/assets/js/askjamie-analytics.js"
+        : null;
+    if (moduleUrl) {
+      import(moduleUrl).catch((error) => {
+        console.warn("[shared-runtime] optional brand module failed to load:", error);
+      });
+    }
+  }
+
   function start() {
+    loadBrandModule();
     if (document.body.classList.contains("search-page")) {
       initSearchPage();
       initOverlay(); // search button still works on the search page itself
