@@ -455,7 +455,8 @@ def test_responsive_qa_browser_fixture_isolates_pages_and_preserves_failures(tmp
         pytest.skip("Playwright runtime is unavailable")
 
     events = []
-    state = {"active": 0, "max_active": 0}
+    state = {"active": 0, "max_active": 0, "page_active": 0, "page_max_active": 0}
+    page_paths = {"/lazy/", "/clean/", "/abort/", "/console-404/", "/timeout/"}
     lock = threading.Lock()
     png_header = b"\x89PNG\r\n\x1a\n"
 
@@ -466,10 +467,19 @@ def test_responsive_qa_browser_fixture_isolates_pages_and_preserves_failures(tmp
         def _record(self, phase, path):
             with lock:
                 events.append((phase, path, time.monotonic()))
+                if path in page_paths:
+                    if phase == "start":
+                        state["page_active"] += 1
+                        state["page_max_active"] = max(
+                            state["page_max_active"], state["page_active"]
+                        )
+                    elif phase == "end":
+                        state["page_active"] -= 1
 
         def do_GET(self):
             path = self.path.split("?", 1)[0]
-            if path in {"/lazy/", "/clean/", "/abort/", "/console-404/", "/timeout/"}:
+            if path in page_paths:
+                self._record("start", path)
                 body = {
                     "/lazy/": '<img src="/slow-lazy.png" loading="lazy" width="10" height="10">',
                     "/clean/": "",
@@ -487,6 +497,8 @@ def test_responsive_qa_browser_fixture_isolates_pages_and_preserves_failures(tmp
                 self.send_header("Content-Length", str(len(payload)))
                 self.end_headers()
                 self.wfile.write(payload)
+                time.sleep(0.01)
+                self._record("end", path)
                 return
 
             if path == "/missing.png":
@@ -590,7 +602,7 @@ def test_responsive_qa_browser_fixture_isolates_pages_and_preserves_failures(tmp
                for row in rows["/console-404/"])
     assert all(any("BROKEN IMG" in error or "REQUEST FAILED" in error for error in row["errors"])
                for row in rows["/timeout/"])
-    assert state["max_active"] <= 8
+    assert state["page_max_active"] <= 4
     lazy_starts = [event for event in events if event[0] == "start" and event[1] == "/slow-lazy.png"]
     assert 0 < len(lazy_starts) <= 8
 

@@ -51,6 +51,10 @@ const VIEWPORTS = [
   { name: 'desktop-1440', width: 1440, height: 900  },
   { name: 'desktop-1920', width: 1920, height: 1080 },
 ];
+// The CI preview uses Python's single-threaded HTTPServer with a backlog of 5.
+// Keep browser request bursts below that service boundary while preserving all
+// viewport rows in the release inventory.
+const VIEWPORT_CONCURRENCY = 4;
 
 // The sitemap is the release inventory. This avoids silently testing a stale
 // hand-maintained list when a public route is added or retired.
@@ -234,10 +238,13 @@ async function runWithPlaywright() {
   for (const path of PUBLIC_PATHS) {
     const url = BASE_URL + path;
 
-    // Navigate all 8 viewports in parallel
-    const vpResults = await Promise.all(workers.map(worker =>
-      runViewport(worker, path, url)
-    ));
+    const vpResults = [];
+    for (let start = 0; start < workers.length; start += VIEWPORT_CONCURRENCY) {
+      const batch = await Promise.all(workers
+        .slice(start, start + VIEWPORT_CONCURRENCY)
+        .map(worker => runViewport(worker, path, url)));
+      vpResults.push(...batch);
+    }
 
     const fails = vpResults.filter(r => !r.pass);
     if (fails.length > 0) {
