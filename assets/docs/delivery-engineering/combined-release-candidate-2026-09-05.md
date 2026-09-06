@@ -1,6 +1,7 @@
 # Combined release candidate acceptance
 
-Status: **BLOCKED**. Candidate runtime source revision: `912fdf9`.
+Status: **LOCAL ACCEPTANCE CLEAR**. Candidate runtime source revision:
+`7167a31`.
 Candidate branch: `codex/release-candidate-20260905`. This isolated candidate
 preserves the saved local `f7888c0` history, `origin/main` commit `1d969b6`,
 the Engineering stream through `fc43810`, and the frozen Experience stream
@@ -29,7 +30,7 @@ bundled Node 24.19 runtime. The declared Node dependencies were installed with
 
 | Check | Result |
 | --- | --- |
-| Root Python regression suite | PASS, 63 tests plus 12 subtests |
+| Root Python regression suite | PASS, 64 tests |
 | i18n and five exact-pair suites | PASS, 60 tests |
 | Structural validator | PASS, 27 pages |
 | Link checker | PASS, 764 internal and 534 external links, 0 broken |
@@ -45,23 +46,34 @@ The artifact is at `.scratch/release-candidate-pages/` with manifest
 are public routes, `assets`, and `.well-known`; it contains no `.github`,
 `scripts`, `tests`, `.agents`, or `.scratch` content.
 
-## Browser result and blocker
+## Browser result and resolved runner defects
 
-The one final full responsive run against `http://127.0.0.1:5200` at source
-revision `912fdf9` ran all 200 route/viewport rows and failed 11 rows. Each
-failure was a local-image `net::ERR_ABORTED` event, concentrated on the BFS
-Framing, LEGO, Starbucks, and Brooks Running BrandGuard routes. The disposable
-runner output is retained at
+The initial final run against `http://127.0.0.1:5200` at runtime source
+revision `912fdf9` ran all 200 route/viewport rows and failed 11 rows. That
+failed record remains preserved at
 `/tmp/askjamie-release-evidence-2026-09-05/responsive-qa/`.
 
-The historical 196/200 run remains separately preserved. A focused candidate
-probe of the affected routes at mobile 390 and desktop 1280 returned local 200
-responses for HTML, CSS, JavaScript, avatars, and case-study images; eager
-images completed with nonzero natural widths. The worker did not reproduce a
-navigation-attribution race or prove that the 11-row run is a harness defect.
-Therefore this candidate does not treat the focused result as a clearance. The
-release decision remains blocked pending a reproducible cause or an owner and
-Architect decision on the failed full-run evidence.
+The run exposed two runner defects. First, persistent-page event listeners
+assigned late cancelled requests to the next route. The page-isolation change
+in `417fb9e` creates a fresh page per route and viewport, finalizes the row
+before teardown, and removes listeners before page close. Second, the exact CI
+preview server is Python 3.14.5 `HTTPServer`, single-threaded with
+`request_queue_size = 5`. A bounded four-route diagnostic was clean at browser
+concurrency 1, 2, and 4. At 8 it started only 205 of 224 expected requests and
+logged local broken-pipe and connection-reset errors. The correction in
+`7167a31` keeps every viewport row but schedules browser pages in two batches
+of four. It does not increase timeouts or suppress `ERR_ABORTED`.
+
+The final responsive run used that exact Python preview-server model at
+`http://127.0.0.1:5204` and source revision `7167a31`: **200 of 200 passed**
+across 25 routes and eight viewports. Its evidence is retained at
+`/tmp/askjamie-release-evidence-2026-09-05/responsive-qa-final-four-page-cap/responsive-qa/`.
+Focused executable regression coverage also passed for teardown cancellation,
+required-image aborts, current-page 404 and console errors, delayed required
+resources, finalized-row immutability, and the four-page cap.
+
+The prior 196/200 historical run remains separately preserved. Neither it nor
+any failed candidate evidence has been overwritten or reclassified as a pass.
 
 ## WP-12 local lab evidence
 
@@ -98,4 +110,3 @@ sampled local request by 748,775 bytes, but is not represented as an LCP claim.
 - Saved-root ignored `.DS_Store` cleanup remains outside this worktree. The
   exact manifest and recoverable-quarantine procedure is in the Engineering
   cleanup record.
-
