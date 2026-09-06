@@ -359,7 +359,11 @@ def test_csp_allows_the_configured_google_analytics_pixel():
 def test_generate_csp_check_fails_when_a_page_is_missing_csp(tmp_path, monkeypatch, capsys):
     spec = importlib.util.spec_from_file_location("csp_missing_check", ROOT / "scripts/generate-csp.py")
     module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
+    sys.path.insert(0, str(ROOT / "scripts"))
+    try:
+        spec.loader.exec_module(module)
+    finally:
+        sys.path.pop(0)
 
     page = tmp_path / "index.html"
     page.write_text(
@@ -367,10 +371,14 @@ def test_generate_csp_check_fails_when_a_page_is_missing_csp(tmp_path, monkeypat
         encoding="utf-8",
     )
     monkeypatch.setattr(module, "all_pages", lambda: [page])
-    monkeypatch.setattr(module, "build_policies", lambda: {"standard": "default-src 'self'"})
+    policies = {"standard": "default-src 'self'"}
+    monkeypatch.setattr(module, "build_policies", lambda: policies)
     monkeypatch.setattr(module, "page_class", lambda _page: "standard")
     policy_file = tmp_path / "csp-policies.json"
-    policy_file.write_text('{"schema": 1, "policies": {"standard": "default-src \'self\'"}}\n', encoding="utf-8")
+    policy_file.write_text(
+        json.dumps({"schema": 1, "policies": policies}, indent=2) + "\n",
+        encoding="utf-8",
+    )
     monkeypatch.setattr(module, "POLICY_FILE", policy_file)
 
     assert module.main(["--check"]) == 1
