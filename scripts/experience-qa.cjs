@@ -46,6 +46,56 @@ async function ready(page, route = '/') {
       return { suggestions };
     } finally { await ctx.close(); }
   });
+  await check('Skip link focuses main content', async () => {
+    const ctx = await context();
+    try {
+      const page = await ctx.newPage(); await ready(page);
+      await page.keyboard.press('Tab');
+      await page.keyboard.press('Enter');
+      await page.waitForFunction(() => document.activeElement?.id === 'main');
+      assert.equal(await page.evaluate(() => location.hash), '');
+      assert.equal(await page.evaluate(() => document.activeElement?.tagName), 'MAIN');
+      assert.equal(await page.evaluate(() => document.activeElement?.id), 'main');
+      return { activeTag: 'MAIN', activeId: 'main' };
+    } finally { await ctx.close(); }
+  });
+  await check('Reduced motion internal anchors use instant scrolling', async () => {
+    const ctx = await context({ reducedMotion: 'reduce' });
+    try {
+      const page = await ctx.newPage(); await ready(page);
+      await page.evaluate(() => {
+        window.__scrollIntoViewCalls = [];
+        const original = Element.prototype.scrollIntoView;
+        Element.prototype.scrollIntoView = function (options) {
+          window.__scrollIntoViewCalls.push(options);
+          return original.call(this, options);
+        };
+      });
+      await page.locator('a[href="#uses"]').click();
+      await page.waitForFunction(() => Array.isArray(window.__scrollIntoViewCalls) && window.__scrollIntoViewCalls.length > 0);
+      const calls = await page.evaluate(() => window.__scrollIntoViewCalls);
+      assert.equal(calls[0].behavior, 'auto');
+      assert.equal(calls[0].block, 'start');
+      assert.equal(await page.evaluate(() => location.hash), '');
+      return { behavior: calls[0].behavior, block: calls[0].block };
+    } finally { await ctx.close(); }
+  });
+  await check('Mobile nav returns focus to the toggle after Escape', async () => {
+    const ctx = await context();
+    try {
+      const page = await ctx.newPage();
+      await page.setViewportSize({ width: 390, height: 844 });
+      await page.goto(base + '/', { waitUntil: 'domcontentloaded' });
+      await page.locator('.okh-search-trigger').waitFor();
+      await page.locator('.nav-toggle').click();
+      await page.waitForFunction(() => document.querySelector('.nav-toggle')?.getAttribute('aria-expanded') === 'true');
+      await page.waitForFunction(() => document.activeElement?.closest('.primary-nav') !== null);
+      await page.keyboard.press('Escape');
+      await page.waitForFunction(() => document.querySelector('.nav-toggle')?.getAttribute('aria-expanded') === 'false');
+      assert.equal(await page.evaluate(() => document.activeElement?.className), 'nav-toggle');
+      return { activeClass: 'nav-toggle' };
+    } finally { await ctx.close(); }
+  });
   await check('Dedicated search Enter opens the current first result', async () => {
     const ctx = await context();
     try {
@@ -180,6 +230,24 @@ async function ready(page, route = '/') {
         .every(element => getComputedStyle(element).opacity === '1'), null, { timeout: 3000 });
       const hidden = await page.locator('.reveal-on-scroll').evaluateAll(es => es.filter(e => getComputedStyle(e).opacity !== '1').length);
       assert.equal(hidden, 0); return { armed, hiddenUnderReducedMotion: hidden };
+    } finally { await ctx.close(); }
+  });
+  await check('BrandGuard case links render as coherent card boxes', async () => {
+    const ctx = await context();
+    try {
+      const page = await ctx.newPage(); await ready(page, '/lens-system/okhp3-brandguard/');
+      const cards = page.locator('.brandguard-case-card');
+      assert.equal(await cards.count(), 13);
+      const geometry = await cards.evaluateAll(es => es.map(e => ({
+        display: getComputedStyle(e).display,
+        rects: e.getClientRects().length,
+        width: e.getBoundingClientRect().width,
+        height: e.getBoundingClientRect().height
+      })));
+      assert.ok(geometry.every(card => card.display === 'block' && card.rects === 1 && card.width > 0 && card.height > 0), JSON.stringify(geometry));
+      await cards.first().focus();
+      assert.equal(await cards.first().evaluate(e => e === document.activeElement), true);
+      return { count: geometry.length, geometry: geometry.slice(0, 1) };
     } finally { await ctx.close(); }
   });
   for (const scheme of ['light', 'dark']) {

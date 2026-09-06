@@ -363,10 +363,11 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Scroll reveal
   const prefersReducedMotion = window.matchMedia(
     "(prefers-reduced-motion: reduce)"
   ).matches;
+
+  // Scroll reveal
 
   if (!prefersReducedMotion && "IntersectionObserver" in window) {
     const revealEls = document.querySelectorAll(".reveal-on-scroll");
@@ -404,7 +405,14 @@ document.addEventListener("DOMContentLoaded", () => {
       const target = document.querySelector(href);
       if (!target) return;
       e.preventDefault();
-      target.scrollIntoView({ behavior: "smooth", block: "start" });
+      target.scrollIntoView({
+        behavior: prefersReducedMotion ? "auto" : "smooth",
+        block: "start",
+      });
+      if (target instanceof HTMLElement && target.id === "main") {
+        if (!target.hasAttribute("tabindex")) target.setAttribute("tabindex", "-1");
+        target.focus({ preventScroll: true });
+      }
     });
   });
 
