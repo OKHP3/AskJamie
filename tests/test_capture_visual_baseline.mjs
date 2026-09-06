@@ -1,4 +1,8 @@
 import assert from "node:assert/strict";
+import { execFileSync } from "node:child_process";
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import test from "node:test";
 import {
   assessCaptureReadiness,
@@ -91,4 +95,58 @@ test("capture readiness flags incomplete images, failed requests, and timeout co
 test("image scale ratio highlights a large source used in a small rendered box", () => {
   assert.equal(estimateImageScaleRatio({ naturalWidth: 1024, renderedWidth: 40 }), 25.6);
   assert.equal(estimateImageScaleRatio({ naturalWidth: 0, renderedWidth: 40 }), null);
+});
+
+test("public logo blocks use the nav-only 80px avatar asset", () => {
+  const repoRoot = fileURLToPath(new URL("..", import.meta.url));
+  const files = execFileSync(
+    "rg",
+    [
+      "--files",
+      "-g",
+      "*.html",
+      ".",
+    ],
+    { cwd: repoRoot, encoding: "utf8" }
+  )
+    .trim()
+    .split("\n")
+    .filter(Boolean)
+    .map((file) => file.replace(/^\.\//, ""))
+    .filter((file) => {
+      return [
+        "assets/templates/",
+        "about/",
+        "contact/",
+        "how-askjamie-works/",
+        "legal/",
+        "lens-system/",
+        "search/",
+        "universe/",
+        "index.html",
+      ].some((prefix) => file === prefix || file.startsWith(prefix));
+    });
+
+  assert.ok(files.length > 0);
+  for (const relative of files) {
+    const file = path.join(repoRoot, relative);
+    if (!fs.existsSync(file)) {
+      continue;
+    }
+    const text = fs.readFileSync(file, "utf8");
+    const match = text.match(/<div class="logo">[\s\S]*?<\/div>/);
+    if (!match) {
+      continue;
+    }
+    assert.doesNotMatch(
+      match[0],
+      /askjamie-avatar-tall-left-square-1024\.png/,
+      `nav logo still points at the large avatar in ${relative}`
+    );
+    assert.match(
+      match[0],
+      /askjamie-avatar-tall-left-square-80\.png/,
+      `nav logo does not use the nav-only avatar in ${relative}`
+    );
+  }
 });
