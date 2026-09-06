@@ -430,6 +430,20 @@ def test_responsive_qa_keeps_csp_suppression_narrow_and_reports_resource_failure
     assert "CONSOLE: " in source
 
 
+def test_responsive_qa_owns_late_events_by_request_navigation():
+    source = (ROOT / "scripts/responsive-qa.mjs").read_text(encoding="utf-8")
+
+    assert "requestOwners: new WeakMap()" in source
+    assert "w.requestOwners.set(req, owner)" in source
+    assert "navigationId: owner.id" in source
+    assert "eventUrl: w.page.url()" in source
+    assert "undefined,\n        { timeout: 5000 }" in source
+    assert "navigation.blockedExternal" in source
+    assert "!i.complete || i.naturalWidth === 0" in source
+    assert "HTTP ${r.status}: [${r.resourceType}] ${r.url}" in source
+    assert "ERR_ABORTED" not in source
+
+
 def test_index_freshness_checks_content_instead_of_checkout_times(tmp_path, monkeypatch):
     def load(filename):
         spec = importlib.util.spec_from_file_location(filename, ROOT / "scripts" / filename)

@@ -103,17 +103,24 @@ async function runWithPlaywright() {
   const workers = await Promise.all(VIEWPORTS.map(async vp => {
     const ctx  = await browser.newContext({ viewport: { width: vp.width, height: vp.height } });
     const page = await ctx.newPage();
-    const blockedExternal = new Set();
-    const requestFailures = [];
-    const failedResponses = [];
+    const worker = {
+      vp,
+      ctx,
+      page,
+      activeNavigation: null,
+      navigationSequence: 0,
+      requestOwners: new WeakMap(),
+    };
     await page.route('**/*', (route) => {
       if (EXTERNAL_BLOCK.test(route.request().url())) {
-        blockedExternal.add(route.request().url());
+        if (worker.activeNavigation) {
+          worker.activeNavigation.blockedExternal.add(route.request().url());
+        }
         return route.abort();
       }
       return route.continue();
     });
-    return { vp, ctx, page, consoleErrors: [], requestFailures, failedResponses, blockedExternal };
+    return worker;
   }));
 
   // Attach persistent event listeners.
@@ -126,47 +133,82 @@ async function runWithPlaywright() {
       const mermaidRuntimeCspWarning = isMermaidInlineStyleWarning(msg);
       if (msg.type() === 'error' &&
           !msg.text().includes('ERR_FAILED') &&
-          !mermaidRuntimeCspWarning)
-        w.consoleErrors.push(sourceUrl ? `${sourceUrl} :: ${msg.text()}` : msg.text());
+          !mermaidRuntimeCspWarning &&
+          w.activeNavigation) {
+        w.activeNavigation.consoleErrors.push({
+          text: sourceUrl ? `${sourceUrl} :: ${msg.text()}` : msg.text(),
+          at: Date.now(),
+          pageUrl: w.page.url(),
+        });
+        w.activeNavigation.refreshResult?.();
+      }
+    });
+    w.page.on('request', req => {
+      const owner = w.activeNavigation;
+      if (owner) {
+        w.requestOwners.set(req, owner);
+        owner.requested.push({
+          requestedUrl: req.url(),
+          documentUrl: req.frame()?.url() || '',
+          createdAt: Date.now(),
+        });
+      }
     });
     w.page.on('requestfailed', req => {
+      const owner = w.requestOwners.get(req) || w.activeNavigation;
+      if (!owner) return;
       const url = req.url();
-      if (w.blockedExternal.has(url)) return;
-      w.requestFailures.push({
+      if (owner.blockedExternal.has(url)) return;
+      owner.requestFailures.push({
         url,
         resourceType: req.resourceType(),
         error: req.failure()?.errorText || 'unknown request failure',
+        navigationId: owner.id,
+        documentUrl: req.frame()?.url() || '',
+        eventUrl: w.page.url(),
+        eventAt: Date.now(),
       });
+      owner.refreshResult?.();
     });
     w.page.on('response', resp => {
+      const owner = w.requestOwners.get(resp.request()) || w.activeNavigation;
       if (resp.status() >= 400) {
+        if (!owner) return;
         const url = resp.url();
-        if (w.blockedExternal.has(url)) return;
-        w.failedResponses.push({
+        if (owner.blockedExternal.has(url)) return;
+        owner.failedResponses.push({
           url,
           resourceType: resp.request().resourceType(),
           status: resp.status(),
+          navigationId: owner.id,
+          documentUrl: resp.request().frame()?.url() || '',
+          eventUrl: w.page.url(),
+          eventAt: Date.now(),
         });
+        owner.refreshResult?.();
       }
     });
   }
 
   const allResults = [];
-  let totalFails   = 0;
 
   for (const path of PUBLIC_PATHS) {
     const url = BASE_URL + path;
 
-    // Clear per-page accumulators
-    for (const w of workers) {
-      w.consoleErrors.length = 0;
-      w.requestFailures.length = 0;
-      w.failedResponses.length = 0;
-      w.blockedExternal.clear();
-    }
-
     // Navigate all 8 viewports in parallel
-    const vpResults = await Promise.all(workers.map(async ({ vp, page, consoleErrors, requestFailures, failedResponses, blockedExternal }) => {
+    const vpResults = await Promise.all(workers.map(async (w) => {
+      const { vp, page } = w;
+      const navigation = {
+        id: ++w.navigationSequence,
+        url,
+        consoleErrors: [],
+        requestFailures: [],
+        failedResponses: [],
+        requested: [],
+        blockedExternal: new Set(),
+        refreshResult: null,
+      };
+      w.activeNavigation = navigation;
       const warnings = [];
       try {
         // `commit` is local-document readiness. A bounded DOMContentLoaded
@@ -191,6 +233,7 @@ async function runWithPlaywright() {
         () => Array.from(document.querySelectorAll('img'))
           .filter(i => i.loading !== 'lazy')
           .every(i => i.complete),
+        undefined,
         { timeout: 5000 }
       ).catch(() => {}); // If some eager imgs never load, we still capture them below
 
@@ -203,31 +246,37 @@ async function runWithPlaywright() {
       // check is deterministic. Those aborted images are warnings, not page
       // defects; only report broken images that were not intentionally blocked.
       const unexpectedBrokenImages = brokenImages.filter(src =>
-        ![...blockedExternal].some(blocked => blocked === src)
+        ![...navigation.blockedExternal].some(blocked => blocked === src)
       );
 
-      const errors = [
+      const buildErrors = () => [
         ...(overflow ? [`OVERFLOW: scrollWidth > ${vp.width}px`] : []),
-        ...consoleErrors.slice(0, 5).map(e => 'CONSOLE: ' + e),
-        ...requestFailures.slice(0, 5).map(r =>
+        ...navigation.consoleErrors.slice(0, 5).map(e => 'CONSOLE: ' + e.text),
+        ...navigation.requestFailures.slice(0, 5).map(r =>
           `REQUEST FAILED: [${r.resourceType}] ${r.url} (${r.error})`
         ),
-        ...failedResponses.slice(0, 5).map(r =>
+        ...navigation.failedResponses.slice(0, 5).map(r =>
           `HTTP ${r.status}: [${r.resourceType}] ${r.url}`
         ),
         ...unexpectedBrokenImages.slice(0, 5).map(s => 'BROKEN IMG: ' + s),
       ];
-      if (blockedExternal.size > 0) {
-        warnings.push(`blocked third-party resources: ${[...blockedExternal].join(', ')}`);
+      if (navigation.blockedExternal.size > 0) {
+        warnings.push(`blocked third-party resources: ${[...navigation.blockedExternal].join(', ')}`);
       }
 
-      const pass = errors.length === 0;
+      const row = { url, viewport: vp.name, width: vp.width, height: vp.height,
+                    mode: 'playwright', pass: true, errors: [], warnings };
+      navigation.refreshResult = () => {
+        row.errors = buildErrors();
+        row.pass = row.errors.length === 0;
+      };
+      navigation.refreshResult();
+      const pass = row.pass;
       if (!pass) {
         const ssFile = `${path.replace(/\//g, '_')}_${vp.name}.png`;
         await page.screenshot({ path: resolve(SCREENSHOTS_DIR, ssFile) });
       }
-      return { url, viewport: vp.name, width: vp.width, height: vp.height,
-               mode: 'playwright', pass, errors, warnings };
+      return row;
     }));
 
     const fails = vpResults.filter(r => !r.pass);
@@ -241,7 +290,6 @@ async function runWithPlaywright() {
 
     for (const row of vpResults) {
       allResults.push(row);
-      if (!row.pass) totalFails++;
     }
   }
 
@@ -256,11 +304,12 @@ async function runWithPlaywright() {
     viewports_checked: VIEWPORTS.length,
     total_checks: allResults.length,
     passing_checks: allResults.filter(r => r.pass).length,
-    failing_checks: totalFails,
+    failing_checks: allResults.filter(r => !r.pass).length,
     results: allResults,
   };
   writeFileSync(RESULTS_FILE, JSON.stringify(report, null, 2));
 
+  const totalFails = allResults.filter(r => !r.pass).length;
   console.log(`\nTotal: ${allResults.length} checks — ${totalFails} failures`);
   console.log(`Results: ${RESULTS_FILE}`);
   if (totalFails > 0) process.exit(1);
