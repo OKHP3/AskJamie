@@ -182,6 +182,24 @@ async function ready(page, route = '/') {
       assert.equal(hidden, 0); return { armed, hiddenUnderReducedMotion: hidden };
     } finally { await ctx.close(); }
   });
+  await check('BrandGuard case links render as coherent card boxes', async () => {
+    const ctx = await context();
+    try {
+      const page = await ctx.newPage(); await ready(page, '/lens-system/okhp3-brandguard/');
+      const cards = page.locator('.brandguard-case-card');
+      assert.equal(await cards.count(), 13);
+      const geometry = await cards.evaluateAll(es => es.map(e => ({
+        display: getComputedStyle(e).display,
+        rects: e.getClientRects().length,
+        width: e.getBoundingClientRect().width,
+        height: e.getBoundingClientRect().height
+      })));
+      assert.ok(geometry.every(card => card.display === 'block' && card.rects === 1 && card.width > 0 && card.height > 0), JSON.stringify(geometry));
+      await cards.first().focus();
+      assert.equal(await cards.first().evaluate(e => e === document.activeElement), true);
+      return { count: geometry.length, geometry: geometry.slice(0, 1) };
+    } finally { await ctx.close(); }
+  });
   for (const scheme of ['light', 'dark']) {
     await check('Footer normal text contrast in ' + scheme + ' scheme', async () => {
       const ctx = await context({ colorScheme: scheme });
