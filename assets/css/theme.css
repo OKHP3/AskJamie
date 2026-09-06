@@ -5611,6 +5611,45 @@ html[data-theme="light"] .glee-main {
   width: 100%;
   height: auto;
 } 
+/* Generated maps retain legible node text and a keyboard-scrollable viewport. */
+.glee-main .universe-map details {
+  margin-block: 1rem;
+  padding: 1rem;
+  border: 1px solid var(--color-muted);
+  border-radius: 1rem;
+  background: var(--color-surface);
+}
+.glee-main .universe-map summary {
+  cursor: pointer;
+  font-weight: 700;
+  min-height: 44px;
+}
+.glee-main .universe-map .mermaid-scroll-wrap {
+  max-width: 100%;
+  overflow-x: auto;
+}
+.glee-main .universe-map .mermaid {
+  min-width: 620px;
+}
+.glee-main .universe-map li {
+  margin-block: 0.75rem;
+}
+.glee-main #universe-generated-map .mermaid svg .node rect,
+.glee-main #universe-generated-map .mermaid svg .node polygon {
+  fill: var(--color-surface);
+  stroke: var(--color-accent);
+}
+.glee-main #universe-generated-map .mermaid svg .nodeLabel,
+.glee-main #universe-generated-map .mermaid svg .nodeLabel p {
+  color: var(--color-fg);
+}
+.glee-main #universe-generated-map .mermaid svg .flowchart-link {
+  stroke: var(--color-fg);
+}
+.glee-main #universe-generated-map .mermaid svg marker path {
+  fill: var(--color-fg);
+  stroke: var(--color-fg);
+}
 /* Nodes – rounded joyful shapes with coral borders */
 .glee-main .mermaid .node rect,
 .glee-main .mermaid .node circle {
