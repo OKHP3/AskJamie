@@ -1,0 +1,14 @@
+{
+  "checked_utc": "2026-09-05T17:06:52.753765+00:00",
+  "initial_head": "04cc3e7b8965f568253b6e2c18aa532f6e2a3d57",
+  "initial_status": "clean main tracking origin/main; remote subsequently fetched",
+  "results": {
+    "head": "fd1ea19eb9c07c7c72c38281130413c6199bd0cc\n",
+    "status": "## main...origin/main\n M .github/workflows/validate.yml\n M AGENTS.md\n M README.md\n M ROADMAP.md\n M assets/docs/project-scorecard.md\n M docs/adr/0001-static-html-architecture.md\n M docs/adr/0003-security-headers-csp.md\n M replit.md\n M scripts/prepare-pages-artifact.py\n?? assets/audit/links-report-2026-09-05.json\n?? assets/audit/responsive-qa/\n?? assets/docs/assessment-2026-09-05/\n?? tests/test_pages_artifact_safety.py\n",
+    "branches": "backup/askjamie-pre-reconcile-2026-08-17 1a461f89d4582150b0d94d10443b32d9f585754d\nbackup/askjamie-pre-reconcile-2026-08-31 d6a15276c4be020392a9425afabd5e5a493ee9a3\nmain fd1ea19eb9c07c7c72c38281130413c6199bd0cc\norigin fd1ea19eb9c07c7c72c38281130413c6199bd0cc\norigin/codex/r04-foundation-ask 6c10e5ff35f7417d06af124037cf66c7497a44f3\norigin/codex/regional-locale-menu-foundation 4ececf9c97d90c4b5260be8c8a1e18b480208c9c\norigin/fix/pages-source-validation-20260904 262624c21e6ff4274eeef3d4e34efc14deaad363\norigin/main fd1ea19eb9c07c7c72c38281130413c6199bd0cc\n",
+    "worktrees": "worktree /Volumes/OKH-Local/04_GitHub_Mirrors/AskJamie\nHEAD fd1ea19eb9c07c7c72c38281130413c6199bd0cc\nbranch refs/heads/main\n\n",
+    "stashes": "",
+    "remote-fix-equivalence": "- 262624c21e6ff4274eeef3d4e34efc14deaad363\n",
+    "remote-locale-equivalence": "- 4ececf9c97d90c4b5260be8c8a1e18b480208c9c\n"
+  }
+}

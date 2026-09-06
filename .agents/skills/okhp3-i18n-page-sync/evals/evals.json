@@ -43,7 +43,7 @@
       "failure_consequence": "Every push breaks CI for content the owner has not decided to translate yet, training the team to ignore or bypass the check.",
       "expectations": [
         {"id": "scope-respected", "text": "Only the explicitly in-scope routes are ever evaluated for drift."},
-        {"id": "exit-clean", "text": "--check exits 0 when every in-scope route is in sync, regardless of how many out-of-scope pages exist."}
+        {"id": "exit-clean", "text": "--mode check exits 0 when every in-scope route is in sync, regardless of how many out-of-scope pages exist."}
       ]
     },
     {

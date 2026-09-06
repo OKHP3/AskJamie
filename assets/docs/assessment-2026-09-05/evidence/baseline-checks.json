@@ -1,0 +1,67 @@
+{
+  "checked_utc": "2026-09-05T17:00:49.971874+00:00",
+  "results": [
+    {
+      "check": "links",
+      "command": [
+        "python3",
+        "scripts/check-links.py"
+      ],
+      "exit_code": 0,
+      "output_file": "links.txt"
+    },
+    {
+      "check": "index",
+      "command": [
+        "python3",
+        "scripts/build-search-index.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "output_file": "index.txt"
+    },
+    {
+      "check": "cache",
+      "command": [
+        "python3",
+        "scripts/cache-bust.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "output_file": "cache.txt"
+    },
+    {
+      "check": "static-responsive",
+      "command": [
+        "node",
+        "scripts/responsive-qa.mjs",
+        "--static"
+      ],
+      "exit_code": 0,
+      "output_file": "static-responsive.txt"
+    },
+    {
+      "check": "audit",
+      "command": [
+        "python3",
+        "scripts/audit-site.py",
+        "--quiet",
+        "--report",
+        "assets/docs/assessment-2026-09-05/evidence/canonical-audit.md"
+      ],
+      "exit_code": 1,
+      "output_file": "audit.txt"
+    },
+    {
+      "check": "artifact",
+      "command": [
+        "python3",
+        "scripts/prepare-pages-artifact.py",
+        "--output",
+        "/Volumes/OKH-Local/04_GitHub_Mirrors/AskJamie/.scratch/assessment-2026-09-05-pages"
+      ],
+      "exit_code": 0,
+      "output_file": "artifact.txt"
+    }
+  ]
+}

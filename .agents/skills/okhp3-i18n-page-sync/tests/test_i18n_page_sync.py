@@ -31,9 +31,10 @@ def config(root: Path, in_scope=None):
     write(root / "i18n" / "sync.config.json", json.dumps(payload))
 
 
-def run(root: Path, mode: str):
+def run(root: Path, mode: str, routes=None):
     return subprocess.run(
-        [sys.executable, str(SCRIPT), "--root", str(root), "--mode", mode, "--format", "json"],
+        [sys.executable, str(SCRIPT), "--root", str(root), "--mode", mode, "--format", "json"]
+        + (["--routes", *routes] if routes is not None else []),
         capture_output=True,
         text=True,
         check=False,
@@ -90,6 +91,53 @@ class I18nPageSyncTests(unittest.TestCase):
             self.assertEqual(result.returncode, 1)
             payload = run(root, "report")
             self.assertEqual(json.loads(payload.stdout)["stale"][0]["route"], "/about/")
+
+    def test_adopt_refreshes_only_selected_stale_route_without_editing_pages(self):
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            for route in ("about", "contact"):
+                write(root / route / "index.html", "english v1")
+                write(root / "fr" / route / "index.html", "french v1")
+            write(root / "assets/data/search-index.json", json.dumps(search_index(
+                [{"url": "/about/"}, {"url": "/contact/"}]
+            )))
+            config(root)
+            self.assertEqual(run(root, "adopt").returncode, 0)
+            ledger_path = root / "i18n/sync-state.json"
+            old_ledger = json.loads(ledger_path.read_text())
+            for route in ("about", "contact"):
+                write(root / route / "index.html", "english v2")
+            write(root / "fr/about/index.html", "reviewed french v2")
+            pages_before = {str(path.relative_to(root)): path.read_bytes()
+                            for path in root.rglob("*.html")}
+            ledger_before_check = ledger_path.read_bytes()
+            before = run(root, "check")
+            self.assertEqual(before.returncode, 1)
+            self.assertEqual(len(json.loads(before.stdout)["stale"]), 2)
+            self.assertEqual(ledger_path.read_bytes(), ledger_before_check)
+            adopted = run(root, "adopt", routes=["/about/"])
+            self.assertEqual(adopted.returncode, 0, adopted.stderr)
+            self.assertEqual([item["route"] for item in json.loads(adopted.stdout)["adopted"]], ["/about/"])
+            after = json.loads(run(root, "report").stdout)
+            self.assertEqual([item["route"] for item in after["in_sync"]], ["/about/"])
+            self.assertEqual([item["route"] for item in after["stale"]], ["/contact/"])
+            self.assertEqual(run(root, "check", routes=["/about/"]).returncode, 0)
+            self.assertEqual(json.loads(ledger_path.read_text())["pages"]["/contact/"],
+                             old_ledger["pages"]["/contact/"])
+            self.assertEqual({str(path.relative_to(root)): path.read_bytes()
+                              for path in root.rglob("*.html")}, pages_before)
+
+    def test_adopt_does_not_create_a_missing_translation(self):
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            write(root / "about/index.html", "english")
+            write(root / "assets/data/search-index.json", json.dumps(search_index([{"url": "/about/"}])))
+            config(root)
+            result = run(root, "adopt", routes=["/about/"])
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertEqual(json.loads(result.stdout)["adopted"], [])
+            self.assertFalse((root / "fr/about/index.html").exists())
+            self.assertEqual(run(root, "check").returncode, 1)
 
     def test_out_of_scope_routes_are_never_flagged(self):
         with tempfile.TemporaryDirectory() as raw:

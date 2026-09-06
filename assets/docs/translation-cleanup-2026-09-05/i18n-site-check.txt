@@ -1,0 +1,1 @@
+{"configured": false, "config_path": "/Volumes/OKH-Local/04_GitHub_Mirrors/AskJamie/i18n/sync.config.json"}

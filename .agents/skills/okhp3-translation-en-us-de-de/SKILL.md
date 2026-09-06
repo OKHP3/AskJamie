@@ -177,6 +177,14 @@ Return `Source artifact`, `Germany German target artifact`, `Pair record`,
 
 ## Evaluation and release
 
+From this package directory, run `python3 -B -m unittest discover -s tests
+-p "test_*.py" -v`. The discoverable `tests/test_en_us_to_de_de.py` suite
+invokes the canonical hyphenated planner and validator and includes all 10
+current helper tests. On September 5, 2026, the former
+`tests/test-en-us-to-de-de.py` implementation was consolidated into that
+discoverable filename; dated benchmark references retain the former path as
+historical provenance.
+
 `evals/evals.json` includes normal, pair-boundary, serial-mediation, and
 unsafe-publication cases. The current `1.0.0` architecture has analytical evidence only; helper
 tests prove deterministic behavior, not German quality, native acceptance, or

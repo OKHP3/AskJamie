@@ -1,0 +1,3 @@
+Validating 27 HTML pages...
+
+✓ all clean.

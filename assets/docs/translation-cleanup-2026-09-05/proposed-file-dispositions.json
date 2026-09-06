@@ -1,0 +1,112 @@
+[
+  {
+    "package": "okhp3-translation-en-us-de-de",
+    "underscore_tests": 8,
+    "hyphen_tests": 10,
+    "old_only_tests": [],
+    "new_only_tests": [
+      "test_planner_rejects_identical_source_and_target_roots",
+      "test_relative_links_email_and_media_targets_are_protected"
+    ],
+    "proposed_keep_helpers": [
+      ".agents/skills/okhp3-translation-en-us-de-de/scripts/plan-en-us-to-de-de.py",
+      ".agents/skills/okhp3-translation-en-us-de-de/scripts/validate-en-us-to-de-de.py"
+    ],
+    "proposed_remove_helpers": [
+      ".agents/skills/okhp3-translation-en-us-de-de/scripts/validate_en_us_to_de_de.py",
+      ".agents/skills/okhp3-translation-en-us-de-de/scripts/plan_en_us_to_de_de.py"
+    ],
+    "proposed_test_consolidation": {
+      "source": ".agents/skills/okhp3-translation-en-us-de-de/tests/test-en-us-to-de-de.py",
+      "destination": ".agents/skills/okhp3-translation-en-us-de-de/tests/test_en_us_to_de_de.py"
+    }
+  },
+  {
+    "package": "okhp3-translation-en-us-en-uk",
+    "underscore_tests": 8,
+    "hyphen_tests": 10,
+    "old_only_tests": [],
+    "new_only_tests": [
+      "test_planner_rejects_identical_source_and_target_roots",
+      "test_relative_links_email_and_media_targets_are_protected"
+    ],
+    "proposed_keep_helpers": [
+      ".agents/skills/okhp3-translation-en-us-en-uk/scripts/validate-en-us-to-en-uk.py",
+      ".agents/skills/okhp3-translation-en-us-en-uk/scripts/plan-en-us-to-en-uk.py"
+    ],
+    "proposed_remove_helpers": [
+      ".agents/skills/okhp3-translation-en-us-en-uk/scripts/plan_en_us_to_en_uk.py",
+      ".agents/skills/okhp3-translation-en-us-en-uk/scripts/validate_en_us_to_en_uk.py"
+    ],
+    "proposed_test_consolidation": {
+      "source": ".agents/skills/okhp3-translation-en-us-en-uk/tests/test-en-us-to-en-uk.py",
+      "destination": ".agents/skills/okhp3-translation-en-us-en-uk/tests/test_en_us_to_en_uk.py"
+    }
+  },
+  {
+    "package": "okhp3-translation-en-us-es-es",
+    "underscore_tests": 8,
+    "hyphen_tests": 10,
+    "old_only_tests": [],
+    "new_only_tests": [
+      "test_planner_rejects_identical_source_and_target_roots",
+      "test_relative_links_email_and_media_targets_are_protected"
+    ],
+    "proposed_keep_helpers": [
+      ".agents/skills/okhp3-translation-en-us-es-es/scripts/validate-en-us-to-es-es.py",
+      ".agents/skills/okhp3-translation-en-us-es-es/scripts/plan-en-us-to-es-es.py"
+    ],
+    "proposed_remove_helpers": [
+      ".agents/skills/okhp3-translation-en-us-es-es/scripts/plan_en_us_to_es_es.py",
+      ".agents/skills/okhp3-translation-en-us-es-es/scripts/validate_en_us_to_es_es.py"
+    ],
+    "proposed_test_consolidation": {
+      "source": ".agents/skills/okhp3-translation-en-us-es-es/tests/test-en-us-to-es-es.py",
+      "destination": ".agents/skills/okhp3-translation-en-us-es-es/tests/test_en_us_to_es_es.py"
+    }
+  },
+  {
+    "package": "okhp3-translation-en-us-es-mx",
+    "underscore_tests": 8,
+    "hyphen_tests": 10,
+    "old_only_tests": [],
+    "new_only_tests": [
+      "test_planner_rejects_identical_source_and_target_roots",
+      "test_relative_links_email_and_media_targets_are_protected"
+    ],
+    "proposed_keep_helpers": [
+      ".agents/skills/okhp3-translation-en-us-es-mx/scripts/validate-en-us-to-es-mx.py",
+      ".agents/skills/okhp3-translation-en-us-es-mx/scripts/plan-en-us-to-es-mx.py"
+    ],
+    "proposed_remove_helpers": [
+      ".agents/skills/okhp3-translation-en-us-es-mx/scripts/plan_en_us_to_es_mx.py",
+      ".agents/skills/okhp3-translation-en-us-es-mx/scripts/validate_en_us_to_es_mx.py"
+    ],
+    "proposed_test_consolidation": {
+      "source": ".agents/skills/okhp3-translation-en-us-es-mx/tests/test-en-us-to-es-mx.py",
+      "destination": ".agents/skills/okhp3-translation-en-us-es-mx/tests/test_en_us_to_es_mx.py"
+    }
+  },
+  {
+    "package": "okhp3-translation-en-us-fr-fr",
+    "underscore_tests": 8,
+    "hyphen_tests": 10,
+    "old_only_tests": [],
+    "new_only_tests": [
+      "test_planner_rejects_identical_source_and_target_roots",
+      "test_relative_links_email_and_media_targets_are_protected"
+    ],
+    "proposed_keep_helpers": [
+      ".agents/skills/okhp3-translation-en-us-fr-fr/scripts/plan-en-us-to-fr-fr.py",
+      ".agents/skills/okhp3-translation-en-us-fr-fr/scripts/validate-en-us-to-fr-fr.py"
+    ],
+    "proposed_remove_helpers": [
+      ".agents/skills/okhp3-translation-en-us-fr-fr/scripts/validate_en_us_to_fr_fr.py",
+      ".agents/skills/okhp3-translation-en-us-fr-fr/scripts/plan_en_us_to_fr_fr.py"
+    ],
+    "proposed_test_consolidation": {
+      "source": ".agents/skills/okhp3-translation-en-us-fr-fr/tests/test-en-us-to-fr-fr.py",
+      "destination": ".agents/skills/okhp3-translation-en-us-fr-fr/tests/test_en_us_to_fr_fr.py"
+    }
+  }
+]

@@ -1,0 +1,261 @@
+[
+  {
+    "name": "home-scroll",
+    "js": true,
+    "reduced": true,
+    "styles": {
+      "color": "rgba(229, 231, 235, 0.75)",
+      "bg": "rgb(247, 243, 238)",
+      "links": [
+        {
+          "text": "Who's AskJamie\u2122",
+          "color": "rgba(229, 231, 235, 0.6)",
+          "bg": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "text": "How it works",
+          "color": "rgba(229, 231, 235, 0.6)",
+          "bg": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "text": "Lens System",
+          "color": "rgba(229, 231, 235, 0.6)",
+          "bg": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "text": "OKHP\u00b3\u2122 Universe",
+          "color": "rgba(229, 231, 235, 0.6)",
+          "bg": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "text": "About",
+          "color": "rgba(229, 231, 235, 0.6)",
+          "bg": "rgba(0, 0, 0, 0)"
+        }
+      ],
+      "paragraph": [
+        {
+          "text": "Your articulate, architected AI persona \u2014 clarity, confidence, and calm across everyday insight and complex systems.",
+          "color": "rgba(229, 231, 235, 0.75)"
+        },
+        {
+          "text": "Built with Replit",
+          "color": "rgb(90, 90, 90)"
+        },
+        {
+          "text": "\u00a9 2026 AskJamie\u2122. All rights reserved.",
+          "color": "rgba(229, 231, 235, 0.75)"
+        }
+      ]
+    },
+    "hidden": [
+      {
+        "text": "Your friendly AI helpdesk.\n              \n                Think: vinta",
+        "opacity": "1",
+        "visibility": "visible"
+      },
+      {
+        "text": "Fresh from the helpdesk build log\n          \n            A quick pinbo",
+        "opacity": "1",
+        "visibility": "visible"
+      },
+      {
+        "text": "Keep the helpdesk running\n        \n        \n          AskJamie\u2122 is an ",
+        "opacity": "1",
+        "visibility": "visible"
+      },
+      {
+        "text": "Where it fits\n          \n            AskJamie\u2122 is one of three sister ",
+        "opacity": "1",
+        "visibility": "visible"
+      },
+      {
+        "text": "What AskJamie\u2122 is for\n          \n            Not every question fits n",
+        "opacity": "1",
+        "visibility": "visible"
+      }
+    ]
+  },
+  {
+    "name": "home-scroll",
+    "js": false,
+    "reduced": true,
+    "styles": {
+      "color": "rgb(90, 90, 90)",
+      "bg": "rgb(247, 243, 238)",
+      "links": [
+        {
+          "text": "Who's AskJamie\u2122",
+          "color": "rgb(45, 111, 126)",
+          "bg": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "text": "How it works",
+          "color": "rgb(45, 111, 126)",
+          "bg": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "text": "Lens System",
+          "color": "rgb(45, 111, 126)",
+          "bg": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "text": "OKHP\u00b3\u2122 Universe",
+          "color": "rgb(45, 111, 126)",
+          "bg": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "text": "About",
+          "color": "rgb(45, 111, 126)",
+          "bg": "rgba(0, 0, 0, 0)"
+        }
+      ],
+      "paragraph": [
+        {
+          "text": "Your articulate, architected AI persona \u2014 clarity, confidence, and calm across everyday insight and complex systems.",
+          "color": "rgb(90, 90, 90)"
+        },
+        {
+          "text": "Built with Replit",
+          "color": "rgb(90, 90, 90)"
+        },
+        {
+          "text": "\u00a9 2026 AskJamie\u2122. All rights reserved.",
+          "color": "rgb(90, 90, 90)"
+        }
+      ]
+    },
+    "hidden": [
+      {
+        "text": "Your friendly AI helpdesk.\n              \n                Think: vinta",
+        "opacity": "1",
+        "visibility": "visible"
+      },
+      {
+        "text": "Fresh from the helpdesk build log\n          \n            A quick pinbo",
+        "opacity": "1",
+        "visibility": "visible"
+      },
+      {
+        "text": "Keep the helpdesk running\n        \n        \n          AskJamie\u2122 is an ",
+        "opacity": "1",
+        "visibility": "visible"
+      },
+      {
+        "text": "Where it fits\n          \n            AskJamie\u2122 is one of three sister ",
+        "opacity": "1",
+        "visibility": "visible"
+      },
+      {
+        "text": "What AskJamie\u2122 is for\n          \n            Not every question fits n",
+        "opacity": "1",
+        "visibility": "visible"
+      }
+    ]
+  },
+  {
+    "name": "nojs-normal-motion",
+    "hidden": [
+      {
+        "text": "Your friendly AI helpdesk.\n              \n                Think: vinta",
+        "opacity": "1"
+      },
+      {
+        "text": "Fresh from the helpdesk build log\n          \n            A quick pinbo",
+        "opacity": "1"
+      },
+      {
+        "text": "Keep the helpdesk running\n        \n        \n          AskJamie\u2122 is an ",
+        "opacity": "1"
+      },
+      {
+        "text": "Where it fits\n          \n            AskJamie\u2122 is one of three sister ",
+        "opacity": "1"
+      },
+      {
+        "text": "What AskJamie\u2122 is for\n          \n            Not every question fits n",
+        "opacity": "1"
+      }
+    ]
+  },
+  {
+    "name": "scheels-timeout-retest",
+    "width": 390,
+    "events": [
+      {
+        "url": "https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Open+Sans:wght@400;600&family=Kalam:wght@400&display=swap",
+        "error": {
+          "errorText": "net::ERR_FAILED"
+        }
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_FAILED",
+        "location": {
+          "url": "https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Open+Sans:wght@400;600&family=Kalam:wght@400&display=swap",
+          "line": 0,
+          "column": 0,
+          "lineNumber": 0,
+          "columnNumber": 0
+        }
+      },
+      {
+        "url": "https://www.googletagmanager.com/gtag/js?id=G-MT9Y10YY0G",
+        "error": {
+          "errorText": "net::ERR_FAILED"
+        }
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_FAILED",
+        "location": {
+          "url": "https://www.googletagmanager.com/gtag/js?id=G-MT9Y10YY0G",
+          "line": 0,
+          "column": 0,
+          "lineNumber": 0,
+          "columnNumber": 0
+        }
+      }
+    ]
+  },
+  {
+    "name": "scheels-timeout-retest",
+    "width": 1920,
+    "events": [
+      {
+        "url": "https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Open+Sans:wght@400;600&family=Kalam:wght@400&display=swap",
+        "error": {
+          "errorText": "net::ERR_FAILED"
+        }
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_FAILED",
+        "location": {
+          "url": "https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Open+Sans:wght@400;600&family=Kalam:wght@400&display=swap",
+          "line": 0,
+          "column": 0,
+          "lineNumber": 0,
+          "columnNumber": 0
+        }
+      },
+      {
+        "url": "https://www.googletagmanager.com/gtag/js?id=G-MT9Y10YY0G",
+        "error": {
+          "errorText": "net::ERR_FAILED"
+        }
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_FAILED",
+        "location": {
+          "url": "https://www.googletagmanager.com/gtag/js?id=G-MT9Y10YY0G",
+          "line": 0,
+          "column": 0,
+          "lineNumber": 0,
+          "columnNumber": 0
+        }
+      }
+    ]
+  }
+]

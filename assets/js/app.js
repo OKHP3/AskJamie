@@ -320,13 +320,10 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Language switcher dropdown (i18n pilot pages only -- the markup only
-  // exists on the four pilot routes and their /fr/, /de/, /es/
-  // equivalents, so this is a no-op everywhere else). Same disclosure
-  // shape as the theme toggle above: a small button shows the current
-  // state (here, the active page's language flag) and a click reveals
-  // the other options. Unlike the theme toggle this doesn't hold its own
-  // state -- each option is a real link to a different page.
+  // Shared language-link disclosure. AskJamie currently has no switcher
+  // markup or published translations, so this remains inactive here.
+  // A consuming page supplies real locale links after publication review;
+  // this handler does not translate content or establish locale readiness.
   document.querySelectorAll(".lang-switch").forEach((wrap) => {
     const toggle = wrap.querySelector(".lang-switch-toggle");
     const menu = wrap.querySelector(".lang-switch-menu");
@@ -385,7 +382,14 @@ document.addEventListener("DOMContentLoaded", () => {
       { threshold: 0.15 }
     );
 
-    revealEls.forEach((el) => observer.observe(el));
+    revealEls.forEach((el) => {
+      // AskJamie content stays visible unless its reveal observer is ready.
+      if (body.classList.contains("askjamie-main") &&
+          el.getBoundingClientRect().top >= window.innerHeight) {
+        el.classList.add("is-reveal-ready");
+      }
+      observer.observe(el);
+    });
   } else {
     document
       .querySelectorAll(".reveal-on-scroll")
@@ -577,20 +581,37 @@ document.addEventListener("DOMContentLoaded", () => {
 }());
 
 // ── 5. OKH Search — overlay + dedicated /search/ page ──────────────────────
-// Consolidated from search.js (2026-05-03). All 26 production pages load this.
+// Consolidated from search.js (2026-05-03). Loaded by the shared page shell.
 // Index: /assets/data/search-index.json  Styles: inlined into theme.css (2026-05-04)
 // Keyboard: Ctrl/Cmd+K or "/" to open · Esc to close · ↑/↓ navigate · ↵ follow
 (function () {
   "use strict";
 
-  // French is the only reviewed, indexable locale. German and Spanish remain
-  // noindex drafts with intentionally empty indexes, so they search the
-  // English catalog until their publication gate explicitly promotes them.
-  const SEARCH_INDEXES = { fr: "/assets/data/search-index.fr.json" };
+  const isAskJamie = document.body.classList.contains("askjamie-main");
+  // AskJamie publishes only the English catalog. Keep the shared family's
+  // existing locale mapping separate from this site's publication state.
+  // Adding a translated page does not create a corresponding search index.
+  const SEARCH_INDEXES = isAskJamie ? {} : { fr: "/assets/data/search-index.fr.json" };
   const pageLocale = (document.documentElement.lang || "en").toLowerCase().split("-", 1)[0];
   const INDEX_URL = SEARCH_INDEXES[pageLocale] || "/assets/data/search-index.json";
-  const usesEnglishFallback = pageLocale === "de" || pageLocale === "es";
+  const usesEnglishFallback = isAskJamie
+    ? pageLocale !== "en"
+    : pageLocale === "de" || pageLocale === "es";
   const scopeNotice = usesEnglishFallback ? " Search English content." : "";
+  const searchCopy = isAskJamie ? {
+    label: "Search AskJamie",
+    placeholder: "Search AskJamie: lenses, BrandGuard cases, and how it works…",
+    introduction: "Search AskJamie pages, the Lens System, and public BrandGuard demonstrations.",
+    suggestions: ["BrandGuard", "BFS", "résumé", "portfolio", "enterprise", "Coca-Cola"],
+    noResultsHtml: "Try BrandGuard, BFS, résumé, or portfolio.",
+  } : {
+    label: "Search OverKill Hill",
+    placeholder: "Search the Forge \u2014 articles, projects, ideas…",
+    introduction: "Search across writings, projects, manifesto, and the Council archives.",
+    suggestions: ["mermaid", "ROY", "council", "manifesto", "diagram", "visual edition"],
+    suggestionLabels: ["Mermaid", "ROY", "Council", "Manifesto", "diagram", "v0.3 Visual Edition"],
+    noResultsHtml: "Try <em>mermaid</em>, <em>ROY</em>, <em>council</em>, or <em>manifesto</em>.",
+  };
 
   // ----- index loader (cached promise) -----
   let _indexPromise = null;
@@ -717,7 +738,7 @@ document.addEventListener("DOMContentLoaded", () => {
     wrap.className = "okh-search-overlay";
     wrap.setAttribute("role", "dialog");
     wrap.setAttribute("aria-modal", "true");
-    wrap.setAttribute("aria-label", "Search OverKill Hill");
+    wrap.setAttribute("aria-label", searchCopy.label);
     wrap.innerHTML = (
       '<div class="okh-search-panel" role="document">' +
         '<div class="okh-search-input-row">' +
@@ -725,7 +746,7 @@ document.addEventListener("DOMContentLoaded", () => {
             '<circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" />' +
           "</svg>" +
           '<input type="search" class="okh-search-input" autocomplete="off" spellcheck="false" ' +
-            'placeholder="Search the Forge — articles, projects, ideas…" aria-label="Search" />' +
+            'placeholder="' + escapeHtml(searchCopy.placeholder) + '" aria-label="Search" />' +
           '<button type="button" class="okh-search-close" aria-label="Close search">Esc</button>' +
         "</div>" +
         '<div class="okh-search-results" role="list" aria-label="Search results"></div>' +
@@ -747,14 +768,13 @@ document.addEventListener("DOMContentLoaded", () => {
   function emptyStateHtml() {
     return (
       '<div class="okh-search-empty">' +
-        "<p>Search across writings, projects, manifesto, and the Council archives.</p>" +
+        "<p>" + escapeHtml(searchCopy.introduction) + "</p>" +
         '<ul class="okh-search-hint-list">' +
-          '<li><button type="button" data-q="mermaid">Mermaid</button></li>' +
-          '<li><button type="button" data-q="ROY">ROY</button></li>' +
-          '<li><button type="button" data-q="council">Council</button></li>' +
-          '<li><button type="button" data-q="manifesto">Manifesto</button></li>' +
-          '<li><button type="button" data-q="diagram">diagram</button></li>' +
-          '<li><button type="button" data-q="visual edition">v0.3 Visual Edition</button></li>' +
+          searchCopy.suggestions.map((query, index) =>
+            '<li><button type="button" data-q="' + escapeHtml(query) + '">' +
+              escapeHtml((searchCopy.suggestionLabels || searchCopy.suggestions)[index]) +
+            '</button></li>'
+          ).join("") +
         "</ul>" +
       "</div>"
     );
@@ -849,8 +869,9 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!currentResults.length) {
         list.innerHTML =
           '<div class="okh-search-noresults"><p>No matches for <strong>' +
-          escapeHtml(q) + "</strong>.</p><p>Try <em>mermaid</em>, <em>ROY</em>, " +
-          "<em>council</em>, or <em>manifesto</em>.</p></div>";
+          escapeHtml(q) + "</strong>.</p><p>" +
+          searchCopy.noResultsHtml +
+          "</p></div>";
         status.textContent = "No search results for " + q + ".";
         return;
       }
@@ -1091,6 +1112,22 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     input.addEventListener("input", render);
+    if (isAskJamie) {
+      input.addEventListener("keydown", (event) => {
+        if (event.isComposing || event.ctrlKey || event.metaKey || event.altKey || event.shiftKey) return;
+        if (event.key === "Escape") {
+          event.preventDefault();
+          input.value = "";
+          render();
+        } else if (event.key === "Enter") {
+          const firstResult = list.querySelector("a.okh-search-result");
+          if (firstResult) {
+            event.preventDefault();
+            firstResult.click();
+          }
+        }
+      });
+    }
   }
 
   // ── Bootstrap ────────────────────────────────────────────────────────────

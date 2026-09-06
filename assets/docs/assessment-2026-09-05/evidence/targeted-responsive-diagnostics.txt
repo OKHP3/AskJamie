@@ -1,0 +1,13 @@
+AskJamie™ Responsive QA
+========================================
+Base URL: http://127.0.0.1:5187
+Pages: 5 | Viewports: 8
+
+  done  /about/
+  done  /lens-system/resume-representative/
+  done  /lens-system/okhp3-brandguard/hershey/
+  done  /lens-system/okhp3-brandguard/dollar-general/
+  done  /lens-system/okhp3-brandguard/scheels/
+
+Total: 40 checks — 0 failures
+Results: /tmp/askjamie-assessment/targeted-responsive/results.json

@@ -1,0 +1,492 @@
+{
+  "generated": "2026-09-05T17:21:42.696Z",
+  "mode": "playwright",
+  "base_url": "http://127.0.0.1:5187",
+  "pages_checked": 5,
+  "viewports_checked": 8,
+  "total_checks": 40,
+  "passing_checks": 40,
+  "failing_checks": 0,
+  "results": [
+    {
+      "url": "http://127.0.0.1:5187/about/",
+      "viewport": "mobile-360",
+      "width": 360,
+      "height": 780,
+      "mode": "playwright",
+      "pass": true,
+      "errors": [],
+      "warnings": [
+        "blocked third-party resources: https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Open+Sans:wght@400;600&family=Kalam:wght@400&display=swap, https://www.googletagmanager.com/gtag/js?id=G-MT9Y10YY0G"
+      ]
+    },
+    {
+      "url": "http://127.0.0.1:5187/about/",
+      "viewport": "mobile-390",
+      "width": 390,
+      "height": 844,
+      "mode": "playwright",
+      "pass": true,
+      "errors": [],
+      "warnings": [
+        "blocked third-party resources: https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Open+Sans:wght@400;600&family=Kalam:wght@400&display=swap, https://www.googletagmanager.com/gtag/js?id=G-MT9Y10YY0G"
+      ]
+    },
+    {
+      "url": "http://127.0.0.1:5187/about/",
+      "viewport": "mobile-430",
+      "width": 430,
+      "height": 932,
+      "mode": "playwright",
+      "pass": true,
+      "errors": [],
+      "warnings": [
+        "blocked third-party resources: https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Open+Sans:wght@400;600&family=Kalam:wght@400&display=swap, https://www.googletagmanager.com/gtag/js?id=G-MT9Y10YY0G"
+      ]
+    },
+    {
+      "url": "http://127.0.0.1:5187/about/",
+      "viewport": "tablet-768",
+      "width": 768,
+      "height": 1024,
+      "mode": "playwright",
+      "pass": true,
+      "errors": [],
+      "warnings": [
+        "blocked third-party resources: https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Open+Sans:wght@400;600&family=Kalam:wght@400&display=swap, https://www.googletagmanager.com/gtag/js?id=G-MT9Y10YY0G"
+      ]
+    },
+    {
+      "url": "http://127.0.0.1:5187/about/",
+      "viewport": "desktop-1024",
+      "width": 1024,
+      "height": 768,
+      "mode": "playwright",
+      "pass": true,
+      "errors": [],
+      "warnings": [
+        "blocked third-party resources: https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Open+Sans:wght@400;600&family=Kalam:wght@400&display=swap, https://www.googletagmanager.com/gtag/js?id=G-MT9Y10YY0G"
+      ]
+    },
+    {
+      "url": "http://127.0.0.1:5187/about/",
+      "viewport": "desktop-1280",
+      "width": 1280,
+      "height": 800,
+      "mode": "playwright",
+      "pass": true,
+      "errors": [],
+      "warnings": [
+        "blocked third-party resources: https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Open+Sans:wght@400;600&family=Kalam:wght@400&display=swap, https://www.googletagmanager.com/gtag/js?id=G-MT9Y10YY0G"
+      ]
+    },
+    {
+      "url": "http://127.0.0.1:5187/about/",
+      "viewport": "desktop-1440",
+      "width": 1440,
+      "height": 900,
+      "mode": "playwright",
+      "pass": true,
+      "errors": [],
+      "warnings": [
+        "blocked third-party resources: https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Open+Sans:wght@400;600&family=Kalam:wght@400&display=swap, https://www.googletagmanager.com/gtag/js?id=G-MT9Y10YY0G"
+      ]
+    },
+    {
+      "url": "http://127.0.0.1:5187/about/",
+      "viewport": "desktop-1920",
+      "width": 1920,
+      "height": 1080,
+      "mode": "playwright",
+      "pass": true,
+      "errors": [],
+      "warnings": [
+        "blocked third-party resources: https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Open+Sans:wght@400;600&family=Kalam:wght@400&display=swap, https://www.googletagmanager.com/gtag/js?id=G-MT9Y10YY0G"
+      ]
+    },
+    {
+      "url": "http://127.0.0.1:5187/lens-system/resume-representative/",
+      "viewport": "mobile-360",
+      "width": 360,
+      "height": 780,
+      "mode": "playwright",
+      "pass": true,
+      "errors": [],
+      "warnings": [
+        "blocked third-party resources: https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Open+Sans:wght@400;600&family=Kalam:wght@400&display=swap, https://www.googletagmanager.com/gtag/js?id=G-MT9Y10YY0G"
+      ]
+    },
+    {
+      "url": "http://127.0.0.1:5187/lens-system/resume-representative/",
+      "viewport": "mobile-390",
+      "width": 390,
+      "height": 844,
+      "mode": "playwright",
+      "pass": true,
+      "errors": [],
+      "warnings": [
+        "blocked third-party resources: https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Open+Sans:wght@400;600&family=Kalam:wght@400&display=swap, https://www.googletagmanager.com/gtag/js?id=G-MT9Y10YY0G"
+      ]
+    },
+    {
+      "url": "http://127.0.0.1:5187/lens-system/resume-representative/",
+      "viewport": "mobile-430",
+      "width": 430,
+      "height": 932,
+      "mode": "playwright",
+      "pass": true,
+      "errors": [],
+      "warnings": [
+        "blocked third-party resources: https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Open+Sans:wght@400;600&family=Kalam:wght@400&display=swap, https://www.googletagmanager.com/gtag/js?id=G-MT9Y10YY0G"
+      ]
+    },
+    {
+      "url": "http://127.0.0.1:5187/lens-system/resume-representative/",
+      "viewport": "tablet-768",
+      "width": 768,
+      "height": 1024,
+      "mode": "playwright",
+      "pass": true,
+      "errors": [],
+      "warnings": [
+        "blocked third-party resources: https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Open+Sans:wght@400;600&family=Kalam:wght@400&display=swap, https://www.googletagmanager.com/gtag/js?id=G-MT9Y10YY0G"
+      ]
+    },
+    {
+      "url": "http://127.0.0.1:5187/lens-system/resume-representative/",
+      "viewport": "desktop-1024",
+      "width": 1024,
+      "height": 768,
+      "mode": "playwright",
+      "pass": true,
+      "errors": [],
+      "warnings": [
+        "blocked third-party resources: https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Open+Sans:wght@400;600&family=Kalam:wght@400&display=swap, https://www.googletagmanager.com/gtag/js?id=G-MT9Y10YY0G"
+      ]
+    },
+    {
+      "url": "http://127.0.0.1:5187/lens-system/resume-representative/",
+      "viewport": "desktop-1280",
+      "width": 1280,
+      "height": 800,
+      "mode": "playwright",
+      "pass": true,
+      "errors": [],
+      "warnings": [
+        "blocked third-party resources: https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Open+Sans:wght@400;600&family=Kalam:wght@400&display=swap, https://www.googletagmanager.com/gtag/js?id=G-MT9Y10YY0G"
+      ]
+    },
+    {
+      "url": "http://127.0.0.1:5187/lens-system/resume-representative/",
+      "viewport": "desktop-1440",
+      "width": 1440,
+      "height": 900,
+      "mode": "playwright",
+      "pass": true,
+      "errors": [],
+      "warnings": [
+        "blocked third-party resources: https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Open+Sans:wght@400;600&family=Kalam:wght@400&display=swap, https://www.googletagmanager.com/gtag/js?id=G-MT9Y10YY0G"
+      ]
+    },
+    {
+      "url": "http://127.0.0.1:5187/lens-system/resume-representative/",
+      "viewport": "desktop-1920",
+      "width": 1920,
+      "height": 1080,
+      "mode": "playwright",
+      "pass": true,
+      "errors": [],
+      "warnings": [
+        "blocked third-party resources: https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Open+Sans:wght@400;600&family=Kalam:wght@400&display=swap, https://www.googletagmanager.com/gtag/js?id=G-MT9Y10YY0G"
+      ]
+    },
+    {
+      "url": "http://127.0.0.1:5187/lens-system/okhp3-brandguard/hershey/",
+      "viewport": "mobile-360",
+      "width": 360,
+      "height": 780,
+      "mode": "playwright",
+      "pass": true,
+      "errors": [],
+      "warnings": [
+        "blocked third-party resources: https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Open+Sans:wght@400;600&family=Kalam:wght@400&display=swap, https://www.googletagmanager.com/gtag/js?id=G-MT9Y10YY0G"
+      ]
+    },
+    {
+      "url": "http://127.0.0.1:5187/lens-system/okhp3-brandguard/hershey/",
+      "viewport": "mobile-390",
+      "width": 390,
+      "height": 844,
+      "mode": "playwright",
+      "pass": true,
+      "errors": [],
+      "warnings": [
+        "blocked third-party resources: https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Open+Sans:wght@400;600&family=Kalam:wght@400&display=swap, https://www.googletagmanager.com/gtag/js?id=G-MT9Y10YY0G"
+      ]
+    },
+    {
+      "url": "http://127.0.0.1:5187/lens-system/okhp3-brandguard/hershey/",
+      "viewport": "mobile-430",
+      "width": 430,
+      "height": 932,
+      "mode": "playwright",
+      "pass": true,
+      "errors": [],
+      "warnings": [
+        "blocked third-party resources: https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Open+Sans:wght@400;600&family=Kalam:wght@400&display=swap, https://www.googletagmanager.com/gtag/js?id=G-MT9Y10YY0G"
+      ]
+    },
+    {
+      "url": "http://127.0.0.1:5187/lens-system/okhp3-brandguard/hershey/",
+      "viewport": "tablet-768",
+      "width": 768,
+      "height": 1024,
+      "mode": "playwright",
+      "pass": true,
+      "errors": [],
+      "warnings": [
+        "blocked third-party resources: https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Open+Sans:wght@400;600&family=Kalam:wght@400&display=swap, https://www.googletagmanager.com/gtag/js?id=G-MT9Y10YY0G"
+      ]
+    },
+    {
+      "url": "http://127.0.0.1:5187/lens-system/okhp3-brandguard/hershey/",
+      "viewport": "desktop-1024",
+      "width": 1024,
+      "height": 768,
+      "mode": "playwright",
+      "pass": true,
+      "errors": [],
+      "warnings": [
+        "blocked third-party resources: https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Open+Sans:wght@400;600&family=Kalam:wght@400&display=swap, https://www.googletagmanager.com/gtag/js?id=G-MT9Y10YY0G"
+      ]
+    },
+    {
+      "url": "http://127.0.0.1:5187/lens-system/okhp3-brandguard/hershey/",
+      "viewport": "desktop-1280",
+      "width": 1280,
+      "height": 800,
+      "mode": "playwright",
+      "pass": true,
+      "errors": [],
+      "warnings": [
+        "blocked third-party resources: https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Open+Sans:wght@400;600&family=Kalam:wght@400&display=swap, https://www.googletagmanager.com/gtag/js?id=G-MT9Y10YY0G"
+      ]
+    },
+    {
+      "url": "http://127.0.0.1:5187/lens-system/okhp3-brandguard/hershey/",
+      "viewport": "desktop-1440",
+      "width": 1440,
+      "height": 900,
+      "mode": "playwright",
+      "pass": true,
+      "errors": [],
+      "warnings": [
+        "blocked third-party resources: https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Open+Sans:wght@400;600&family=Kalam:wght@400&display=swap, https://www.googletagmanager.com/gtag/js?id=G-MT9Y10YY0G"
+      ]
+    },
+    {
+      "url": "http://127.0.0.1:5187/lens-system/okhp3-brandguard/hershey/",
+      "viewport": "desktop-1920",
+      "width": 1920,
+      "height": 1080,
+      "mode": "playwright",
+      "pass": true,
+      "errors": [],
+      "warnings": [
+        "blocked third-party resources: https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Open+Sans:wght@400;600&family=Kalam:wght@400&display=swap, https://www.googletagmanager.com/gtag/js?id=G-MT9Y10YY0G"
+      ]
+    },
+    {
+      "url": "http://127.0.0.1:5187/lens-system/okhp3-brandguard/dollar-general/",
+      "viewport": "mobile-360",
+      "width": 360,
+      "height": 780,
+      "mode": "playwright",
+      "pass": true,
+      "errors": [],
+      "warnings": [
+        "blocked third-party resources: https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Open+Sans:wght@400;600&family=Kalam:wght@400&display=swap, https://www.googletagmanager.com/gtag/js?id=G-MT9Y10YY0G"
+      ]
+    },
+    {
+      "url": "http://127.0.0.1:5187/lens-system/okhp3-brandguard/dollar-general/",
+      "viewport": "mobile-390",
+      "width": 390,
+      "height": 844,
+      "mode": "playwright",
+      "pass": true,
+      "errors": [],
+      "warnings": [
+        "blocked third-party resources: https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Open+Sans:wght@400;600&family=Kalam:wght@400&display=swap, https://www.googletagmanager.com/gtag/js?id=G-MT9Y10YY0G"
+      ]
+    },
+    {
+      "url": "http://127.0.0.1:5187/lens-system/okhp3-brandguard/dollar-general/",
+      "viewport": "mobile-430",
+      "width": 430,
+      "height": 932,
+      "mode": "playwright",
+      "pass": true,
+      "errors": [],
+      "warnings": [
+        "blocked third-party resources: https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Open+Sans:wght@400;600&family=Kalam:wght@400&display=swap, https://www.googletagmanager.com/gtag/js?id=G-MT9Y10YY0G"
+      ]
+    },
+    {
+      "url": "http://127.0.0.1:5187/lens-system/okhp3-brandguard/dollar-general/",
+      "viewport": "tablet-768",
+      "width": 768,
+      "height": 1024,
+      "mode": "playwright",
+      "pass": true,
+      "errors": [],
+      "warnings": [
+        "blocked third-party resources: https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Open+Sans:wght@400;600&family=Kalam:wght@400&display=swap, https://www.googletagmanager.com/gtag/js?id=G-MT9Y10YY0G"
+      ]
+    },
+    {
+      "url": "http://127.0.0.1:5187/lens-system/okhp3-brandguard/dollar-general/",
+      "viewport": "desktop-1024",
+      "width": 1024,
+      "height": 768,
+      "mode": "playwright",
+      "pass": true,
+      "errors": [],
+      "warnings": [
+        "blocked third-party resources: https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Open+Sans:wght@400;600&family=Kalam:wght@400&display=swap, https://www.googletagmanager.com/gtag/js?id=G-MT9Y10YY0G"
+      ]
+    },
+    {
+      "url": "http://127.0.0.1:5187/lens-system/okhp3-brandguard/dollar-general/",
+      "viewport": "desktop-1280",
+      "width": 1280,
+      "height": 800,
+      "mode": "playwright",
+      "pass": true,
+      "errors": [],
+      "warnings": [
+        "blocked third-party resources: https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Open+Sans:wght@400;600&family=Kalam:wght@400&display=swap, https://www.googletagmanager.com/gtag/js?id=G-MT9Y10YY0G"
+      ]
+    },
+    {
+      "url": "http://127.0.0.1:5187/lens-system/okhp3-brandguard/dollar-general/",
+      "viewport": "desktop-1440",
+      "width": 1440,
+      "height": 900,
+      "mode": "playwright",
+      "pass": true,
+      "errors": [],
+      "warnings": [
+        "blocked third-party resources: https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Open+Sans:wght@400;600&family=Kalam:wght@400&display=swap, https://www.googletagmanager.com/gtag/js?id=G-MT9Y10YY0G"
+      ]
+    },
+    {
+      "url": "http://127.0.0.1:5187/lens-system/okhp3-brandguard/dollar-general/",
+      "viewport": "desktop-1920",
+      "width": 1920,
+      "height": 1080,
+      "mode": "playwright",
+      "pass": true,
+      "errors": [],
+      "warnings": [
+        "blocked third-party resources: https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Open+Sans:wght@400;600&family=Kalam:wght@400&display=swap, https://www.googletagmanager.com/gtag/js?id=G-MT9Y10YY0G"
+      ]
+    },
+    {
+      "url": "http://127.0.0.1:5187/lens-system/okhp3-brandguard/scheels/",
+      "viewport": "mobile-360",
+      "width": 360,
+      "height": 780,
+      "mode": "playwright",
+      "pass": true,
+      "errors": [],
+      "warnings": [
+        "blocked third-party resources: https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Open+Sans:wght@400;600&family=Kalam:wght@400&display=swap, https://www.googletagmanager.com/gtag/js?id=G-MT9Y10YY0G"
+      ]
+    },
+    {
+      "url": "http://127.0.0.1:5187/lens-system/okhp3-brandguard/scheels/",
+      "viewport": "mobile-390",
+      "width": 390,
+      "height": 844,
+      "mode": "playwright",
+      "pass": true,
+      "errors": [],
+      "warnings": [
+        "blocked third-party resources: https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Open+Sans:wght@400;600&family=Kalam:wght@400&display=swap, https://www.googletagmanager.com/gtag/js?id=G-MT9Y10YY0G"
+      ]
+    },
+    {
+      "url": "http://127.0.0.1:5187/lens-system/okhp3-brandguard/scheels/",
+      "viewport": "mobile-430",
+      "width": 430,
+      "height": 932,
+      "mode": "playwright",
+      "pass": true,
+      "errors": [],
+      "warnings": [
+        "blocked third-party resources: https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Open+Sans:wght@400;600&family=Kalam:wght@400&display=swap, https://www.googletagmanager.com/gtag/js?id=G-MT9Y10YY0G"
+      ]
+    },
+    {
+      "url": "http://127.0.0.1:5187/lens-system/okhp3-brandguard/scheels/",
+      "viewport": "tablet-768",
+      "width": 768,
+      "height": 1024,
+      "mode": "playwright",
+      "pass": true,
+      "errors": [],
+      "warnings": [
+        "blocked third-party resources: https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Open+Sans:wght@400;600&family=Kalam:wght@400&display=swap, https://www.googletagmanager.com/gtag/js?id=G-MT9Y10YY0G"
+      ]
+    },
+    {
+      "url": "http://127.0.0.1:5187/lens-system/okhp3-brandguard/scheels/",
+      "viewport": "desktop-1024",
+      "width": 1024,
+      "height": 768,
+      "mode": "playwright",
+      "pass": true,
+      "errors": [],
+      "warnings": [
+        "blocked third-party resources: https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Open+Sans:wght@400;600&family=Kalam:wght@400&display=swap, https://www.googletagmanager.com/gtag/js?id=G-MT9Y10YY0G"
+      ]
+    },
+    {
+      "url": "http://127.0.0.1:5187/lens-system/okhp3-brandguard/scheels/",
+      "viewport": "desktop-1280",
+      "width": 1280,
+      "height": 800,
+      "mode": "playwright",
+      "pass": true,
+      "errors": [],
+      "warnings": [
+        "blocked third-party resources: https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Open+Sans:wght@400;600&family=Kalam:wght@400&display=swap, https://www.googletagmanager.com/gtag/js?id=G-MT9Y10YY0G"
+      ]
+    },
+    {
+      "url": "http://127.0.0.1:5187/lens-system/okhp3-brandguard/scheels/",
+      "viewport": "desktop-1440",
+      "width": 1440,
+      "height": 900,
+      "mode": "playwright",
+      "pass": true,
+      "errors": [],
+      "warnings": [
+        "blocked third-party resources: https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Open+Sans:wght@400;600&family=Kalam:wght@400&display=swap, https://www.googletagmanager.com/gtag/js?id=G-MT9Y10YY0G"
+      ]
+    },
+    {
+      "url": "http://127.0.0.1:5187/lens-system/okhp3-brandguard/scheels/",
+      "viewport": "desktop-1920",
+      "width": 1920,
+      "height": 1080,
+      "mode": "playwright",
+      "pass": true,
+      "errors": [],
+      "warnings": [
+        "blocked third-party resources: https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Open+Sans:wght@400;600&family=Kalam:wght@400&display=swap, https://www.googletagmanager.com/gtag/js?id=G-MT9Y10YY0G"
+      ]
+    }
+  ]
+}

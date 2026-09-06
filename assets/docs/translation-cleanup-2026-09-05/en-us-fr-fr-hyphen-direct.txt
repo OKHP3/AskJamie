@@ -1,0 +1,15 @@
+test_planner_blocks_missing_voice_profile_or_dictionary (__main__.EnUsToFrFrValidatorTests.test_planner_blocks_missing_voice_profile_or_dictionary) ... ok
+test_planner_rejects_identical_source_and_target_roots (__main__.EnUsToFrFrValidatorTests.test_planner_rejects_identical_source_and_target_roots) ... ok
+test_planner_reports_only_fr_fr_targets_without_writing (__main__.EnUsToFrFrValidatorTests.test_planner_reports_only_fr_fr_targets_without_writing) ... ok
+test_protected_token_drift_fails (__main__.EnUsToFrFrValidatorTests.test_protected_token_drift_fails) ... ok
+test_rejects_any_other_language_pair_or_many_targets (__main__.EnUsToFrFrValidatorTests.test_rejects_any_other_language_pair_or_many_targets) ... ok
+test_rejects_specialist_register_without_completed_plainspoken_stage (__main__.EnUsToFrFrValidatorTests.test_rejects_specialist_register_without_completed_plainspoken_stage) ... ok
+test_relative_links_email_and_media_targets_are_protected (__main__.EnUsToFrFrValidatorTests.test_relative_links_email_and_media_targets_are_protected) ... ok
+test_valid_pair_and_protected_tokens_pass (__main__.EnUsToFrFrValidatorTests.test_valid_pair_and_protected_tokens_pass) ... ok
+test_validator_rejects_empty_or_wrong_pair_dictionary (__main__.EnUsToFrFrValidatorTests.test_validator_rejects_empty_or_wrong_pair_dictionary) ... ok
+test_validator_rejects_incomplete_voice_profile (__main__.EnUsToFrFrValidatorTests.test_validator_rejects_incomplete_voice_profile) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.369s
+
+OK

@@ -1,69 +1,80 @@
 # AskJamie Project Scorecard
 
-**Current as of:** 2026-09-04  
-**Purpose:** One current status record for shipped capability, conditional
-evidence, deferred ideas, and intentional non-goals.
+**Current as of:** 2026-09-05
+**Source baseline:** `fd1ea19`
+**Purpose:** One current record of shipped capability, dated verification,
+conditional evidence, and deliberately deferred work.
 
-This scorecard is the present-tense contract. Dated audit reports remain useful
-as historical evidence, but their measurements and implementation descriptions
-must not be treated as current without rerunning the named check.
+The [September 5 assessment](assessment-2026-09-05/delivery-plan.md) records
+priorities and assigned work packages. Its evidence files preserve the baseline
+before local repairs. A local patch is not a published release.
 
 ## Shipped capabilities
 
-| Capability | Current evidence |
+| Capability | Current source evidence |
 | --- | --- |
-| Static public site | 35 HTML files exist on disk. Nine developer templates are excluded from public QA, leaving 26 QA-relevant HTML paths. |
-| Public content discovery | `llms.txt`, `sitemap.xml`, and a generated search index covering 24 content pages are committed. |
-| Client-side search | `assets/js/app.js` reads the generated index and provides the search overlay and dedicated search page. |
-| GA4 instrumentation | The page shell loads `G-MT9Y10YY0G` unconditionally. `app.js` safely records `search_open`, `gpt_click`, and `inquiry_click` when `gtag` is available. |
-| Privacy disclosure | `legal/index.html` describes aggregate Google Analytics 4 use and browser or privacy-extension controls. |
-| Typography | Baloo 2, Open Sans, and Kalam load intentionally from Google Fonts. No local font bundle is published. |
-| Universe diagram | Mermaid 11.17.2 is locally vendored under `assets/vendor/mermaid/`, with a static fallback and runtime initialization. |
-| Release automation | Structural validation, link checking, pytest, generated-index checking, responsive static QA, canonical audit, and allowlisted artifact preparation have repository commands and CI references. |
-| Public artifact boundary | The Pages preparation script currently emits 313 allowlisted public files and excludes repository-only tooling. |
+| Static website | 27 source HTML pages plus 9 developer templates. Tracked `dist-pages/` copies are generated release material, excluded from source-page counts. |
+| Discovery and explanation | 25 sitemap routes and 25 generated search entries, plus the How AskJamie Works explanation page within that inventory. |
+| Client-side search | Shared overlay and dedicated search route in `assets/js/app.js`, backed by generated JSON. |
+| Analytics and typography | Unconditional GA4 `G-MT9Y10YY0G` and intentionally external Google Fonts. The Legal page describes analytics use. |
+| Universe diagram | Locally vendored Mermaid 11.17.2, browser initialization, and a static fallback. |
+| Release pipeline | `.github/workflows/validate.yml` validates structure, fingerprints, links, Python tests, search freshness, browser responsive behavior, smoke behavior, and canonical audit before packaging and dependent Pages deployment. |
+| Release boundary | `scripts/prepare-pages-artifact.py` constructs an allowlisted artifact. Use its current manifest for file counts, not a copied historical total. |
+| Hosted checks | Separate scheduled hosted JavaScript and public GPT destination workflows retain diagnostics. Their existence does not prove any particular hosted run passed. |
 
-## Conditional evidence
+## September 5 baseline verification
 
-| Area | Boundary |
+| Check | Result and limit |
 | --- | --- |
-| Canonical site quality | The current command suite is the evidence source. A clean audit does not replace rerunning checks after future edits. |
-| Responsive behavior | Static QA covers the 24 sitemap routes at eight viewport widths for 192 checks. The two utility HTML paths outside the sitemap remain covered by structural and audit checks. Browser-level behavior requires the Playwright workflow and is not implied by static results. |
-| Analytics outcomes | The repository proves instrumentation and disclosure only. It contains no visitor export or measurement, so visitor counts, engagement, conversions, and funnel rates are unknown. Browser settings, extensions, network conditions, and Google service availability can affect collection. |
-| Accessibility | Source and Chromium checks cover structure, keyboard behavior, focus, live-region updates, and the no-JavaScript Mermaid fallback. Human VoiceOver/NVDA spoken output is unknown. |
-| External services | Google Fonts, Google Analytics, outbound GPT links, and hosted-domain behavior depend on services outside this repository. |
+| Source structure | PASS, 27 source pages. See [validator output](assessment-2026-09-05/evidence/validate-site.txt). |
+| Static responsive rows | PASS, 200 rows from 25 routes at eight viewport configurations. This is source inspection, not a rendered-layout result. See [static output](assessment-2026-09-05/evidence/static-responsive.txt). |
+| Link check | PASS for 764 internal links and 534 external URL-format checks. This does not establish network reachability of those external destinations. See [link output](assessment-2026-09-05/evidence/links.txt). |
+| Generated index and fingerprints | PASS at baseline. See [index](assessment-2026-09-05/evidence/index.txt) and [asset checks](assessment-2026-09-05/evidence/cache.txt). |
+| Canonical local audit | FAIL at baseline because eight ignored `.DS_Store` files were found. No source-content finding was reported. See [audit report](assessment-2026-09-05/evidence/canonical-audit.md). |
+| Local browser baseline | First run recorded two timeout-related console failures on Scheels at larger viewports. Do not treat the 200 visited rows as a clean pass. See [browser evidence](assessment-2026-09-05/evidence/browser-responsive-baseline.json). |
+| Local full pytest | NOT RUN because pytest was unavailable in the inspected local runtimes. The worker's focused standard-library safety tests are a separate result. |
+| Production and CI | Use the Architect's dated remote and HTTP evidence in the assessment folder. A baseline hosted success does not validate subsequent local changes. |
 
-## Deferred ideas
+## Evidence still required
 
-- Obtain an owner-authorized GA4 export and analyze a clearly stated date range.
-- Run human-operated VoiceOver/Safari and NVDA/Firefox sessions and record spoken
-  output for the routes in the release review.
-- Submit the sitemap through Google Search Console and Bing Webmaster Tools.
-- Decide whether shared CSS or JavaScript changes should be synchronized to the
-  sibling repositories.
-- Continue the separately scoped mobile performance remediation.
-- Consider additional OG cards, CSS hardening, and future Lens System content
-  only when separately prioritized.
+- Post-change integrated results and a future authorized release verification.
+- Human VoiceOver/NVDA spoken output and independent user journey feedback.
+- Measured mobile performance with declared routes, throttling, cache state,
+  and sample count. Static payload size is not a performance score.
+- Authorized analytics or search-console exports before traffic, conversions,
+  or search-indexing outcomes can be claimed.
+- Actual response headers before any `_headers` directive is called an
+  enforced GitHub Pages control.
+- Public accessibility and appropriate publication status of case-study source
+  destinations and represented external GPTs.
 
 ## Intentional non-goals
 
-- Replacing unconditional GA4 with a consent gate.
-- Self-hosting the Google Fonts used by the current typography contract.
-- Returning Mermaid to a CDN or changing the static HTML architecture.
-- Inventing, exporting, or implying visitor measurements from source code.
-- Treating headless browser checks as proof of human assistive-technology output.
+- Replacing unconditional GA4 with a consent gate or self-hosting Google Fonts.
 - Adding a backend, database, authentication, form processor, framework, or
-  new visitor-facing feature in this reconciliation.
+  client application build.
+- Treating a portfolio prototype as an affiliated or production customer service.
+- Treating headless browser output as human assistive-technology proof.
+- Modifying sibling repositories or publishing local work without an explicit
+  publication instruction.
 
 ## Release commands
 
-Run from the repository root:
+Run from the repository root with the declared development tools available:
 
 ```bash
 python3 scripts/validate-site.py
 python3 scripts/check-links.py
 python3 -m pytest
+python3 scripts/cache-bust.py --check
 python3 scripts/build-search-index.py --check
 node scripts/responsive-qa.mjs --static
 python3 scripts/audit-site.py --quiet
-python3 scripts/prepare-pages-artifact.py --output /tmp/askjamie-pages
 ```
+
+Browser QA additionally requires a running local server, Playwright, and
+Chromium. Use `node scripts/responsive-qa.mjs --base=http://127.0.0.1:5000`
+and `node tests/test_js_smoke.spec.mjs` for the existing browser suites.
+Prepare a disposable allowlisted artifact with
+`python3 scripts/prepare-pages-artifact.py --output .scratch/pages-review`.
+Inspect every command's result. Missing tools or fallback checks are not passes.

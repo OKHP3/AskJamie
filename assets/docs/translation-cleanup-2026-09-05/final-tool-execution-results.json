@@ -1,0 +1,110 @@
+[
+  {
+    "package": "okhp3-translation-en-us-de-de",
+    "exit_code": 0,
+    "tests": 10,
+    "command": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "-B",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tests",
+      "-p",
+      "test_*.py",
+      "-v"
+    ],
+    "cwd": ".agents/skills/okhp3-translation-en-us-de-de"
+  },
+  {
+    "package": "okhp3-translation-en-us-en-uk",
+    "exit_code": 0,
+    "tests": 10,
+    "command": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "-B",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tests",
+      "-p",
+      "test_*.py",
+      "-v"
+    ],
+    "cwd": ".agents/skills/okhp3-translation-en-us-en-uk"
+  },
+  {
+    "package": "okhp3-translation-en-us-es-es",
+    "exit_code": 0,
+    "tests": 10,
+    "command": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "-B",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tests",
+      "-p",
+      "test_*.py",
+      "-v"
+    ],
+    "cwd": ".agents/skills/okhp3-translation-en-us-es-es"
+  },
+  {
+    "package": "okhp3-translation-en-us-es-mx",
+    "exit_code": 0,
+    "tests": 10,
+    "command": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "-B",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tests",
+      "-p",
+      "test_*.py",
+      "-v"
+    ],
+    "cwd": ".agents/skills/okhp3-translation-en-us-es-mx"
+  },
+  {
+    "package": "okhp3-translation-en-us-fr-fr",
+    "exit_code": 0,
+    "tests": 10,
+    "command": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "-B",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tests",
+      "-p",
+      "test_*.py",
+      "-v"
+    ],
+    "cwd": ".agents/skills/okhp3-translation-en-us-fr-fr"
+  },
+  {
+    "package": "okhp3-i18n-page-sync",
+    "exit_code": 0,
+    "tests": 10,
+    "command": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "-B",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tests",
+      "-p",
+      "test_*.py",
+      "-v"
+    ],
+    "cwd": ".agents/skills/okhp3-i18n-page-sync"
+  }
+]

@@ -1,0 +1,32 @@
+test_added_file_in_generated_artifact_is_preserved (tests.test_pages_artifact_safety.PagesArtifactSafetyTests.test_added_file_in_generated_artifact_is_preserved) ... ok
+test_changed_generated_artifact_is_preserved (tests.test_pages_artifact_safety.PagesArtifactSafetyTests.test_changed_generated_artifact_is_preserved) ... ok
+test_ci_transports_only_filtered_artifact_including_well_known (tests.test_pages_artifact_safety.PagesArtifactSafetyTests.test_ci_transports_only_filtered_artifact_including_well_known) ... ok
+test_csp_excludes_even_tracked_scratch_html (tests.test_pages_artifact_safety.PagesArtifactSafetyTests.test_csp_excludes_even_tracked_scratch_html) ... ok
+test_exact_generated_artifact_can_be_rebuilt_idempotently (tests.test_pages_artifact_safety.PagesArtifactSafetyTests.test_exact_generated_artifact_can_be_rebuilt_idempotently) ... ok
+test_existing_unowned_directory_and_file_are_preserved (tests.test_pages_artifact_safety.PagesArtifactSafetyTests.test_existing_unowned_directory_and_file_are_preserved) ... ok
+test_existing_unrelated_manifest_is_preserved (tests.test_pages_artifact_safety.PagesArtifactSafetyTests.test_existing_unrelated_manifest_is_preserved) ... ok
+test_hidden_source_artwork_and_symlinks_are_excluded (tests.test_pages_artifact_safety.PagesArtifactSafetyTests.test_hidden_source_artwork_and_symlinks_are_excluded) ... ok
+test_repository_ancestors_and_source_outputs_are_rejected_before_deletion (tests.test_pages_artifact_safety.PagesArtifactSafetyTests.test_repository_ancestors_and_source_outputs_are_rejected_before_deletion) ... ok
+test_scratch_and_external_disposable_outputs_are_supported (tests.test_pages_artifact_safety.PagesArtifactSafetyTests.test_scratch_and_external_disposable_outputs_are_supported) ... ok
+test_scratch_html_is_excluded_from_source_collectors (tests.test_pages_artifact_safety.PagesArtifactSafetyTests.test_scratch_html_is_excluded_from_source_collectors) ... 
+  test_scratch_html_is_excluded_from_source_collectors (tests.test_pages_artifact_safety.PagesArtifactSafetyTests.test_scratch_html_is_excluded_from_source_collectors) (filename='build-search-index.py') ... ERROR
+test_symlink_output_ancestor_is_rejected_before_creating_target (tests.test_pages_artifact_safety.PagesArtifactSafetyTests.test_symlink_output_ancestor_is_rejected_before_creating_target) ... ok
+test_symlink_output_or_manifest_is_rejected (tests.test_pages_artifact_safety.PagesArtifactSafetyTests.test_symlink_output_or_manifest_is_rejected) ... ok
+
+======================================================================
+ERROR: test_scratch_html_is_excluded_from_source_collectors (tests.test_pages_artifact_safety.PagesArtifactSafetyTests.test_scratch_html_is_excluded_from_source_collectors) (filename='build-search-index.py')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/OKH-Local/04_GitHub_Mirrors/AskJamie/tests/test_pages_artifact_safety.py", line 148, in test_scratch_html_is_excluded_from_source_collectors
+    self.assertEqual([Path(path) for path in paths], [self.root / "index.html"])
+                      ~~~~^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.5/Frameworks/Python.framework/Versions/3.14/lib/python3.14/pathlib/__init__.py", line 150, in __init__
+    raise TypeError(
+    ...<2 lines>...
+        f"not {type(path).__name__!r}")
+TypeError: argument should be a str or an os.PathLike object where __fspath__ returns a str, not 'dict'
+
+----------------------------------------------------------------------
+Ran 13 tests in 0.031s
+
+FAILED (errors=1)

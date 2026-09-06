@@ -603,19 +603,11 @@ button {
   display: block;
 }
 
-/* ========== Header: pilot-language dropdown switcher ========== */
-/* Rendered only on the four pilot routes (home, about, projects, contact)
-   and their /fr/, /de/, /es/ equivalents. English/USA is the default
-   shown on every EN page; a page's own locale flag shows once someone is
-   on a translated page. Click reveals the other options -- same
-   disclosure shape as the light/dark/system theme toggle, adapted for
-   real navigation since each option is a link to a different page
-   rather than a client-side state change.
-   Lives as its own header section: a flex sibling of nav.primary-nav
-   and .header-controls (search + display-mode switcher), never inside
-   the collapsible nav link list and never folded into the
-   search/theme-toggle cluster. The right-hand rule below is the visual
-   boundary that keeps it a distinct section from .header-controls. */
+/* ========== Header: shared language-link disclosure ========== */
+/* Inactive on AskJamie until reviewed locale links are added to page shells.
+   Retained as shared family styling, not evidence of translated routes.
+   The disclosure is a flex sibling of nav.primary-nav and .header-controls.
+   Any AskJamie activation also needs a paper-first brand styling review. */
 .site-header .lang-switch {
   position: relative;
   display: flex;
@@ -671,6 +663,7 @@ button {
   box-sizing: border-box;
   width: min(15rem, calc(100vw - 1rem));
   min-width: 0;
+  max-height: min(28rem, calc(100vh - 5rem));
   max-height: min(28rem, calc(100dvh - 5rem));
   overflow-y: auto;
   margin: 0;
@@ -7337,6 +7330,33 @@ html[data-theme="light"] .askjamie-main {
 .askjamie-main .footer-bottom {
   background: #f7f3ee;
   color: var(--color-muted);
+}
+
+/* Outrank the shared dark-footer text rules while retaining theme tokens. */
+html[data-theme="light"] .askjamie-main .site-footer,
+html[data-theme="light"] .askjamie-main .footer-bottom {
+  color: var(--color-muted);
+}
+html[data-theme="light"] .askjamie-main .site-footer a,
+html[data-theme="light"] .askjamie-main .site-footer a:hover,
+html[data-theme="light"] .askjamie-main .site-footer a:focus-visible {
+  color: var(--color-inline-link);
+}
+html[data-theme="light"] .askjamie-main .site-footer h3,
+html[data-theme="light"] .askjamie-main .site-footer h4 {
+  color: var(--color-fg);
+}
+
+/* Static content is visible even if enhancement scripts never initialize. */
+.askjamie-main .reveal-on-scroll {
+  opacity: 1;
+  transform: none;
+}
+@media (min-width: 1025px) and (prefers-reduced-motion: no-preference) {
+  .askjamie-main .reveal-on-scroll.is-reveal-ready:not(.is-visible) {
+    opacity: 0;
+    transform: translateY(16px);
+  }
 }
 
 /* Expand the hero paper card edge-to-edge on AskJamie. Without this override

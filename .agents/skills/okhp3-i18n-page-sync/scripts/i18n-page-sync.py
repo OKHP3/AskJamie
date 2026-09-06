@@ -13,11 +13,11 @@ ledger record yet.
 
 Three modes:
 
-  --report   Read-only. Print the drift report. Never writes.
-  --check    Same as --report, but exits 1 if actionable drift exists
+  --mode report   Read-only. Print the drift report. Never writes.
+  --mode check    Same as report, but exits 1 if actionable drift exists
              (missing or stale routes). Intended for CI. Never writes.
-  --adopt    Write mode. For every target-locale page that already exists
-             but has no ledger record, record its current source hash as the
+  --mode adopt    Write mode. For every target-locale page that already exists
+             but has no ledger record or has a stale record, record its current source hash as the
              confirmed baseline. Run this once to bootstrap an existing
              locale, and again after a human or agent completes a real
              translation update for specific routes (pass --routes to limit
@@ -25,7 +25,7 @@ Three modes:
 
 A route flagged ``missing`` or ``stale`` should be handed to the matching
 ``okhp3-translation-en-us-<pair>`` skill to produce or update the draft, then
-confirmed here with --adopt. This script performs the detection stage only;
+confirmed here with --mode adopt. This script performs the detection stage only;
 it does not perform or substitute for the translation stage.
 """
 
@@ -207,7 +207,7 @@ def adopt(root: Path, config: Dict[str, Any], ledger: Dict[str, Any], only_route
     results = scan(root, config, ledger, only_routes)
     adopted: List[Dict[str, Any]] = []
     pages_ledger = ledger["pages"]
-    for item in results["needs_baseline"]:
+    for item in results["needs_baseline"] + results["stale"]:
         route = item["route"]
         locale_key = item["locale"]
         source_path = root / item["source_path"]
@@ -233,7 +233,7 @@ def report(results: Dict[str, Any], output_format: str) -> None:
         for item in results[status]:
             print(f"  {status.upper():14} {item['route']:30} -> {item['locale']}  (use {item['skill']})")
     if results["needs_baseline"]:
-        print(f"  {len(results['needs_baseline'])} translated route(s) exist without a ledger record; run --adopt to bootstrap them")
+        print(f"  {len(results['needs_baseline'])} translated route(s) exist without a ledger record; run --mode adopt to bootstrap them")
         for item in results["needs_baseline"]:
             print(f"    UNBASELINED    {item['route']:30} -> {item['locale']}")
     if results["orphan"]:

@@ -1,14 +1,15 @@
 name: i18n Page Sync
 
 # Detects drift between English source pages and their configured
-# translations. Never translates, never writes, never calls an external
-# API. Copy this file into a consuming repository's .github/workflows/ as
-# i18n-page-sync.yml.
+# translations. Never translates, writes translated pages, or calls an external
+# API. This workflow also tests the repository-local exact-pair translation tooling.
+# The i18n filename is retained for existing references; it is a drift detector,
+# not a previous browser translation implementation.
 #
-# If the repository has no i18n/sync.config.json yet, this job passes
-# instantly and says so -- adding this workflow to a repository that has
-# not started translating is safe and does nothing until that config file
-# exists. See okhp3-i18n-page-sync's references/config-schema.md.
+# Without i18n/sync.config.json, the drift detector reports an intentional
+# no-op. Helper and detector regression tests still run; their success does
+# not establish that any translated page exists or is ready to publish.
+# See okhp3-i18n-page-sync's references/config-schema.md.
 
 on:
   push:
@@ -38,15 +39,47 @@ jobs:
         with:
           python-version: '3.11'
 
+      - name: Validate translation helpers and drift detector
+        run: |
+          for skill in \
+            okhp3-translation-en-us-de-de \
+            okhp3-translation-en-us-en-uk \
+            okhp3-translation-en-us-es-es \
+            okhp3-translation-en-us-es-mx \
+            okhp3-translation-en-us-fr-fr \
+            okhp3-i18n-page-sync
+          do
+            python3 -B -m unittest discover -s ".agents/skills/$skill/tests" -p 'test_*.py' -v
+          done
+
+      - name: Summarize translation configuration
+        run: |
+          if [ -f i18n/sync.config.json ]; then
+            {
+              echo "## Translation drift check: configuration found"
+              echo
+              echo "The detector will validate i18n/sync.config.json and check only its declared routes and target locales."
+              echo "Its result does not establish translation quality or publication approval."
+            } >> "$GITHUB_STEP_SUMMARY"
+          else
+            {
+              echo "## Translation drift check: not configured"
+              echo
+              echo "No translation routes or target locales are configured for AskJamie yet."
+              echo "The detector will report an intentional no-op. A successful job is not a translated-site readiness result."
+              echo "The exact-pair skills and their tests remain available for the prototype."
+            } >> "$GITHUB_STEP_SUMMARY"
+          fi
+
       - name: Run i18n page sync check
         run: python3 .agents/skills/okhp3-i18n-page-sync/scripts/i18n-page-sync.py --root . --mode check
 
       - name: What to do next
         if: failure()
         run: |
-          echo "One or more in-scope pages are missing a translation or have"
-          echo "drifted from a changed English source. For each flagged"
-          echo "route, run the named okhp3-translation-en-us-<pair> skill to"
+          echo "A translation helper test, configuration step, or drift check did not complete cleanly."
+          echo "Inspect the failed step before deciding whether any translation work is needed."
+          echo "For each confirmed drift route, run the named translation-pair skill to"
           echo "produce or update the draft, then confirm it with:"
           echo "  python3 .agents/skills/okhp3-i18n-page-sync/scripts/i18n-page-sync.py --mode adopt --routes \"<route>\""
           exit 1

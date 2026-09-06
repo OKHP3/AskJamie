@@ -1,0 +1,9 @@
+{
+  "initial_adopted": 1,
+  "stale_before_second_adopt": 1,
+  "second_adopted": 1,
+  "stale_after_second_adopt": 0,
+  "in_sync_after_second_adopt": 1,
+  "target_unchanged": true,
+  "live_site_touched": false
+}

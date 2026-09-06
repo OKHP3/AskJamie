@@ -1,0 +1,94 @@
+test_planner_blocks_missing_voice_profile_or_dictionary (test_en_us_to_de_de.EnUsToDeDeValidatorTests.test_planner_blocks_missing_voice_profile_or_dictionary) ... ok
+test_planner_rejects_identical_source_and_target_roots (test_en_us_to_de_de.EnUsToDeDeValidatorTests.test_planner_rejects_identical_source_and_target_roots) ... ok
+test_planner_reports_only_de_de_targets_without_writing (test_en_us_to_de_de.EnUsToDeDeValidatorTests.test_planner_reports_only_de_de_targets_without_writing) ... ok
+test_protected_token_drift_fails (test_en_us_to_de_de.EnUsToDeDeValidatorTests.test_protected_token_drift_fails) ... ok
+test_rejects_any_other_language_pair_or_many_targets (test_en_us_to_de_de.EnUsToDeDeValidatorTests.test_rejects_any_other_language_pair_or_many_targets) ... ok
+test_rejects_specialist_register_without_completed_plainspoken_stage (test_en_us_to_de_de.EnUsToDeDeValidatorTests.test_rejects_specialist_register_without_completed_plainspoken_stage) ... ok
+test_relative_links_email_and_media_targets_are_protected (test_en_us_to_de_de.EnUsToDeDeValidatorTests.test_relative_links_email_and_media_targets_are_protected) ... ok
+test_valid_pair_and_protected_tokens_pass (test_en_us_to_de_de.EnUsToDeDeValidatorTests.test_valid_pair_and_protected_tokens_pass) ... ok
+test_validator_rejects_empty_or_wrong_pair_dictionary (test_en_us_to_de_de.EnUsToDeDeValidatorTests.test_validator_rejects_empty_or_wrong_pair_dictionary) ... ok
+test_validator_rejects_incomplete_voice_profile (test_en_us_to_de_de.EnUsToDeDeValidatorTests.test_validator_rejects_incomplete_voice_profile) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.337s
+
+OK
+test_planner_blocks_missing_voice_profile_or_dictionary (test_en_us_to_en_uk.EnUsToEnUkValidatorTests.test_planner_blocks_missing_voice_profile_or_dictionary) ... ok
+test_planner_rejects_identical_source_and_target_roots (test_en_us_to_en_uk.EnUsToEnUkValidatorTests.test_planner_rejects_identical_source_and_target_roots) ... ok
+test_planner_reports_only_en_gb_targets_without_writing (test_en_us_to_en_uk.EnUsToEnUkValidatorTests.test_planner_reports_only_en_gb_targets_without_writing) ... ok
+test_protected_token_drift_fails (test_en_us_to_en_uk.EnUsToEnUkValidatorTests.test_protected_token_drift_fails) ... ok
+test_rejects_any_other_language_pair_or_many_targets (test_en_us_to_en_uk.EnUsToEnUkValidatorTests.test_rejects_any_other_language_pair_or_many_targets) ... ok
+test_rejects_specialist_register_without_completed_plainspoken_stage (test_en_us_to_en_uk.EnUsToEnUkValidatorTests.test_rejects_specialist_register_without_completed_plainspoken_stage) ... ok
+test_relative_links_email_and_media_targets_are_protected (test_en_us_to_en_uk.EnUsToEnUkValidatorTests.test_relative_links_email_and_media_targets_are_protected) ... ok
+test_valid_pair_and_protected_tokens_pass (test_en_us_to_en_uk.EnUsToEnUkValidatorTests.test_valid_pair_and_protected_tokens_pass) ... ok
+test_validator_rejects_empty_or_wrong_pair_dictionary (test_en_us_to_en_uk.EnUsToEnUkValidatorTests.test_validator_rejects_empty_or_wrong_pair_dictionary) ... ok
+test_validator_rejects_incomplete_voice_profile (test_en_us_to_en_uk.EnUsToEnUkValidatorTests.test_validator_rejects_incomplete_voice_profile) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.334s
+
+OK
+test_planner_blocks_missing_voice_profile_or_dictionary (test_en_us_to_es_es.EnUsToEsEsValidatorTests.test_planner_blocks_missing_voice_profile_or_dictionary) ... ok
+test_planner_rejects_identical_source_and_target_roots (test_en_us_to_es_es.EnUsToEsEsValidatorTests.test_planner_rejects_identical_source_and_target_roots) ... ok
+test_planner_reports_only_es_es_targets_without_writing (test_en_us_to_es_es.EnUsToEsEsValidatorTests.test_planner_reports_only_es_es_targets_without_writing) ... ok
+test_protected_token_drift_fails (test_en_us_to_es_es.EnUsToEsEsValidatorTests.test_protected_token_drift_fails) ... ok
+test_rejects_any_other_language_pair_or_many_targets (test_en_us_to_es_es.EnUsToEsEsValidatorTests.test_rejects_any_other_language_pair_or_many_targets) ... ok
+test_rejects_specialist_register_without_completed_plainspoken_stage (test_en_us_to_es_es.EnUsToEsEsValidatorTests.test_rejects_specialist_register_without_completed_plainspoken_stage) ... ok
+test_relative_links_email_and_media_targets_are_protected (test_en_us_to_es_es.EnUsToEsEsValidatorTests.test_relative_links_email_and_media_targets_are_protected) ... ok
+test_valid_pair_and_protected_tokens_pass (test_en_us_to_es_es.EnUsToEsEsValidatorTests.test_valid_pair_and_protected_tokens_pass) ... ok
+test_validator_rejects_empty_or_wrong_pair_dictionary (test_en_us_to_es_es.EnUsToEsEsValidatorTests.test_validator_rejects_empty_or_wrong_pair_dictionary) ... ok
+test_validator_rejects_incomplete_voice_profile (test_en_us_to_es_es.EnUsToEsEsValidatorTests.test_validator_rejects_incomplete_voice_profile) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.332s
+
+OK
+test_planner_blocks_missing_voice_profile_or_dictionary (test_en_us_to_es_mx.EnUsToEsMxValidatorTests.test_planner_blocks_missing_voice_profile_or_dictionary) ... ok
+test_planner_rejects_identical_source_and_target_roots (test_en_us_to_es_mx.EnUsToEsMxValidatorTests.test_planner_rejects_identical_source_and_target_roots) ... ok
+test_planner_reports_only_es_mx_targets_without_writing (test_en_us_to_es_mx.EnUsToEsMxValidatorTests.test_planner_reports_only_es_mx_targets_without_writing) ... ok
+test_protected_token_drift_fails (test_en_us_to_es_mx.EnUsToEsMxValidatorTests.test_protected_token_drift_fails) ... ok
+test_rejects_any_other_language_pair_or_many_targets (test_en_us_to_es_mx.EnUsToEsMxValidatorTests.test_rejects_any_other_language_pair_or_many_targets) ... ok
+test_rejects_specialist_register_without_completed_plainspoken_stage (test_en_us_to_es_mx.EnUsToEsMxValidatorTests.test_rejects_specialist_register_without_completed_plainspoken_stage) ... ok
+test_relative_links_email_and_media_targets_are_protected (test_en_us_to_es_mx.EnUsToEsMxValidatorTests.test_relative_links_email_and_media_targets_are_protected) ... ok
+test_valid_pair_and_protected_tokens_pass (test_en_us_to_es_mx.EnUsToEsMxValidatorTests.test_valid_pair_and_protected_tokens_pass) ... ok
+test_validator_rejects_empty_or_wrong_pair_dictionary (test_en_us_to_es_mx.EnUsToEsMxValidatorTests.test_validator_rejects_empty_or_wrong_pair_dictionary) ... ok
+test_validator_rejects_incomplete_voice_profile (test_en_us_to_es_mx.EnUsToEsMxValidatorTests.test_validator_rejects_incomplete_voice_profile) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.329s
+
+OK
+test_planner_blocks_missing_voice_profile_or_dictionary (test_en_us_to_fr_fr.EnUsToFrFrValidatorTests.test_planner_blocks_missing_voice_profile_or_dictionary) ... ok
+test_planner_rejects_identical_source_and_target_roots (test_en_us_to_fr_fr.EnUsToFrFrValidatorTests.test_planner_rejects_identical_source_and_target_roots) ... ok
+test_planner_reports_only_fr_fr_targets_without_writing (test_en_us_to_fr_fr.EnUsToFrFrValidatorTests.test_planner_reports_only_fr_fr_targets_without_writing) ... ok
+test_protected_token_drift_fails (test_en_us_to_fr_fr.EnUsToFrFrValidatorTests.test_protected_token_drift_fails) ... ok
+test_rejects_any_other_language_pair_or_many_targets (test_en_us_to_fr_fr.EnUsToFrFrValidatorTests.test_rejects_any_other_language_pair_or_many_targets) ... ok
+test_rejects_specialist_register_without_completed_plainspoken_stage (test_en_us_to_fr_fr.EnUsToFrFrValidatorTests.test_rejects_specialist_register_without_completed_plainspoken_stage) ... ok
+test_relative_links_email_and_media_targets_are_protected (test_en_us_to_fr_fr.EnUsToFrFrValidatorTests.test_relative_links_email_and_media_targets_are_protected) ... ok
+test_valid_pair_and_protected_tokens_pass (test_en_us_to_fr_fr.EnUsToFrFrValidatorTests.test_valid_pair_and_protected_tokens_pass) ... ok
+test_validator_rejects_empty_or_wrong_pair_dictionary (test_en_us_to_fr_fr.EnUsToFrFrValidatorTests.test_validator_rejects_empty_or_wrong_pair_dictionary) ... ok
+test_validator_rejects_incomplete_voice_profile (test_en_us_to_fr_fr.EnUsToFrFrValidatorTests.test_validator_rejects_incomplete_voice_profile) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.331s
+
+OK
+test_adopt_bootstraps_existing_translation_without_drift (test_i18n_page_sync.I18nPageSyncTests.test_adopt_bootstraps_existing_translation_without_drift) ... ok
+test_adopt_does_not_create_a_missing_translation (test_i18n_page_sync.I18nPageSyncTests.test_adopt_does_not_create_a_missing_translation) ... ok
+test_adopt_refreshes_only_selected_stale_route_without_editing_pages (test_i18n_page_sync.I18nPageSyncTests.test_adopt_refreshes_only_selected_stale_route_without_editing_pages) ... ok
+test_fragment_and_already_localized_urls_are_excluded_from_discovery (test_i18n_page_sync.I18nPageSyncTests.test_fragment_and_already_localized_urls_are_excluded_from_discovery) ... ok
+test_missing_search_index_is_an_error_not_a_silent_pass (test_i18n_page_sync.I18nPageSyncTests.test_missing_search_index_is_an_error_not_a_silent_pass) ... ok
+test_missing_translation_is_drift (test_i18n_page_sync.I18nPageSyncTests.test_missing_translation_is_drift) ... ok
+test_no_config_is_a_clean_noop (test_i18n_page_sync.I18nPageSyncTests.test_no_config_is_a_clean_noop) ... ok
+test_orphaned_translation_is_reported_not_fatal (test_i18n_page_sync.I18nPageSyncTests.test_orphaned_translation_is_reported_not_fatal) ... Adopted 1 route/locale pair(s) as the new baseline in /Volumes/OKH-Local/04_GitHub_Mirrors/AskJamie/assets/docs/translation-cleanup-2026-09-05/workflow-test-fixtures/tmpshnrx8vg/i18n/sync-state.json.
+  /about/                        -> fr
+ok
+test_out_of_scope_routes_are_never_flagged (test_i18n_page_sync.I18nPageSyncTests.test_out_of_scope_routes_are_never_flagged) ... ok
+test_source_edit_after_adopt_is_stale (test_i18n_page_sync.I18nPageSyncTests.test_source_edit_after_adopt_is_stale) ... Adopted 1 route/locale pair(s) as the new baseline in /Volumes/OKH-Local/04_GitHub_Mirrors/AskJamie/assets/docs/translation-cleanup-2026-09-05/workflow-test-fixtures/tmpng8ppx81/i18n/sync-state.json.
+  /about/                        -> fr
+ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.763s
+
+OK

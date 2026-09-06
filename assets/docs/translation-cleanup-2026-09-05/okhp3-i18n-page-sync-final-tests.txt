@@ -1,0 +1,19 @@
+Adopted 1 route/locale pair(s) as the new baseline in /Volumes/OKH-Local/04_GitHub_Mirrors/AskJamie/assets/docs/translation-cleanup-2026-09-05/temporary-test-fixtures/tmp9krlz7uc/i18n/sync-state.json.
+  /about/                        -> fr
+Adopted 1 route/locale pair(s) as the new baseline in /Volumes/OKH-Local/04_GitHub_Mirrors/AskJamie/assets/docs/translation-cleanup-2026-09-05/temporary-test-fixtures/tmp_1cvgtz5/i18n/sync-state.json.
+  /about/                        -> fr
+test_adopt_bootstraps_existing_translation_without_drift (test_i18n_page_sync.I18nPageSyncTests.test_adopt_bootstraps_existing_translation_without_drift) ... ok
+test_adopt_does_not_create_a_missing_translation (test_i18n_page_sync.I18nPageSyncTests.test_adopt_does_not_create_a_missing_translation) ... ok
+test_adopt_refreshes_only_selected_stale_route_without_editing_pages (test_i18n_page_sync.I18nPageSyncTests.test_adopt_refreshes_only_selected_stale_route_without_editing_pages) ... ok
+test_fragment_and_already_localized_urls_are_excluded_from_discovery (test_i18n_page_sync.I18nPageSyncTests.test_fragment_and_already_localized_urls_are_excluded_from_discovery) ... ok
+test_missing_search_index_is_an_error_not_a_silent_pass (test_i18n_page_sync.I18nPageSyncTests.test_missing_search_index_is_an_error_not_a_silent_pass) ... ok
+test_missing_translation_is_drift (test_i18n_page_sync.I18nPageSyncTests.test_missing_translation_is_drift) ... ok
+test_no_config_is_a_clean_noop (test_i18n_page_sync.I18nPageSyncTests.test_no_config_is_a_clean_noop) ... ok
+test_orphaned_translation_is_reported_not_fatal (test_i18n_page_sync.I18nPageSyncTests.test_orphaned_translation_is_reported_not_fatal) ... ok
+test_out_of_scope_routes_are_never_flagged (test_i18n_page_sync.I18nPageSyncTests.test_out_of_scope_routes_are_never_flagged) ... ok
+test_source_edit_after_adopt_is_stale (test_i18n_page_sync.I18nPageSyncTests.test_source_edit_after_adopt_is_stale) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.810s
+
+OK

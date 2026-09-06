@@ -1,0 +1,41 @@
+AskJamie™ Responsive QA
+========================================
+Base URL: http://localhost:5000
+Pages: 25 | Viewports: 8
+
+Playwright not available — running static-lint analysis (MODE B).
+
+NOTE: Static lint checks HTML structure only. It cannot detect
+      horizontal overflow, JS console errors, or broken images
+      at runtime. Run with Playwright for full browser coverage.
+
+  pass  /
+  pass  /about/
+  pass  /how-askjamie-works/
+  pass  /contact/
+  pass  /legal/
+  pass  /universe/
+  pass  /lens-system/
+  pass  /lens-system/resume-representative/
+  pass  /lens-system/professional-portfolio/
+  pass  /lens-system/enterprise-sleuth/
+  pass  /lens-system/okhp3-brandguard/
+  pass  /lens-system/okhp3-brandguard/bfs-framing-intelligent-futures/
+  pass  /lens-system/okhp3-brandguard/lego/
+  pass  /lens-system/okhp3-brandguard/starbucks/
+  pass  /lens-system/okhp3-brandguard/coca-cola/
+  pass  /lens-system/okhp3-brandguard/brooks-running/
+  pass  /lens-system/okhp3-brandguard/costco/
+  pass  /lens-system/okhp3-brandguard/discount-tire/
+  pass  /lens-system/okhp3-brandguard/dollar-general/
+  pass  /lens-system/okhp3-brandguard/hershey/
+  pass  /lens-system/okhp3-brandguard/lvmh/
+  pass  /lens-system/okhp3-brandguard/mathews-archery/
+  pass  /lens-system/okhp3-brandguard/ping/
+  pass  /lens-system/okhp3-brandguard/scheels/
+  pass  /search/
+
+Static-lint: 25 pages × 8 viewports = 200 checks
+Passing: 200 | Failing: 0
+ALL CHECKS PASS.
+Results: /Volumes/OKH-Local/04_GitHub_Mirrors/AskJamie/assets/audit/responsive-qa/results.json

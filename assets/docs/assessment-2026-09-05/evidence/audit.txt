@@ -1,0 +1,3 @@
+
+Report written to assets/docs/assessment-2026-09-05/evidence/canonical-audit.md
+Total issues found: 8

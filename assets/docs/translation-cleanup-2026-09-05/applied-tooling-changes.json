@@ -1,0 +1,127 @@
+[
+  {
+    "path": ".agents/skills/okhp3-translation-en-us-de-de/tests/test_en_us_to_de_de.py",
+    "action": "replace legacy8test suite with stronger10test suite",
+    "source": ".agents/skills/okhp3-translation-en-us-de-de/tests/test-en-us-to-de-de.py"
+  },
+  {
+    "path": ".agents/skills/okhp3-translation-en-us-de-de/tests/test-en-us-to-de-de.py",
+    "action": "remove test implementation consolidated into discoverable underscore filename"
+  },
+  {
+    "path": ".agents/skills/okhp3-translation-en-us-de-de/scripts/plan_en_us_to_de_de.py",
+    "action": "remove weaker legacy helper after canonical caller verification"
+  },
+  {
+    "path": ".agents/skills/okhp3-translation-en-us-de-de/scripts/validate_en_us_to_de_de.py",
+    "action": "remove weaker legacy helper after canonical caller verification"
+  },
+  {
+    "path": ".agents/skills/okhp3-translation-en-us-en-uk/tests/test_en_us_to_en_uk.py",
+    "action": "replace legacy8test suite with stronger10test suite",
+    "source": ".agents/skills/okhp3-translation-en-us-en-uk/tests/test-en-us-to-en-uk.py"
+  },
+  {
+    "path": ".agents/skills/okhp3-translation-en-us-en-uk/tests/test-en-us-to-en-uk.py",
+    "action": "remove test implementation consolidated into discoverable underscore filename"
+  },
+  {
+    "path": ".agents/skills/okhp3-translation-en-us-en-uk/scripts/plan_en_us_to_en_uk.py",
+    "action": "remove weaker legacy helper after canonical caller verification"
+  },
+  {
+    "path": ".agents/skills/okhp3-translation-en-us-en-uk/scripts/validate_en_us_to_en_uk.py",
+    "action": "remove weaker legacy helper after canonical caller verification"
+  },
+  {
+    "path": ".agents/skills/okhp3-translation-en-us-es-es/tests/test_en_us_to_es_es.py",
+    "action": "replace legacy8test suite with stronger10test suite",
+    "source": ".agents/skills/okhp3-translation-en-us-es-es/tests/test-en-us-to-es-es.py"
+  },
+  {
+    "path": ".agents/skills/okhp3-translation-en-us-es-es/tests/test-en-us-to-es-es.py",
+    "action": "remove test implementation consolidated into discoverable underscore filename"
+  },
+  {
+    "path": ".agents/skills/okhp3-translation-en-us-es-es/scripts/plan_en_us_to_es_es.py",
+    "action": "remove weaker legacy helper after canonical caller verification"
+  },
+  {
+    "path": ".agents/skills/okhp3-translation-en-us-es-es/scripts/validate_en_us_to_es_es.py",
+    "action": "remove weaker legacy helper after canonical caller verification"
+  },
+  {
+    "path": ".agents/skills/okhp3-translation-en-us-es-mx/tests/test_en_us_to_es_mx.py",
+    "action": "replace legacy8test suite with stronger10test suite",
+    "source": ".agents/skills/okhp3-translation-en-us-es-mx/tests/test-en-us-to-es-mx.py"
+  },
+  {
+    "path": ".agents/skills/okhp3-translation-en-us-es-mx/tests/test-en-us-to-es-mx.py",
+    "action": "remove test implementation consolidated into discoverable underscore filename"
+  },
+  {
+    "path": ".agents/skills/okhp3-translation-en-us-es-mx/scripts/plan_en_us_to_es_mx.py",
+    "action": "remove weaker legacy helper after canonical caller verification"
+  },
+  {
+    "path": ".agents/skills/okhp3-translation-en-us-es-mx/scripts/validate_en_us_to_es_mx.py",
+    "action": "remove weaker legacy helper after canonical caller verification"
+  },
+  {
+    "path": ".agents/skills/okhp3-translation-en-us-fr-fr/tests/test_en_us_to_fr_fr.py",
+    "action": "replace legacy8test suite with stronger10test suite",
+    "source": ".agents/skills/okhp3-translation-en-us-fr-fr/tests/test-en-us-to-fr-fr.py"
+  },
+  {
+    "path": ".agents/skills/okhp3-translation-en-us-fr-fr/tests/test-en-us-to-fr-fr.py",
+    "action": "remove test implementation consolidated into discoverable underscore filename"
+  },
+  {
+    "path": ".agents/skills/okhp3-translation-en-us-fr-fr/scripts/plan_en_us_to_fr_fr.py",
+    "action": "remove weaker legacy helper after canonical caller verification"
+  },
+  {
+    "path": ".agents/skills/okhp3-translation-en-us-fr-fr/scripts/validate_en_us_to_fr_fr.py",
+    "action": "remove weaker legacy helper after canonical caller verification"
+  },
+  {
+    "path": ".agents/skills/okhp3-translation-en-us-de-de/SKILL.md",
+    "action": "document canonical discovery command and historical test-path migration"
+  },
+  {
+    "path": ".agents/skills/okhp3-translation-en-us-en-uk/SKILL.md",
+    "action": "document canonical discovery command and historical test-path migration"
+  },
+  {
+    "path": ".agents/skills/okhp3-translation-en-us-es-es/SKILL.md",
+    "action": "document canonical discovery command and historical test-path migration"
+  },
+  {
+    "path": ".agents/skills/okhp3-translation-en-us-es-mx/SKILL.md",
+    "action": "document canonical discovery command and historical test-path migration"
+  },
+  {
+    "path": ".agents/skills/okhp3-translation-en-us-fr-fr/SKILL.md",
+    "action": "document canonical discovery command and historical test-path migration"
+  },
+  {
+    "path": ".agents/skills/okhp3-i18n-page-sync/SKILL.md",
+    "action": "align CLI spellings and current behavioral-test scope"
+  },
+  {
+    "path": ".agents/skills/okhp3-i18n-page-sync/evals/evals.json",
+    "action": "correct CLI spelling in evaluation assertion"
+  },
+  {
+    "path": ".agents/skills/okhp3-i18n-page-sync/references/config-schema.md",
+    "action": "document explicit selected stale-record adoption"
+  },
+  {
+    "path": ".agents/skills/okhp3-i18n-page-sync/scripts/i18n-page-sync.py",
+    "action": "adopt selected stale baselines as well as unbaselined existing targets"
+  },
+  {
+    "path": ".agents/skills/okhp3-i18n-page-sync/tests/test_i18n_page_sync.py",
+    "action": "add selected stale adoption and missing-target preservation regressions"
+  }
+]

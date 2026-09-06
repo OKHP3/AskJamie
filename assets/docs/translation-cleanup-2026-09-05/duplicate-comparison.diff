@@ -1,0 +1,686 @@
+--- .agents/skills/okhp3-translation-en-us-de-de/scripts/plan_en_us_to_de_de.py
++++ .agents/skills/okhp3-translation-en-us-de-de/scripts/plan-en-us-to-de-de.py
+@@ -5,18 +5,24 @@
+ 
+ import argparse
+ import hashlib
++import importlib.util
+ import json
+ import sys
+ from pathlib import Path
+ from typing import Any, Dict, List, Optional
+ 
+-from validate_en_us_to_de_de import (
+-    SOURCE_LOCALE,
+-    TARGET_LOCALE,
+-    load_json,
+-    load_supporting_controls,
+-    validate_manifest,
+-)
++VALIDATOR_PATH = Path(__file__).with_name("validate-en-us-to-de-de.py")
++VALIDATOR_SPEC = importlib.util.spec_from_file_location("validate_en_us_to_de_de", VALIDATOR_PATH)
++if VALIDATOR_SPEC is None or VALIDATOR_SPEC.loader is None:
++    raise ImportError(f"Unable to load validator from {VALIDATOR_PATH}")
++validator = importlib.util.module_from_spec(VALIDATOR_SPEC)
++VALIDATOR_SPEC.loader.exec_module(validator)
++
++SOURCE_LOCALE = validator.SOURCE_LOCALE
++TARGET_LOCALE = validator.TARGET_LOCALE
++load_json = validator.load_json
++load_supporting_controls = validator.load_supporting_controls
++validate_manifest = validator.validate_manifest
+ 
+ 
+ def sha256(path: Path) -> str:
+@@ -37,6 +43,8 @@
+ def build_plan(project: Dict[str, Any], base_dir: Path, voice_profile: Dict[str, Any], dictionary: Dict[str, Any]) -> Dict[str, Any]:
+     source_root = resolve_root(base_dir, project["source"]["root"], "source.root")
+     target_root = resolve_root(base_dir, project["target"]["root"], "target.root")
++    if source_root == target_root:
++        raise ValueError("source.root and target.root must resolve to different directories")
+     if not source_root.is_dir():
+         raise ValueError(f"missing en-US source root: {source_root}")
+     extensions = set(project["rules"]["allowed_extensions"])
+--- .agents/skills/okhp3-translation-en-us-de-de/scripts/validate_en_us_to_de_de.py
++++ .agents/skills/okhp3-translation-en-us-de-de/scripts/validate-en-us-to-de-de.py
+@@ -18,7 +18,10 @@
+ 
+ SOURCE_LOCALE = "en-US"
+ TARGET_LOCALE = "de-DE"
+-URL_RE = re.compile(r"https?://[^\s)\]>\"']+", re.IGNORECASE)
++URL_RE = re.compile(r"(?:https?|mailto|tel|sms|ftp):[^\s)\]>\"']+", re.IGNORECASE)
++EMAIL_RE = re.compile(r"(?<![\w.+-])[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}(?![\w.-])")
++MARKDOWN_TARGET_RE = re.compile(r"!?\[[^\]]*\]\(([^)\s]+)(?:\s+\"[^\"]*\")?\)")
++HTML_TARGET_RE = re.compile(r"\b(?:href|src|action)=['\"]([^'\"]+)['\"]", re.IGNORECASE)
+ PLACEHOLDER_RE = re.compile(
+     r"\{\{[^{}]+\}\}|\$\{[^{}]+\}|%\([A-Za-z_][A-Za-z0-9_.-]*\)[a-z]|"
+     r"\{[A-Za-z_][A-Za-z0-9_.-]*\}|(?<!\w):[A-Za-z][A-Za-z0-9_-]*"
+@@ -206,9 +209,18 @@
+     return errors
+ 
+ 
++def protected_values(text: str) -> List[str]:
++    values: List[str] = []
++    values.extend(URL_RE.findall(text))
++    values.extend(EMAIL_RE.findall(text))
++    values.extend(MARKDOWN_TARGET_RE.findall(text))
++    values.extend(HTML_TARGET_RE.findall(text))
++    return values
++
++
+ def tokens(text: str) -> Dict[str, List[Any]]:
+     return {
+-        "urls": URL_RE.findall(text),
++        "urls": protected_values(text),
+         "placeholders": PLACEHOLDER_RE.findall(text),
+         "inline_code": INLINE_CODE_RE.findall(text),
+         "fenced_code": FENCE_RE.findall(text),
+--- .agents/skills/okhp3-translation-en-us-de-de/tests/test_en_us_to_de_de.py
++++ .agents/skills/okhp3-translation-en-us-de-de/tests/test-en-us-to-de-de.py
+@@ -7,8 +7,8 @@
+ 
+ 
+ PACKAGE = Path(__file__).parents[1]
+-VALIDATOR = PACKAGE / "scripts" / "validate_en_us_to_de_de.py"
+-PLANNER = PACKAGE / "scripts" / "plan_en_us_to_de_de.py"
++VALIDATOR = PACKAGE / "scripts" / "validate-en-us-to-de-de.py"
++PLANNER = PACKAGE / "scripts" / "plan-en-us-to-de-de.py"
+ 
+ 
+ PROJECT = {
+@@ -16,7 +16,7 @@
+     "project_id": "fixture-en-us-de-de",
+     "language_pair": {"source_locale": "en-US", "target_locale": "de-DE", "direction": "one-way"},
+     "source": {"locale": "en-US", "register_state": "plainspoken", "root": "content/en", "voice_profile": "config/voice.en-us.json", "register_mediation_record": None},
+-    "target": {"locale": "de-DE", "root": "content/fr", "dictionary": "config/dictionary.en-us-de-de.json", "status": "draft", "needs_native_review": True},
++    "target": {"locale": "de-DE", "root": "content/de", "dictionary": "config/dictionary.en-us-de-de.json", "status": "draft", "needs_native_review": True},
+     "rules": {"slug_policy": "stable", "preserve_urls": True, "default_status": "machine-drafted", "allowed_extensions": [".md"]},
+ }
+ 
+@@ -115,6 +115,39 @@
+             self.assertTrue(any("URL drift" in item for item in errors))
+             self.assertTrue(any("placeholders" in item for item in errors))
+ 
++    def test_relative_links_email_and_media_targets_are_protected(self):
++        with tempfile.TemporaryDirectory() as raw:
++            directory = Path(raw)
++            project = self.write_project(directory)
++            self.write_controls(directory)
++            source = directory / "source.md"
++            target = directory / "target.md"
++            source.write_text("[About](/about/) ![Logo](/assets/logo.png) <a href=\"mailto:hello@example.test\">Email</a> contact@example.test", encoding="utf-8")
++            target.write_text("[About](/broken/) ![Logo](/assets/broken.png) <a href=\"mailto:wrong@example.test\">Email</a> changed@example.test", encoding="utf-8")
++            result = self.run_validator(project, source, target)
++            self.assertEqual(result.returncode, 1)
++            errors = json.loads(result.stdout)["errors"]
++            self.assertTrue(any("URL drift" in item for item in errors))
++
++    def test_planner_rejects_identical_source_and_target_roots(self):
++        with tempfile.TemporaryDirectory() as raw:
++            directory = Path(raw)
++            invalid = json.loads(json.dumps(PROJECT))
++            invalid["target"]["root"] = invalid["source"]["root"]
++            project = self.write_project(directory, invalid)
++            self.write_controls(directory)
++            source_root = directory / "content" / "en"
++            source_root.mkdir(parents=True)
++            (source_root / "about.md").write_text("# About\n", encoding="utf-8")
++            result = subprocess.run(
++                [sys.executable, str(PLANNER), "--project", str(project), "--base-dir", str(directory), "--format", "json"],
++                capture_output=True,
++                text=True,
++                check=False,
++            )
++            self.assertEqual(result.returncode, 1)
++            errors = json.loads(result.stdout)["errors"]
++            self.assertTrue(any("source.root and target.root" in item for item in errors))
+     def test_planner_reports_only_de_de_targets_without_writing(self):
+         with tempfile.TemporaryDirectory() as raw:
+             directory = Path(raw)
+--- .agents/skills/okhp3-translation-en-us-en-uk/scripts/plan_en_us_to_en_uk.py
++++ .agents/skills/okhp3-translation-en-us-en-uk/scripts/plan-en-us-to-en-uk.py
+@@ -5,18 +5,24 @@
+ 
+ import argparse
+ import hashlib
++import importlib.util
+ import json
+ import sys
+ from pathlib import Path
+ from typing import Any, Dict, List, Optional
+ 
+-from validate_en_us_to_en_uk import (
+-    SOURCE_LOCALE,
+-    TARGET_LOCALE,
+-    load_json,
+-    load_supporting_controls,
+-    validate_manifest,
+-)
++VALIDATOR_PATH = Path(__file__).with_name("validate-en-us-to-en-uk.py")
++VALIDATOR_SPEC = importlib.util.spec_from_file_location("validate_en_us_to_en_uk", VALIDATOR_PATH)
++if VALIDATOR_SPEC is None or VALIDATOR_SPEC.loader is None:
++    raise ImportError(f"Unable to load validator from {VALIDATOR_PATH}")
++validator = importlib.util.module_from_spec(VALIDATOR_SPEC)
++VALIDATOR_SPEC.loader.exec_module(validator)
++
++SOURCE_LOCALE = validator.SOURCE_LOCALE
++TARGET_LOCALE = validator.TARGET_LOCALE
++load_json = validator.load_json
++load_supporting_controls = validator.load_supporting_controls
++validate_manifest = validator.validate_manifest
+ 
+ 
+ def sha256(path: Path) -> str:
+@@ -37,6 +43,8 @@
+ def build_plan(project: Dict[str, Any], base_dir: Path, voice_profile: Dict[str, Any], dictionary: Dict[str, Any]) -> Dict[str, Any]:
+     source_root = resolve_root(base_dir, project["source"]["root"], "source.root")
+     target_root = resolve_root(base_dir, project["target"]["root"], "target.root")
++    if source_root == target_root:
++        raise ValueError("source.root and target.root must resolve to different directories")
+     if not source_root.is_dir():
+         raise ValueError(f"missing en-US source root: {source_root}")
+     extensions = set(project["rules"]["allowed_extensions"])
+--- .agents/skills/okhp3-translation-en-us-en-uk/scripts/validate_en_us_to_en_uk.py
++++ .agents/skills/okhp3-translation-en-us-en-uk/scripts/validate-en-us-to-en-uk.py
+@@ -18,7 +18,10 @@
+ 
+ SOURCE_LOCALE = "en-US"
+ TARGET_LOCALE = "en-GB"
+-URL_RE = re.compile(r"https?://[^\s)\]>\"']+", re.IGNORECASE)
++URL_RE = re.compile(r"(?:https?|mailto|tel|sms|ftp):[^\s)\]>\"']+", re.IGNORECASE)
++EMAIL_RE = re.compile(r"(?<![\w.+-])[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}(?![\w.-])")
++MARKDOWN_TARGET_RE = re.compile(r"!?\[[^\]]*\]\(([^)\s]+)(?:\s+\"[^\"]*\")?\)")
++HTML_TARGET_RE = re.compile(r"\b(?:href|src|action)=['\"]([^'\"]+)['\"]", re.IGNORECASE)
+ PLACEHOLDER_RE = re.compile(
+     r"\{\{[^{}]+\}\}|\$\{[^{}]+\}|%\([A-Za-z_][A-Za-z0-9_.-]*\)[a-z]|"
+     r"\{[A-Za-z_][A-Za-z0-9_.-]*\}|(?<!\w):[A-Za-z][A-Za-z0-9_-]*"
+@@ -206,9 +209,18 @@
+     return errors
+ 
+ 
++def protected_values(text: str) -> List[str]:
++    values: List[str] = []
++    values.extend(URL_RE.findall(text))
++    values.extend(EMAIL_RE.findall(text))
++    values.extend(MARKDOWN_TARGET_RE.findall(text))
++    values.extend(HTML_TARGET_RE.findall(text))
++    return values
++
++
+ def tokens(text: str) -> Dict[str, List[Any]]:
+     return {
+-        "urls": URL_RE.findall(text),
++        "urls": protected_values(text),
+         "placeholders": PLACEHOLDER_RE.findall(text),
+         "inline_code": INLINE_CODE_RE.findall(text),
+         "fenced_code": FENCE_RE.findall(text),
+--- .agents/skills/okhp3-translation-en-us-en-uk/tests/test_en_us_to_en_uk.py
++++ .agents/skills/okhp3-translation-en-us-en-uk/tests/test-en-us-to-en-uk.py
+@@ -7,8 +7,8 @@
+ 
+ 
+ PACKAGE = Path(__file__).parents[1]
+-VALIDATOR = PACKAGE / "scripts" / "validate_en_us_to_en_uk.py"
+-PLANNER = PACKAGE / "scripts" / "plan_en_us_to_en_uk.py"
++VALIDATOR = PACKAGE / "scripts" / "validate-en-us-to-en-uk.py"
++PLANNER = PACKAGE / "scripts" / "plan-en-us-to-en-uk.py"
+ 
+ 
+ PROJECT = {
+@@ -16,7 +16,7 @@
+     "project_id": "fixture-en-us-en-uk",
+     "language_pair": {"source_locale": "en-US", "target_locale": "en-GB", "direction": "one-way"},
+     "source": {"locale": "en-US", "register_state": "plainspoken", "root": "content/en", "voice_profile": "config/voice.en-us.json", "register_mediation_record": None},
+-    "target": {"locale": "en-GB", "root": "content/fr", "dictionary": "config/dictionary.en-us-en-uk.json", "status": "draft", "needs_native_review": True},
++    "target": {"locale": "en-GB", "root": "content/en-uk", "dictionary": "config/dictionary.en-us-en-uk.json", "status": "draft", "needs_native_review": True},
+     "rules": {"slug_policy": "stable", "preserve_urls": True, "default_status": "machine-drafted", "allowed_extensions": [".md"]},
+ }
+ 
+@@ -115,6 +115,39 @@
+             self.assertTrue(any("URL drift" in item for item in errors))
+             self.assertTrue(any("placeholders" in item for item in errors))
+ 
++    def test_relative_links_email_and_media_targets_are_protected(self):
++        with tempfile.TemporaryDirectory() as raw:
++            directory = Path(raw)
++            project = self.write_project(directory)
++            self.write_controls(directory)
++            source = directory / "source.md"
++            target = directory / "target.md"
++            source.write_text("[About](/about/) ![Logo](/assets/logo.png) <a href=\"mailto:hello@example.test\">Email</a> contact@example.test", encoding="utf-8")
++            target.write_text("[About](/broken/) ![Logo](/assets/broken.png) <a href=\"mailto:wrong@example.test\">Email</a> changed@example.test", encoding="utf-8")
++            result = self.run_validator(project, source, target)
++            self.assertEqual(result.returncode, 1)
++            errors = json.loads(result.stdout)["errors"]
++            self.assertTrue(any("URL drift" in item for item in errors))
++
++    def test_planner_rejects_identical_source_and_target_roots(self):
++        with tempfile.TemporaryDirectory() as raw:
++            directory = Path(raw)
++            invalid = json.loads(json.dumps(PROJECT))
++            invalid["target"]["root"] = invalid["source"]["root"]
++            project = self.write_project(directory, invalid)
++            self.write_controls(directory)
++            source_root = directory / "content" / "en"
++            source_root.mkdir(parents=True)
++            (source_root / "about.md").write_text("# About\n", encoding="utf-8")
++            result = subprocess.run(
++                [sys.executable, str(PLANNER), "--project", str(project), "--base-dir", str(directory), "--format", "json"],
++                capture_output=True,
++                text=True,
++                check=False,
++            )
++            self.assertEqual(result.returncode, 1)
++            errors = json.loads(result.stdout)["errors"]
++            self.assertTrue(any("source.root and target.root" in item for item in errors))
+     def test_planner_reports_only_en_gb_targets_without_writing(self):
+         with tempfile.TemporaryDirectory() as raw:
+             directory = Path(raw)
+--- .agents/skills/okhp3-translation-en-us-es-es/scripts/plan_en_us_to_es_es.py
++++ .agents/skills/okhp3-translation-en-us-es-es/scripts/plan-en-us-to-es-es.py
+@@ -5,18 +5,24 @@
+ 
+ import argparse
+ import hashlib
++import importlib.util
+ import json
+ import sys
+ from pathlib import Path
+ from typing import Any, Dict, List, Optional
+ 
+-from validate_en_us_to_es_es import (
+-    SOURCE_LOCALE,
+-    TARGET_LOCALE,
+-    load_json,
+-    load_supporting_controls,
+-    validate_manifest,
+-)
++VALIDATOR_PATH = Path(__file__).with_name("validate-en-us-to-es-es.py")
++VALIDATOR_SPEC = importlib.util.spec_from_file_location("validate_en_us_to_es_es", VALIDATOR_PATH)
++if VALIDATOR_SPEC is None or VALIDATOR_SPEC.loader is None:
++    raise ImportError(f"Unable to load validator from {VALIDATOR_PATH}")
++validator = importlib.util.module_from_spec(VALIDATOR_SPEC)
++VALIDATOR_SPEC.loader.exec_module(validator)
++
++SOURCE_LOCALE = validator.SOURCE_LOCALE
++TARGET_LOCALE = validator.TARGET_LOCALE
++load_json = validator.load_json
++load_supporting_controls = validator.load_supporting_controls
++validate_manifest = validator.validate_manifest
+ 
+ 
+ def sha256(path: Path) -> str:
+@@ -37,6 +43,8 @@
+ def build_plan(project: Dict[str, Any], base_dir: Path, voice_profile: Dict[str, Any], dictionary: Dict[str, Any]) -> Dict[str, Any]:
+     source_root = resolve_root(base_dir, project["source"]["root"], "source.root")
+     target_root = resolve_root(base_dir, project["target"]["root"], "target.root")
++    if source_root == target_root:
++        raise ValueError("source.root and target.root must resolve to different directories")
+     if not source_root.is_dir():
+         raise ValueError(f"missing en-US source root: {source_root}")
+     extensions = set(project["rules"]["allowed_extensions"])
+--- .agents/skills/okhp3-translation-en-us-es-es/scripts/validate_en_us_to_es_es.py
++++ .agents/skills/okhp3-translation-en-us-es-es/scripts/validate-en-us-to-es-es.py
+@@ -18,7 +18,10 @@
+ 
+ SOURCE_LOCALE = "en-US"
+ TARGET_LOCALE = "es-ES"
+-URL_RE = re.compile(r"https?://[^\s)\]>\"']+", re.IGNORECASE)
++URL_RE = re.compile(r"(?:https?|mailto|tel|sms|ftp):[^\s)\]>\"']+", re.IGNORECASE)
++EMAIL_RE = re.compile(r"(?<![\w.+-])[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}(?![\w.-])")
++MARKDOWN_TARGET_RE = re.compile(r"!?\[[^\]]*\]\(([^)\s]+)(?:\s+\"[^\"]*\")?\)")
++HTML_TARGET_RE = re.compile(r"\b(?:href|src|action)=['\"]([^'\"]+)['\"]", re.IGNORECASE)
+ PLACEHOLDER_RE = re.compile(
+     r"\{\{[^{}]+\}\}|\$\{[^{}]+\}|%\([A-Za-z_][A-Za-z0-9_.-]*\)[a-z]|"
+     r"\{[A-Za-z_][A-Za-z0-9_.-]*\}|(?<!\w):[A-Za-z][A-Za-z0-9_-]*"
+@@ -206,9 +209,18 @@
+     return errors
+ 
+ 
++def protected_values(text: str) -> List[str]:
++    values: List[str] = []
++    values.extend(URL_RE.findall(text))
++    values.extend(EMAIL_RE.findall(text))
++    values.extend(MARKDOWN_TARGET_RE.findall(text))
++    values.extend(HTML_TARGET_RE.findall(text))
++    return values
++
++
+ def tokens(text: str) -> Dict[str, List[Any]]:
+     return {
+-        "urls": URL_RE.findall(text),
++        "urls": protected_values(text),
+         "placeholders": PLACEHOLDER_RE.findall(text),
+         "inline_code": INLINE_CODE_RE.findall(text),
+         "fenced_code": FENCE_RE.findall(text),
+--- .agents/skills/okhp3-translation-en-us-es-es/tests/test_en_us_to_es_es.py
++++ .agents/skills/okhp3-translation-en-us-es-es/tests/test-en-us-to-es-es.py
+@@ -7,8 +7,8 @@
+ 
+ 
+ PACKAGE = Path(__file__).parents[1]
+-VALIDATOR = PACKAGE / "scripts" / "validate_en_us_to_es_es.py"
+-PLANNER = PACKAGE / "scripts" / "plan_en_us_to_es_es.py"
++VALIDATOR = PACKAGE / "scripts" / "validate-en-us-to-es-es.py"
++PLANNER = PACKAGE / "scripts" / "plan-en-us-to-es-es.py"
+ 
+ 
+ PROJECT = {
+@@ -16,7 +16,7 @@
+     "project_id": "fixture-en-us-es-es",
+     "language_pair": {"source_locale": "en-US", "target_locale": "es-ES", "direction": "one-way"},
+     "source": {"locale": "en-US", "register_state": "plainspoken", "root": "content/en", "voice_profile": "config/voice.en-us.json", "register_mediation_record": None},
+-    "target": {"locale": "es-ES", "root": "content/fr", "dictionary": "config/dictionary.en-us-es-es.json", "status": "draft", "needs_native_review": True},
++    "target": {"locale": "es-ES", "root": "content/es", "dictionary": "config/dictionary.en-us-es-es.json", "status": "draft", "needs_native_review": True},
+     "rules": {"slug_policy": "stable", "preserve_urls": True, "default_status": "machine-drafted", "allowed_extensions": [".md"]},
+ }
+ 
+@@ -115,6 +115,39 @@
+             self.assertTrue(any("URL drift" in item for item in errors))
+             self.assertTrue(any("placeholders" in item for item in errors))
+ 
++    def test_relative_links_email_and_media_targets_are_protected(self):
++        with tempfile.TemporaryDirectory() as raw:
++            directory = Path(raw)
++            project = self.write_project(directory)
++            self.write_controls(directory)
++            source = directory / "source.md"
++            target = directory / "target.md"
++            source.write_text("[About](/about/) ![Logo](/assets/logo.png) <a href=\"mailto:hello@example.test\">Email</a> contact@example.test", encoding="utf-8")
++            target.write_text("[About](/broken/) ![Logo](/assets/broken.png) <a href=\"mailto:wrong@example.test\">Email</a> changed@example.test", encoding="utf-8")
++            result = self.run_validator(project, source, target)
++            self.assertEqual(result.returncode, 1)
++            errors = json.loads(result.stdout)["errors"]
++            self.assertTrue(any("URL drift" in item for item in errors))
++
++    def test_planner_rejects_identical_source_and_target_roots(self):
++        with tempfile.TemporaryDirectory() as raw:
++            directory = Path(raw)
++            invalid = json.loads(json.dumps(PROJECT))
++            invalid["target"]["root"] = invalid["source"]["root"]
++            project = self.write_project(directory, invalid)
++            self.write_controls(directory)
++            source_root = directory / "content" / "en"
++            source_root.mkdir(parents=True)
++            (source_root / "about.md").write_text("# About\n", encoding="utf-8")
++            result = subprocess.run(
++                [sys.executable, str(PLANNER), "--project", str(project), "--base-dir", str(directory), "--format", "json"],
++                capture_output=True,
++                text=True,
++                check=False,
++            )
++            self.assertEqual(result.returncode, 1)
++            errors = json.loads(result.stdout)["errors"]
++            self.assertTrue(any("source.root and target.root" in item for item in errors))
+     def test_planner_reports_only_es_es_targets_without_writing(self):
+         with tempfile.TemporaryDirectory() as raw:
+             directory = Path(raw)
+--- .agents/skills/okhp3-translation-en-us-es-mx/scripts/plan_en_us_to_es_mx.py
++++ .agents/skills/okhp3-translation-en-us-es-mx/scripts/plan-en-us-to-es-mx.py
+@@ -5,18 +5,24 @@
+ 
+ import argparse
+ import hashlib
++import importlib.util
+ import json
+ import sys
+ from pathlib import Path
+ from typing import Any, Dict, List, Optional
+ 
+-from validate_en_us_to_es_mx import (
+-    SOURCE_LOCALE,
+-    TARGET_LOCALE,
+-    load_json,
+-    load_supporting_controls,
+-    validate_manifest,
+-)
++VALIDATOR_PATH = Path(__file__).with_name("validate-en-us-to-es-mx.py")
++VALIDATOR_SPEC = importlib.util.spec_from_file_location("validate_en_us_to_es_mx", VALIDATOR_PATH)
++if VALIDATOR_SPEC is None or VALIDATOR_SPEC.loader is None:
++    raise ImportError(f"Unable to load validator from {VALIDATOR_PATH}")
++validator = importlib.util.module_from_spec(VALIDATOR_SPEC)
++VALIDATOR_SPEC.loader.exec_module(validator)
++
++SOURCE_LOCALE = validator.SOURCE_LOCALE
++TARGET_LOCALE = validator.TARGET_LOCALE
++load_json = validator.load_json
++load_supporting_controls = validator.load_supporting_controls
++validate_manifest = validator.validate_manifest
+ 
+ 
+ def sha256(path: Path) -> str:
+@@ -37,6 +43,8 @@
+ def build_plan(project: Dict[str, Any], base_dir: Path, voice_profile: Dict[str, Any], dictionary: Dict[str, Any]) -> Dict[str, Any]:
+     source_root = resolve_root(base_dir, project["source"]["root"], "source.root")
+     target_root = resolve_root(base_dir, project["target"]["root"], "target.root")
++    if source_root == target_root:
++        raise ValueError("source.root and target.root must resolve to different directories")
+     if not source_root.is_dir():
+         raise ValueError(f"missing en-US source root: {source_root}")
+     extensions = set(project["rules"]["allowed_extensions"])
+--- .agents/skills/okhp3-translation-en-us-es-mx/scripts/validate_en_us_to_es_mx.py
++++ .agents/skills/okhp3-translation-en-us-es-mx/scripts/validate-en-us-to-es-mx.py
+@@ -18,7 +18,10 @@
+ 
+ SOURCE_LOCALE = "en-US"
+ TARGET_LOCALE = "es-MX"
+-URL_RE = re.compile(r"https?://[^\s)\]>\"']+", re.IGNORECASE)
++URL_RE = re.compile(r"(?:https?|mailto|tel|sms|ftp):[^\s)\]>\"']+", re.IGNORECASE)
++EMAIL_RE = re.compile(r"(?<![\w.+-])[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}(?![\w.-])")
++MARKDOWN_TARGET_RE = re.compile(r"!?\[[^\]]*\]\(([^)\s]+)(?:\s+\"[^\"]*\")?\)")
++HTML_TARGET_RE = re.compile(r"\b(?:href|src|action)=['\"]([^'\"]+)['\"]", re.IGNORECASE)
+ PLACEHOLDER_RE = re.compile(
+     r"\{\{[^{}]+\}\}|\$\{[^{}]+\}|%\([A-Za-z_][A-Za-z0-9_.-]*\)[a-z]|"
+     r"\{[A-Za-z_][A-Za-z0-9_.-]*\}|(?<!\w):[A-Za-z][A-Za-z0-9_-]*"
+@@ -206,9 +209,18 @@
+     return errors
+ 
+ 
++def protected_values(text: str) -> List[str]:
++    values: List[str] = []
++    values.extend(URL_RE.findall(text))
++    values.extend(EMAIL_RE.findall(text))
++    values.extend(MARKDOWN_TARGET_RE.findall(text))
++    values.extend(HTML_TARGET_RE.findall(text))
++    return values
++
++
+ def tokens(text: str) -> Dict[str, List[Any]]:
+     return {
+-        "urls": URL_RE.findall(text),
++        "urls": protected_values(text),
+         "placeholders": PLACEHOLDER_RE.findall(text),
+         "inline_code": INLINE_CODE_RE.findall(text),
+         "fenced_code": FENCE_RE.findall(text),
+--- .agents/skills/okhp3-translation-en-us-es-mx/tests/test_en_us_to_es_mx.py
++++ .agents/skills/okhp3-translation-en-us-es-mx/tests/test-en-us-to-es-mx.py
+@@ -7,8 +7,8 @@
+ 
+ 
+ PACKAGE = Path(__file__).parents[1]
+-VALIDATOR = PACKAGE / "scripts" / "validate_en_us_to_es_mx.py"
+-PLANNER = PACKAGE / "scripts" / "plan_en_us_to_es_mx.py"
++VALIDATOR = PACKAGE / "scripts" / "validate-en-us-to-es-mx.py"
++PLANNER = PACKAGE / "scripts" / "plan-en-us-to-es-mx.py"
+ 
+ 
+ PROJECT = {
+@@ -16,7 +16,7 @@
+     "project_id": "fixture-en-us-es-mx",
+     "language_pair": {"source_locale": "en-US", "target_locale": "es-MX", "direction": "one-way"},
+     "source": {"locale": "en-US", "register_state": "plainspoken", "root": "content/en", "voice_profile": "config/voice.en-us.json", "register_mediation_record": None},
+-    "target": {"locale": "es-MX", "root": "content/fr", "dictionary": "config/dictionary.en-us-es-mx.json", "status": "draft", "needs_native_review": True},
++    "target": {"locale": "es-MX", "root": "content/es-mx", "dictionary": "config/dictionary.en-us-es-mx.json", "status": "draft", "needs_native_review": True},
+     "rules": {"slug_policy": "stable", "preserve_urls": True, "default_status": "machine-drafted", "allowed_extensions": [".md"]},
+ }
+ 
+@@ -115,6 +115,39 @@
+             self.assertTrue(any("URL drift" in item for item in errors))
+             self.assertTrue(any("placeholders" in item for item in errors))
+ 
++    def test_relative_links_email_and_media_targets_are_protected(self):
++        with tempfile.TemporaryDirectory() as raw:
++            directory = Path(raw)
++            project = self.write_project(directory)
++            self.write_controls(directory)
++            source = directory / "source.md"
++            target = directory / "target.md"
++            source.write_text("[About](/about/) ![Logo](/assets/logo.png) <a href=\"mailto:hello@example.test\">Email</a> contact@example.test", encoding="utf-8")
++            target.write_text("[About](/broken/) ![Logo](/assets/broken.png) <a href=\"mailto:wrong@example.test\">Email</a> changed@example.test", encoding="utf-8")
++            result = self.run_validator(project, source, target)
++            self.assertEqual(result.returncode, 1)
++            errors = json.loads(result.stdout)["errors"]
++            self.assertTrue(any("URL drift" in item for item in errors))
++
++    def test_planner_rejects_identical_source_and_target_roots(self):
++        with tempfile.TemporaryDirectory() as raw:
++            directory = Path(raw)
++            invalid = json.loads(json.dumps(PROJECT))
++            invalid["target"]["root"] = invalid["source"]["root"]
++            project = self.write_project(directory, invalid)
++            self.write_controls(directory)
++            source_root = directory / "content" / "en"
++            source_root.mkdir(parents=True)
++            (source_root / "about.md").write_text("# About\n", encoding="utf-8")
++            result = subprocess.run(
++                [sys.executable, str(PLANNER), "--project", str(project), "--base-dir", str(directory), "--format", "json"],
++                capture_output=True,
++                text=True,
++                check=False,
++            )
++            self.assertEqual(result.returncode, 1)
++            errors = json.loads(result.stdout)["errors"]
++            self.assertTrue(any("source.root and target.root" in item for item in errors))
+     def test_planner_reports_only_es_mx_targets_without_writing(self):
+         with tempfile.TemporaryDirectory() as raw:
+             directory = Path(raw)
+--- .agents/skills/okhp3-translation-en-us-fr-fr/scripts/plan_en_us_to_fr_fr.py
++++ .agents/skills/okhp3-translation-en-us-fr-fr/scripts/plan-en-us-to-fr-fr.py
+@@ -5,18 +5,24 @@
+ 
+ import argparse
+ import hashlib
++import importlib.util
+ import json
+ import sys
+ from pathlib import Path
+ from typing import Any, Dict, List, Optional
+ 
+-from validate_en_us_to_fr_fr import (
+-    SOURCE_LOCALE,
+-    TARGET_LOCALE,
+-    load_json,
+-    load_supporting_controls,
+-    validate_manifest,
+-)
++VALIDATOR_PATH = Path(__file__).with_name("validate-en-us-to-fr-fr.py")
++VALIDATOR_SPEC = importlib.util.spec_from_file_location("validate_en_us_to_fr_fr", VALIDATOR_PATH)
++if VALIDATOR_SPEC is None or VALIDATOR_SPEC.loader is None:
++    raise ImportError(f"Unable to load validator from {VALIDATOR_PATH}")
++validator = importlib.util.module_from_spec(VALIDATOR_SPEC)
++VALIDATOR_SPEC.loader.exec_module(validator)
++
++SOURCE_LOCALE = validator.SOURCE_LOCALE
++TARGET_LOCALE = validator.TARGET_LOCALE
++load_json = validator.load_json
++load_supporting_controls = validator.load_supporting_controls
++validate_manifest = validator.validate_manifest
+ 
+ 
+ def sha256(path: Path) -> str:
+@@ -37,6 +43,8 @@
+ def build_plan(project: Dict[str, Any], base_dir: Path, voice_profile: Dict[str, Any], dictionary: Dict[str, Any]) -> Dict[str, Any]:
+     source_root = resolve_root(base_dir, project["source"]["root"], "source.root")
+     target_root = resolve_root(base_dir, project["target"]["root"], "target.root")
++    if source_root == target_root:
++        raise ValueError("source.root and target.root must resolve to different directories")
+     if not source_root.is_dir():
+         raise ValueError(f"missing en-US source root: {source_root}")
+     extensions = set(project["rules"]["allowed_extensions"])
+--- .agents/skills/okhp3-translation-en-us-fr-fr/scripts/validate_en_us_to_fr_fr.py
++++ .agents/skills/okhp3-translation-en-us-fr-fr/scripts/validate-en-us-to-fr-fr.py
+@@ -18,7 +18,10 @@
+ 
+ SOURCE_LOCALE = "en-US"
+ TARGET_LOCALE = "fr-FR"
+-URL_RE = re.compile(r"https?://[^\s)\]>\"']+", re.IGNORECASE)
++URL_RE = re.compile(r"(?:https?|mailto|tel|sms|ftp):[^\s)\]>\"']+", re.IGNORECASE)
++EMAIL_RE = re.compile(r"(?<![\w.+-])[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}(?![\w.-])")
++MARKDOWN_TARGET_RE = re.compile(r"!?\[[^\]]*\]\(([^)\s]+)(?:\s+\"[^\"]*\")?\)")
++HTML_TARGET_RE = re.compile(r"\b(?:href|src|action)=['\"]([^'\"]+)['\"]", re.IGNORECASE)
+ PLACEHOLDER_RE = re.compile(
+     r"\{\{[^{}]+\}\}|\$\{[^{}]+\}|%\([A-Za-z_][A-Za-z0-9_.-]*\)[a-z]|"
+     r"\{[A-Za-z_][A-Za-z0-9_.-]*\}|(?<!\w):[A-Za-z][A-Za-z0-9_-]*"
+@@ -206,9 +209,18 @@
+     return errors
+ 
+ 
++def protected_values(text: str) -> List[str]:
++    values: List[str] = []
++    values.extend(URL_RE.findall(text))
++    values.extend(EMAIL_RE.findall(text))
++    values.extend(MARKDOWN_TARGET_RE.findall(text))
++    values.extend(HTML_TARGET_RE.findall(text))
++    return values
++
++
+ def tokens(text: str) -> Dict[str, List[Any]]:
+     return {
+-        "urls": URL_RE.findall(text),
++        "urls": protected_values(text),
+         "placeholders": PLACEHOLDER_RE.findall(text),
+         "inline_code": INLINE_CODE_RE.findall(text),
+         "fenced_code": FENCE_RE.findall(text),
+--- .agents/skills/okhp3-translation-en-us-fr-fr/tests/test_en_us_to_fr_fr.py
++++ .agents/skills/okhp3-translation-en-us-fr-fr/tests/test-en-us-to-fr-fr.py
+@@ -7,8 +7,8 @@
+ 
+ 
+ PACKAGE = Path(__file__).parents[1]
+-VALIDATOR = PACKAGE / "scripts" / "validate_en_us_to_fr_fr.py"
+-PLANNER = PACKAGE / "scripts" / "plan_en_us_to_fr_fr.py"
++VALIDATOR = PACKAGE / "scripts" / "validate-en-us-to-fr-fr.py"
++PLANNER = PACKAGE / "scripts" / "plan-en-us-to-fr-fr.py"
+ 
+ 
+ PROJECT = {
+@@ -115,6 +115,39 @@
+             self.assertTrue(any("URL drift" in item for item in errors))
+             self.assertTrue(any("placeholders" in item for item in errors))
+ 
++    def test_relative_links_email_and_media_targets_are_protected(self):
++        with tempfile.TemporaryDirectory() as raw:
++            directory = Path(raw)
++            project = self.write_project(directory)
++            self.write_controls(directory)
++            source = directory / "source.md"
++            target = directory / "target.md"
++            source.write_text("[About](/about/) ![Logo](/assets/logo.png) <a href=\"mailto:hello@example.test\">Email</a> contact@example.test", encoding="utf-8")
++            target.write_text("[About](/broken/) ![Logo](/assets/broken.png) <a href=\"mailto:wrong@example.test\">Email</a> changed@example.test", encoding="utf-8")
++            result = self.run_validator(project, source, target)
++            self.assertEqual(result.returncode, 1)
++            errors = json.loads(result.stdout)["errors"]
++            self.assertTrue(any("URL drift" in item for item in errors))
++
++    def test_planner_rejects_identical_source_and_target_roots(self):
++        with tempfile.TemporaryDirectory() as raw:
++            directory = Path(raw)
++            invalid = json.loads(json.dumps(PROJECT))
++            invalid["target"]["root"] = invalid["source"]["root"]
++            project = self.write_project(directory, invalid)
++            self.write_controls(directory)
++            source_root = directory / "content" / "en"
++            source_root.mkdir(parents=True)
++            (source_root / "about.md").write_text("# About\n", encoding="utf-8")
++            result = subprocess.run(
++                [sys.executable, str(PLANNER), "--project", str(project), "--base-dir", str(directory), "--format", "json"],
++                capture_output=True,
++                text=True,
++                check=False,
++            )
++            self.assertEqual(result.returncode, 1)
++            errors = json.loads(result.stdout)["errors"]
++            self.assertTrue(any("source.root and target.root" in item for item in errors))
+     def test_planner_reports_only_fr_fr_targets_without_writing(self):
+         with tempfile.TemporaryDirectory() as raw:
+             directory = Path(raw)

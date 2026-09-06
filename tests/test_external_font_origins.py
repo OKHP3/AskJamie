@@ -6,7 +6,7 @@ ROOT = Path(__file__).resolve().parents[1]
 PUBLIC_HTML = [
     path for path in ROOT.rglob("*.html")
     if not set(path.parts).intersection(
-        {".local", ".git", "node_modules", "attached_assets", "dist", "templates", ".agents"}
+        {".local", ".scratch", ".git", "node_modules", "attached_assets", "dist", "templates", ".agents"}
     )
     and not path.relative_to(ROOT).as_posix().startswith("assets/templates/")
 ]

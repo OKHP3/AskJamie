@@ -12,7 +12,7 @@ The site documents the AskJamie™ Lens System: a public-facing portfolio of GPT
 
 This repository is itself a portfolio artifact — a proof of what intentional, discipline-driven static-site development looks like in 2026.
 
-- **Static-site discipline** — pure HTML/CSS/JS, zero build tools, zero frameworks. Everything is explicit and auditable.
+- **Static-site discipline**: pure HTML/CSS/JS with no application compilation or client framework. Validation and allowlisted artifact preparation run before GitHub Pages deployment.
 - **LLM discoverability** — `llms.txt` follows the emerging convention for AI-crawler entry points; every canonical URL is listed and machine-readable.
 - **GPT portfolio packaging** — each Lens System page is a self-contained case study for a custom GPT, structured for both human and AI readers.
 - **BrandGuard™ concept development** — 13 public-information proofs-of-concept showing how brand AI safety guardrails are designed and documented.
@@ -26,6 +26,7 @@ about/                # About — the strategic intelligence layer
 universe/             # OKHP³ Universe — ecosystem map (Mermaid diagram)
 contact/              # Contact — six labeled inquiry-path cards
 legal/                # Legal — terms, privacy, BrandGuard™ disclaimer
+how-askjamie-works/    # How the Lens System works and where its limits are
 search/               # Site Search — full-text client-side search
 lens-system/          # Lens System hub — four purpose-built GPTs
   resume-representative/     # GPT-AJ01
@@ -40,13 +41,13 @@ assets/
   css/theme.css        # Single stylesheet — GLOBAL → OKH → GLEE → ASKJAMIE tiers
   js/app.js            # Single JS file — analytics, search modal, nav, GA4 events
   js/mermaid-init.js   # Mermaid v11 ESM init (universe page only)
-  data/search-index.json  # Pre-built search index (~108 KB, 24 public pages)
+  data/search-index.json  # Pre-built search index (25 content pages)
   img/                 # Brand assets, avatars, case study images
   docs/                # Generated docs (audit reports, QA results, specs)
   templates/           # 9 developer page templates (excluded from QA)
 scripts/
-  audit-site.py        # Static-site auditor — 17+ quality gates, 0 issues
-  responsive-qa.mjs    # Playwright + static-lint QA (192 checks across 24 routes)
+  audit-site.py        # Static-site auditor: quality gates; rerun for current findings
+  responsive-qa.mjs    # Playwright + static-lint QA (200 rows across 25 sitemap routes)
   build-search-index.py   # Regenerates assets/data/search-index.json
   archive/             # Reference-only and retired maintenance scripts
 ```
@@ -81,6 +82,14 @@ pages.
 
 The current shipped, conditional, deferred, and intentionally excluded work is
 tracked in [`assets/docs/project-scorecard.md`](assets/docs/project-scorecard.md).
+
+Translation prototyping uses exact-pair Agent Skills with Python planning,
+validation, and drift detection. The `i18n Page Sync` workflow is part of that
+approach. AskJamie has no configured translation pilot or published locale
+routes at the September 5 inspection. See the
+[translation cleanup record](assets/docs/translation-cleanup-2026-09-05/README.md)
+for canonical tooling, removed duplicates, validation, and activation steps.
+
 ## What It Builds
 
 - **Lens System** — a modular portfolio of AI case studies and GPT prototypes, each solving a real-world problem
@@ -97,20 +106,20 @@ AI is becoming the default front door for how people find and evaluate brands. A
 Run the release checks after any HTML or content change:
 
 ```bash
-python3 scripts/audit-site.py --quiet        # 0 issues target (17+ checks, 26 pages)
-node scripts/responsive-qa.mjs --static      # 192/192 pass target
+python3 scripts/audit-site.py --quiet        # 0 issues target across 27 source pages
+node scripts/responsive-qa.mjs --static      # 200/200 static row target
 python3 scripts/build-search-index.py        # rebuild after any copy change
 python3 scripts/build-search-index.py --check # verify committed index is current
-python3 scripts/prepare-pages-artifact.py    # preview the clean GitHub Pages artifact
+python3 scripts/prepare-pages-artifact.py --output .scratch/pages-review
 ```
 
 The auditor checks: title/description length, canonical links, OG fields, image alt/width/height/loading, external link `noopener noreferrer`, CSP + referrer meta, theme-color, duplicate ids, broken in-page anchors, og:image file existence, sitemap ↔ disk reconciliation, search-index ↔ disk reconciliation. The site validator also guards the first meaningful use of BrandGuard™, OKHP³, OverKill Hill P³™, and Lens System with nearby plain-language definitions.
 
-The current tree has 35 HTML files, of which 9 are developer templates excluded
-from public QA. There are 26 QA-relevant HTML paths on disk, while the
-responsive script uses the 24 sitemap routes for 192 checks. The committed
-search index contains 24 content pages, and the Pages artifact currently
-contains 313 public files after allowlisted preparation.
+The September 5 source inventory has 36 HTML files: nine developer templates
+and 27 QA-relevant source pages. The sitemap and search index contain 25
+content routes. The responsive script evaluates 25 routes at eight viewport
+configurations. Generated `dist-pages/` copies are not additional source pages.
+Use the artifact-preparation manifest for the current public file count.
 
 ## Local Development
 
@@ -119,7 +128,10 @@ python3 -m http.server 5000 --bind 0.0.0.0
 # Then open http://localhost:5000
 ```
 
-No build step, no dependencies to install. The site is pure static files.
+The preview serves static source files without compilation. Release validation
+uses development tools, and GitHub Actions prepares an allowlisted artifact
+before publication. See `assets/docs/project-scorecard.md` for commands and
+current evidence limitations.
 
 ## Explore
 

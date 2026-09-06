@@ -1,0 +1,40 @@
+{
+  "removed_helper_filename_references": [],
+  "historical_test_path_references": [
+    {
+      "path": ".agents/skills/okhp3-translation-en-us-es-mx/SKILL.md",
+      "line": 194,
+      "classification": "historical benchmark or explicit migration map"
+    },
+    {
+      "path": ".agents/skills/okhp3-translation-en-us-en-uk/SKILL.md",
+      "line": 202,
+      "classification": "historical benchmark or explicit migration map"
+    },
+    {
+      "path": ".agents/skills/okhp3-translation-en-us-es-es/SKILL.md",
+      "line": 183,
+      "classification": "historical benchmark or explicit migration map"
+    },
+    {
+      "path": ".agents/skills/okhp3-translation-en-us-de-de/SKILL.md",
+      "line": 184,
+      "classification": "historical benchmark or explicit migration map"
+    },
+    {
+      "path": ".agents/skills/okhp3-translation-en-us-fr-fr/SKILL.md",
+      "line": 182,
+      "classification": "historical benchmark or explicit migration map"
+    },
+    {
+      "path": ".agents/skills/okhp3-translation-en-us-fr-fr/benchmarks/equilibrium-review-2026-08-30.json",
+      "line": 33,
+      "classification": "historical benchmark or explicit migration map"
+    },
+    {
+      "path": ".agents/skills/okhp3-translation-en-us-fr-fr/benchmarks/historical-webpage-v0.3.0/equilibrium-v0.3.0/claim-ledger.json",
+      "line": 83,
+      "classification": "historical benchmark or explicit migration map"
+    }
+  ]
+}

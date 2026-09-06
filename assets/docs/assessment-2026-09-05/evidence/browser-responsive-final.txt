@@ -1,0 +1,47 @@
+AskJamie™ Responsive QA
+========================================
+Base URL: http://127.0.0.1:5000
+Pages: 25 | Viewports: 8
+
+  done  /
+  FAIL  desktop-1024   /about/
+         → CONSOLE: Failed to load resource: net::ERR_CONNECTION_TIMED_OUT
+         → CONSOLE: Failed to load resource: net::ERR_CONNECTION_TIMED_OUT
+         → CONSOLE: Failed to load resource: net::ERR_CONNECTION_TIMED_OUT
+         → BROKEN IMG: http://127.0.0.1:5000/assets/img/askjamie-title-cream-blue-backdrop-blue-gray-left-square-1024.png
+  FAIL  desktop-1280   /about/
+         → CONSOLE: Failed to load resource: net::ERR_CONNECTION_TIMED_OUT
+  done  /about/
+  done  /how-askjamie-works/
+  done  /contact/
+  done  /legal/
+  done  /universe/
+  done  /lens-system/
+  FAIL  desktop-1280   /lens-system/resume-representative/
+         → CONSOLE: Failed to load resource: net::ERR_CONNECTION_TIMED_OUT
+  done  /lens-system/resume-representative/
+  done  /lens-system/professional-portfolio/
+  done  /lens-system/enterprise-sleuth/
+  done  /lens-system/okhp3-brandguard/
+  done  /lens-system/okhp3-brandguard/bfs-framing-intelligent-futures/
+  done  /lens-system/okhp3-brandguard/lego/
+  done  /lens-system/okhp3-brandguard/starbucks/
+  done  /lens-system/okhp3-brandguard/coca-cola/
+  done  /lens-system/okhp3-brandguard/brooks-running/
+  done  /lens-system/okhp3-brandguard/costco/
+  done  /lens-system/okhp3-brandguard/discount-tire/
+  done  /lens-system/okhp3-brandguard/dollar-general/
+  FAIL  desktop-1280   /lens-system/okhp3-brandguard/hershey/
+         → CONSOLE: Failed to load resource: net::ERR_CONNECTION_TIMED_OUT
+         → CONSOLE: Failed to load resource: net::ERR_CONNECTION_TIMED_OUT
+  FAIL  desktop-1440   /lens-system/okhp3-brandguard/hershey/
+         → CONSOLE: Failed to load resource: net::ERR_CONNECTION_TIMED_OUT
+  done  /lens-system/okhp3-brandguard/hershey/
+  done  /lens-system/okhp3-brandguard/lvmh/
+  done  /lens-system/okhp3-brandguard/mathews-archery/
+  done  /lens-system/okhp3-brandguard/ping/
+  done  /lens-system/okhp3-brandguard/scheels/
+  done  /search/
+
+Total: 200 checks — 5 failures
+Results: /Volumes/OKH-Local/04_GitHub_Mirrors/AskJamie/assets/audit/responsive-qa/results.json

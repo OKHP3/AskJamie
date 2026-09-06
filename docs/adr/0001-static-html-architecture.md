@@ -76,3 +76,8 @@ served as static files directly from the repository root.
 
 - ADR-0002: Client-Side Search with Pre-Built Index
 - ADR-0003: Security Headers and CSP Baseline
+
+
+## Implementation clarification (2026-09-05)
+
+The source remains vanilla static HTML/CSS/JavaScript without application compilation. Production GitHub Pages now receives an allowlisted release artifact prepared only after validation, rather than the repository root. `.github/workflows/validate.yml` and `scripts/prepare-pages-artifact.py` establish this current release boundary. The original decision above is retained as historical rationale; its zero-pipeline and direct-root deployment wording no longer describes the current release process.

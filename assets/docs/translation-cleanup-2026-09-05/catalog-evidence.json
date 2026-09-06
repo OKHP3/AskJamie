@@ -1,0 +1,20 @@
+{
+  "scope": "Read-only project skill catalog inspection during translation cleanup",
+  "date": "2026-09-05",
+  "command": "python3 .agents/skills/okhp3-skill-cataloger/scripts/gen-skills-readme.py --skills-dir .agents/skills --mode project --check",
+  "exit_code": 1,
+  "discovered_skills": 65,
+  "committed_catalog_skills": 14,
+  "committed_catalog_generated": "2026-08-04 01:38 UTC",
+  "translation_entries_in_committed_catalog": 0,
+  "fatal_errors": [
+    "okhp3-repl-repo-janitor copy frontmatter name does not match directory",
+    "Duplicate frontmatter name okhp3-repl-repo-janitor"
+  ],
+  "warnings": [
+    "architecture-decision-records missing metadata version",
+    "frontend-design missing metadata version"
+  ],
+  "writes": "No catalog or metadata written. dry-run failed at same pre-generation validation gate.",
+  "interpretation": "Unrelated catalog blocker; not evidence that translation packages are invalid. Entire catalog refresh is outside current bounded cleanup proposal."
+}

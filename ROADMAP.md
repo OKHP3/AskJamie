@@ -1,67 +1,77 @@
 # Roadmap
 
-This roadmap outlines the near-term public direction for the **AskJamie™** repository.
+This is the delivery direction for the AskJamie static website as of September
+5, 2026. The detailed, assigned work packages and acceptance criteria are in
+[`assets/docs/assessment-2026-09-05/delivery-plan.md`](assets/docs/assessment-2026-09-05/delivery-plan.md).
+The [project scorecard](assets/docs/project-scorecard.md) separates current
+capability from dated verification and remaining uncertainty.
 
 ## Current
-- BrandGuard™ case study series — ongoing documentation
-- Quality gates: `scripts/audit-site.py` runs clean (0 issues across 26 public
-  QA paths); 35 HTML files exist on disk, including 9 excluded developer
-  templates. Re-run on every meaningful HTML change.
-- Responsive QA: `node scripts/responsive-qa.mjs --static` → 192/192 pass
-  across the 24 sitemap routes; run full Playwright pass after each major
-  round of edits
-- Unconditional GA4 is the intentional policy. The page shell loads
-  `G-MT9Y10YY0G`, the Legal page discloses aggregate use, and the repository
-  contains no visitor export. Counts, engagement, conversions, and funnel rates
-  remain unknown rather than estimated from code.
-- Google Fonts are intentionally external. Mermaid 11.17.2 is vendored locally
-  under `assets/vendor/mermaid/`.
-- Twenty landscape WebP OG cards are shipped. Six utility or informational
-  pages still use existing square artwork and are not blocked from publication.
-- The single current status source is
-  [`assets/docs/project-scorecard.md`](assets/docs/project-scorecard.md).
 
-## Next
-- **Submit sitemap** to Google Search Console and Bing Webmaster Tools. This is
-  an owner or administrator action, not a repository code task.
-- **Sister-site sync** — decide whether the documented `theme.css` / `app.js`
-  changes should be applied in the OverKill Hill and Glee-fully repositories.
-  No sibling repository is modified by this project.
-- **Assistive technology verification** — confirm search live-region, keyboard
-  focus, theme, and Mermaid fallback behavior with human-operated VoiceOver or
-  NVDA testing. Spoken output is currently unknown.
-- **CSP hardening** — refactor the remaining inline initialization and lazy-CSS
-  handlers so `script-src 'unsafe-inline'` can be dropped.
-- **GA4 reporting** — obtain an authorized, read-only export and report the
-  stated date range and measurement limitations. Do not infer visitor counts
-  from site code.
-- **Recurring hosted checks** — retain hosted smoke and public GPT probe
-  results outside the static validation path.
-- **Optional OG enhancement** — create cards for the remaining pages that use
-  square artwork if social-sharing optimization is prioritized. See
-  `assets/docs/og-image-requirements.md`.
-- **Developer template maintenance** — keep the 9 `assets/templates/` files
-  excluded from public QA and update them deliberately when the page shell
-  changes.
-- **Heading-order auditor** — shipped in `scripts/audit-site.py`.
-- **Generic-link-text auditor** — shipped in `scripts/audit-site.py`.
-- **Post-merge browser checks** — queued separately from the static audit.
-- **Public GPT availability checks** — queued separately from static HTML
-  validation.
-- **Hosted JavaScript result retention** — queued separately from deployment.
-- **Performance budgets** — desktop targeted results clear 90; mobile
-  thresholds remain an evidence gap and need a separate performance task.
-- **Expand Lens System** with additional BrandGuard™ case studies.
+- Vanilla static HTML, CSS, and browser JavaScript, with 27 source pages and
+  25 sitemap/search routes. Nine developer templates are separate from those
+  source pages. Generated release copies are not another product.
+- GitHub Actions validates source, asset fingerprints, generated search data,
+  Python regressions, browser behavior, and the canonical audit before
+  preparing the allowlisted Pages artifact for deployment.
+- The How AskJamie Works page, scheduled hosted JavaScript checks, public GPT
+  probes, retained diagnostics, and generated CSP/asset fingerprints exist.
+  They are shipped implementations, not future backlog items.
+- Unconditional GA4 and external Google Fonts remain intentional policies.
+  Analytics outcomes require an authorized export; code does not establish
+  traffic or conversion rates.
+- Mermaid 11.17.2 is vendored locally with a static fallback. Human-operated
+  VoiceOver/NVDA spoken output remains unverified.
 
-## Later
-- Publish a dedicated "How AskJamie Works" deep-dive page
-- Cross-link more explicitly between AskJamie, overkillhill.com, and glee-fully.tools
-- Evaluate adding a public prompt library or recipe section
-- Add progressive web app install flow (PWA manifest + service worker)
-- Audit and prune the ~75 unused brand image variants (see `assets/docs/image-usage-report.md`)
-- GA4 disclosure in `legal/index.html` — shipped; retain owner/legal review as
-  needed
-- Organization JSON-LD `sameAs` — add social profile URLs (LinkedIn, X, Facebook, YouTube)
+## Now: complete the scoped assessment and first repair batch
+
+- Finish the Architect, Project Manager, and Worker evidence reports and retain
+  pre-change observations separately from post-change results.
+- Harden artifact preparation against unintended directory deletion and
+  accidental packaging of hidden files, symlinks, and source artwork.
+- Correct AskJamie search dialog branding and the dedicated search page's
+  promised Escape/Enter keyboard behavior.
+- Align the operating guide, scorecard, and architecture clarifications with
+  the verified source and release workflow.
+- Re-run relevant static and browser checks. Report the baseline ignored
+  `.DS_Store` audit findings honestly instead of calling a partial suite clean.
+
+## Next: visitor trust, accessibility, and release reliability
+
+- Review no-JavaScript content visibility, skip-link focus, reduced-motion
+  behavior, search result semantics, and measured footer contrast. Implement
+  confirmed defects in separate bounded batches with browser evidence.
+- Resolve contradictory prototype, affiliation, and capability wording. Retain
+  the owner's voice while making availability and evidence clear at the point
+  of each claim or outbound action.
+- Review case-study source destinations. Private working context needs a
+  confirmed public publication route before it is offered to visitors.
+- Prevent browser QA from silently falling back to static checks in required
+  CI runs; retain actionable CSP and dependency-failure diagnostics.
+- Update the CI runtime to a supported Node release and review dependency and
+  Action pinning without introducing application dependencies.
+- Make the active sibling-sync tool refuse unsafe mutation, dirty preimages,
+  and live Git locks. No sibling repository change is included here.
+- Reconcile tracked generated release copies with the source-of-truth and
+  clean-artifact policy while preserving recoverable owner work.
+
+## Later: measured improvements and owner decisions
+
+- Measure mobile performance on agreed representative routes, then optimize
+  oversized logo assets and justified shared payload costs. Keep external
+  Google Fonts and the AskJamie brand treatment.
+- Review a lighter shared page-shell authoring mechanism only if duplication
+  remains a demonstrated maintenance cost. A framework migration is not a
+  prerequisite.
+- Conduct human-operated VoiceOver/Safari and NVDA/Firefox journey sessions.
+- Submit the sitemap through authorized Google/Bing webmaster accounts and
+  inspect indexing results. This is an administrator task.
+- Obtain a read-only GA4 export with an explicit date range and measurement
+  limits if the owner wants traffic and journey analysis.
+- Evaluate remaining OG artwork, additional Lens System cases, or public
+  recipes only after existing visitor journeys and evidence gaps are addressed.
+- Decide separately whether approved shared CSS/JavaScript changes should be
+  synchronized to sibling repositories.
 
 ## Shipped
 - **v1.2 (2026-05-27)** — Documentation refresh: README expanded, ROADMAP

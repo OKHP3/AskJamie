@@ -1,0 +1,403 @@
+{
+  "base": "http://127.0.0.1:5000",
+  "externalRequests": "blocked for deterministic local checks",
+  "checks": [
+    {
+      "name": "AskJamie overlay copy, suggestions, empty state, and return focus",
+      "pass": true,
+      "evidence": {
+        "suggestions": [
+          "BrandGuard",
+          "BFS",
+          "r\u00e9sum\u00e9",
+          "portfolio",
+          "enterprise",
+          "Coca-Cola"
+        ]
+      }
+    },
+    {
+      "name": "Dedicated search Enter opens the current first result",
+      "pass": true,
+      "evidence": {
+        "destination": "http://127.0.0.1:5000/lens-system/okhp3-brandguard/bfs-framing-intelligent-futures/"
+      }
+    },
+    {
+      "name": "Delayed index load uses the latest query before Enter navigation",
+      "pass": true,
+      "evidence": {
+        "destination": "http://127.0.0.1:5000/lens-system/professional-portfolio/",
+        "pendingEnterDidNotNavigate": true
+      }
+    },
+    {
+      "name": "Dedicated search Escape synchronizes query, results, focus, and category",
+      "pass": true,
+      "evidence": {
+        "categoryRetained": "About"
+      }
+    },
+    {
+      "name": "Dedicated search ignores empty results, modified Enter, and composition confirmation",
+      "pass": true,
+      "evidence": {
+        "compositionEventPreserved": true,
+        "noResultNavigation": false
+      }
+    },
+    {
+      "name": "Other brand overlay defaults remain unchanged",
+      "pass": true,
+      "evidence": {
+        "fixtureOnly": true
+      }
+    },
+    {
+      "name": "Desktop content remains visible: javascript-disabled",
+      "pass": true,
+      "evidence": {
+        "sections": [
+          {
+            "id": "",
+            "opacity": "1"
+          },
+          {
+            "id": "",
+            "opacity": "1"
+          },
+          {
+            "id": "support",
+            "opacity": "1"
+          },
+          {
+            "id": "fit",
+            "opacity": "1"
+          },
+          {
+            "id": "uses",
+            "opacity": "1"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Desktop content remains visible: app-script-blocked",
+      "pass": true,
+      "evidence": {
+        "sections": [
+          {
+            "id": "",
+            "opacity": "1"
+          },
+          {
+            "id": "",
+            "opacity": "1"
+          },
+          {
+            "id": "support",
+            "opacity": "1"
+          },
+          {
+            "id": "fit",
+            "opacity": "1"
+          },
+          {
+            "id": "uses",
+            "opacity": "1"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Initialized scroll reveal and reduced motion remain usable",
+      "pass": true,
+      "evidence": {
+        "armed": 4,
+        "hiddenUnderReducedMotion": 0
+      }
+    },
+    {
+      "name": "Footer normal text contrast in light scheme",
+      "pass": true,
+      "evidence": {
+        "minimumRatio": 6.243254441805527,
+        "values": [
+          {
+            "text": "AskJamie\u2122",
+            "color": "rgb(46, 43, 41)",
+            "background": "rgb(247, 243, 238)",
+            "ratio": 12.726243669799464
+          },
+          {
+            "text": "Your articulate, architected AI persona \u2014 cla",
+            "color": "rgb(90, 90, 90)",
+            "background": "rgb(247, 243, 238)",
+            "ratio": 6.243254441805527
+          },
+          {
+            "text": "Navigation",
+            "color": "rgb(46, 43, 41)",
+            "background": "rgb(247, 243, 238)",
+            "ratio": 12.726243669799464
+          },
+          {
+            "text": "Who's AskJamie\u2122",
+            "color": "rgb(31, 90, 103)",
+            "background": "rgb(247, 243, 238)",
+            "ratio": 6.997646593732733
+          },
+          {
+            "text": "How it works",
+            "color": "rgb(31, 90, 103)",
+            "background": "rgb(247, 243, 238)",
+            "ratio": 6.997646593732733
+          },
+          {
+            "text": "Lens System",
+            "color": "rgb(31, 90, 103)",
+            "background": "rgb(247, 243, 238)",
+            "ratio": 6.997646593732733
+          },
+          {
+            "text": "OKHP\u00b3\u2122 Universe",
+            "color": "rgb(31, 90, 103)",
+            "background": "rgb(247, 243, 238)",
+            "ratio": 6.997646593732733
+          },
+          {
+            "text": "About",
+            "color": "rgb(31, 90, 103)",
+            "background": "rgb(247, 243, 238)",
+            "ratio": 6.997646593732733
+          },
+          {
+            "text": "Contact",
+            "color": "rgb(31, 90, 103)",
+            "background": "rgb(247, 243, 238)",
+            "ratio": 6.997646593732733
+          },
+          {
+            "text": "Legal",
+            "color": "rgb(31, 90, 103)",
+            "background": "rgb(247, 243, 238)",
+            "ratio": 6.997646593732733
+          },
+          {
+            "text": "Site Search",
+            "color": "rgb(31, 90, 103)",
+            "background": "rgb(247, 243, 238)",
+            "ratio": 6.997646593732733
+          },
+          {
+            "text": "Connect",
+            "color": "rgb(46, 43, 41)",
+            "background": "rgb(247, 243, 238)",
+            "ratio": 12.726243669799464
+          },
+          {
+            "text": "contact@askjamie.bot",
+            "color": "rgb(31, 90, 103)",
+            "background": "rgb(247, 243, 238)",
+            "ratio": 6.997646593732733
+          },
+          {
+            "text": "Ko-fi",
+            "color": "rgb(31, 90, 103)",
+            "background": "rgb(247, 243, 238)",
+            "ratio": 6.997646593732733
+          },
+          {
+            "text": "Fiverr",
+            "color": "rgb(31, 90, 103)",
+            "background": "rgb(247, 243, 238)",
+            "ratio": 6.997646593732733
+          },
+          {
+            "text": "LinkedIn",
+            "color": "rgb(31, 90, 103)",
+            "background": "rgb(247, 243, 238)",
+            "ratio": 6.997646593732733
+          },
+          {
+            "text": "Facebook",
+            "color": "rgb(31, 90, 103)",
+            "background": "rgb(247, 243, 238)",
+            "ratio": 6.997646593732733
+          },
+          {
+            "text": "X (Twitter)",
+            "color": "rgb(31, 90, 103)",
+            "background": "rgb(247, 243, 238)",
+            "ratio": 6.997646593732733
+          },
+          {
+            "text": "YouTube",
+            "color": "rgb(31, 90, 103)",
+            "background": "rgb(247, 243, 238)",
+            "ratio": 6.997646593732733
+          },
+          {
+            "text": "Built with\n          Replit",
+            "color": "rgb(90, 90, 90)",
+            "background": "rgb(247, 243, 238)",
+            "ratio": 6.243254441805527
+          },
+          {
+            "text": "Replit",
+            "color": "rgb(31, 90, 103)",
+            "background": "rgb(247, 243, 238)",
+            "ratio": 6.997646593732733
+          },
+          {
+            "text": "\u00a9\n          2026\n          AskJamie\u2122. All rig",
+            "color": "rgb(90, 90, 90)",
+            "background": "rgb(247, 243, 238)",
+            "ratio": 6.243254441805527
+          }
+        ]
+      }
+    },
+    {
+      "name": "Footer normal text contrast in dark scheme",
+      "pass": true,
+      "evidence": {
+        "minimumRatio": 6.751318562828547,
+        "values": [
+          {
+            "text": "AskJamie\u2122",
+            "color": "rgb(232, 228, 224)",
+            "background": "rgb(30, 27, 24)",
+            "ratio": 13.553165285533664
+          },
+          {
+            "text": "Your articulate, architected AI persona \u2014 cla",
+            "color": "rgb(156, 163, 175)",
+            "background": "rgb(30, 27, 24)",
+            "ratio": 6.751318562828547
+          },
+          {
+            "text": "Navigation",
+            "color": "rgb(232, 228, 224)",
+            "background": "rgb(30, 27, 24)",
+            "ratio": 13.553165285533664
+          },
+          {
+            "text": "Who's AskJamie\u2122",
+            "color": "rgb(118, 178, 186)",
+            "background": "rgb(30, 27, 24)",
+            "ratio": 7.221468674723097
+          },
+          {
+            "text": "How it works",
+            "color": "rgb(118, 178, 186)",
+            "background": "rgb(30, 27, 24)",
+            "ratio": 7.221468674723097
+          },
+          {
+            "text": "Lens System",
+            "color": "rgb(118, 178, 186)",
+            "background": "rgb(30, 27, 24)",
+            "ratio": 7.221468674723097
+          },
+          {
+            "text": "OKHP\u00b3\u2122 Universe",
+            "color": "rgb(118, 178, 186)",
+            "background": "rgb(30, 27, 24)",
+            "ratio": 7.221468674723097
+          },
+          {
+            "text": "About",
+            "color": "rgb(118, 178, 186)",
+            "background": "rgb(30, 27, 24)",
+            "ratio": 7.221468674723097
+          },
+          {
+            "text": "Contact",
+            "color": "rgb(118, 178, 186)",
+            "background": "rgb(30, 27, 24)",
+            "ratio": 7.221468674723097
+          },
+          {
+            "text": "Legal",
+            "color": "rgb(118, 178, 186)",
+            "background": "rgb(30, 27, 24)",
+            "ratio": 7.221468674723097
+          },
+          {
+            "text": "Site Search",
+            "color": "rgb(118, 178, 186)",
+            "background": "rgb(30, 27, 24)",
+            "ratio": 7.221468674723097
+          },
+          {
+            "text": "Connect",
+            "color": "rgb(232, 228, 224)",
+            "background": "rgb(30, 27, 24)",
+            "ratio": 13.553165285533664
+          },
+          {
+            "text": "contact@askjamie.bot",
+            "color": "rgb(118, 178, 186)",
+            "background": "rgb(30, 27, 24)",
+            "ratio": 7.221468674723097
+          },
+          {
+            "text": "Ko-fi",
+            "color": "rgb(118, 178, 186)",
+            "background": "rgb(30, 27, 24)",
+            "ratio": 7.221468674723097
+          },
+          {
+            "text": "Fiverr",
+            "color": "rgb(118, 178, 186)",
+            "background": "rgb(30, 27, 24)",
+            "ratio": 7.221468674723097
+          },
+          {
+            "text": "LinkedIn",
+            "color": "rgb(118, 178, 186)",
+            "background": "rgb(30, 27, 24)",
+            "ratio": 7.221468674723097
+          },
+          {
+            "text": "Facebook",
+            "color": "rgb(118, 178, 186)",
+            "background": "rgb(30, 27, 24)",
+            "ratio": 7.221468674723097
+          },
+          {
+            "text": "X (Twitter)",
+            "color": "rgb(118, 178, 186)",
+            "background": "rgb(30, 27, 24)",
+            "ratio": 7.221468674723097
+          },
+          {
+            "text": "YouTube",
+            "color": "rgb(118, 178, 186)",
+            "background": "rgb(30, 27, 24)",
+            "ratio": 7.221468674723097
+          },
+          {
+            "text": "Built with\n          Replit",
+            "color": "rgb(156, 163, 175)",
+            "background": "rgb(30, 27, 24)",
+            "ratio": 6.751318562828547
+          },
+          {
+            "text": "Replit",
+            "color": "rgb(118, 178, 186)",
+            "background": "rgb(30, 27, 24)",
+            "ratio": 7.221468674723097
+          },
+          {
+            "text": "\u00a9\n          2026\n          AskJamie\u2122. All rig",
+            "color": "rgb(156, 163, 175)",
+            "background": "rgb(30, 27, 24)",
+            "ratio": 6.751318562828547
+          }
+        ]
+      }
+    }
+  ]
+}

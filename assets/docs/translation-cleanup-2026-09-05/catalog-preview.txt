@@ -1,0 +1,6 @@
+okhp3-skill-cataloger v1.7.0 [catalog] · mode: project
+Found 65 skill(s) in .agents/skills
+
+Warnings:
+  ⚠ [architecture-decision-records] no version in metadata
+  ⚠ [frontend-design] no version in metadata

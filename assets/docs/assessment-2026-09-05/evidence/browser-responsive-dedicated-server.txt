@@ -1,0 +1,36 @@
+AskJamie™ Responsive QA
+========================================
+Base URL: http://127.0.0.1:5187
+Pages: 25 | Viewports: 8
+
+  done  /
+  done  /about/
+  done  /how-askjamie-works/
+  done  /contact/
+  done  /legal/
+  done  /universe/
+  done  /lens-system/
+  done  /lens-system/resume-representative/
+  done  /lens-system/professional-portfolio/
+  done  /lens-system/enterprise-sleuth/
+  done  /lens-system/okhp3-brandguard/
+  done  /lens-system/okhp3-brandguard/bfs-framing-intelligent-futures/
+  done  /lens-system/okhp3-brandguard/lego/
+  done  /lens-system/okhp3-brandguard/starbucks/
+  done  /lens-system/okhp3-brandguard/coca-cola/
+  done  /lens-system/okhp3-brandguard/brooks-running/
+  done  /lens-system/okhp3-brandguard/costco/
+  done  /lens-system/okhp3-brandguard/discount-tire/
+  FAIL  desktop-1280   /lens-system/okhp3-brandguard/dollar-general/
+         → CONSOLE: Failed to load resource: net::ERR_CONNECTION_TIMED_OUT
+         → CONSOLE: Failed to load resource: net::ERR_CONNECTION_TIMED_OUT
+  done  /lens-system/okhp3-brandguard/dollar-general/
+  done  /lens-system/okhp3-brandguard/hershey/
+  done  /lens-system/okhp3-brandguard/lvmh/
+  done  /lens-system/okhp3-brandguard/mathews-archery/
+  done  /lens-system/okhp3-brandguard/ping/
+  done  /lens-system/okhp3-brandguard/scheels/
+  done  /search/
+
+Total: 200 checks — 1 failures
+Results: /Volumes/OKH-Local/04_GitHub_Mirrors/AskJamie/assets/audit/responsive-qa/results.json

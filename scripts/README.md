@@ -17,6 +17,7 @@ cannot be mistaken for current pipeline commands.
 | `validate-site.py` | active | Structural site validation, including external-font-origin regression checks |
 | `sync-foundation-files.py` | active | 3-way sync of theme.css/app.js/mermaid-init.js across the three sibling repos |
 | `responsive-qa.mjs` | active | Responsive QA entry point |
+| `experience-qa.cjs` | active | Focused Playwright checks for AskJamie search, resilient content visibility, and footer contrast |
 | `post-merge.sh` | active | Post-merge rebuild and validation hook |
 | `capture-visual-baseline.mjs` | active | Capture the dated visual reference set |
 | `check-public-gpt-links.py` | active | Opt-in reachability probe for public AJ01–AJ03 destinations |
@@ -50,6 +51,14 @@ Read their headers and review their target paths before adapting any of them.
 The release-check regression test uses the active table above as its command
 allowlist and scans CI plus `post-merge.sh`; historical documentation is not
 part of that executable-command check.
+
+## Focused experience checks
+
+With a local server running and Playwright plus Chromium already available,
+run `node scripts/experience-qa.cjs`. The default origin is local; `BASE_URL`
+selects a different test origin and `QA_OUTPUT` selects a result file. Inspect
+all results. These focused checks complement the existing responsive and
+JavaScript smoke suites; they do not replace human assistive-technology tests.
 
 ## Shared asset freshness
 

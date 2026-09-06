@@ -1,0 +1,19 @@
+{
+  "command": "Exact Validate translation helpers and drift detector run block from .github/workflows/i18n-page-sync.yml, executed with bash -e",
+  "exit_code": 0,
+  "suite_test_counts": [
+    10,
+    10,
+    10,
+    10,
+    10,
+    10
+  ],
+  "total_tests": 60,
+  "bash_syntax": "PASS",
+  "real_site_config_existed_before": false,
+  "real_site_config_exists_after": false,
+  "logs": "workflow-regressions.txt",
+  "new_dependencies_installed": false,
+  "GitHub_workflow_triggered": false
+}

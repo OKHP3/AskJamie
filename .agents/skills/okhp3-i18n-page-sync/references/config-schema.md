@@ -57,7 +57,7 @@ ever writes this file.
 
 ## The ledger (`i18n/sync-state.json`)
 
-Generated and maintained only by this script's `--adopt` mode. Structure:
+Generated and maintained only by this script's `--mode adopt` mode. Structure:
 
 ```json
 {
@@ -88,7 +88,7 @@ python3 scripts/i18n-page-sync.py --root . --mode adopt
 ```
 
 once. This records every existing target-locale page's current state as the
-confirmed baseline without touching any content. From then on, `--check` in
+confirmed baseline without touching any content. From then on, `--mode check` in
 CI only fails on genuine drift: a new in-scope English page with no
 translation yet, or an in-scope English page whose source changed after its
 translation was last confirmed.
@@ -103,5 +103,10 @@ python3 scripts/i18n-page-sync.py --root . --mode adopt --routes "/about/"
 ```
 
 to confirm the ledger against the new content. This script never performs
-that adoption automatically as a side effect of `--check`, so a CI run can
+that adoption automatically as a side effect of `--mode check`, so a CI run can
 never silently mark drift as resolved.
+
+Explicit adoption refreshes selected `stale` records as well as creating
+missing baselines for existing targets. Confirm that the selected translations
+have been reviewed against the current source before adopting. It never
+creates a missing target or changes source or target page content.

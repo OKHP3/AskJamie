@@ -81,7 +81,7 @@ from typing import Dict, Iterator, List, Tuple
 from xml.etree import ElementTree as ET
 
 ROOT = Path(__file__).resolve().parent.parent
-EXCLUDE_DIRS = {".local", ".agents", "attached_assets", "node_modules", ".cache", ".git",
+EXCLUDE_DIRS = {".local", ".scratch", ".agents", "attached_assets", "node_modules", ".cache", ".git",
                 "templates", "dist-pages"}
 EXCLUDE_FROM_SITEMAP = {"404.html", "under-construction.html"}
 

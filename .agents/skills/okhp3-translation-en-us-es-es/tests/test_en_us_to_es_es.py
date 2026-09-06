@@ -7,8 +7,8 @@ from pathlib import Path
 
 
 PACKAGE = Path(__file__).parents[1]
-VALIDATOR = PACKAGE / "scripts" / "validate_en_us_to_es_es.py"
-PLANNER = PACKAGE / "scripts" / "plan_en_us_to_es_es.py"
+VALIDATOR = PACKAGE / "scripts" / "validate-en-us-to-es-es.py"
+PLANNER = PACKAGE / "scripts" / "plan-en-us-to-es-es.py"
 
 
 PROJECT = {
@@ -16,7 +16,7 @@ PROJECT = {
     "project_id": "fixture-en-us-es-es",
     "language_pair": {"source_locale": "en-US", "target_locale": "es-ES", "direction": "one-way"},
     "source": {"locale": "en-US", "register_state": "plainspoken", "root": "content/en", "voice_profile": "config/voice.en-us.json", "register_mediation_record": None},
-    "target": {"locale": "es-ES", "root": "content/fr", "dictionary": "config/dictionary.en-us-es-es.json", "status": "draft", "needs_native_review": True},
+    "target": {"locale": "es-ES", "root": "content/es", "dictionary": "config/dictionary.en-us-es-es.json", "status": "draft", "needs_native_review": True},
     "rules": {"slug_policy": "stable", "preserve_urls": True, "default_status": "machine-drafted", "allowed_extensions": [".md"]},
 }
 
@@ -115,6 +115,39 @@ class EnUsToEsEsValidatorTests(unittest.TestCase):
             self.assertTrue(any("URL drift" in item for item in errors))
             self.assertTrue(any("placeholders" in item for item in errors))
 
+    def test_relative_links_email_and_media_targets_are_protected(self):
+        with tempfile.TemporaryDirectory() as raw:
+            directory = Path(raw)
+            project = self.write_project(directory)
+            self.write_controls(directory)
+            source = directory / "source.md"
+            target = directory / "target.md"
+            source.write_text("[About](/about/) ![Logo](/assets/logo.png) <a href=\"mailto:hello@example.test\">Email</a> contact@example.test", encoding="utf-8")
+            target.write_text("[About](/broken/) ![Logo](/assets/broken.png) <a href=\"mailto:wrong@example.test\">Email</a> changed@example.test", encoding="utf-8")
+            result = self.run_validator(project, source, target)
+            self.assertEqual(result.returncode, 1)
+            errors = json.loads(result.stdout)["errors"]
+            self.assertTrue(any("URL drift" in item for item in errors))
+
+    def test_planner_rejects_identical_source_and_target_roots(self):
+        with tempfile.TemporaryDirectory() as raw:
+            directory = Path(raw)
+            invalid = json.loads(json.dumps(PROJECT))
+            invalid["target"]["root"] = invalid["source"]["root"]
+            project = self.write_project(directory, invalid)
+            self.write_controls(directory)
+            source_root = directory / "content" / "en"
+            source_root.mkdir(parents=True)
+            (source_root / "about.md").write_text("# About\n", encoding="utf-8")
+            result = subprocess.run(
+                [sys.executable, str(PLANNER), "--project", str(project), "--base-dir", str(directory), "--format", "json"],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(result.returncode, 1)
+            errors = json.loads(result.stdout)["errors"]
+            self.assertTrue(any("source.root and target.root" in item for item in errors))
     def test_planner_reports_only_es_es_targets_without_writing(self):
         with tempfile.TemporaryDirectory() as raw:
             directory = Path(raw)

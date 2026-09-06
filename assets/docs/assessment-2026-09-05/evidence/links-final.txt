@@ -1,0 +1,8 @@
+Pages scanned:    27
+Internal links:   764
+External links:   534
+Broken links:     0
+Style issues:     0
+Sitemap URLs:     25  (file pages without sitemap: 0, sitemap entries without files: 0)
+Noindex exclusions: 0
+Detail: assets/audit/links-report-2026-09-05.json

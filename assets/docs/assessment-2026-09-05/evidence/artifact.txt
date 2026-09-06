@@ -1,0 +1,3 @@
+✓ Prepared 319 public files in /Volumes/OKH-Local/04_GitHub_Mirrors/AskJamie/.scratch/assessment-2026-09-05-pages
+  SHA-256: d44e3f85db0f33d02bc305742d78b0afee0ecfd1f2da5b847c5f4cc8d576b800
+  Manifest: /Volumes/OKH-Local/04_GitHub_Mirrors/AskJamie/.scratch/assessment-2026-09-05-pages.manifest.json

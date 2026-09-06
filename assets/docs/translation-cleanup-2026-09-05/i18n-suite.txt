@@ -1,0 +1,17 @@
+Adopted 1 route/locale pair(s) as the new baseline in /Volumes/OKH-Local/04_GitHub_Mirrors/AskJamie/assets/docs/translation-cleanup-2026-09-05/temporary-test-fixtures/tmpo9iwigw8/i18n/sync-state.json.
+  /about/                        -> fr
+Adopted 1 route/locale pair(s) as the new baseline in /Volumes/OKH-Local/04_GitHub_Mirrors/AskJamie/assets/docs/translation-cleanup-2026-09-05/temporary-test-fixtures/tmppapt9pjv/i18n/sync-state.json.
+  /about/                        -> fr
+test_adopt_bootstraps_existing_translation_without_drift (__main__.I18nPageSyncTests.test_adopt_bootstraps_existing_translation_without_drift) ... ok
+test_fragment_and_already_localized_urls_are_excluded_from_discovery (__main__.I18nPageSyncTests.test_fragment_and_already_localized_urls_are_excluded_from_discovery) ... ok
+test_missing_search_index_is_an_error_not_a_silent_pass (__main__.I18nPageSyncTests.test_missing_search_index_is_an_error_not_a_silent_pass) ... ok
+test_missing_translation_is_drift (__main__.I18nPageSyncTests.test_missing_translation_is_drift) ... ok
+test_no_config_is_a_clean_noop (__main__.I18nPageSyncTests.test_no_config_is_a_clean_noop) ... ok
+test_orphaned_translation_is_reported_not_fatal (__main__.I18nPageSyncTests.test_orphaned_translation_is_reported_not_fatal) ... ok
+test_out_of_scope_routes_are_never_flagged (__main__.I18nPageSyncTests.test_out_of_scope_routes_are_never_flagged) ... ok
+test_source_edit_after_adopt_is_stale (__main__.I18nPageSyncTests.test_source_edit_after_adopt_is_stale) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.544s
+
+OK

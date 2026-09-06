@@ -15,8 +15,10 @@ boundaries. Never invent credentials or secrets.
   - Mac: `/Volumes/OKH-Local/04_GitHub_Mirrors/AskJamie`.
 - Git repository: `OKHP3/AskJamie`, with `main` tracking `origin/main`.
 - Site origin: `https://askjamie.bot`.
-- Deployment model: static files from the repository root. There is no
-  application build step or server-side runtime.
+- Deployment model: source HTML remains at the repository root. GitHub Actions
+  validates it, prepares an allowlisted release artifact, and deploys that
+  exact artifact to GitHub Pages. There is no application compilation or
+  server-side runtime.
 - No nested independent Git repository was found during the July 13, 2026
   context inspection.
 
@@ -89,17 +91,21 @@ Out of scope unless explicitly requested:
   generated `assets/data/search-index.json`.
 - Analytics: Google tag `G-MT9Y10YY0G` loads from the page shell, while the
   shared browser script provides the no-op-safe event wrapper.
-- Security baseline: page-level CSP and referrer metadata, plus `_headers` for
-  the static hosting edge.
-- Optional QA tooling: Node and Playwright are declared in `package.json`, but
-  the current checkout did not have Playwright available. Static QA remains
-  runnable without it.
+- Security baseline: generated page-level CSP and referrer metadata. `_headers`
+  is a portable hosting configuration file; its presence does not establish
+  that GitHub Pages applies those response headers. Verify live responses
+  before claiming an edge control is enforced.
+- QA tooling: Playwright and Lighthouse are development dependencies in
+  `package.json`. CI installs Chromium and runs browser responsive QA plus
+  JavaScript smoke tests. Local dependency availability must be checked for
+  each run; static QA is a separate source check.
 
 ### Repository shape
 
 ```text
 index.html                  Homepage
 about/ contact/ legal/      Primary interior pages
+how-askjamie-works/          Explanation of the Lens System and its boundaries
 universe/                   Mermaid ecosystem map
 search/                     Dedicated client-side search page
 lens-system/                Portfolio hub and case studies
@@ -125,11 +131,14 @@ CONTRIBUTING.md             Contribution guidelines
 SECURITY.md                 Security reporting policy
 ```
 
-The repository currently contains 35 HTML files on disk. Nine are templates,
-leaving 26 QA-relevant HTML paths. The responsive QA script uses the 24 routes
-in `sitemap.xml` for 192 checks; the two additional utility pages,
-`404.html` and `under-construction.html`, remain covered by structural and
-audit checks. The current status and evidence boundaries are recorded in
+The September 5, 2026 source inventory contains 36 HTML files: nine developer
+templates and 27 QA-relevant source pages. The sitemap and search index each
+cover 25 content routes. Responsive QA checks those 25 routes at eight
+viewports, producing 200 route/viewport rows. The two utility pages,
+`404.html` and `under-construction.html`, are covered by structural and audit
+checks. Tracked generated copies under `dist-pages/` are not additional source
+pages. Refresh counts from source rather than recursive on-disk totals.
+The current evidence boundaries are recorded in
 `assets/docs/project-scorecard.md`.
 
 ### Agent skills
@@ -140,7 +149,8 @@ and must not be activated for this repo:
 
 - **`okhp3-vite-github-pages`** — a runbook for a separate React/Vite app
   deployed to GitHub Pages. This repo is a static HTML site with no Vite
-  build step, React code, or GitHub Pages deployment. Do not add a
+  build step or React code. Its Vite instructions do not apply to this
+  repository's GitHub Pages deployment. Do not add a
   `vite.config.ts`, `package.json` build scripts, or React components on the
   basis of this skill.
 - **`vercel-react-best-practices`** — React and Next.js optimization rules.
@@ -148,6 +158,24 @@ and must not be activated for this repo:
 
 All other installed skills are applicable. See `.agents/skills/README.md` for
 the full applicability table.
+
+### Translation tooling and activation
+
+Translation drafting uses the five exact-pair `okhp3-translation-en-us-*`
+skills and their canonical hyphenated Python helpers. The workflow named
+`i18n Page Sync` calls a separate drift detector from an Agent Skill; it is
+part of this approach and never translates pages itself.
+
+As inspected September 5, 2026, this clone has no `i18n/sync.config.json`,
+published translated routes, locale search indexes, or language-switcher
+markup. A successful unconfigured detector run proves no translation coverage.
+Shared CSS/JavaScript retains an inactive language disclosure for family
+consumers. AskJamie searches its English catalog, including future draft-page
+fixtures, until a reviewed locale index is deliberately connected.
+
+See `assets/docs/translation-cleanup-2026-09-05/README.md` for the cleanup
+record and activation boundary. Do not infer a pilot's locale or route scope
+from installed skills or inherited browser comments.
 
 ### Brand contract
 
@@ -194,13 +222,17 @@ changes:
 ```bash
 python3 scripts/validate-site.py
 python3 scripts/check-links.py
+python3 -m pytest
+python3 scripts/cache-bust.py --check
+python3 scripts/build-search-index.py --check
 node scripts/responsive-qa.mjs --static
 python3 scripts/audit-site.py --quiet
 ```
 
 `validate-site.py` is the structural validator. `check-links.py` writes a
 dated JSON report under `assets/audit/`. `responsive-qa.mjs --static` checks
-the 24 sitemap routes at eight viewports for 192 checks without a browser. A
+the 25 sitemap routes at eight viewport configurations for 200 source-check
+rows without a browser. These rows do not establish rendered behavior. A
 full browser run requires Playwright and Chromium. `audit-site.py` is the
 canonical site audit and writes `assets/docs/audit-report.md`.
 
@@ -242,8 +274,12 @@ After a content change, rebuild the search index with:
 python3 scripts/build-search-index.py
 ```
 
-Do not hand-edit `assets/data/search-index.json` or audit output. Scripts that
-mutate HTML should be idempotent and retain their existing `AUTOGEN` marker
+After shared CSS or JavaScript changes, run `python3 scripts/cache-bust.py`
+and then `python3 scripts/generate-csp.py` to refresh owned fingerprints and
+CSP hashes. Review the generated diff.
+
+Do not hand-edit `assets/data/search-index.json`, `dist-pages/`, or audit output.
+Scripts that mutate HTML should be idempotent and retain their existing `AUTOGEN` marker
 conventions where applicable. `scripts/post-merge.sh` verifies core files,
 rebuilds the search index, and runs the canonical audit. Review its effects
 before running it in a worktree with uncommitted content changes.
@@ -251,10 +287,18 @@ before running it in a worktree with uncommitted content changes.
 ### CI and deployment
 
 `.github/workflows/validate.yml` runs on pushes and pull requests targeting
-`main`. It installs Python 3.11 tooling, runs the site validator and link
-checker, rebuilds the search index, and verifies that the generated index
-exists. The static deployment publishes the repository root. `CNAME` declares
-`askjamie.bot`, and `robots.txt` points crawlers to `sitemap.xml`.
+`main`. It checks source structure, asset fingerprints, links, Python
+regressions, search-index freshness, browser responsive behavior, JavaScript
+smoke behavior, and the canonical audit. On a successful push to `main`, it
+prepares `.scratch/pages-release/` and passes that exact commit-named artifact
+to a deploy job that depends on validation. The isolated deploy runner downloads
+that artifact into `dist-pages/`. `CNAME` declares `askjamie.bot`.
+
+`hosted-js-smoke.yml` and `public-gpt-links.yml` provide separate scheduled
+hosted and outbound checks with retained reports. Their presence does not
+prove the most recent run passed. `.replit` still declares `publicDir = "."`
+for a separate Replit deployment configuration; that is not the GitHub Pages
+artifact boundary. No Replit publication is implied by the local preview.
 
 ## 5. Safe change conventions
 

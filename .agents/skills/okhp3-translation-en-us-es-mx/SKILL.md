@@ -187,6 +187,14 @@ and `Next action`. State the actual direction in every handoff:
 
 ## Evaluation and release
 
+From this package directory, run `python3 -B -m unittest discover -s tests
+-p "test_*.py" -v`. The discoverable `tests/test_en_us_to_es_mx.py` suite
+invokes the canonical hyphenated planner and validator and includes all 10
+current helper tests. On September 5, 2026, the former
+`tests/test-en-us-to-es-mx.py` implementation was consolidated into that
+discoverable filename; dated benchmark references retain the former path as
+historical provenance.
+
 `evals/evals.json` includes normal, pair-boundary, serial-mediation, and
 unsafe-publication cases. The current `1.0.0` architecture has analytical
 evidence only; helper tests prove deterministic behavior, not Mexican

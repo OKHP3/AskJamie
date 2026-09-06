@@ -1,0 +1,108 @@
+{
+  "checked_utc": "2026-09-05T17:17:08.315990+00:00",
+  "results": [
+    {
+      "name": "structural-final",
+      "command": [
+        "python3",
+        "scripts/validate-site.py"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "index-final",
+      "command": [
+        "python3",
+        "scripts/build-search-index.py",
+        "--check"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "cache-final",
+      "command": [
+        "python3",
+        "scripts/cache-bust.py",
+        "--check"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "csp-final",
+      "command": [
+        "python3",
+        "scripts/generate-csp.py",
+        "--check"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "links-final",
+      "command": [
+        "python3",
+        "scripts/check-links.py"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "audit-final",
+      "command": [
+        "python3",
+        "scripts/audit-site.py",
+        "--quiet",
+        "--report",
+        "assets/docs/assessment-2026-09-05/evidence/canonical-audit-final.md"
+      ],
+      "exit_code": 1
+    },
+    {
+      "name": "artifact-regressions-final",
+      "command": [
+        "python3",
+        "-B",
+        "-m",
+        "unittest",
+        "tests.test_pages_artifact_safety",
+        "-v"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "artifact-final",
+      "command": [
+        "python3",
+        "scripts/prepare-pages-artifact.py",
+        "--output",
+        ".scratch/pages-release"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "syntax-app",
+      "command": [
+        "node",
+        "--check",
+        "assets/js/app.js"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "syntax-mermaid",
+      "command": [
+        "node",
+        "--check",
+        "assets/js/mermaid-init.js"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "whitespace",
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exit_code": 0
+    }
+  ]
+}

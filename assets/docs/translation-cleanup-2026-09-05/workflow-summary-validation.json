@@ -1,0 +1,16 @@
+{
+  "bash_syntax": "PASS",
+  "cases": [
+    {
+      "configuration_fixture_present": false,
+      "exit_code": 0,
+      "summary": "## Translation drift check: not configured\n\nNo translation routes or target locales are configured for AskJamie yet.\nThe detector will report an intentional no-op. A successful job is not a translated-site readiness result.\nThe exact-pair skills and their tests remain available for the prototype.\n"
+    },
+    {
+      "configuration_fixture_present": true,
+      "exit_code": 0,
+      "summary": "## Translation drift check: configuration found\n\nThe detector will validate i18n/sync.config.json and check only its declared routes and target locales.\nIts result does not establish translation quality or publication approval.\n"
+    }
+  ],
+  "boundary": "Tests only authored summary step in disposable fixtures; no real site configuration or ledger created. No GitHub workflow run was triggered."
+}

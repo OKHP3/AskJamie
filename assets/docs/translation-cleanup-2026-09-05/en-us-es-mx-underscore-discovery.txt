@@ -1,0 +1,13 @@
+test_planner_blocks_missing_voice_profile_or_dictionary (test_en_us_to_es_mx.EnUsToEsMxValidatorTests.test_planner_blocks_missing_voice_profile_or_dictionary) ... ok
+test_planner_reports_only_es_mx_targets_without_writing (test_en_us_to_es_mx.EnUsToEsMxValidatorTests.test_planner_reports_only_es_mx_targets_without_writing) ... ok
+test_protected_token_drift_fails (test_en_us_to_es_mx.EnUsToEsMxValidatorTests.test_protected_token_drift_fails) ... ok
+test_rejects_any_other_language_pair_or_many_targets (test_en_us_to_es_mx.EnUsToEsMxValidatorTests.test_rejects_any_other_language_pair_or_many_targets) ... ok
+test_rejects_specialist_register_without_completed_plainspoken_stage (test_en_us_to_es_mx.EnUsToEsMxValidatorTests.test_rejects_specialist_register_without_completed_plainspoken_stage) ... ok
+test_valid_pair_and_protected_tokens_pass (test_en_us_to_es_mx.EnUsToEsMxValidatorTests.test_valid_pair_and_protected_tokens_pass) ... ok
+test_validator_rejects_empty_or_wrong_pair_dictionary (test_en_us_to_es_mx.EnUsToEsMxValidatorTests.test_validator_rejects_empty_or_wrong_pair_dictionary) ... ok
+test_validator_rejects_incomplete_voice_profile (test_en_us_to_es_mx.EnUsToEsMxValidatorTests.test_validator_rejects_incomplete_voice_profile) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.295s
+
+OK

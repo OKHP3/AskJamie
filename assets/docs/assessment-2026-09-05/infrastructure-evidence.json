@@ -1,0 +1,68 @@
+{
+  "date": "2026-09-05",
+  "baseline": "fd1ea19",
+  "scope": "Infrastructure Worker authorized packaging remediation",
+  "checks": {
+    "stdlib_safety_tests": {
+      "status": "PASS",
+      "count": 15,
+      "command": "python3 -B -m unittest tests.test_pages_artifact_safety -v"
+    },
+    "repeat_build": {
+      "status": "PASS",
+      "count": 2,
+      "manifest": {
+        "files": 312,
+        "sha256": "ce79ce91eca2c80808fcb896c36919c93ec2b2c2278067867e839ce914eb0fb9",
+        "root_files": [
+          "404.html",
+          "CNAME",
+          "_headers",
+          "favicon.ico",
+          "humans.txt",
+          "index.html",
+          "llms.txt",
+          "robots.txt",
+          "site.webmanifest",
+          "sitemap.xml",
+          "under-construction.html"
+        ],
+        "asset_directories": [
+          "css",
+          "data",
+          "fonts",
+          "img",
+          "js",
+          "vendor"
+        ]
+      }
+    },
+    "full_pytest": {
+      "status": "NOT RUN",
+      "reason": "No installed pytest; no dependency installation authorized"
+    },
+    "hosted_release": {
+      "status": "NOT RUN",
+      "reason": "No publishing performed"
+    },
+    "source_inventory_fixtures": {
+      "status": "PASS",
+      "covers": [
+        "nested scratch HTML",
+        "tracked scratch CSP input",
+        "generated-only broken link",
+        "privacy/font source collectors"
+      ]
+    },
+    "transport_contract": {
+      "status": "PASS",
+      "include_hidden_files": true,
+      "scope": "filtered validated artifact only"
+    }
+  },
+  "artifact_bytes": 114579259,
+  "source_pdn_count_preserved": 2,
+  "baseline_candidate_files": 319,
+  "baseline_candidate_bytes": 130074690,
+  "remaining_boundary": "Directory allowlist still permits ordinary nonhidden files; no general secret scanner or exact file publication manifest."
+}

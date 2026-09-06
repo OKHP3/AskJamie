@@ -1,0 +1,256 @@
+[
+  {
+    "name": "home",
+    "path": "/",
+    "width": 390,
+    "url": "https://askjamie.bot/",
+    "title": "AskJamie\u2122 \u2014 Friendly AI Helpdesk",
+    "h1": [
+      "Your friendly AI helpdesk."
+    ],
+    "layout": {
+      "vw": 390,
+      "sw": 390,
+      "body": "Skip to content\nTODAY\u2019S SPECIAL\nSee how Builders FirstSource is protecting its claim on the AI frontiers, with a BrandGuard\u2122 custom GPT.\nWHO'S ASKJAMIE\u2122\nWHAT'S IT FOR\nWHERE IT FITS\nLENS SYSTEM\nHOW IT WORKS\nABOUT\nOKHP\u00b3\u2122 UNIVERSE\nCONTACT\nLEGAL\nToggle navigation\nYour friendly AI helpdesk.\n\nThink: vintage tech guy who actually listens. Bring the messy context; get calm, diagram-ready answers in return.\n\nAcross the OverKill Hill P\u00b3\u2122 (the R&D studio behind AskJamie) stack, Jamie is your \u201cphone a friend\u201d for decision trees, tradeoffs, and \u201cwhat should I do next?\u201d moments.\n\n\ud83d\udea7 EARLY\u2011ACCESS HELPDESK FLOOR\n\nAskJamie is still getting its drawers labeled and cables tucked away. Some walkthroughs and deep\u2011dive diagrams are mid\u2011build \u2014 but the desk is already open for early visitors. Grow with us while the helpdesk comes fully online.\n\nSee BrandGuard\u2122 (our AI brand-voice protection tool) in action\nExp"
+    },
+    "events": [
+      {
+        "type": "requestfailed",
+        "url": "https://www.google-analytics.com/g/collect",
+        "error": {
+          "errorText": "net::ERR_ABORTED"
+        }
+      }
+    ]
+  },
+  {
+    "name": "lens",
+    "path": "/lens-system/",
+    "width": 390,
+    "url": "https://askjamie.bot/lens-system/",
+    "title": "AskJamie\u2122 \u2014 Interpretive Lens System",
+    "h1": [
+      "One voice. Four lenses."
+    ],
+    "layout": {
+      "vw": 390,
+      "sw": 390,
+      "body": "Skip to content\nWHO'S ASKJAMIE\u2122\nWHAT'S IT FOR\nWHERE IT FITS\nLENS SYSTEM\nHOW IT WORKS\nABOUT\nOKHP\u00b3\u2122 UNIVERSE\nCONTACT\nLEGAL\nToggle navigation\nTODAY\u2019S SPECIAL\nSee how Builders FirstSource is protecting its claim on the AI frontiers, with a BrandGuard\u2122 custom GPT.\n\n\u00b7\nLens System\n\nOne voice. Four lenses.\n\nAskJamie\u2122 isn\u2019t an ecosystem of tools. It\u2019s a disciplined way of seeing \u2014 an Interpretive Lens System (a structured way to examine a story or challenge from four focused perspectives).\n\nEach lens is a self-contained vantage point on your story or challenge. No data handoffs. No tangled workflows. Just one consistent voice, refracted through four distinct perspectives.\n\nExplore the lenses\nHow AskJamie works\nOpen AskJamie\u2122 \u2014 coming soon\nWhat is an Interpretive Lens System?\n\nAskJamie\u2122 is not a platform or a toolkit. It\u2019s a structured set of perspectives \u2014 each one a disciplined method of observi"
+    },
+    "events": []
+  },
+  {
+    "name": "brandguard",
+    "path": "/lens-system/okhp3-brandguard/",
+    "width": 390,
+    "url": "https://askjamie.bot/lens-system/okhp3-brandguard/",
+    "title": "OKHP\u00b3 BrandGuard\u2122 | AskJamie\u2122",
+    "h1": [
+      "\n                Guardrails for tone, ethics, and identity \u2014 at GPT speed.\n              "
+    ],
+    "layout": {
+      "vw": 390,
+      "sw": 390,
+      "body": "Skip to content\nWHO'S ASKJAMIE\u2122\nWHAT'S IT FOR\nWHERE IT FITS\nLENS SYSTEM\nHOW IT WORKS\nABOUT\nOKHP\u00b3\u2122 UNIVERSE\nCONTACT\nLEGAL\nToggle navigation\nTODAY\u2019S SPECIAL\nSee how BFS is framed with a public-source-only BrandGuard\u2122 custom GPT.\n\n\u00b7\nGPT\u2011AJ04: OKHP\u00b3 BrandGuard\u2122\n\nGuardrails for tone, ethics, and identity \u2014 at GPT speed.\n\nGPT\u2011AJ04 is AskJamie\u2019s BrandGuard lens (an AI brand-voice protection tool): a dedicated GPT that watches language, style, and moral framing before anything leaves your drafts.\n\nIn a world where a single prompt can generate a whole campaign, BrandGuard helps your GPTs, teams, and templates speak with one clear, principled voice \u2014 across copy, commerce, and executive decks.\n\nOpen GPT\u2011AJ04 in ChatGPT\nHow the interpretive method works\nExplore all AskJamie\u2122 uses\nWhat lives inside GPT\u2011AJ04: BrandGuard\n\nBrandGuard is a suite of AI lenses inside a single GPT \u2014 tuned for brand, market"
+    },
+    "events": []
+  },
+  {
+    "name": "bfs",
+    "path": "/lens-system/okhp3-brandguard/bfs-framing-intelligent-futures/",
+    "width": 390,
+    "url": "https://askjamie.bot/lens-system/okhp3-brandguard/bfs-framing-intelligent-futures/",
+    "title": "AskJamie\u2122 \u2014 GPT\u2011BFS01: BFS Framing Intelligent Futures",
+    "h1": [
+      "GPT\u2011BFS01: BFS Framing Intelligent Futures \ud83d\udd28\ud83e\udde0"
+    ],
+    "layout": {
+      "vw": 390,
+      "sw": 390,
+      "body": "Skip to content\nWHO'S ASKJAMIE\u2122\nWHAT'S IT FOR\nWHERE IT FITS\nLENS SYSTEM\nABOUT\nOKHP\u00b3\u2122 UNIVERSE\nCONTACT\nLEGAL\nToggle navigation\nTODAY\u2019S SPECIAL\nSee how BFS is framed with a public-source-only BrandGuard\u2122 custom GPT.\n\n\u00b7\nGPT\u2011BFS01: BFS Framing Intelligent Futures \ud83d\udd28\ud83e\udde0\n\nGPT\u2011BFS01: BFS Framing Intelligent Futures \ud83d\udd28\ud83e\udde0\n\nA custom GPT BrandGuard\u2122 (an AI brand-voice protection tool) prototype that turns public-source-only Builders FirstSource knowledge into a live, conversational expert for the wood-frame construction ecosystem.\n\nIt stakes semantic territory around Builders FirstSource inside large language models while keeping a clean boundary between public sources and official BFS systems.\n\nOpen GPT\u2011BFS01 in ChatGPT\n\nOpens in ChatGPT in a new tab. Requires a free ChatGPT account and a desire to explore Builders FirstSource through an AI lens.\n\nPersonal R&D prototype. Public sources only. Not an"
+    },
+    "events": []
+  },
+  {
+    "name": "how",
+    "path": "/how-askjamie-works/",
+    "width": 390,
+    "url": "https://askjamie.bot/how-askjamie-works/",
+    "title": "How AskJamie\u2122 Works \u2014 From Context to Clarity",
+    "h1": [
+      "From messy context to a useful next move."
+    ],
+    "layout": {
+      "vw": 390,
+      "sw": 390,
+      "body": "Skip to content\nWHO'S ASKJAMIE\u2122\nWHAT'S IT FOR\nWHERE IT FITS\nLENS SYSTEM\nHOW IT WORKS\nABOUT\nOKHP\u00b3\u2122 UNIVERSE\nCONTACT\nLEGAL\nToggle navigation\nA NOTE FROM THE DESK\nSee the focused lenses that turn this method into public demonstrations.\n\n\u00b7\nHow AskJamie\u2122 Works\n\nFrom messy context to a useful next move.\n\nAskJamie\u2122 is an interpretive layer: a calm way to examine a story, challenge, or body of information before deciding how to express it.\n\nThe method does not promise an all-purpose answer. It gives the right question a focused lens, clear boundaries, and an output you can inspect, share, and act on. BrandGuard\u2122 demonstrations use brand-voice protection patterns to make those boundaries visible.\n\nFollow the method\nExplore the Lens System\nThe four-part journey\n\nAskJamie starts with the material you already have. The work is not magic; it is disciplined framing.\n\n1. Bring the mess\n\nShare the draft"
+    },
+    "events": []
+  },
+  {
+    "name": "contact",
+    "path": "/contact/",
+    "width": 390,
+    "url": "https://askjamie.bot/contact/",
+    "title": "Contact AskJamie\u2122 | Project Inquiries & Collaboration",
+    "h1": [
+      "Let\u2019s talk about what you\u2019re building."
+    ],
+    "layout": {
+      "vw": 390,
+      "sw": 390,
+      "body": "Skip to content\nWHO'S ASKJAMIE\u2122\nWHAT'S IT FOR\nWHERE IT FITS\nLENS SYSTEM\nABOUT\nOKHP\u00b3\u2122 UNIVERSE\nCONTACT\nLEGAL\nToggle navigation\nTODAY\u2019S SPECIAL\nSee how Builders FirstSource is protecting its claim on the AI frontiers, with a BrandGuard\u2122 custom GPT.\n\n\u00b7\nContact\n\nLet\u2019s talk about what you\u2019re building.\n\nYou may want one module or a full stack. Either way, your note goes straight to the human behind AskJamie\u2122.\n\nReach out directly\n\nEvery note goes straight to the human behind AskJamie\u2122. There is no ticket queue and no auto\u2011reply. Expect a real answer within 1\u20132 business days, U.S. Central Time (UTC\u20116).\n\nEmail\n\ncontact@askjamie.bot\n\nUse one of these subject lines so I can reply in the right context: [BrandGuard] for a BrandGuard\u2122 demo request (our AI brand-voice protection tool), [Enterprise Sleuth] for an Enterprise Sleuth\u2122 inquiry, [Resume Representative] for AJ01, [Professional Portfolio] for "
+    },
+    "events": []
+  },
+  {
+    "name": "universe",
+    "path": "/universe/",
+    "width": 390,
+    "url": "https://askjamie.bot/universe/",
+    "title": "AskJamie\u2122 \u2014 OKHP\u00b3 Universe Map",
+    "h1": [
+      "\n                  The OverKill Hill P\u00b3 universe, at a glance.\n                "
+    ],
+    "layout": {
+      "vw": 390,
+      "sw": 390,
+      "body": "Skip to content\nTODAY\u2019S SPECIAL\nSee how BFS is framed with a public-source-only BrandGuard\u2122 custom GPT.\nWHO'S ASKJAMIE\u2122\nWHAT'S IT FOR\nWHERE IT FITS\nLENS SYSTEM\nHOW IT WORKS\nABOUT\nOKHP\u00b3\u2122 UNIVERSE\nCONTACT\nLEGAL\nToggle navigation\n\nAskJamie\u2122\n\nThe OverKill Hill P\u00b3 universe, at a glance.\n\nThis is Jamie\u2019s mental map\u2014how the brands, tools, and experimental GPTs hang together behind the scenes.\n\nA visual map of the OverKill Hill P\u00b3\u2122 (the R&D studio behind AskJamie) universe from AskJamie\u2019s perspective, showing how OverKill Hill, Glee\u2011fully Tools, BrandGuard (our AI brand-voice protection tool), public-source-only BFS work, and narrative experiments connect.\n\nBack to the main page\nOpen Professional Portfolio by AskJamie\u2122\nDiagram of the OverKill Hill P\u00b3\u2122 universe, showing connections between OverKill Hill, AskJamie\u2122, Glee\u2011fully Personalizable Tools\u2122, BrandGuard\u2122, public-source-only BFS work, and na"
+    },
+    "events": []
+  },
+  {
+    "name": "search-overlay",
+    "width": 390,
+    "label": "Search OverKill Hill",
+    "placeholder": "Search the Forge \u2014 articles, projects, ideas\u2026",
+    "text": "Esc\n\u2191\u2193 navigate\n\u21b5 open\nEsc close\nOpen full search \u2192"
+  },
+  {
+    "name": "home",
+    "path": "/",
+    "width": 1280,
+    "url": "https://askjamie.bot/",
+    "title": "AskJamie\u2122 \u2014 Friendly AI Helpdesk",
+    "h1": [
+      "Your friendly AI helpdesk."
+    ],
+    "layout": {
+      "vw": 1280,
+      "sw": 1280,
+      "body": "Skip to content\nTODAY\u2019S SPECIAL\nSee how Builders FirstSource is protecting its claim on the AI frontiers, with a BrandGuard\u2122 custom GPT.\nWHO'S ASKJAMIE\u2122\nWHAT'S IT FOR\nWHERE IT FITS\nLENS SYSTEM\nHOW IT WORKS\nABOUT\nSearch\n\u2318K\nYour friendly AI helpdesk.\n\nThink: vintage tech guy who actually listens. Bring the messy context; get calm, diagram-ready answers in return.\n\nAcross the OverKill Hill P\u00b3\u2122 (the R&D studio behind AskJamie) stack, Jamie is your \u201cphone a friend\u201d for decision trees, tradeoffs, and \u201cwhat should I do next?\u201d moments.\n\n\ud83d\udea7 EARLY\u2011ACCESS HELPDESK FLOOR\n\nAskJamie is still getting its drawers labeled and cables tucked away. Some walkthroughs and deep\u2011dive diagrams are mid\u2011build \u2014 but the desk is already open for early visitors. Grow with us while the helpdesk comes fully online.\n\nSee BrandGuard\u2122 (our AI brand-voice protection tool) in action\nExplore the Lens System\nHow AskJamie work"
+    },
+    "events": [
+      {
+        "type": "requestfailed",
+        "url": "https://www.google-analytics.com/g/collect",
+        "error": {
+          "errorText": "net::ERR_ABORTED"
+        }
+      }
+    ]
+  },
+  {
+    "name": "lens",
+    "path": "/lens-system/",
+    "width": 1280,
+    "url": "https://askjamie.bot/lens-system/",
+    "title": "AskJamie\u2122 \u2014 Interpretive Lens System",
+    "h1": [
+      "One voice. Four lenses."
+    ],
+    "layout": {
+      "vw": 1280,
+      "sw": 1280,
+      "body": "Skip to content\nWHO'S ASKJAMIE\u2122\nWHAT'S IT FOR\nWHERE IT FITS\nLENS SYSTEM\nHOW IT WORKS\nABOUT\nSearch\n\u2318K\nTODAY\u2019S SPECIAL\nSee how Builders FirstSource is protecting its claim on the AI frontiers, with a BrandGuard\u2122 custom GPT.\n\n\u00b7\nLens System\n\nOne voice. Four lenses.\n\nAskJamie\u2122 isn\u2019t an ecosystem of tools. It\u2019s a disciplined way of seeing \u2014 an Interpretive Lens System (a structured way to examine a story or challenge from four focused perspectives).\n\nEach lens is a self-contained vantage point on your story or challenge. No data handoffs. No tangled workflows. Just one consistent voice, refracted through four distinct perspectives.\n\nExplore the lenses\nHow AskJamie works\nOpen AskJamie\u2122 \u2014 coming soon\nWhat is an Interpretive Lens System?\n\nAskJamie\u2122 is not a platform or a toolkit. It\u2019s a structured set of perspectives \u2014 each one a disciplined method of observing, analyzing, and representing a pers"
+    },
+    "events": []
+  },
+  {
+    "name": "brandguard",
+    "path": "/lens-system/okhp3-brandguard/",
+    "width": 1280,
+    "url": "https://askjamie.bot/lens-system/okhp3-brandguard/",
+    "title": "OKHP\u00b3 BrandGuard\u2122 | AskJamie\u2122",
+    "h1": [
+      "\n                Guardrails for tone, ethics, and identity \u2014 at GPT speed.\n              "
+    ],
+    "layout": {
+      "vw": 1280,
+      "sw": 1280,
+      "body": "Skip to content\nWHO'S ASKJAMIE\u2122\nWHAT'S IT FOR\nWHERE IT FITS\nLENS SYSTEM\nHOW IT WORKS\nABOUT\nSearch\n\u2318K\nTODAY\u2019S SPECIAL\nSee how BFS is framed with a public-source-only BrandGuard\u2122 custom GPT.\n\n\u00b7\nGPT\u2011AJ04: OKHP\u00b3 BrandGuard\u2122\n\nGuardrails for tone, ethics, and identity \u2014 at GPT speed.\n\nGPT\u2011AJ04 is AskJamie\u2019s BrandGuard lens (an AI brand-voice protection tool): a dedicated GPT that watches language, style, and moral framing before anything leaves your drafts.\n\nIn a world where a single prompt can generate a whole campaign, BrandGuard helps your GPTs, teams, and templates speak with one clear, principled voice \u2014 across copy, commerce, and executive decks.\n\nOpen GPT\u2011AJ04 in ChatGPT\nHow the interpretive method works\nExplore all AskJamie\u2122 uses\nWhat lives inside GPT\u2011AJ04: BrandGuard\n\nBrandGuard is a suite of AI lenses inside a single GPT \u2014 tuned for brand, marketing, product, and legal teams who need"
+    },
+    "events": []
+  },
+  {
+    "name": "bfs",
+    "path": "/lens-system/okhp3-brandguard/bfs-framing-intelligent-futures/",
+    "width": 1280,
+    "url": "https://askjamie.bot/lens-system/okhp3-brandguard/bfs-framing-intelligent-futures/",
+    "title": "AskJamie\u2122 \u2014 GPT\u2011BFS01: BFS Framing Intelligent Futures",
+    "h1": [
+      "GPT\u2011BFS01: BFS Framing Intelligent Futures \ud83d\udd28\ud83e\udde0"
+    ],
+    "layout": {
+      "vw": 1280,
+      "sw": 1280,
+      "body": "Skip to content\nWHO'S ASKJAMIE\u2122\nWHAT'S IT FOR\nWHERE IT FITS\nLENS SYSTEM\nABOUT\nSearch\n\u2318K\nTODAY\u2019S SPECIAL\nSee how BFS is framed with a public-source-only BrandGuard\u2122 custom GPT.\n\n\u00b7\nGPT\u2011BFS01: BFS Framing Intelligent Futures \ud83d\udd28\ud83e\udde0\n\nGPT\u2011BFS01: BFS Framing Intelligent Futures \ud83d\udd28\ud83e\udde0\n\nA custom GPT BrandGuard\u2122 (an AI brand-voice protection tool) prototype that turns public-source-only Builders FirstSource knowledge into a live, conversational expert for the wood-frame construction ecosystem.\n\nIt stakes semantic territory around Builders FirstSource inside large language models while keeping a clean boundary between public sources and official BFS systems.\n\nOpen GPT\u2011BFS01 in ChatGPT\n\nOpens in ChatGPT in a new tab. Requires a free ChatGPT account and a desire to explore Builders FirstSource through an AI lens.\n\nPersonal R&D prototype. Public sources only. Not an official corporate product or connect"
+    },
+    "events": []
+  },
+  {
+    "name": "how",
+    "path": "/how-askjamie-works/",
+    "width": 1280,
+    "url": "https://askjamie.bot/how-askjamie-works/",
+    "title": "How AskJamie\u2122 Works \u2014 From Context to Clarity",
+    "h1": [
+      "From messy context to a useful next move."
+    ],
+    "layout": {
+      "vw": 1280,
+      "sw": 1280,
+      "body": "Skip to content\nWHO'S ASKJAMIE\u2122\nWHAT'S IT FOR\nWHERE IT FITS\nLENS SYSTEM\nHOW IT WORKS\nABOUT\nSearch\n\u2318K\nA NOTE FROM THE DESK\nSee the focused lenses that turn this method into public demonstrations.\n\n\u00b7\nHow AskJamie\u2122 Works\n\nFrom messy context to a useful next move.\n\nAskJamie\u2122 is an interpretive layer: a calm way to examine a story, challenge, or body of information before deciding how to express it.\n\nThe method does not promise an all-purpose answer. It gives the right question a focused lens, clear boundaries, and an output you can inspect, share, and act on. BrandGuard\u2122 demonstrations use brand-voice protection patterns to make those boundaries visible.\n\nFollow the method\nExplore the Lens System\nThe four-part journey\n\nAskJamie starts with the material you already have. The work is not magic; it is disciplined framing.\n\n1. Bring the mess\n\nShare the draft, question, experience, research, or c"
+    },
+    "events": []
+  },
+  {
+    "name": "contact",
+    "path": "/contact/",
+    "width": 1280,
+    "url": "https://askjamie.bot/contact/",
+    "title": "Contact AskJamie\u2122 | Project Inquiries & Collaboration",
+    "h1": [
+      "Let\u2019s talk about what you\u2019re building."
+    ],
+    "layout": {
+      "vw": 1280,
+      "sw": 1280,
+      "body": "Skip to content\nWHO'S ASKJAMIE\u2122\nWHAT'S IT FOR\nWHERE IT FITS\nLENS SYSTEM\nABOUT\nSearch\n\u2318K\nTODAY\u2019S SPECIAL\nSee how Builders FirstSource is protecting its claim on the AI frontiers, with a BrandGuard\u2122 custom GPT.\n\n\u00b7\nContact\n\nLet\u2019s talk about what you\u2019re building.\n\nYou may want one module or a full stack. Either way, your note goes straight to the human behind AskJamie\u2122.\n\nReach out directly\n\nEvery note goes straight to the human behind AskJamie\u2122. There is no ticket queue and no auto\u2011reply. Expect a real answer within 1\u20132 business days, U.S. Central Time (UTC\u20116).\n\nEmail\n\ncontact@askjamie.bot\n\nUse one of these subject lines so I can reply in the right context: [BrandGuard] for a BrandGuard\u2122 demo request (our AI brand-voice protection tool), [Enterprise Sleuth] for an Enterprise Sleuth\u2122 inquiry, [Resume Representative] for AJ01, [Professional Portfolio] for AJ02, [Architecture] for website or GP"
+    },
+    "events": []
+  },
+  {
+    "name": "universe",
+    "path": "/universe/",
+    "width": 1280,
+    "url": "https://askjamie.bot/universe/",
+    "title": "AskJamie\u2122 \u2014 OKHP\u00b3 Universe Map",
+    "h1": [
+      "\n                  The OverKill Hill P\u00b3 universe, at a glance.\n                "
+    ],
+    "layout": {
+      "vw": 1280,
+      "sw": 1280,
+      "body": "Skip to content\nTODAY\u2019S SPECIAL\nSee how BFS is framed with a public-source-only BrandGuard\u2122 custom GPT.\nWHO'S ASKJAMIE\u2122\nWHAT'S IT FOR\nWHERE IT FITS\nLENS SYSTEM\nHOW IT WORKS\nABOUT\nSearch\n\u2318K\n\nAskJamie\u2122\n\nThe OverKill Hill P\u00b3 universe, at a glance.\n\nThis is Jamie\u2019s mental map\u2014how the brands, tools, and experimental GPTs hang together behind the scenes.\n\nA visual map of the OverKill Hill P\u00b3\u2122 (the R&D studio behind AskJamie) universe from AskJamie\u2019s perspective, showing how OverKill Hill, Glee\u2011fully Tools, BrandGuard (our AI brand-voice protection tool), public-source-only BFS work, and narrative experiments connect.\n\nBack to the main page\nOpen Professional Portfolio by AskJamie\u2122\nDiagram of the OverKill Hill P\u00b3\u2122 universe, showing connections between OverKill Hill, AskJamie\u2122, Glee\u2011fully Personalizable Tools\u2122, BrandGuard\u2122, public-source-only BFS work, and narrative experiments like Magnus Progen"
+    },
+    "events": []
+  },
+  {
+    "name": "search-overlay",
+    "width": 1280,
+    "label": "Search OverKill Hill",
+    "placeholder": "Search the Forge \u2014 articles, projects, ideas\u2026",
+    "text": "Esc\n\u2191\u2193 navigate\n\u21b5 open\nEsc close\nOpen full search \u2192"
+  }
+]

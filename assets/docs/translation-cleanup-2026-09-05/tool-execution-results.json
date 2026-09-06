@@ -1,0 +1,288 @@
+[
+  {
+    "pair": "en-us-de-de",
+    "kind": "hyphen-direct",
+    "command": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "-B",
+      ".agents/skills/okhp3-translation-en-us-de-de/tests/test-en-us-to-de-de.py",
+      "-v"
+    ],
+    "exit_code": 0,
+    "tests": 10,
+    "evidence": "en-us-de-de-hyphen-direct.txt"
+  },
+  {
+    "pair": "en-us-de-de",
+    "kind": "underscore-discovery",
+    "command": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "-B",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      ".agents/skills/okhp3-translation-en-us-de-de/tests",
+      "-p",
+      "test_*.py",
+      "-v"
+    ],
+    "exit_code": 0,
+    "tests": 8,
+    "evidence": "en-us-de-de-underscore-discovery.txt"
+  },
+  {
+    "pair": "en-us-de-de",
+    "kind": "hyphen-discovery",
+    "command": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "-B",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      ".agents/skills/okhp3-translation-en-us-de-de/tests",
+      "-p",
+      "test-*.py",
+      "-v"
+    ],
+    "exit_code": 5,
+    "tests": 0,
+    "evidence": "en-us-de-de-hyphen-discovery.txt"
+  },
+  {
+    "pair": "en-us-en-uk",
+    "kind": "hyphen-direct",
+    "command": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "-B",
+      ".agents/skills/okhp3-translation-en-us-en-uk/tests/test-en-us-to-en-uk.py",
+      "-v"
+    ],
+    "exit_code": 0,
+    "tests": 10,
+    "evidence": "en-us-en-uk-hyphen-direct.txt"
+  },
+  {
+    "pair": "en-us-en-uk",
+    "kind": "underscore-discovery",
+    "command": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "-B",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      ".agents/skills/okhp3-translation-en-us-en-uk/tests",
+      "-p",
+      "test_*.py",
+      "-v"
+    ],
+    "exit_code": 0,
+    "tests": 8,
+    "evidence": "en-us-en-uk-underscore-discovery.txt"
+  },
+  {
+    "pair": "en-us-en-uk",
+    "kind": "hyphen-discovery",
+    "command": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "-B",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      ".agents/skills/okhp3-translation-en-us-en-uk/tests",
+      "-p",
+      "test-*.py",
+      "-v"
+    ],
+    "exit_code": 5,
+    "tests": 0,
+    "evidence": "en-us-en-uk-hyphen-discovery.txt"
+  },
+  {
+    "pair": "en-us-es-es",
+    "kind": "hyphen-direct",
+    "command": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "-B",
+      ".agents/skills/okhp3-translation-en-us-es-es/tests/test-en-us-to-es-es.py",
+      "-v"
+    ],
+    "exit_code": 0,
+    "tests": 10,
+    "evidence": "en-us-es-es-hyphen-direct.txt"
+  },
+  {
+    "pair": "en-us-es-es",
+    "kind": "underscore-discovery",
+    "command": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "-B",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      ".agents/skills/okhp3-translation-en-us-es-es/tests",
+      "-p",
+      "test_*.py",
+      "-v"
+    ],
+    "exit_code": 0,
+    "tests": 8,
+    "evidence": "en-us-es-es-underscore-discovery.txt"
+  },
+  {
+    "pair": "en-us-es-es",
+    "kind": "hyphen-discovery",
+    "command": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "-B",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      ".agents/skills/okhp3-translation-en-us-es-es/tests",
+      "-p",
+      "test-*.py",
+      "-v"
+    ],
+    "exit_code": 5,
+    "tests": 0,
+    "evidence": "en-us-es-es-hyphen-discovery.txt"
+  },
+  {
+    "pair": "en-us-es-mx",
+    "kind": "hyphen-direct",
+    "command": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "-B",
+      ".agents/skills/okhp3-translation-en-us-es-mx/tests/test-en-us-to-es-mx.py",
+      "-v"
+    ],
+    "exit_code": 0,
+    "tests": 10,
+    "evidence": "en-us-es-mx-hyphen-direct.txt"
+  },
+  {
+    "pair": "en-us-es-mx",
+    "kind": "underscore-discovery",
+    "command": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "-B",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      ".agents/skills/okhp3-translation-en-us-es-mx/tests",
+      "-p",
+      "test_*.py",
+      "-v"
+    ],
+    "exit_code": 0,
+    "tests": 8,
+    "evidence": "en-us-es-mx-underscore-discovery.txt"
+  },
+  {
+    "pair": "en-us-es-mx",
+    "kind": "hyphen-discovery",
+    "command": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "-B",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      ".agents/skills/okhp3-translation-en-us-es-mx/tests",
+      "-p",
+      "test-*.py",
+      "-v"
+    ],
+    "exit_code": 5,
+    "tests": 0,
+    "evidence": "en-us-es-mx-hyphen-discovery.txt"
+  },
+  {
+    "pair": "en-us-fr-fr",
+    "kind": "hyphen-direct",
+    "command": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "-B",
+      ".agents/skills/okhp3-translation-en-us-fr-fr/tests/test-en-us-to-fr-fr.py",
+      "-v"
+    ],
+    "exit_code": 0,
+    "tests": 10,
+    "evidence": "en-us-fr-fr-hyphen-direct.txt"
+  },
+  {
+    "pair": "en-us-fr-fr",
+    "kind": "underscore-discovery",
+    "command": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "-B",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      ".agents/skills/okhp3-translation-en-us-fr-fr/tests",
+      "-p",
+      "test_*.py",
+      "-v"
+    ],
+    "exit_code": 0,
+    "tests": 8,
+    "evidence": "en-us-fr-fr-underscore-discovery.txt"
+  },
+  {
+    "pair": "en-us-fr-fr",
+    "kind": "hyphen-discovery",
+    "command": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "-B",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      ".agents/skills/okhp3-translation-en-us-fr-fr/tests",
+      "-p",
+      "test-*.py",
+      "-v"
+    ],
+    "exit_code": 5,
+    "tests": 0,
+    "evidence": "en-us-fr-fr-hyphen-discovery.txt"
+  },
+  {
+    "pair": "i18n",
+    "kind": "suite",
+    "command": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "-B",
+      ".agents/skills/okhp3-i18n-page-sync/tests/test_i18n_page_sync.py",
+      "-v"
+    ],
+    "exit_code": 0,
+    "tests": 8,
+    "evidence": "i18n-suite.txt"
+  },
+  {
+    "pair": "i18n",
+    "kind": "site-check",
+    "command": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "-B",
+      ".agents/skills/okhp3-i18n-page-sync/scripts/i18n-page-sync.py",
+      "--root",
+      ".",
+      "--mode",
+      "check",
+      "--format",
+      "json"
+    ],
+    "exit_code": 0,
+    "tests": null,
+    "evidence": "i18n-site-check.txt"
+  }
+]

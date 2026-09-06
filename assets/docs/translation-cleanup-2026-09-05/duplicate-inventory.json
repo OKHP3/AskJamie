@@ -1,0 +1,122 @@
+[
+  {
+    "hyphen_path": ".agents/skills/okhp3-translation-en-us-de-de/scripts/plan-en-us-to-de-de.py",
+    "underscore_path": ".agents/skills/okhp3-translation-en-us-de-de/scripts/plan_en_us_to_de_de.py",
+    "byte_identical": false,
+    "normalized_text_identical": false,
+    "hyphen_sha256": "fbe52774d167a2f9a9da9092911ce377a6ed1162fa20a962d9da2f82528b03b1",
+    "underscore_sha256": "f0990754142db67e6f2441f84ea207488cc675459e5c5aaadae2c3537e1dd221"
+  },
+  {
+    "hyphen_path": ".agents/skills/okhp3-translation-en-us-de-de/scripts/validate-en-us-to-de-de.py",
+    "underscore_path": ".agents/skills/okhp3-translation-en-us-de-de/scripts/validate_en_us_to_de_de.py",
+    "byte_identical": false,
+    "normalized_text_identical": false,
+    "hyphen_sha256": "0b4de60b266303b7b93f00057f5070cf32880cd1115357642d19f1c8b57de5a4",
+    "underscore_sha256": "2781a46cab14eb74c960ef80841f88310ab5cb3dc8ff1b63251431a6bd5164f2"
+  },
+  {
+    "hyphen_path": ".agents/skills/okhp3-translation-en-us-de-de/tests/test-en-us-to-de-de.py",
+    "underscore_path": ".agents/skills/okhp3-translation-en-us-de-de/tests/test_en_us_to_de_de.py",
+    "byte_identical": false,
+    "normalized_text_identical": false,
+    "hyphen_sha256": "4bba5c2fbbcfaca3b84bc82c1c2ea01298f79382dc8e0d377d798b121d1afdd2",
+    "underscore_sha256": "3eac7ca370574ee74a65ac40465c6de1f6d6af9e48177646a6f16b88c8529dec"
+  },
+  {
+    "hyphen_path": ".agents/skills/okhp3-translation-en-us-en-uk/scripts/plan-en-us-to-en-uk.py",
+    "underscore_path": ".agents/skills/okhp3-translation-en-us-en-uk/scripts/plan_en_us_to_en_uk.py",
+    "byte_identical": false,
+    "normalized_text_identical": false,
+    "hyphen_sha256": "64a1489cd9bc45fb742dcb23d80478edaf83a7342a978e052d352f71a426309e",
+    "underscore_sha256": "9ad1729bb0e98a437593ef454a74d4d38f52aaa0c7256748207c5c276dba3ed8"
+  },
+  {
+    "hyphen_path": ".agents/skills/okhp3-translation-en-us-en-uk/scripts/validate-en-us-to-en-uk.py",
+    "underscore_path": ".agents/skills/okhp3-translation-en-us-en-uk/scripts/validate_en_us_to_en_uk.py",
+    "byte_identical": false,
+    "normalized_text_identical": false,
+    "hyphen_sha256": "5733840faeda54d0025ab7b4fc7429a7fbef28439a96e9cd27f047401a8e08a4",
+    "underscore_sha256": "1a9325cadb941368a54414210553219e2a7e1fd4d433b97edc44367ff72c728e"
+  },
+  {
+    "hyphen_path": ".agents/skills/okhp3-translation-en-us-en-uk/tests/test-en-us-to-en-uk.py",
+    "underscore_path": ".agents/skills/okhp3-translation-en-us-en-uk/tests/test_en_us_to_en_uk.py",
+    "byte_identical": false,
+    "normalized_text_identical": false,
+    "hyphen_sha256": "9cb19edbf449278936cb004dfe296be9fd3f36c52db98f42ddb2d39f935010fc",
+    "underscore_sha256": "9d81b082ddd4e88e2638c918a23702f0b02009ff0a72932703ad19a04439dcb7"
+  },
+  {
+    "hyphen_path": ".agents/skills/okhp3-translation-en-us-es-es/scripts/plan-en-us-to-es-es.py",
+    "underscore_path": ".agents/skills/okhp3-translation-en-us-es-es/scripts/plan_en_us_to_es_es.py",
+    "byte_identical": false,
+    "normalized_text_identical": false,
+    "hyphen_sha256": "1f991bb6095e5cddf365d2c1bd5a67774a686fbe2f7db27b596c96bf67e0a1fb",
+    "underscore_sha256": "c1bdbe7ba7c31e684439195fc50c59e795afd6d7462d4afa810bf0a35272f9da"
+  },
+  {
+    "hyphen_path": ".agents/skills/okhp3-translation-en-us-es-es/scripts/validate-en-us-to-es-es.py",
+    "underscore_path": ".agents/skills/okhp3-translation-en-us-es-es/scripts/validate_en_us_to_es_es.py",
+    "byte_identical": false,
+    "normalized_text_identical": false,
+    "hyphen_sha256": "024e468b731245cd8c06c6a3717f8821e6773b73a893b5b6d39913be22cabc69",
+    "underscore_sha256": "56ba96a722ed8cc76106428da1c3932d54d8d078085f416df2759eaaf4a7f09f"
+  },
+  {
+    "hyphen_path": ".agents/skills/okhp3-translation-en-us-es-es/tests/test-en-us-to-es-es.py",
+    "underscore_path": ".agents/skills/okhp3-translation-en-us-es-es/tests/test_en_us_to_es_es.py",
+    "byte_identical": false,
+    "normalized_text_identical": false,
+    "hyphen_sha256": "6ec9708e25adf592f33c2c4cf1ed083b1ac7f874d00e2797c1d39b62d13604cd",
+    "underscore_sha256": "c99a9355753b52bf455b392bf6acb55de91d029f4bac93cdc14ba7654b499846"
+  },
+  {
+    "hyphen_path": ".agents/skills/okhp3-translation-en-us-es-mx/scripts/plan-en-us-to-es-mx.py",
+    "underscore_path": ".agents/skills/okhp3-translation-en-us-es-mx/scripts/plan_en_us_to_es_mx.py",
+    "byte_identical": false,
+    "normalized_text_identical": false,
+    "hyphen_sha256": "1f321ef8b432517c0672289ef0b62763623d209eaabf71f42937c00d89a25955",
+    "underscore_sha256": "c92c2b6bcc14185f90965e5bef65b9f0d59ce77bef357e029778569486b517dc"
+  },
+  {
+    "hyphen_path": ".agents/skills/okhp3-translation-en-us-es-mx/scripts/validate-en-us-to-es-mx.py",
+    "underscore_path": ".agents/skills/okhp3-translation-en-us-es-mx/scripts/validate_en_us_to_es_mx.py",
+    "byte_identical": false,
+    "normalized_text_identical": false,
+    "hyphen_sha256": "43b3e9f777d1f535f3de1f4d8ce6a4f1d950d80059ccc3ad69c53827d229de43",
+    "underscore_sha256": "5e23b0dd7b363a594dd824c3b2f57c74a9aa2c0356b0eb97cac2ec480086d620"
+  },
+  {
+    "hyphen_path": ".agents/skills/okhp3-translation-en-us-es-mx/tests/test-en-us-to-es-mx.py",
+    "underscore_path": ".agents/skills/okhp3-translation-en-us-es-mx/tests/test_en_us_to_es_mx.py",
+    "byte_identical": false,
+    "normalized_text_identical": false,
+    "hyphen_sha256": "620aa6d00c43f6df3e6ac5990ce72de989c55dd722e49d84971d6fdb4be048fa",
+    "underscore_sha256": "3e63670fe584c14820c18270fc0460c9d80f5113694a7e48790f1620a82fc838"
+  },
+  {
+    "hyphen_path": ".agents/skills/okhp3-translation-en-us-fr-fr/scripts/plan-en-us-to-fr-fr.py",
+    "underscore_path": ".agents/skills/okhp3-translation-en-us-fr-fr/scripts/plan_en_us_to_fr_fr.py",
+    "byte_identical": false,
+    "normalized_text_identical": false,
+    "hyphen_sha256": "310e9d517b03bb5b98de3edf59ab55fca5a63a7305e7c8ed9859f44ab9e2f8c2",
+    "underscore_sha256": "2faad69dd12b80906a9c8589d63d3f8326ce5ef6afd98d23a468b077f35e6ef7"
+  },
+  {
+    "hyphen_path": ".agents/skills/okhp3-translation-en-us-fr-fr/scripts/validate-en-us-to-fr-fr.py",
+    "underscore_path": ".agents/skills/okhp3-translation-en-us-fr-fr/scripts/validate_en_us_to_fr_fr.py",
+    "byte_identical": false,
+    "normalized_text_identical": false,
+    "hyphen_sha256": "41ae284976ed45f6b31fcbd957df5e818e3db69ed3e80f4ea142499a2c2522bd",
+    "underscore_sha256": "11a0196328eae7f4880a7cc141d092086832c910a0ab5c7d59dfc43c3d787779"
+  },
+  {
+    "hyphen_path": ".agents/skills/okhp3-translation-en-us-fr-fr/tests/test-en-us-to-fr-fr.py",
+    "underscore_path": ".agents/skills/okhp3-translation-en-us-fr-fr/tests/test_en_us_to_fr_fr.py",
+    "byte_identical": false,
+    "normalized_text_identical": false,
+    "hyphen_sha256": "b3d18397fc1c0dd95ba3f6215f5c1aa2f11632489321d5c9124da1e6af35fbcf",
+    "underscore_sha256": "dd817ae414473a905fdbe78af598d95bcc72fa1628c525b6a9a74bf202a09cc2"
+  }
+]

@@ -1,0 +1,97 @@
+[
+  {
+    "test": "mobile-navigation-open",
+    "expanded": "true",
+    "focus": "<a href=\"#main\" aria-current=\"page\">Who's AskJamie™</a>"
+  },
+  {
+    "test": "mobile-navigation-escape",
+    "expanded": "false",
+    "focus": "nav-toggle"
+  },
+  {
+    "test": "skip-link",
+    "hash": "",
+    "focus": "<a href=\"#main\" class=\"skip-link\">Skip to content</a>",
+    "scroll": 0
+  },
+  {
+    "test": "320px-reflow",
+    "route": "/",
+    "vw": 320,
+    "sw": 320
+  },
+  {
+    "test": "320px-reflow",
+    "route": "/about/",
+    "vw": 320,
+    "sw": 320
+  },
+  {
+    "test": "320px-reflow",
+    "route": "/contact/",
+    "vw": 320,
+    "sw": 320
+  },
+  {
+    "test": "320px-reflow",
+    "route": "/how-askjamie-works/",
+    "vw": 320,
+    "sw": 320
+  },
+  {
+    "test": "320px-reflow",
+    "route": "/lens-system/",
+    "vw": 320,
+    "sw": 320
+  },
+  {
+    "test": "320px-reflow",
+    "route": "/lens-system/okhp3-brandguard/",
+    "vw": 320,
+    "sw": 320
+  },
+  {
+    "test": "320px-reflow",
+    "route": "/universe/",
+    "vw": 320,
+    "sw": 320
+  },
+  {
+    "test": "320px-reflow",
+    "route": "/404.html",
+    "vw": 320,
+    "sw": 320
+  },
+  {
+    "test": "dedicated-search-initial",
+    "text": "BrandGuard",
+    "stats": "24 results for “BrandGuard”",
+    "first": "/lens-system/okhp3-brandguard/",
+    "semantics": {
+      "role": "list",
+      "children": [
+        {
+          "tag": "A",
+          "role": null
+        },
+        {
+          "tag": "A",
+          "role": null
+        },
+        {
+          "tag": "A",
+          "role": null
+        }
+      ]
+    }
+  },
+  {
+    "test": "dedicated-search-escape",
+    "input": ""
+  },
+  {
+    "test": "dedicated-search-enter",
+    "url": "https://askjamie.bot/search/"
+  }
+]
