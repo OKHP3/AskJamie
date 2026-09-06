@@ -44,30 +44,35 @@ bundled Node 24.19 runtime. The declared Node dependencies were installed with
 The artifact is at `.scratch/release-candidate-pages/` with manifest
 `.scratch/release-candidate-pages.manifest.json`. Its top-level directories
 are public routes, `assets`, and `.well-known`; it contains no `.github`,
-`scripts`, `tests`, `.agents`, or `.scratch` content.
+`scripts`, `tests`, `.agents`, or `.scratch` content. The regenerated manifest
+is also retained at
+`assets/docs/delivery-engineering/evidence/2026-09-05-release-candidate/pages-artifact-manifest.json`.
 
 ## Browser result and resolved runner defects
 
 The initial final run against `http://127.0.0.1:5200` at runtime source
-revision `912fdf9` ran all 200 route/viewport rows and failed 11 rows. That
-failed record remains preserved at
-`/tmp/askjamie-release-evidence-2026-09-05/responsive-qa/`.
+revision `912fdf9` ran all 200 route/viewport rows and failed 11 rows. Its
+JSON record is preserved at
+`assets/docs/delivery-engineering/evidence/2026-09-05-release-candidate/responsive-qa/initial-candidate-189-of-200.json`.
 
 The run exposed two runner defects. First, persistent-page event listeners
 assigned late cancelled requests to the next route. The page-isolation change
 in `417fb9e` creates a fresh page per route and viewport, finalizes the row
 before teardown, and removes listeners before page close. Second, the exact CI
-preview server is Python 3.14.5 `HTTPServer`, single-threaded with
-`request_queue_size = 5`. A bounded four-route diagnostic was clean at browser
-concurrency 1, 2, and 4. At 8 it started only 205 of 224 expected requests and
-logged local broken-pipe and connection-reset errors. The correction in
-`7167a31` keeps every viewport row but schedules browser pages in two batches
-of four. It does not increase timeouts or suppress `ERR_ABORTED`.
+The capacity diagnostic used a controlled single-threaded `HTTPServer` fixture
+with `request_queue_size = 5`, not the Python CLI preview server. It was clean
+at browser concurrency 1, 2, and 4. At 8 it started only 205 of 224 expected
+requests and logged local broken-pipe and connection-reset errors. The Python
+3.14.5 `python3 -m http.server` CLI used for the final run selects a threaded
+server implementation. The correction in `7167a31` keeps every viewport row
+but schedules browser pages in two batches of four. It is a measured local
+harness stability choice, not proof that a single-threaded CI server caused all
+earlier failures. It does not increase timeouts or suppress `ERR_ABORTED`.
 
 The final responsive run used that exact Python preview-server model at
 `http://127.0.0.1:5204` and source revision `7167a31`: **200 of 200 passed**
 across 25 routes and eight viewports. Its evidence is retained at
-`/tmp/askjamie-release-evidence-2026-09-05/responsive-qa-final-four-page-cap/responsive-qa/`.
+`assets/docs/delivery-engineering/evidence/2026-09-05-release-candidate/responsive-qa/final-four-page-cap-200-of-200.json`.
 Focused executable regression coverage also passed for teardown cancellation,
 required-image aborts, current-page 404 and console errors, delayed required
 resources, finalized-row immutability, and the four-page cap.
@@ -82,7 +87,8 @@ hub, BrandGuard detail, and Universe at 1280x900 and 390x844. Conditions were
 one fresh browser context per sample, device scale factor 1, light scheme,
 no-preference motion, no throttling, and same-origin requests only. Capture
 request bytes, readiness waits, image sizes, and resource samples are in
-`/tmp/askjamie-release-candidate-captures/capture-readiness.json`.
+`/tmp/askjamie-release-candidate-captures/capture-readiness.json`. The compact
+release-evidence index retains the repeatable command and evidence boundary.
 
 Three sequential Lighthouse desktop samples covered homepage, BrandGuard,
 Universe, and search. Median lab values were:
@@ -94,11 +100,16 @@ Universe, and search. Median lab values were:
 | Universe | 100 | 602 | 0.004840 | 0 |
 | Search | 100 | 721 | 0.021322 | 0 |
 
-Raw reports are retained in
+The three original machine-readable summaries and their compact median rollup
+are retained under
+`assets/docs/delivery-engineering/evidence/2026-09-05-release-candidate/lighthouse/`.
+Raw reports remain temporary local evidence under
 `/tmp/askjamie-release-evidence-2026-09-05/`. These are local desktop lab
 samples. They do not establish field performance, real-user LCP, or a general
-production performance claim. The nav-only 80px avatar change reduced the
-sampled local request by 748,775 bytes, but is not represented as an LCP claim.
+production performance claim. The nav-only 80px avatar is 8,000 bytes on disk;
+the replaced 1024px source is 756,775 bytes on disk, a 748,775-byte file-size
+difference. The paired local capture measured a 748,203-byte request-size
+reduction. Neither figure is represented as an LCP claim.
 
 ## Remaining owner and human decisions
 

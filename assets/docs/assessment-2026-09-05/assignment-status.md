@@ -19,7 +19,7 @@ individual worker assignments and acceptance evidence in its stream ledger.
 | WP-01 artifact safety; WP-04 operating guidance | Engineering and release | Implemented and included in combined local acceptance |
 | WP-02 search; WP-03 content visibility/footer | Experience and content | Implemented; regression preservation included in combined local acceptance |
 | Translation cleanup | Engineering and release | Implemented; five exact-pair suites and i18n suite are included in combined local acceptance |
-| WP-05 required browser/CSP diagnostics | Engineering and release | Implemented locally with narrow CSP handling and actionable diagnostics; historical 196/200 full-browser result remains dated unresolved evidence pending the combined rerun |
+| WP-05 required browser/CSP diagnostics | Engineering and release | Implemented locally with narrow CSP handling, page-lifecycle isolation, bounded browser scheduling, and actionable diagnostics; dated failed browser records remain preserved beside the final combined 200/200 local run |
 | WP-06 keyboard/search/motion/link-card behavior | Experience and content | Implemented and browser-regression covered |
 | WP-07 claims and GPT availability | Experience and content | Owner decision packet complete; no unsupported fact was published |
 | WP-08 public source publication route | Experience and content | Inventory and owner decision options complete; private/publication decision remains external |
@@ -30,7 +30,7 @@ individual worker assignments and acceptance evidence in its stream ledger.
 | WP-13 human usability/assistive technology | Experience and content | Automated packet and browser coverage complete; human assistive-technology verification remains separate |
 | WP-14 hosted governance/measurement | Engineering and release | Read-only evidence and concrete owner decision packet complete; no remote setting mutation |
 | Ignored audit cruft and stale skill catalog | Engineering and release | Redundant catalog package removed with recovery evidence; saved-root ignored-file quarantine procedure remains for Architect integration |
-| Final cross-stream acceptance and release decision | Architect | Combined candidate is under final local validation; no publication decision implied |
+| Final cross-stream acceptance and release decision | Architect | Combined candidate cleared local acceptance; no publication decision implied |
 
 ## Model and effort policy
 
