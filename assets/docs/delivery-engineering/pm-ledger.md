@@ -49,20 +49,26 @@ WP-10/WP-11 commit: `c6a61bb` in `/Users/okh/.codex/worktrees/9661/AskJamie`.
 
 ## WP-14 decision packet draft
 
-Observed state: the recorded Pages configuration is workflow-based from
-`main`, has `askjamie.bot`, custom 404, and HTTPS enforcement. The hosted
-response evidence does not show CSP, anti-framing, or Permissions-Policy
-response headers. `_headers` therefore remains a source intent, not proof of
-GitHub Pages enforcement.
+Read-only GitHub API evidence shows no branch protection for `main` and no
+repository rulesets. Pages is workflow-based from `main`, serves
+`askjamie.bot`, has a custom 404 and approved HTTPS certificate, and is HTTPS
+enforced. The hosted response evidence does not show CSP, anti-framing, or
+Permissions-Policy response headers. `_headers` therefore remains a source
+intent, not proof of GitHub Pages enforcement.
 
 Owner decision required:
 
-1. Accept GitHub Pages as the current host and document the response-header
-   limitation, or select an approved edge host that can enforce the required
-   headers.
-2. If selecting an edge host, approve the exact provider, DNS change window,
+1. Add a repository ruleset for `refs/heads/main`: require pull requests,
+   one approval, dismissal of stale approvals, and the existing required
+   check named `Validate site HTML, links, and structure`. Block force pushes
+   and branch deletion. Keep administrator bypass policy as an explicit owner
+   choice. This protects the existing workflow without requiring a host move.
+2. Accept GitHub Pages as the current host and document the response-header
+   limitation, or select an approved edge host only if response-level CSP,
+   anti-framing, or Permissions-Policy enforcement is required.
+3. If selecting an edge host, approve the exact provider, DNS change window,
    header policy, and rollback owner. Do not apply settings from this packet.
-3. Approve whether privacy-safe aggregate measurement is wanted. If yes,
+4. Approve whether privacy-safe aggregate measurement is wanted. If yes,
    authorize the specific analytics property and events, then review a
    redacted readback. No private analytics access was used here.
 
@@ -72,3 +78,10 @@ HTTPS/certificate state, and one rollback test or documented rollback
 procedure. Rollback is to restore the prior hosting/DNS/header configuration,
 verify the prior URL and certificate, and rerun the public HTTP probes. A
 local code pass cannot substitute for this external readback.
+
+For a ruleset-only change, capture the ruleset JSON and its identifier, the
+`main` ref target, configured required check name, approval and bypass values,
+and a read-only branch-protection/ruleset readback. Roll back by deleting or
+disabling that exact ruleset identifier, then repeat the readback. No DNS,
+provider, Pages, analytics, or repository settings change was made in this
+worktree.
