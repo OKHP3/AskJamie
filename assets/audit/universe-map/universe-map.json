@@ -1,0 +1,334 @@
+{
+  "schema": 1,
+  "generator": "0.1.0",
+  "config_sha256": "926793a04fac6f6d1e3519f9a3276119fd8ea9f18b6454a745ec9adee971fa04",
+  "sources": [
+    {
+      "origin": "https://askjamie.bot",
+      "sha256": "cb5352677535162d091f4d838844eacbf15274e3b7e48c305ca5f78bd72a40e9",
+      "records": 25
+    }
+  ],
+  "nodes": [
+    {
+      "id": "https://askjamie.bot/",
+      "url": "https://askjamie.bot/",
+      "title": "AskJamie™ — Friendly AI Helpdesk",
+      "description": "AskJamie™ is a modern AI helpdesk — a warm, trustworthy guide for questions, workflows, and decisions across the OverKill Hill P³™ ecosystem.",
+      "origin": "https://askjamie.bot",
+      "status": "Published page",
+      "indexed": true,
+      "parent": null
+    },
+    {
+      "id": "https://askjamie.bot/about/",
+      "url": "https://askjamie.bot/about/",
+      "title": "About AskJamie™ — Strategic Intelligence Layer",
+      "description": "Learn about AskJamie™ — the strategic intelligence layer that unifies your digital ecosystem and orchestrates reasoning, narrative, and structure.",
+      "origin": "https://askjamie.bot",
+      "status": "Published page",
+      "indexed": true,
+      "parent": "https://askjamie.bot/"
+    },
+    {
+      "id": "https://askjamie.bot/contact/",
+      "url": "https://askjamie.bot/contact/",
+      "title": "Contact AskJamie™ | Project Inquiries & Collaboration",
+      "description": "Contact AskJamie™ for project inquiries, collaboration, and professional engagements. Reach out about AI persona work, BrandGuard™, or the Lens System.",
+      "origin": "https://askjamie.bot",
+      "status": "Published page",
+      "indexed": true,
+      "parent": "https://askjamie.bot/"
+    },
+    {
+      "id": "https://askjamie.bot/how-askjamie-works/",
+      "url": "https://askjamie.bot/how-askjamie-works/",
+      "title": "How AskJamie™ Works — From Context to Clarity",
+      "description": "How AskJamie™ turns messy context into useful, bounded output through an interpretive layer, focused lenses, and public proof-of-concept GPTs.",
+      "origin": "https://askjamie.bot",
+      "status": "Published page",
+      "indexed": true,
+      "parent": "https://askjamie.bot/"
+    },
+    {
+      "id": "https://askjamie.bot/legal/",
+      "url": "https://askjamie.bot/legal/",
+      "title": "AskJamie™ — Legal Notice & Usage Disclaimer",
+      "description": "Legal notice and usage disclaimer for AskJamie™ and its derivative modules. Review our proprietary framework terms and usage conditions.",
+      "origin": "https://askjamie.bot",
+      "status": "Published page",
+      "indexed": true,
+      "parent": "https://askjamie.bot/"
+    },
+    {
+      "id": "https://askjamie.bot/lens-system/",
+      "url": "https://askjamie.bot/lens-system/",
+      "title": "AskJamie™ — Interpretive Lens System",
+      "description": "AskJamie™ Lens System — four disciplined ways of seeing and expressing your story through one consistent, architected AI persona.",
+      "origin": "https://askjamie.bot",
+      "status": "Published page",
+      "indexed": true,
+      "parent": "https://askjamie.bot/"
+    },
+    {
+      "id": "https://askjamie.bot/lens-system/enterprise-sleuth/",
+      "url": "https://askjamie.bot/lens-system/enterprise-sleuth/",
+      "title": "Enterprise Sleuth™",
+      "description": "GPT‑AJ03: Enterprise Sleuth™ — an AI detective for enterprise knowledge. A working demo and recipe pack for building investigative GPTs at work.",
+      "origin": "https://askjamie.bot",
+      "status": "Published page",
+      "indexed": true,
+      "parent": "https://askjamie.bot/lens-system/"
+    },
+    {
+      "id": "https://askjamie.bot/lens-system/okhp3-brandguard/",
+      "url": "https://askjamie.bot/lens-system/okhp3-brandguard/",
+      "title": "OKHP³ BrandGuard™",
+      "description": "GPT‑AJ04: AskJamie™ OKHP³ BrandGuard™ — AI‑powered tone, ethics, and identity guardrails for brands. Keep GPTs on‑voice, on‑ethics, on‑identity.",
+      "origin": "https://askjamie.bot",
+      "status": "Published page",
+      "indexed": true,
+      "parent": "https://askjamie.bot/lens-system/"
+    },
+    {
+      "id": "https://askjamie.bot/lens-system/okhp3-brandguard/bfs-framing-intelligent-futures/",
+      "url": "https://askjamie.bot/lens-system/okhp3-brandguard/bfs-framing-intelligent-futures/",
+      "title": "AskJamie™ — GPT‑BFS01: BFS Framing Intelligent Futures",
+      "description": "GPT‑BFS01: Builders FirstSource Framing Intelligent Futures. A public-source-only BrandGuard™ GPT turning open BFS material into safe, on-brand help.",
+      "origin": "https://askjamie.bot",
+      "status": "Published page",
+      "indexed": true,
+      "parent": "https://askjamie.bot/lens-system/okhp3-brandguard/"
+    },
+    {
+      "id": "https://askjamie.bot/lens-system/okhp3-brandguard/brooks-running/",
+      "url": "https://askjamie.bot/lens-system/okhp3-brandguard/brooks-running/",
+      "title": "AskJamie™ — GPT‑BRG03: Brooks Running: Brandguard",
+      "description": "GPT‑BRG03: Brooks Running BrandGuard™ — an OKHP³ custom GPT proof‑of‑concept that protects Brooks' brand voice, ethics, and identity at GPT speed.",
+      "origin": "https://askjamie.bot",
+      "status": "Published page",
+      "indexed": true,
+      "parent": "https://askjamie.bot/lens-system/okhp3-brandguard/"
+    },
+    {
+      "id": "https://askjamie.bot/lens-system/okhp3-brandguard/coca-cola/",
+      "url": "https://askjamie.bot/lens-system/okhp3-brandguard/coca-cola/",
+      "title": "AskJamie™ — GPT‑BRG09: Coca-Cola: Brandguard",
+      "description": "GPT‑BRG09: Coca‑Cola BrandGuard™ — a public OKHP³ demonstration that shows how an iconic global brand can protect its tone, ethics, and identity.",
+      "origin": "https://askjamie.bot",
+      "status": "Published page",
+      "indexed": true,
+      "parent": "https://askjamie.bot/lens-system/okhp3-brandguard/"
+    },
+    {
+      "id": "https://askjamie.bot/lens-system/okhp3-brandguard/costco/",
+      "url": "https://askjamie.bot/lens-system/okhp3-brandguard/costco/",
+      "title": "AskJamie™ — GPT‑BRG05: Costco: Brandguard",
+      "description": "GPT‑BRG05: Costco BrandGuard™ — a public, early proof‑of‑concept GPT showing how a member‑first brand voice can stay protected at GPT speed.",
+      "origin": "https://askjamie.bot",
+      "status": "Published page",
+      "indexed": true,
+      "parent": "https://askjamie.bot/lens-system/okhp3-brandguard/"
+    },
+    {
+      "id": "https://askjamie.bot/lens-system/okhp3-brandguard/discount-tire/",
+      "url": "https://askjamie.bot/lens-system/okhp3-brandguard/discount-tire/",
+      "title": "AskJamie™ — GPT‑BRG10: Discount Tire: Brandguard",
+      "description": "GPT‑BRG10: Discount Tire BrandGuard™ — a friendly OKHP³ sentinel demonstrating how trusted automotive brand voice and ethics can be safeguarded by GPT.",
+      "origin": "https://askjamie.bot",
+      "status": "Published page",
+      "indexed": true,
+      "parent": "https://askjamie.bot/lens-system/okhp3-brandguard/"
+    },
+    {
+      "id": "https://askjamie.bot/lens-system/okhp3-brandguard/dollar-general/",
+      "url": "https://askjamie.bot/lens-system/okhp3-brandguard/dollar-general/",
+      "title": "AskJamie™ — GPT‑BRG08: Dollar General: Brandguard",
+      "description": "GPT‑BRG08: Dollar General BrandGuard™ — a public OKHP³ proof‑of‑concept GPT helping people understand the brand without going off‑voice or off‑ethics.",
+      "origin": "https://askjamie.bot",
+      "status": "Published page",
+      "indexed": true,
+      "parent": "https://askjamie.bot/lens-system/okhp3-brandguard/"
+    },
+    {
+      "id": "https://askjamie.bot/lens-system/okhp3-brandguard/hershey/",
+      "url": "https://askjamie.bot/lens-system/okhp3-brandguard/hershey/",
+      "title": "AskJamie™ — GPT‑BRG06: Hershey: Brandguard",
+      "description": "GPT‑BRG06: Hershey BrandGuard™ — a warm, public‑source‑only GPT showing how an iconic confection brand keeps its tone, ethics, and identity on track.",
+      "origin": "https://askjamie.bot",
+      "status": "Published page",
+      "indexed": true,
+      "parent": "https://askjamie.bot/lens-system/okhp3-brandguard/"
+    },
+    {
+      "id": "https://askjamie.bot/lens-system/okhp3-brandguard/lego/",
+      "url": "https://askjamie.bot/lens-system/okhp3-brandguard/lego/",
+      "title": "AskJamie™ — GPT‑BRG01: LEGO — OKHP³ BrandGuard™",
+      "description": "GPT‑BRG01: LEGO BrandGuard™ — a public, brand‑safe GPT proof‑of‑concept showing how LEGO's tone, ethics, and identity can be protected at GPT speed.",
+      "origin": "https://askjamie.bot",
+      "status": "Published page",
+      "indexed": true,
+      "parent": "https://askjamie.bot/lens-system/okhp3-brandguard/"
+    },
+    {
+      "id": "https://askjamie.bot/lens-system/okhp3-brandguard/lvmh/",
+      "url": "https://askjamie.bot/lens-system/okhp3-brandguard/lvmh/",
+      "title": "AskJamie™ — GPT‑BRG07: LVMH: Brandguard",
+      "description": "GPT‑BRG07: LVMH BrandGuard™ — an OKHP³ public proof‑of‑concept showing portfolio‑level brand stewardship: voice, ethics, and identity at GPT speed.",
+      "origin": "https://askjamie.bot",
+      "status": "Published page",
+      "indexed": true,
+      "parent": "https://askjamie.bot/lens-system/okhp3-brandguard/"
+    },
+    {
+      "id": "https://askjamie.bot/lens-system/okhp3-brandguard/mathews-archery/",
+      "url": "https://askjamie.bot/lens-system/okhp3-brandguard/mathews-archery/",
+      "title": "AskJamie™ — GPT‑BRG12: Mathews Archery: BrandGuard",
+      "description": "GPT‑BRG12: Mathews Archery BrandGuard™ — an OKHP³ custom GPT helping archers and bowhunters navigate the brand with on‑voice, on‑ethics answers.",
+      "origin": "https://askjamie.bot",
+      "status": "Published page",
+      "indexed": true,
+      "parent": "https://askjamie.bot/lens-system/okhp3-brandguard/"
+    },
+    {
+      "id": "https://askjamie.bot/lens-system/okhp3-brandguard/ping/",
+      "url": "https://askjamie.bot/lens-system/okhp3-brandguard/ping/",
+      "title": "AskJamie™ — GPT‑BRG04: Ping: Brandguard",
+      "description": "GPT‑BRG04: Ping BrandGuard™ — an early public proof‑of‑concept GPT showing how a trusted brand can stay on‑voice and on‑ethics across customer chats.",
+      "origin": "https://askjamie.bot",
+      "status": "Published page",
+      "indexed": true,
+      "parent": "https://askjamie.bot/lens-system/okhp3-brandguard/"
+    },
+    {
+      "id": "https://askjamie.bot/lens-system/okhp3-brandguard/scheels/",
+      "url": "https://askjamie.bot/lens-system/okhp3-brandguard/scheels/",
+      "title": "AskJamie™ — GPT‑BRG11: Scheels: Brandguard",
+      "description": "GPT‑BRG11: Scheels BrandGuard™ — an OKHP³ custom GPT helping shoppers navigate outdoor and sporting goods brand questions with on‑voice answers.",
+      "origin": "https://askjamie.bot",
+      "status": "Published page",
+      "indexed": true,
+      "parent": "https://askjamie.bot/lens-system/okhp3-brandguard/"
+    },
+    {
+      "id": "https://askjamie.bot/lens-system/okhp3-brandguard/starbucks/",
+      "url": "https://askjamie.bot/lens-system/okhp3-brandguard/starbucks/",
+      "title": "AskJamie™ — GPT‑BRG02: Starbucks: Brandguard",
+      "description": "GPT‑BRG02: Starbucks BrandGuard™ — an OKHP³ proof‑of‑concept showing how a global consumer brand can protect tone, ethics, and identity at GPT speed.",
+      "origin": "https://askjamie.bot",
+      "status": "Published page",
+      "indexed": true,
+      "parent": "https://askjamie.bot/lens-system/okhp3-brandguard/"
+    },
+    {
+      "id": "https://askjamie.bot/lens-system/professional-portfolio/",
+      "url": "https://askjamie.bot/lens-system/professional-portfolio/",
+      "title": "AskJamie™ — GPT‑AJ02: Professional Portfolio",
+      "description": "GPT‑AJ02: AskJamie™ Professional Portfolio turns your work, wins, and weirdly specific strengths into a living, conversational AI portfolio agent.",
+      "origin": "https://askjamie.bot",
+      "status": "Published page",
+      "indexed": true,
+      "parent": "https://askjamie.bot/lens-system/"
+    },
+    {
+      "id": "https://askjamie.bot/lens-system/resume-representative/",
+      "url": "https://askjamie.bot/lens-system/resume-representative/",
+      "title": "Résumé Representative",
+      "description": "GPT‑AJ01: AskJamie™ Résumé Representative turns your career into a living, conversational AI agent that writes tailored, on‑voice résumés on demand.",
+      "origin": "https://askjamie.bot",
+      "status": "Published page",
+      "indexed": true,
+      "parent": "https://askjamie.bot/lens-system/"
+    },
+    {
+      "id": "https://askjamie.bot/search/",
+      "url": "https://askjamie.bot/search/",
+      "title": "Site Search",
+      "description": "Search AskJamie™ — pages, BrandGuard™ cases, services, and writings. One box. Type a word and follow the result.",
+      "origin": "https://askjamie.bot",
+      "status": "Published page",
+      "indexed": true,
+      "parent": "https://askjamie.bot/"
+    },
+    {
+      "id": "https://askjamie.bot/universe/",
+      "url": "https://askjamie.bot/universe/",
+      "title": "AskJamie™ — OKHP³ Universe Map",
+      "description": "Visual map of the OverKill Hill P³™ universe. See how AskJamie™, Glee-fully Tools, BrandGuard™, BFS work, and narrative experiments interconnect.",
+      "origin": "https://askjamie.bot",
+      "status": "Published page",
+      "indexed": true,
+      "parent": "https://askjamie.bot/"
+    }
+  ],
+  "excluded": [],
+  "diagrams": [
+    {
+      "file": "universe-153589ec879e-detail-analyst-v1-1.mmd",
+      "parent": "https://askjamie.bot/",
+      "nodes": [
+        "https://askjamie.bot/",
+        "https://askjamie.bot/about/",
+        "https://askjamie.bot/contact/",
+        "https://askjamie.bot/how-askjamie-works/",
+        "https://askjamie.bot/legal/",
+        "https://askjamie.bot/lens-system/",
+        "https://askjamie.bot/search/"
+      ]
+    },
+    {
+      "file": "universe-153589ec879e-detail-analyst-v1-2.mmd",
+      "parent": "https://askjamie.bot/",
+      "nodes": [
+        "https://askjamie.bot/",
+        "https://askjamie.bot/universe/"
+      ]
+    },
+    {
+      "file": "universe-b2d1d0480408-detail-analyst-v1-1.mmd",
+      "parent": "https://askjamie.bot/lens-system/",
+      "nodes": [
+        "https://askjamie.bot/lens-system/",
+        "https://askjamie.bot/lens-system/enterprise-sleuth/",
+        "https://askjamie.bot/lens-system/okhp3-brandguard/",
+        "https://askjamie.bot/lens-system/professional-portfolio/",
+        "https://askjamie.bot/lens-system/resume-representative/"
+      ]
+    },
+    {
+      "file": "universe-5565d8104dff-detail-analyst-v1-1.mmd",
+      "parent": "https://askjamie.bot/lens-system/okhp3-brandguard/",
+      "nodes": [
+        "https://askjamie.bot/lens-system/okhp3-brandguard/",
+        "https://askjamie.bot/lens-system/okhp3-brandguard/bfs-framing-intelligent-futures/",
+        "https://askjamie.bot/lens-system/okhp3-brandguard/brooks-running/",
+        "https://askjamie.bot/lens-system/okhp3-brandguard/coca-cola/",
+        "https://askjamie.bot/lens-system/okhp3-brandguard/costco/",
+        "https://askjamie.bot/lens-system/okhp3-brandguard/discount-tire/",
+        "https://askjamie.bot/lens-system/okhp3-brandguard/dollar-general/"
+      ]
+    },
+    {
+      "file": "universe-5565d8104dff-detail-analyst-v1-2.mmd",
+      "parent": "https://askjamie.bot/lens-system/okhp3-brandguard/",
+      "nodes": [
+        "https://askjamie.bot/lens-system/okhp3-brandguard/",
+        "https://askjamie.bot/lens-system/okhp3-brandguard/hershey/",
+        "https://askjamie.bot/lens-system/okhp3-brandguard/lego/",
+        "https://askjamie.bot/lens-system/okhp3-brandguard/lvmh/",
+        "https://askjamie.bot/lens-system/okhp3-brandguard/mathews-archery/",
+        "https://askjamie.bot/lens-system/okhp3-brandguard/ping/",
+        "https://askjamie.bot/lens-system/okhp3-brandguard/scheels/"
+      ]
+    },
+    {
+      "file": "universe-5565d8104dff-detail-analyst-v1-3.mmd",
+      "parent": "https://askjamie.bot/lens-system/okhp3-brandguard/",
+      "nodes": [
+        "https://askjamie.bot/lens-system/okhp3-brandguard/",
+        "https://askjamie.bot/lens-system/okhp3-brandguard/starbucks/"
+      ]
+    }
+  ],
+  "render_status": "not-run"
+}

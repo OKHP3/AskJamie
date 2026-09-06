@@ -7615,7 +7615,7 @@ html[data-color-scheme="dark"] .askjamie-main .mermaid .edgePath path {
    Reserve that space before the async module renders so replacing the source
    text does not push the hero and everything below it down the page. */
 .askjamie-hero--universe .mermaid-scroll-wrap {
-  aspect-ratio: 1 / 2.1;
+  min-height: 14rem;
 }
 
 @media (min-width: 900px) {
@@ -7749,3 +7749,32 @@ html[data-color-scheme="dark"] .glee-search-page__form, html[data-color-scheme="
 .arcade-callout .feature-list { margin: 0; }
 .arcade-closing-cta { margin-top: 1.5rem; text-align: center; }
 .askjamie-brandguard-page > main > section.content-section, .askjamie-brandguard-page > main > section.stripe-bg { content-visibility: auto; contain-intrinsic-size: auto 680px; }
+
+/* Generated AskJamie navigation uses the existing paper and teal palette. */
+.askjamie-main .universe-map-group { margin-block: 1rem; }
+.askjamie-main .universe-map-group > summary { cursor: pointer; font-weight: 700; }
+.askjamie-main .universe-map-group .mermaid { min-height: 0; }
+.askjamie-main .universe-map-group li { margin-block: 0.65rem; overflow-wrap: anywhere; }
+.askjamie-main .universe-map-generated figure { margin-inline: 0; }
+
+.askjamie-main .universe-map-group .mermaid svg { min-width: 40rem; }
+.askjamie-main .universe-map-generated .mermaid .node rect,
+.askjamie-main .askjamie-hero--universe .mermaid .node rect {
+  fill: var(--color-surface) !important;
+  stroke: var(--color-accent) !important;
+}
+.askjamie-main .universe-map-generated .mermaid .nodeLabel *,
+.askjamie-main .askjamie-hero--universe .mermaid .nodeLabel *,
+.askjamie-main .universe-map-generated .mermaid .nodeLabel,
+.askjamie-main .askjamie-hero--universe .mermaid .nodeLabel {
+  color: var(--color-fg) !important;
+}
+.askjamie-main .universe-map-generated .mermaid .flowchart-link,
+.askjamie-main .askjamie-hero--universe .mermaid .flowchart-link {
+  stroke: var(--color-fg) !important;
+}
+.askjamie-main .universe-map-generated .mermaid marker path,
+.askjamie-main .askjamie-hero--universe .mermaid marker path {
+  fill: var(--color-fg) !important;
+  stroke: var(--color-fg) !important;
+}

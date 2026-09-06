@@ -1,0 +1,154 @@
+<!-- AUTOGEN:UNIVERSE-MAP -->
+<section aria-label="Universe map">
+<details><summary>AskJamie™ — Friendly AI Helpdesk</summary>
+<pre class="mermaid">flowchart LR
+  %% Generated navigation relationships, not project completion claims.
+  n153589ec879e0024[&quot;AskJamie#8482; #8212; Friendly AI Helpdesk (Published page)&quot;]
+  click n153589ec879e0024 &quot;https://askjamie.bot/&quot; &quot;AskJamie#8482; is a modern AI helpdesk #8212; a warm, trustworthy guide for questions, workflows, and decisions across the OverKill Hill P³#8482; ecosystem.&quot; _self
+  n30d42b29301592df[&quot;About AskJamie#8482; #8212; Strategic Intelligence Layer (Published page)&quot;]
+  click n30d42b29301592df &quot;https://askjamie.bot/about/&quot; &quot;Learn about AskJamie#8482; #8212; the strategic intelligence layer that unifies your digital ecosystem and orchestrates reasoning, narrative, and structure.&quot; _self
+  n153589ec879e0024 --&gt; n30d42b29301592df
+  n721f5c912eef56cd[&quot;Contact AskJamie#8482; #124; Project Inquiries #38; Collaboration (Published page)&quot;]
+  click n721f5c912eef56cd &quot;https://askjamie.bot/contact/&quot; &quot;Contact AskJamie#8482; for project inquiries, collaboration, and professional engagements. Reach out about AI persona work, BrandGuard#8482;, or the Lens System.&quot; _self
+  n153589ec879e0024 --&gt; n721f5c912eef56cd
+  n5cf2dfa2b3143cc4[&quot;How AskJamie#8482; Works #8212; From Context to Clarity (Published page)&quot;]
+  click n5cf2dfa2b3143cc4 &quot;https://askjamie.bot/how-askjamie-works/&quot; &quot;How AskJamie#8482; turns messy context into useful, bounded output through an interpretive layer, focused lenses, and public proof-of-concept GPTs.&quot; _self
+  n153589ec879e0024 --&gt; n5cf2dfa2b3143cc4
+  na3533c11f8456bc4[&quot;AskJamie#8482; #8212; Legal Notice #38; Usage Disclaimer (Published page)&quot;]
+  click na3533c11f8456bc4 &quot;https://askjamie.bot/legal/&quot; &quot;Legal notice and usage disclaimer for AskJamie#8482; and its derivative modules. Review our proprietary framework terms and usage conditions.&quot; _self
+  n153589ec879e0024 --&gt; na3533c11f8456bc4
+  nb2d1d04804086129[&quot;AskJamie#8482; #8212; Interpretive Lens System (Published page)&quot;]
+  click nb2d1d04804086129 &quot;https://askjamie.bot/lens-system/&quot; &quot;AskJamie#8482; Lens System #8212; four disciplined ways of seeing and expressing your story through one consistent, architected AI persona.&quot; _self
+  n153589ec879e0024 --&gt; nb2d1d04804086129
+  n72eb5f31bf4395ca[&quot;Site Search (Published page)&quot;]
+  click n72eb5f31bf4395ca &quot;https://askjamie.bot/search/&quot; &quot;Search AskJamie#8482; #8212; pages, BrandGuard#8482; cases, services, and writings. One box. Type a word and follow the result.&quot; _self
+  n153589ec879e0024 --&gt; n72eb5f31bf4395ca
+  classDef concept fill:#f3f4f6,stroke:#4b5563,color:#111827,stroke-dasharray:5 5
+</pre><ul>
+<li><a href="https://askjamie.bot/">AskJamie™ — Friendly AI Helpdesk</a> (Published page) AskJamie™ is a modern AI helpdesk — a warm, trustworthy guide for questions, workflows, and decisions across the OverKill Hill P³™ ecosystem.</li>
+<li><a href="https://askjamie.bot/about/">About AskJamie™ — Strategic Intelligence Layer</a> (Published page) Learn about AskJamie™ — the strategic intelligence layer that unifies your digital ecosystem and orchestrates reasoning, narrative, and structure.</li>
+<li><a href="https://askjamie.bot/contact/">Contact AskJamie™ | Project Inquiries &amp; Collaboration</a> (Published page) Contact AskJamie™ for project inquiries, collaboration, and professional engagements. Reach out about AI persona work, BrandGuard™, or the Lens System.</li>
+<li><a href="https://askjamie.bot/how-askjamie-works/">How AskJamie™ Works — From Context to Clarity</a> (Published page) How AskJamie™ turns messy context into useful, bounded output through an interpretive layer, focused lenses, and public proof-of-concept GPTs.</li>
+<li><a href="https://askjamie.bot/legal/">AskJamie™ — Legal Notice &amp; Usage Disclaimer</a> (Published page) Legal notice and usage disclaimer for AskJamie™ and its derivative modules. Review our proprietary framework terms and usage conditions.</li>
+<li><a href="https://askjamie.bot/lens-system/">AskJamie™ — Interpretive Lens System</a> (Published page) AskJamie™ Lens System — four disciplined ways of seeing and expressing your story through one consistent, architected AI persona.</li>
+<li><a href="https://askjamie.bot/search/">Site Search</a> (Published page) Search AskJamie™ — pages, BrandGuard™ cases, services, and writings. One box. Type a word and follow the result.</li>
+</ul></details>
+<details><summary>AskJamie™ — Friendly AI Helpdesk</summary>
+<pre class="mermaid">flowchart LR
+  %% Generated navigation relationships, not project completion claims.
+  n153589ec879e0024[&quot;AskJamie#8482; #8212; Friendly AI Helpdesk (Published page)&quot;]
+  click n153589ec879e0024 &quot;https://askjamie.bot/&quot; &quot;AskJamie#8482; is a modern AI helpdesk #8212; a warm, trustworthy guide for questions, workflows, and decisions across the OverKill Hill P³#8482; ecosystem.&quot; _self
+  n1580e75d5dff412f[&quot;AskJamie#8482; #8212; OKHP³ Universe Map (Published page)&quot;]
+  click n1580e75d5dff412f &quot;https://askjamie.bot/universe/&quot; &quot;Visual map of the OverKill Hill P³#8482; universe. See how AskJamie#8482;, Glee-fully Tools, BrandGuard#8482;, BFS work, and narrative experiments interconnect.&quot; _self
+  n153589ec879e0024 --&gt; n1580e75d5dff412f
+  classDef concept fill:#f3f4f6,stroke:#4b5563,color:#111827,stroke-dasharray:5 5
+</pre><ul>
+<li><a href="https://askjamie.bot/">AskJamie™ — Friendly AI Helpdesk</a> (Published page) AskJamie™ is a modern AI helpdesk — a warm, trustworthy guide for questions, workflows, and decisions across the OverKill Hill P³™ ecosystem.</li>
+<li><a href="https://askjamie.bot/universe/">AskJamie™ — OKHP³ Universe Map</a> (Published page) Visual map of the OverKill Hill P³™ universe. See how AskJamie™, Glee-fully Tools, BrandGuard™, BFS work, and narrative experiments interconnect.</li>
+</ul></details>
+<details><summary>AskJamie™ — Interpretive Lens System</summary>
+<pre class="mermaid">flowchart LR
+  %% Generated navigation relationships, not project completion claims.
+  nb2d1d04804086129[&quot;AskJamie#8482; #8212; Interpretive Lens System (Published page)&quot;]
+  click nb2d1d04804086129 &quot;https://askjamie.bot/lens-system/&quot; &quot;AskJamie#8482; Lens System #8212; four disciplined ways of seeing and expressing your story through one consistent, architected AI persona.&quot; _self
+  n697af5e2f5de7af9[&quot;Enterprise Sleuth#8482; (Published page)&quot;]
+  click n697af5e2f5de7af9 &quot;https://askjamie.bot/lens-system/enterprise-sleuth/&quot; &quot;GPT#8209;AJ03: Enterprise Sleuth#8482; #8212; an AI detective for enterprise knowledge. A working demo and recipe pack for building investigative GPTs at work.&quot; _self
+  nb2d1d04804086129 --&gt; n697af5e2f5de7af9
+  n5565d8104dff4d11[&quot;OKHP³ BrandGuard#8482; (Published page)&quot;]
+  click n5565d8104dff4d11 &quot;https://askjamie.bot/lens-system/okhp3-brandguard/&quot; &quot;GPT#8209;AJ04: AskJamie#8482; OKHP³ BrandGuard#8482; #8212; AI#8209;powered tone, ethics, and identity guardrails for brands. Keep GPTs on#8209;voice, on#8209;ethics, on#8209;identity.&quot; _self
+  nb2d1d04804086129 --&gt; n5565d8104dff4d11
+  n52eff7b18bd7a50e[&quot;AskJamie#8482; #8212; GPT#8209;AJ02: Professional Portfolio (Published page)&quot;]
+  click n52eff7b18bd7a50e &quot;https://askjamie.bot/lens-system/professional-portfolio/&quot; &quot;GPT#8209;AJ02: AskJamie#8482; Professional Portfolio turns your work, wins, and weirdly specific strengths into a living, conversational AI portfolio agent.&quot; _self
+  nb2d1d04804086129 --&gt; n52eff7b18bd7a50e
+  nba7ca8ba37204e52[&quot;Résumé Representative (Published page)&quot;]
+  click nba7ca8ba37204e52 &quot;https://askjamie.bot/lens-system/resume-representative/&quot; &quot;GPT#8209;AJ01: AskJamie#8482; Résumé Representative turns your career into a living, conversational AI agent that writes tailored, on#8209;voice résumés on demand.&quot; _self
+  nb2d1d04804086129 --&gt; nba7ca8ba37204e52
+  classDef concept fill:#f3f4f6,stroke:#4b5563,color:#111827,stroke-dasharray:5 5
+</pre><ul>
+<li><a href="https://askjamie.bot/lens-system/">AskJamie™ — Interpretive Lens System</a> (Published page) AskJamie™ Lens System — four disciplined ways of seeing and expressing your story through one consistent, architected AI persona.</li>
+<li><a href="https://askjamie.bot/lens-system/enterprise-sleuth/">Enterprise Sleuth™</a> (Published page) GPT‑AJ03: Enterprise Sleuth™ — an AI detective for enterprise knowledge. A working demo and recipe pack for building investigative GPTs at work.</li>
+<li><a href="https://askjamie.bot/lens-system/okhp3-brandguard/">OKHP³ BrandGuard™</a> (Published page) GPT‑AJ04: AskJamie™ OKHP³ BrandGuard™ — AI‑powered tone, ethics, and identity guardrails for brands. Keep GPTs on‑voice, on‑ethics, on‑identity.</li>
+<li><a href="https://askjamie.bot/lens-system/professional-portfolio/">AskJamie™ — GPT‑AJ02: Professional Portfolio</a> (Published page) GPT‑AJ02: AskJamie™ Professional Portfolio turns your work, wins, and weirdly specific strengths into a living, conversational AI portfolio agent.</li>
+<li><a href="https://askjamie.bot/lens-system/resume-representative/">Résumé Representative</a> (Published page) GPT‑AJ01: AskJamie™ Résumé Representative turns your career into a living, conversational AI agent that writes tailored, on‑voice résumés on demand.</li>
+</ul></details>
+<details><summary>OKHP³ BrandGuard™</summary>
+<pre class="mermaid">flowchart LR
+  %% Generated navigation relationships, not project completion claims.
+  n5565d8104dff4d11[&quot;OKHP³ BrandGuard#8482; (Published page)&quot;]
+  click n5565d8104dff4d11 &quot;https://askjamie.bot/lens-system/okhp3-brandguard/&quot; &quot;GPT#8209;AJ04: AskJamie#8482; OKHP³ BrandGuard#8482; #8212; AI#8209;powered tone, ethics, and identity guardrails for brands. Keep GPTs on#8209;voice, on#8209;ethics, on#8209;identity.&quot; _self
+  n40b149d5958d2270[&quot;AskJamie#8482; #8212; GPT#8209;BFS01: BFS Framing Intelligent Futures (Published page)&quot;]
+  click n40b149d5958d2270 &quot;https://askjamie.bot/lens-system/okhp3-brandguard/bfs-framing-intelligent-futures/&quot; &quot;GPT#8209;BFS01: Builders FirstSource Framing Intelligent Futures. A public-source-only BrandGuard#8482; GPT turning open BFS material into safe, on-brand help.&quot; _self
+  n5565d8104dff4d11 --&gt; n40b149d5958d2270
+  n3dcfda9726ecad71[&quot;AskJamie#8482; #8212; GPT#8209;BRG03: Brooks Running: Brandguard (Published page)&quot;]
+  click n3dcfda9726ecad71 &quot;https://askjamie.bot/lens-system/okhp3-brandguard/brooks-running/&quot; &quot;GPT#8209;BRG03: Brooks Running BrandGuard#8482; #8212; an OKHP³ custom GPT proof#8209;of#8209;concept that protects Brooks#39; brand voice, ethics, and identity at GPT speed.&quot; _self
+  n5565d8104dff4d11 --&gt; n3dcfda9726ecad71
+  nefabd89e544cf624[&quot;AskJamie#8482; #8212; GPT#8209;BRG09: Coca-Cola: Brandguard (Published page)&quot;]
+  click nefabd89e544cf624 &quot;https://askjamie.bot/lens-system/okhp3-brandguard/coca-cola/&quot; &quot;GPT#8209;BRG09: Coca#8209;Cola BrandGuard#8482; #8212; a public OKHP³ demonstration that shows how an iconic global brand can protect its tone, ethics, and identity.&quot; _self
+  n5565d8104dff4d11 --&gt; nefabd89e544cf624
+  n47ca52a211c18a41[&quot;AskJamie#8482; #8212; GPT#8209;BRG05: Costco: Brandguard (Published page)&quot;]
+  click n47ca52a211c18a41 &quot;https://askjamie.bot/lens-system/okhp3-brandguard/costco/&quot; &quot;GPT#8209;BRG05: Costco BrandGuard#8482; #8212; a public, early proof#8209;of#8209;concept GPT showing how a member#8209;first brand voice can stay protected at GPT speed.&quot; _self
+  n5565d8104dff4d11 --&gt; n47ca52a211c18a41
+  n615c5fb3db3d4685[&quot;AskJamie#8482; #8212; GPT#8209;BRG10: Discount Tire: Brandguard (Published page)&quot;]
+  click n615c5fb3db3d4685 &quot;https://askjamie.bot/lens-system/okhp3-brandguard/discount-tire/&quot; &quot;GPT#8209;BRG10: Discount Tire BrandGuard#8482; #8212; a friendly OKHP³ sentinel demonstrating how trusted automotive brand voice and ethics can be safeguarded by GPT.&quot; _self
+  n5565d8104dff4d11 --&gt; n615c5fb3db3d4685
+  n0963aeb5513992bf[&quot;AskJamie#8482; #8212; GPT#8209;BRG08: Dollar General: Brandguard (Published page)&quot;]
+  click n0963aeb5513992bf &quot;https://askjamie.bot/lens-system/okhp3-brandguard/dollar-general/&quot; &quot;GPT#8209;BRG08: Dollar General BrandGuard#8482; #8212; a public OKHP³ proof#8209;of#8209;concept GPT helping people understand the brand without going off#8209;voice or off#8209;ethics.&quot; _self
+  n5565d8104dff4d11 --&gt; n0963aeb5513992bf
+  classDef concept fill:#f3f4f6,stroke:#4b5563,color:#111827,stroke-dasharray:5 5
+</pre><ul>
+<li><a href="https://askjamie.bot/lens-system/okhp3-brandguard/">OKHP³ BrandGuard™</a> (Published page) GPT‑AJ04: AskJamie™ OKHP³ BrandGuard™ — AI‑powered tone, ethics, and identity guardrails for brands. Keep GPTs on‑voice, on‑ethics, on‑identity.</li>
+<li><a href="https://askjamie.bot/lens-system/okhp3-brandguard/bfs-framing-intelligent-futures/">AskJamie™ — GPT‑BFS01: BFS Framing Intelligent Futures</a> (Published page) GPT‑BFS01: Builders FirstSource Framing Intelligent Futures. A public-source-only BrandGuard™ GPT turning open BFS material into safe, on-brand help.</li>
+<li><a href="https://askjamie.bot/lens-system/okhp3-brandguard/brooks-running/">AskJamie™ — GPT‑BRG03: Brooks Running: Brandguard</a> (Published page) GPT‑BRG03: Brooks Running BrandGuard™ — an OKHP³ custom GPT proof‑of‑concept that protects Brooks&#x27; brand voice, ethics, and identity at GPT speed.</li>
+<li><a href="https://askjamie.bot/lens-system/okhp3-brandguard/coca-cola/">AskJamie™ — GPT‑BRG09: Coca-Cola: Brandguard</a> (Published page) GPT‑BRG09: Coca‑Cola BrandGuard™ — a public OKHP³ demonstration that shows how an iconic global brand can protect its tone, ethics, and identity.</li>
+<li><a href="https://askjamie.bot/lens-system/okhp3-brandguard/costco/">AskJamie™ — GPT‑BRG05: Costco: Brandguard</a> (Published page) GPT‑BRG05: Costco BrandGuard™ — a public, early proof‑of‑concept GPT showing how a member‑first brand voice can stay protected at GPT speed.</li>
+<li><a href="https://askjamie.bot/lens-system/okhp3-brandguard/discount-tire/">AskJamie™ — GPT‑BRG10: Discount Tire: Brandguard</a> (Published page) GPT‑BRG10: Discount Tire BrandGuard™ — a friendly OKHP³ sentinel demonstrating how trusted automotive brand voice and ethics can be safeguarded by GPT.</li>
+<li><a href="https://askjamie.bot/lens-system/okhp3-brandguard/dollar-general/">AskJamie™ — GPT‑BRG08: Dollar General: Brandguard</a> (Published page) GPT‑BRG08: Dollar General BrandGuard™ — a public OKHP³ proof‑of‑concept GPT helping people understand the brand without going off‑voice or off‑ethics.</li>
+</ul></details>
+<details><summary>OKHP³ BrandGuard™</summary>
+<pre class="mermaid">flowchart LR
+  %% Generated navigation relationships, not project completion claims.
+  n5565d8104dff4d11[&quot;OKHP³ BrandGuard#8482; (Published page)&quot;]
+  click n5565d8104dff4d11 &quot;https://askjamie.bot/lens-system/okhp3-brandguard/&quot; &quot;GPT#8209;AJ04: AskJamie#8482; OKHP³ BrandGuard#8482; #8212; AI#8209;powered tone, ethics, and identity guardrails for brands. Keep GPTs on#8209;voice, on#8209;ethics, on#8209;identity.&quot; _self
+  nc22af1e74924acda[&quot;AskJamie#8482; #8212; GPT#8209;BRG06: Hershey: Brandguard (Published page)&quot;]
+  click nc22af1e74924acda &quot;https://askjamie.bot/lens-system/okhp3-brandguard/hershey/&quot; &quot;GPT#8209;BRG06: Hershey BrandGuard#8482; #8212; a warm, public#8209;source#8209;only GPT showing how an iconic confection brand keeps its tone, ethics, and identity on track.&quot; _self
+  n5565d8104dff4d11 --&gt; nc22af1e74924acda
+  n5c375442631c2342[&quot;AskJamie#8482; #8212; GPT#8209;BRG01: LEGO #8212; OKHP³ BrandGuard#8482; (Published page)&quot;]
+  click n5c375442631c2342 &quot;https://askjamie.bot/lens-system/okhp3-brandguard/lego/&quot; &quot;GPT#8209;BRG01: LEGO BrandGuard#8482; #8212; a public, brand#8209;safe GPT proof#8209;of#8209;concept showing how LEGO#39;s tone, ethics, and identity can be protected at GPT speed.&quot; _self
+  n5565d8104dff4d11 --&gt; n5c375442631c2342
+  n10d6a2225ddc8ffc[&quot;AskJamie#8482; #8212; GPT#8209;BRG07: LVMH: Brandguard (Published page)&quot;]
+  click n10d6a2225ddc8ffc &quot;https://askjamie.bot/lens-system/okhp3-brandguard/lvmh/&quot; &quot;GPT#8209;BRG07: LVMH BrandGuard#8482; #8212; an OKHP³ public proof#8209;of#8209;concept showing portfolio#8209;level brand stewardship: voice, ethics, and identity at GPT speed.&quot; _self
+  n5565d8104dff4d11 --&gt; n10d6a2225ddc8ffc
+  n86d718f5fffef26d[&quot;AskJamie#8482; #8212; GPT#8209;BRG12: Mathews Archery: BrandGuard (Published page)&quot;]
+  click n86d718f5fffef26d &quot;https://askjamie.bot/lens-system/okhp3-brandguard/mathews-archery/&quot; &quot;GPT#8209;BRG12: Mathews Archery BrandGuard#8482; #8212; an OKHP³ custom GPT helping archers and bowhunters navigate the brand with on#8209;voice, on#8209;ethics answers.&quot; _self
+  n5565d8104dff4d11 --&gt; n86d718f5fffef26d
+  nd6a7610c3fa9b882[&quot;AskJamie#8482; #8212; GPT#8209;BRG04: Ping: Brandguard (Published page)&quot;]
+  click nd6a7610c3fa9b882 &quot;https://askjamie.bot/lens-system/okhp3-brandguard/ping/&quot; &quot;GPT#8209;BRG04: Ping BrandGuard#8482; #8212; an early public proof#8209;of#8209;concept GPT showing how a trusted brand can stay on#8209;voice and on#8209;ethics across customer chats.&quot; _self
+  n5565d8104dff4d11 --&gt; nd6a7610c3fa9b882
+  n65cf12398984ce8b[&quot;AskJamie#8482; #8212; GPT#8209;BRG11: Scheels: Brandguard (Published page)&quot;]
+  click n65cf12398984ce8b &quot;https://askjamie.bot/lens-system/okhp3-brandguard/scheels/&quot; &quot;GPT#8209;BRG11: Scheels BrandGuard#8482; #8212; an OKHP³ custom GPT helping shoppers navigate outdoor and sporting goods brand questions with on#8209;voice answers.&quot; _self
+  n5565d8104dff4d11 --&gt; n65cf12398984ce8b
+  classDef concept fill:#f3f4f6,stroke:#4b5563,color:#111827,stroke-dasharray:5 5
+</pre><ul>
+<li><a href="https://askjamie.bot/lens-system/okhp3-brandguard/">OKHP³ BrandGuard™</a> (Published page) GPT‑AJ04: AskJamie™ OKHP³ BrandGuard™ — AI‑powered tone, ethics, and identity guardrails for brands. Keep GPTs on‑voice, on‑ethics, on‑identity.</li>
+<li><a href="https://askjamie.bot/lens-system/okhp3-brandguard/hershey/">AskJamie™ — GPT‑BRG06: Hershey: Brandguard</a> (Published page) GPT‑BRG06: Hershey BrandGuard™ — a warm, public‑source‑only GPT showing how an iconic confection brand keeps its tone, ethics, and identity on track.</li>
+<li><a href="https://askjamie.bot/lens-system/okhp3-brandguard/lego/">AskJamie™ — GPT‑BRG01: LEGO — OKHP³ BrandGuard™</a> (Published page) GPT‑BRG01: LEGO BrandGuard™ — a public, brand‑safe GPT proof‑of‑concept showing how LEGO&#x27;s tone, ethics, and identity can be protected at GPT speed.</li>
+<li><a href="https://askjamie.bot/lens-system/okhp3-brandguard/lvmh/">AskJamie™ — GPT‑BRG07: LVMH: Brandguard</a> (Published page) GPT‑BRG07: LVMH BrandGuard™ — an OKHP³ public proof‑of‑concept showing portfolio‑level brand stewardship: voice, ethics, and identity at GPT speed.</li>
+<li><a href="https://askjamie.bot/lens-system/okhp3-brandguard/mathews-archery/">AskJamie™ — GPT‑BRG12: Mathews Archery: BrandGuard</a> (Published page) GPT‑BRG12: Mathews Archery BrandGuard™ — an OKHP³ custom GPT helping archers and bowhunters navigate the brand with on‑voice, on‑ethics answers.</li>
+<li><a href="https://askjamie.bot/lens-system/okhp3-brandguard/ping/">AskJamie™ — GPT‑BRG04: Ping: Brandguard</a> (Published page) GPT‑BRG04: Ping BrandGuard™ — an early public proof‑of‑concept GPT showing how a trusted brand can stay on‑voice and on‑ethics across customer chats.</li>
+<li><a href="https://askjamie.bot/lens-system/okhp3-brandguard/scheels/">AskJamie™ — GPT‑BRG11: Scheels: Brandguard</a> (Published page) GPT‑BRG11: Scheels BrandGuard™ — an OKHP³ custom GPT helping shoppers navigate outdoor and sporting goods brand questions with on‑voice answers.</li>
+</ul></details>
+<details><summary>OKHP³ BrandGuard™</summary>
+<pre class="mermaid">flowchart LR
+  %% Generated navigation relationships, not project completion claims.
+  n5565d8104dff4d11[&quot;OKHP³ BrandGuard#8482; (Published page)&quot;]
+  click n5565d8104dff4d11 &quot;https://askjamie.bot/lens-system/okhp3-brandguard/&quot; &quot;GPT#8209;AJ04: AskJamie#8482; OKHP³ BrandGuard#8482; #8212; AI#8209;powered tone, ethics, and identity guardrails for brands. Keep GPTs on#8209;voice, on#8209;ethics, on#8209;identity.&quot; _self
+  n522167bd9a9f0750[&quot;AskJamie#8482; #8212; GPT#8209;BRG02: Starbucks: Brandguard (Published page)&quot;]
+  click n522167bd9a9f0750 &quot;https://askjamie.bot/lens-system/okhp3-brandguard/starbucks/&quot; &quot;GPT#8209;BRG02: Starbucks BrandGuard#8482; #8212; an OKHP³ proof#8209;of#8209;concept showing how a global consumer brand can protect tone, ethics, and identity at GPT speed.&quot; _self
+  n5565d8104dff4d11 --&gt; n522167bd9a9f0750
+  classDef concept fill:#f3f4f6,stroke:#4b5563,color:#111827,stroke-dasharray:5 5
+</pre><ul>
+<li><a href="https://askjamie.bot/lens-system/okhp3-brandguard/">OKHP³ BrandGuard™</a> (Published page) GPT‑AJ04: AskJamie™ OKHP³ BrandGuard™ — AI‑powered tone, ethics, and identity guardrails for brands. Keep GPTs on‑voice, on‑ethics, on‑identity.</li>
+<li><a href="https://askjamie.bot/lens-system/okhp3-brandguard/starbucks/">AskJamie™ — GPT‑BRG02: Starbucks: Brandguard</a> (Published page) GPT‑BRG02: Starbucks BrandGuard™ — an OKHP³ proof‑of‑concept showing how a global consumer brand can protect tone, ethics, and identity at GPT speed.</li>
+</ul></details>
+</section>
+<!-- /AUTOGEN:UNIVERSE-MAP -->

@@ -15,8 +15,9 @@ boundaries. Never invent credentials or secrets.
   - Mac: `/Volumes/OKH-Local/04_GitHub_Mirrors/AskJamie`.
 - Git repository: `OKHP3/AskJamie`, with `main` tracking `origin/main`.
 - Site origin: `https://askjamie.bot`.
-- Deployment model: static files from the repository root. There is no
-  application build step or server-side runtime.
+- Deployment model: GitHub Pages serves an allowlisted static artifact. Release
+  automation refreshes the search index and universe maps before validation.
+  There is no application runtime or framework build.
 - No nested independent Git repository was found during the July 13, 2026
   context inspection.
 
@@ -339,3 +340,22 @@ before making cross-repository changes.
 
 At the end of work, summarize what changed, why it changed, which checks ran,
 and any unresolved questions.
+
+## Universe map integration (2026-09-06)
+
+`universe-map.config.json` configures the installed `okhp3-universe-map` skill.
+`scripts/build-search-index.py` refreshes the index, then invokes
+`scripts/sync-universe-map.py` to replace the owned `AUTOGEN:UNIVERSE-MAP` block
+in `universe/index.html` and write `assets/data/universe-map.json`.
+The index extractor excludes that block to prevent feedback. Use
+`python3 scripts/sync-universe-map.py --check` for a read-only freshness check.
+
+The validation/deployment workflow regenerates before its gates on main pushes,
+manual dispatch, and a daily scheduled reconciliation. Pull requests run the
+same checks without deployment. Indexed page status does not certify a working
+or completed project. Sibling maps are linked directly, not cached locally.
+
+The old map is preserved in `assets/docs/universe-map-legacy-2026-09-06.mmd`.
+Its speculative nodes are historical, with unconfirmed current status. The
+byte-identical duplicate janitor skill was preserved outside discovery under
+`.agents/skill-archives/`; the active skill catalog now includes the map skill.
