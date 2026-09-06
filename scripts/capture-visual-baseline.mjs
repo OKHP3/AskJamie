@@ -22,7 +22,7 @@ const report = {
     cache: "fresh browser context per sample",
     throttle: "none",
     externalRequests: "blocked to same-origin requests",
-    samplesPerViewport: SAMPLE_ROUTES.length,
+    routesPerViewport: SAMPLE_ROUTES.length,
     deviceScaleFactor: 1,
     viewportEmulation: VIEWPORTS.map((viewport) => `${viewport.width}x${viewport.height}`),
   },

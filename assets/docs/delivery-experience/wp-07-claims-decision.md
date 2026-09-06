@@ -10,6 +10,18 @@ BRG07 LVMH, and BRG09 Coca-Cola. Thirteen of seventeen configured GPT
 destinations returned HTTP 200. HTTP 200 does not prove that a conversation
 can be started or that the described behavior is current.
 
+| Case route | Configured destination result | Current safe action | Owner choice required |
+| --- | --- | --- | --- |
+| `lens-system/okhp3-brandguard/starbucks/` | BRG02, HTTP 404 | Preserve the case page and do not invent a replacement | Restore, mark unavailable, or remove the outbound action |
+| `lens-system/okhp3-brandguard/costco/` | BRG05, HTTP 404 | Preserve the case page and do not invent a replacement | Restore, mark unavailable, or remove the outbound action |
+| `lens-system/okhp3-brandguard/lvmh/` | BRG07, HTTP 404 | Preserve the case page and do not invent a replacement | Restore, mark unavailable, or remove the outbound action |
+| `lens-system/okhp3-brandguard/coca-cola/` | BRG09, HTTP 404 | Preserve the case page and do not invent a replacement | Restore, mark unavailable, or remove the outbound action |
+
+No safe availability-copy patch was applied. The evidence establishes the
+observed response, not whether a destination was removed, made private, or
+intended to be withdrawn. Changing a public call to action without an owner
+choice would fabricate that decision.
+
 The BFS case page already identifies a personal R&D prototype, public sources,
 and no official affiliation. Several case pages use stronger language such as
 real conversations or official AI front door. The assessment did not establish
