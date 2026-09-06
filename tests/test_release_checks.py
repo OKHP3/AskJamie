@@ -6,7 +6,6 @@ import os
 import re
 import subprocess
 import sys
-import tempfile
 from pathlib import Path
 
 import pytest
@@ -411,6 +410,16 @@ Module.prototype.require = function (id) {
     assert result.returncode == 1
     assert "Required browser QA could not start" in result.stderr
     assert "static-lint mode" not in result.stdout
+
+
+def test_responsive_qa_keeps_csp_suppression_narrow_and_reports_resource_failures():
+    source = (ROOT / "scripts/responsive-qa.mjs").read_text(encoding="utf-8")
+
+    assert "effectiveConsoleErrors" not in source
+    assert "isMermaidInlineStyleWarning" in source
+    assert "REQUEST FAILED: [" in source
+    assert "HTTP ${r.status}: [" in source
+    assert "CONSOLE: " in source
 
 
 def test_index_freshness_checks_content_instead_of_checkout_times(tmp_path, monkeypatch):

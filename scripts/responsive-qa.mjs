@@ -104,6 +104,8 @@ async function runWithPlaywright() {
     const ctx  = await browser.newContext({ viewport: { width: vp.width, height: vp.height } });
     const page = await ctx.newPage();
     const blockedExternal = new Set();
+    const requestFailures = [];
+    const failedResponses = [];
     await page.route('**/*', (route) => {
       if (EXTERNAL_BLOCK.test(route.request().url())) {
         blockedExternal.add(route.request().url());
@@ -111,7 +113,7 @@ async function runWithPlaywright() {
       }
       return route.continue();
     });
-    return { vp, ctx, page, consoleErrors: [], failed404s: [], blockedExternal };
+    return { vp, ctx, page, consoleErrors: [], requestFailures, failedResponses, blockedExternal };
   }));
 
   // Attach persistent event listeners.
@@ -121,17 +123,31 @@ async function runWithPlaywright() {
   for (const w of workers) {
     w.page.on('console', msg => {
       const sourceUrl = msg.location().url || '';
-      const mermaidRuntimeCspWarning =
-        msg.type() === 'error' &&
-        msg.text().startsWith('Applying inline style violates the following Content Security Policy directive') &&
-        /\/assets\/vendor\/mermaid\//.test(sourceUrl);
+      const mermaidRuntimeCspWarning = isMermaidInlineStyleWarning(msg);
       if (msg.type() === 'error' &&
           !msg.text().includes('ERR_FAILED') &&
           !mermaidRuntimeCspWarning)
-        w.consoleErrors.push(msg.text());
+        w.consoleErrors.push(sourceUrl ? `${sourceUrl} :: ${msg.text()}` : msg.text());
+    });
+    w.page.on('requestfailed', req => {
+      const url = req.url();
+      if (w.blockedExternal.has(url)) return;
+      w.requestFailures.push({
+        url,
+        resourceType: req.resourceType(),
+        error: req.failure()?.errorText || 'unknown request failure',
+      });
     });
     w.page.on('response', resp => {
-      if (resp.status() === 404 && resp.url().match(/\.(css|js|json)$/)) w.failed404s.push(resp.url());
+      if (resp.status() >= 400) {
+        const url = resp.url();
+        if (w.blockedExternal.has(url)) return;
+        w.failedResponses.push({
+          url,
+          resourceType: resp.request().resourceType(),
+          status: resp.status(),
+        });
+      }
     });
   }
 
@@ -144,12 +160,13 @@ async function runWithPlaywright() {
     // Clear per-page accumulators
     for (const w of workers) {
       w.consoleErrors.length = 0;
-      w.failed404s.length = 0;
+      w.requestFailures.length = 0;
+      w.failedResponses.length = 0;
       w.blockedExternal.clear();
     }
 
     // Navigate all 8 viewports in parallel
-    const vpResults = await Promise.all(workers.map(async ({ vp, page, consoleErrors, failed404s, blockedExternal }) => {
+    const vpResults = await Promise.all(workers.map(async ({ vp, page, consoleErrors, requestFailures, failedResponses, blockedExternal }) => {
       const warnings = [];
       try {
         // `commit` is local-document readiness. A bounded DOMContentLoaded
@@ -189,20 +206,16 @@ async function runWithPlaywright() {
         ![...blockedExternal].some(blocked => blocked === src)
       );
 
-      // The static CSP validator owns inline-style policy coverage. Chromium
-      // reports blocked dynamic style applications as console errors even when
-      // the page is otherwise healthy; keep that diagnostic out of this layout
-      // gate while leaving all other console errors as hard failures.
-      const effectiveConsoleErrors = consoleErrors.filter(error =>
-        !error.startsWith('Applying inline style violates the following Content Security Policy directive')
-      );
-      const pageConsoleErrors = effectiveConsoleErrors;
-
       const errors = [
         ...(overflow ? [`OVERFLOW: scrollWidth > ${vp.width}px`] : []),
-        ...pageConsoleErrors.slice(0, 5).map(e => 'CONSOLE: ' + e),
+        ...consoleErrors.slice(0, 5).map(e => 'CONSOLE: ' + e),
+        ...requestFailures.slice(0, 5).map(r =>
+          `REQUEST FAILED: [${r.resourceType}] ${r.url} (${r.error})`
+        ),
+        ...failedResponses.slice(0, 5).map(r =>
+          `HTTP ${r.status}: [${r.resourceType}] ${r.url}`
+        ),
         ...unexpectedBrokenImages.slice(0, 5).map(s => 'BROKEN IMG: ' + s),
-        ...failed404s.slice(0, 5).map(u => '404: ' + u),
       ];
       if (blockedExternal.size > 0) {
         warnings.push(`blocked third-party resources: ${[...blockedExternal].join(', ')}`);
@@ -408,3 +421,9 @@ async function staticAnalysis() {
     await staticAnalysis();
   }
 })();
+
+function isMermaidInlineStyleWarning(msg) {
+  return msg.type() === 'error' &&
+    msg.text().startsWith('Applying inline style violates the following Content Security Policy directive') &&
+    /\/assets\/vendor\/mermaid\//.test(msg.location().url || '');
+}
