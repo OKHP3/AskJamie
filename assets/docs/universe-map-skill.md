@@ -46,3 +46,8 @@ The page adapter is separately tested by `tests/test_universe_map.spec.mjs`.
 The pre-existing duplicate janitor skill's three files matched the active copy
 by SHA-256. They were moved intact to `.agents/skill-archives/` to unblock the
 local catalog; no content was discarded.
+
+
+### Portable skill 0.1.4
+
+Includes the final PR76 hierarchy fix for slashless URLs, explicit-parent handling for ambiguous slash aliases, and validated trusted local index paths. All 18 generator regression tests pass. Existing indexed page links and rendering are preserved.
