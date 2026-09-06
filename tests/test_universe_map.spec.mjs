@@ -51,6 +51,8 @@ try {
   await noJs.locator(".universe-map-group summary").first().click();
   assert.ok(await noJs.locator(".universe-map-group[open] a[data-universe-node]").first().isVisible());
   assert.equal(await noJs.locator(".universe-map-group[open] .mermaid").first().evaluate(e => getComputedStyle(e).visibility), "hidden", "Raw diagram syntax must stay hidden without JavaScript");
+  await noJs.locator(".universe-map-group[open] .mermaid").first().evaluate(e => e.setAttribute("data-processed", "true"));
+  assert.equal(await noJs.locator(".universe-map-group[open] .mermaid").first().evaluate(e => getComputedStyle(e).visibility), "hidden", "Mermaid's early processed flag must not expose source before SVG insertion");
   const keyboard = await browser.newPage();
   await keyboard.goto(`${base}/universe/`);
   await keyboard.locator(".universe-map-group summary").first().focus();

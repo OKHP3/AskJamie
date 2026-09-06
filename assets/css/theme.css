@@ -7780,7 +7780,7 @@ html[data-color-scheme="dark"] .glee-search-page__form, html[data-color-scheme="
 }
 
 /* Keep source syntax out of the visitor view before rendering or without JS. */
-.askjamie-main .askjamie-mermaid-shell .mermaid:not([data-processed]) {
+.askjamie-main .askjamie-mermaid-shell .mermaid:not([data-universe-ready="1"]) {
   visibility: hidden;
   font-size: 0;
   min-height: 2rem;

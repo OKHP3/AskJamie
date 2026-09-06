@@ -3,10 +3,10 @@
 The universe page now uses a compact brand overview and six bounded detail
 maps for 25 indexed pages. Diagrams render lazily on expansion. No new runtime
 dependency or third-party script was added. The portable Python package remains
-version 0.1.2 and unchanged from Skillz.
+version 0.1.3 and unchanged from Skillz.
 
 Local validation passed: structural HTML, link inventory, canonical audit,
-asset fingerprints, map/index freshness, 13 generator regression cases,
+asset fingerprints, map/index freshness, 16 generator regression cases,
 36 Python tests excluding three POSIX process fixtures, and all 200 responsive
 browser checks. The three POSIX fixtures require the Linux CI runner; Windows
 shell adapters did not execute them reliably. No local pass is claimed for them.
@@ -23,7 +23,7 @@ No Lighthouse performance score or human screen-reader result is claimed.
 
 Linux CI run 34038504280 passed all release gates, including all 39 Python
 tests and the three POSIX process fixtures. LF portability was introduced in v0.1.1 and is retained in the current
-v0.1.2 package for byte-identical installation across platforms. The later
+v0.1.3 package for byte-identical installation across platforms. The later
 v0.1.2 behavior fixes and their regression evidence are described below.
 
 
@@ -38,3 +38,15 @@ The character-escaping comments are false positives. Mermaid uses decimal
 [entity-code syntax](https://mermaid.js.org/syntax/flowchart.html#entity-codes-to-escape-characters).
 The dedicated browser test now compares every rendered label with its indexed
 title and status, including punctuation and trademark symbols.
+
+Version 0.1.3 extends URL normalization to lifecycle overlay keys and parent
+references, rejects duplicate aliases, and retains explicit concept parents.
+All 16 portable regression cases pass; current site diagram content is unchanged.
+
+The page now reveals diagrams only after SVG nodes exist, not on Mermaid’s
+early data-processed flag. A browser regression simulates that intermediate
+state and confirms raw source remains hidden.
+
+The final v0.1.3 source is Skillz main commit
+`e3f4559b923472ce52d3dd88984cf8bb9fee01dd` (PR 78). All canonical checks
+and its automated review completed before this installation was finalized.
