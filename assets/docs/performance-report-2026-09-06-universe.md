@@ -22,8 +22,9 @@ and hosted acceptance are verified separately after the pull request merges.
 No Lighthouse performance score or human screen-reader result is claimed.
 
 Linux CI run 34038504280 passed all release gates, including all 39 Python
-tests and the three POSIX process fixtures. Package v0.1.1 pins LF line endings
-for byte-identical installation across platforms; generator behavior is unchanged.
+tests and the three POSIX process fixtures. LF portability was introduced in v0.1.1 and is retained in the current
+v0.1.2 package for byte-identical installation across platforms. The later
+v0.1.2 behavior fixes and their regression evidence are described below.
 
 
 ## Post-merge review follow-up
