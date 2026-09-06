@@ -49,9 +49,11 @@ def main(argv: list[str] | None = None) -> int:
         source = page.read_text(encoding="utf-8", errors="replace")
         expected = render_meta(policies[page_class(page)])
         if args.check:
-            if source.count('http-equiv="Content-Security-Policy"') == 0:
+            csp_count = source.count('http-equiv="Content-Security-Policy"')
+            if csp_count == 0:
+                failures.append(f"{page}: missing CSP meta tag")
                 continue
-            if source.count('http-equiv="Content-Security-Policy"') != 1 or meta_policy(source) != policies[page_class(page)]:
+            if csp_count != 1 or meta_policy(source) != policies[page_class(page)]:
                 failures.append(f"{page}: CSP differs from {page_class(page)} canonical policy")
         else:
             updated, count = meta_pattern.subn(expected, source, count=1)

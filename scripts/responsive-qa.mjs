@@ -2,14 +2,14 @@
 /**
  * AskJamie™ responsive QA script.
  *
- * MODE A — Playwright (when available):
+ * MODE A — Playwright:
  *   Visits each public page at 8 viewport widths and checks:
  *   - No horizontal overflow (scrollWidth > innerWidth)
  *   - No JS console errors
  *   - All images loaded (no broken img src)
  *   - CSS and JS assets load (no 404 on critical resources)
  *
- * MODE B — Static lint (Playwright not available):
+ * MODE B — Static lint (`--static` only):
  *   Runs 10 structural checks per page per viewport (same pass/fail schema).
  *   Checks that are viewport-agnostic (viewport meta, h1, alt, etc.) are
  *   run once per page and applied to all 8 viewport rows — clearly flagged
@@ -81,7 +81,7 @@ async function runWithPlaywright() {
     const require = createRequire(import.meta.url);
     pw = require('playwright');
   } catch {
-    return null; // playwright not installed — fall back to MODE B
+    return { ok: false, reason: 'Playwright is not installed' };
   }
 
   mkdirSync(RESULTS_DIR, { recursive: true });
@@ -91,7 +91,7 @@ async function runWithPlaywright() {
   try {
     browser = await pw.chromium.launch({ headless: true });
   } catch {
-    return null; // chromium binary not available — fall back to MODE B
+    return { ok: false, reason: 'Chromium could not be launched' };
   }
 
   // Create one persistent context+page per viewport (8 total) so we never pay
@@ -318,7 +318,7 @@ function staticLintPage(path, html) {
 }
 
 async function staticAnalysis() {
-  console.log('Playwright not available — running static-lint analysis (MODE B).\n');
+  console.log('Static-lint requested with --static.\n');
   console.log('NOTE: Static lint checks HTML structure only. It cannot detect');
   console.log('      horizontal overflow, JS console errors, or broken images');
   console.log('      at runtime. Run with Playwright for full browser coverage.\n');
@@ -399,6 +399,11 @@ async function staticAnalysis() {
   console.log(`Pages: ${PUBLIC_PATHS.length} | Viewports: ${VIEWPORTS.length}\n`);
 
   const pwResult = FORCE_STATIC ? null : await runWithPlaywright();
+  if (pwResult?.ok === false) {
+    console.error(`Required browser QA could not start: ${pwResult.reason}`);
+    console.error('Run with --static only if you explicitly want the structural lint mode.');
+    process.exit(1);
+  }
   if (!pwResult) {
     await staticAnalysis();
   }

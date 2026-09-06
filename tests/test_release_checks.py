@@ -6,6 +6,7 @@ import os
 import re
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 import pytest
@@ -353,6 +354,62 @@ def test_csp_allows_the_configured_google_analytics_pixel():
     expected = "img-src 'self' data: https://www.googletagmanager.com;"
     assert all(expected in policy for policy in module.build_policies().values())
     assert expected in module.build_edge_policy()
+
+
+def test_generate_csp_check_fails_when_a_page_is_missing_csp(tmp_path, monkeypatch, capsys):
+    spec = importlib.util.spec_from_file_location("csp_missing_check", ROOT / "scripts/generate-csp.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+
+    page = tmp_path / "index.html"
+    page.write_text(
+        '<html><head><title>Test</title></head><body><h1>Test</h1></body></html>',
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(module, "all_pages", lambda: [page])
+    monkeypatch.setattr(module, "build_policies", lambda: {"standard": "default-src 'self'"})
+    monkeypatch.setattr(module, "page_class", lambda _page: "standard")
+    policy_file = tmp_path / "csp-policies.json"
+    policy_file.write_text('{"schema": 1, "policies": {"standard": "default-src \'self\'"}}\n', encoding="utf-8")
+    monkeypatch.setattr(module, "POLICY_FILE", policy_file)
+
+    assert module.main(["--check"]) == 1
+    captured = capsys.readouterr()
+    assert "missing CSP meta tag" in captured.out
+
+
+def test_responsive_qa_requires_browser_unless_static_is_explicit(tmp_path):
+    preload = tmp_path / "preload.cjs"
+    preload.write_text(
+        """
+const Module = require('module');
+const originalRequire = Module.prototype.require;
+Module.prototype.require = function (id) {
+  if (id === 'playwright') {
+    throw new Error('playwright unavailable');
+  }
+  return originalRequire.apply(this, arguments);
+};
+""".strip()
+        + "\n",
+        encoding="utf-8",
+    )
+
+    result = subprocess.run(
+        [
+            "node",
+            "scripts/responsive-qa.mjs",
+            "--base=http://127.0.0.1:0",
+        ],
+        cwd=ROOT,
+        text=True,
+        capture_output=True,
+        env={**os.environ, "NODE_OPTIONS": f"--require {preload}"},
+    )
+
+    assert result.returncode == 1
+    assert "Required browser QA could not start" in result.stderr
+    assert "static-lint mode" not in result.stdout
 
 
 def test_index_freshness_checks_content_instead_of_checkout_times(tmp_path, monkeypatch):
