@@ -147,23 +147,39 @@ def read_bytes(repo: Path, relpath: str) -> bytes | None:
     return full.read_bytes()
 
 
-def clear_stale_lock(repo: Path) -> None:
-    """Move aside a .git/index.lock so a genuinely stale lock (left by an
-    earlier crashed process) doesn't block us. If the lock is reinstated by
-    an active process immediately after, that's detected separately in
-    commit_repo() and treated as a live hold, not stale."""
-    lock = repo / ".git" / "index.lock"
-    if lock.exists():
-        stale = repo / ".git" / f"index.lock.stale-{int(time.time())}"
-        try:
-            lock.rename(stale)
-        except OSError:
-            pass  # permission denied etc.; commit_repo() will surface this
+def repo_file_dirty(repo: Path, relpath: str) -> bool:
+    """Return whether the target file has tracked or staged local edits."""
+    result = subprocess.run(
+        ["git", "status", "--porcelain=v1", "--", relpath],
+        cwd=repo,
+        capture_output=True,
+        text=True,
+        timeout=20,
+    )
+    return result.returncode != 0 or bool(result.stdout.strip())
+
+
+def repo_has_index_lock(repo: Path) -> bool:
+    """An index lock is an ownership signal, never a file to relocate."""
+    result = subprocess.run(
+        ["git", "rev-parse", "--git-path", "index.lock"],
+        cwd=repo,
+        capture_output=True,
+        text=True,
+        timeout=20,
+    )
+    if result.returncode == 0 and result.stdout.strip():
+        lock = Path(result.stdout.strip())
+        if not lock.is_absolute():
+            lock = repo / lock
+        return lock.exists()
+    return (repo / ".git" / "index.lock").exists()
 
 
 def commit_repo(repo: Path, relpaths: list[str], message: str) -> tuple[bool, str]:
     """Stage exactly relpaths (never -A) and commit. Returns (ok, detail)."""
-    clear_stale_lock(repo)
+    if repo_has_index_lock(repo):
+        return False, "refusing to commit while .git/index.lock exists; inspect the owning process and resolve manually"
     add = subprocess.run(
         ["git", "add", "--"] + relpaths,
         cwd=repo,
@@ -203,6 +219,36 @@ def commit_repo(repo: Path, relpaths: list[str], message: str) -> tuple[bool, st
     return True, commit.stdout.strip().splitlines()[0] if commit.stdout.strip() else "committed"
 
 
+def preflight_writes(plans: list[dict], repos: dict[str, Path]) -> list[str]:
+    """Refuse the whole operation before the first write if state is unsafe."""
+    problems = []
+    for plan in plans:
+        if plan["status"] != "sync-needed":
+            continue
+        for name, repo in repos.items():
+            if repo_has_index_lock(repo):
+                problems.append(f"{name}: .git/index.lock exists")
+            if repo_file_dirty(repo, plan["file"]):
+                problems.append(f"{name}/{plan['file']}: file has local edits")
+            if read_bytes(repo, plan["file"]) != plan["preimages"][name]:
+                problems.append(f"{name}/{plan['file']}: file changed since plan was built")
+    return problems
+
+
+def run_post_hooks(repo_name: str, relpath: str, repo: Path) -> list[str]:
+    failures = []
+    for hook in POST_WRITE_HOOKS.get(repo_name, {}).get(relpath, []):
+        try:
+            result = subprocess.run(hook, cwd=repo, capture_output=True, text=True, timeout=60)
+        except (OSError, subprocess.SubprocessError) as exc:
+            failures.append(f"{repo_name}/{relpath}: post-hook {' '.join(hook)} failed ({exc})")
+            continue
+        if result.returncode != 0:
+            detail = result.stderr.strip() or result.stdout.strip() or "no diagnostic output"
+            failures.append(f"{repo_name}/{relpath}: post-hook {' '.join(hook)} failed ({detail})")
+    return failures
+
+
 def plan_for_file(relpath: str, repos: dict[str, Path]) -> dict:
     contents: dict[str, bytes] = {}
     timestamps: dict[str, tuple[int | None, str]] = {}
@@ -225,6 +271,7 @@ def plan_for_file(relpath: str, repos: dict[str, Path]) -> dict:
         "status": None,
         "writes": [],  # list of {repo, bytes, source_repo}
         "conflict_groups": None,
+        "preimages": contents,
     }
 
     if len(groups) <= 1 and not missing:
@@ -275,6 +322,7 @@ def plan_for_file(relpath: str, repos: dict[str, Path]) -> dict:
             "repo": name,
             "bytes": len(winning_content),
             "source_repo": source_repo,
+            "preimage": contents[name],
             "content": winning_content,
         })
     return result
@@ -319,8 +367,20 @@ def main() -> int:
 
     plans = [plan_for_file(f, repos) for f in target_files]
 
+    preflight_problems = preflight_writes(plans, repos) if apply_writes else []
+    if preflight_problems:
+        if args.json:
+            print(json.dumps({"error": "unsafe apply refused", "problems": preflight_problems}, indent=2))
+        else:
+            print("Unsafe apply refused before any file was written:")
+            for problem in preflight_problems:
+                print(f"  - {problem}")
+            print("No sibling file, index, or commit was changed. Resolve manually and rerun the plan.")
+        return 2
+
     had_conflict = False
     had_lock_block = False
+    hook_failures: list[str] = []
     writes_by_repo: dict[str, list[str]] = {}
 
     for plan in plans:
@@ -335,14 +395,13 @@ def main() -> int:
                 (repo_path / plan["file"]).write_bytes(w["content"])
                 writes_by_repo.setdefault(w["repo"], []).append(plan["file"])
                 if not args.no_hooks:
-                    for hook in POST_WRITE_HOOKS.get(w["repo"], {}).get(plan["file"], []):
-                        subprocess.run(hook, cwd=repo_path, capture_output=True, text=True, timeout=60)
+                    hook_failures.extend(run_post_hooks(w["repo"], plan["file"], repo_path))
             # content no longer needed after writing/reporting; drop it so
             # the JSON report below doesn't dump raw file bytes
             w.pop("content", None)
 
     commit_results = {}
-    if args.commit:
+    if args.commit and not hook_failures:
         for repo_name, relpaths in writes_by_repo.items():
             file_list = ", ".join(Path(p).name for p in relpaths)
             message = (
@@ -355,6 +414,11 @@ def main() -> int:
                 had_lock_block = True
 
     if args.json:
+        for plan in plans:
+            for write in plan["writes"]:
+                write.pop("content", None)
+                write.pop("preimage", None)
+            plan.pop("preimages", None)
         out = {
             "mirror_root": str(root),
             "mode": "commit" if args.commit else ("apply" if args.apply else "dry-run"),
@@ -364,8 +428,9 @@ def main() -> int:
             ],
             "writes_by_repo": writes_by_repo,
             "commit_results": commit_results,
+            "hook_failures": hook_failures,
         }
-        print(json.dumps(out, indent=2, default=str))
+        print(json.dumps(out, indent=2))
     else:
         mode = "COMMIT" if args.commit else ("APPLY" if args.apply else "DRY RUN")
         print(f"sync-foundation-files.py -- mode: {mode}")
@@ -400,12 +465,20 @@ def main() -> int:
                 print(f"  {name}: {status} -- {res['detail']}")
             print()
 
+        if hook_failures:
+            print("-- post-hooks --")
+            for failure in hook_failures:
+                print(f"  BLOCKED -- {failure}")
+            print("No commit was attempted after a post-hook failure; inspect generated files and recover manually.")
+
         if not apply_writes and any(p["status"] == "sync-needed" for p in plans):
             print("Dry run only. Re-run with --apply to write files, or --commit to also commit per repo.")
 
     if had_conflict:
         return 1
     if had_lock_block:
+        return 2
+    if hook_failures:
         return 2
     return 0
 
