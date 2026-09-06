@@ -329,8 +329,9 @@ def test_source_checks_ignore_generated_pages(tmp_path, monkeypatch):
             spec = importlib.util.spec_from_file_location(filename, ROOT / "scripts" / filename)
             module = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(module)
-            (tmp_path / "dist-pages").mkdir(exist_ok=True)
-            (tmp_path / "dist-pages/index.html").write_text("<title>Generated duplicate</title>")
+            for prefix in ("dist-pages", ".scratch/generated"):
+                (tmp_path / prefix).mkdir(parents=True, exist_ok=True)
+                (tmp_path / prefix / "index.html").write_text("<title>Generated duplicate</title>")
             monkeypatch.setattr(module, root_name, tmp_path)
             assert list(getattr(module, collector)()) == []
     finally:

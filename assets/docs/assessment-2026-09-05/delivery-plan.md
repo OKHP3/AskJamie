@@ -295,10 +295,13 @@ required to test the safe refusal behavior.
 
 **Owner:** Infrastructure Worker. **State:** proposed follow-up.
 
-Move CI from the unsupported Node 20 line to a supported release after checking
-Playwright/Lighthouse compatibility. Review immutable Action pins, bounded
-Python dependencies, and dependency update reporting. Prefer lockfile-resolved
-validation tooling; do not add an application runtime or unnecessary packages.
+Move CI from the unsupported Node 20 line to a supported LTS release after
+checking Playwright/Lighthouse compatibility. Current official Node and
+Playwright guidance both support Node 24, so that line is the conservative
+target unless a narrower lockfile constraint requires a different supported
+major. Review immutable Action pins, bounded Python dependencies, and
+dependency update reporting. Prefer lockfile-resolved validation tooling; do
+not add an application runtime or unnecessary packages.
 
 Acceptance: clean-run install, all existing tests, artifact preparation, and
 deployment-job construction succeed on the chosen supported runtime. Record
@@ -312,9 +315,10 @@ reviewed lockfile diff and a rollback to the previous workflow if necessary.
 
 Tracked `dist-pages/` copies and their stale manifest create a second copy of
 source that can confuse audits and default output replacement. Define one
-canonical source inventory and explicitly excluded disposable output roots.
-Decide separately whether generated release copies should remain tracked.
-Preserve recovery evidence before any untracking or deletion.
+canonical source inventory and explicitly exclude disposable output roots such
+as tracked `dist-pages/` and `.scratch/` so generated release output never
+counts as source. Decide separately whether generated release copies should
+remain tracked. Preserve recovery evidence before any untracking or deletion.
 
 Acceptance: repeated checks before/after packaging visit the same 27 source
 pages and nine templates, not scratch or generated copies. CI deploys exactly

@@ -62,4 +62,4 @@ def test_canonical_inventory_excludes_generated_pages_includes_templates():
     pages = [p.relative_to(ROOT).as_posix() for p in cache.iter_html_files(ROOT)]
     assert 'index.html' in pages
     assert 'assets/templates/template--homepage.html' in pages
-    assert not any(p.startswith(('dist-pages/', 'assets/audit/', '.agents/')) for p in pages)
+    assert not any(p.startswith(('dist-pages/', '.scratch/', 'assets/audit/', '.agents/')) for p in pages)
