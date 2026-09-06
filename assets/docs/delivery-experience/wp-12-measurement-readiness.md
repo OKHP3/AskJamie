@@ -14,6 +14,18 @@ about 45 KB, search data at about 115 KB, and the 1024px navigation avatar at
 756,775 bytes. These are file sizes, not transfer sizes or proof of a page-load
 problem. Original artwork remains preserved.
 
+A bundled Chromium run against a dedicated local server captured same-origin
+request evidence at 390px and 1280px. Homepage: 8 requests and 4 images,
+279,727 and 305,052 bytes. Lens hub: 7 requests and 3 images, 308,629 and
+279,727 bytes. BrandGuard detail: 7 requests and 3 images, 322,127 bytes at
+both widths. Universe: 34 requests and 1 image, 535,297 and 825,572 bytes.
+These are local response-body totals with external requests excluded, not
+compressed transfer, LCP, or field performance measurements.
+
+The capture routine also produced temporary 390px and 1280px screenshots for
+homepage, BrandGuard, and Universe. They were reviewed diagnostically and
+were not used to replace committed baselines.
+
 ## Controlled next run
 
 Run homepage, Lens hub, BrandGuard detail, and Universe at 390px and 1280px

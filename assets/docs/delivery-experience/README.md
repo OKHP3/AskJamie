@@ -22,7 +22,8 @@ owner decisions, human testing, and publication.
 - PASS: `python3 scripts/cache-bust.py --check`
 - PASS: `python3 scripts/generate-csp.py --check`
 - PASS: `git diff --check`
-- NOT RUN: browser experience QA because the worktree has no `playwright` installation
+- PASS: browser experience QA 15/15 using the bundled Playwright runtime and a dedicated local server; external requests were blocked
+- PASS: BrandGuard card geometry at 1280px, 390px, and 320px: 13/13 cards had one client rect and no document overflow
 - NOT RUN: full pytest because the local environment has no pytest
 
 The card change is therefore source-validated but not browser-validated in
