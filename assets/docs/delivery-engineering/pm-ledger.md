@@ -21,13 +21,13 @@ PM checkout.
 
 | Package | Current disposition | Evidence or next action |
 | --- | --- | --- |
-| WP-05 | Integrated, hosted/runtime acceptance open | Integrated as `22dafc5` from worker commit `d6f060a`; required browser launch and missing-CSP regressions now fail clearly. A bounded live probe found aborted GA collection requests while local images loaded with nonzero dimensions. Full browser evidence remains 196/200 and is not suppressed. |
+| WP-05 | Integrated, local acceptance complete | Integrated as `22dafc5`, `b4521b2`, and `5c57657` from worker commits `d6f060a`, `65ee466`, and `e1a2c9e`. Browser launch and missing-CSP regressions fail clearly; CSP suppression is Mermaid-specific; diagnostics include route/resource details. A focused four-row rerun is clean, but the historical full browser evidence remains 196/200 and unresolved. |
 | WP-09 | Integrated, accepted locally | Integrated into `a7ca31f` from worker commits `c852738` and `bebdc1e`; 24 combined unittest cases pass, including the nine worker safety cases. No sibling write was run. |
 | WP-10 | Integrated, clean-install evidence bounded | Integrated as `fb9346b` from worker commit `c6a61bb`; CI Node runtime moved to 24. Worker verified Node `v24.20.0`, Python `3.14.5`, pytest `9.1.1`, clean dependency installation, Playwright/Lighthouse imports, and artifact preparation in an approved in-repo scratch path. |
 | WP-11 | Integrated, source boundary covered | Integrated as `fb9346b`; source collector tests explicitly exclude `dist-pages/` and `.scratch/`. |
 | WP-14 | Decision packet only | `_headers` is not proven enforced by GitHub Pages. Settings, branch protection, analytics, and hosted measurement require owner approval and live readback. |
-| Translation cleanup | Retained and inactive | No locale activation, translated route, locale index, or switcher markup. Catalog regeneration remains blocked by duplicate janitor packaging. |
-| Ignored `.DS_Store` findings | Preserve and disposition | Eight ignored paths are hygiene findings. Do not delete without exact-path inventory and recovery decision. |
+| Translation cleanup | Retained and inactive | No locale activation, translated route, locale index, or switcher markup. The 64-skill catalog was regenerated after authorized removal of the byte-identical duplicate janitor directory. |
+| Ignored `.DS_Store` findings | Saved-root procedure supplied | Eight ignored paths are outside this isolated worktree. The cleanup record supplies exact manifest and recoverable-quarantine commands for Architect integration. |
 
 ## Worker evidence ledger
 
@@ -44,8 +44,37 @@ resolved thread ID is `01a074bc-4ae3-71d2-987b-d188fb53d61a`; its client
 dispatch was `client-new-thread:5bdaede0-3083-4604-9cfb-35f89e64ce20`.
 The parent Architect was notified of all dispatches and the WP-09 review gaps.
 
-WP-05 commit: `d6f060a` in `/Users/okh/.codex/worktrees/b6d3/AskJamie`.
+WP-05 commits: `d6f060a`, `65ee466`, and `e1a2c9e` in
+`/Users/okh/.codex/worktrees/b6d3/AskJamie`.
 WP-10/WP-11 commit: `c6a61bb` in `/Users/okh/.codex/worktrees/9661/AskJamie`.
+
+## Reproducible local acceptance commands
+
+The disposable test environment is `/tmp/askjamie-venv/bin/python3`
+(Python `3.14.5`, pytest `9.1.1`), created with
+`python3 -m venv /tmp/askjamie-venv` followed by
+`/tmp/askjamie-venv/bin/pip install pytest`. The integrated Python suite is:
+
+```bash
+/tmp/askjamie-venv/bin/python3 -m pytest
+```
+
+The exact-pair and i18n suites are each run with:
+
+```bash
+/tmp/askjamie-venv/bin/python3 -B -m unittest discover \
+  -s <skill-directory>/tests -p 'test_*.py' -v
+```
+
+Node browser/static verification used
+`/Users/okh/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node`
+(Node `v24.19.0`). The generator freshness and catalog checks are:
+
+```bash
+/tmp/askjamie-venv/bin/python3 scripts/generate-csp.py --check
+python3 .agents/skills/okhp3-skill-cataloger/scripts/gen-skills-readme.py \
+  --skills-dir .agents/skills --check
+```
 
 ## WP-14 decision packet draft
 

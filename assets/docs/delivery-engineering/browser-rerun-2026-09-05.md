@@ -26,3 +26,18 @@ rerun does not establish hosted-header enforcement or clear the earlier
 intermittent browser findings. WP-05 must capture the failed request URLs and
 resource types, correlate the server log, and coordinate any asset/page repair
 with the Experience PM before an affected-case rerun.
+
+## Focused follow-up
+
+After WP-05 added route/resource diagnostics, a focused browser probe used the
+bundled Node `v24.19.0` and Playwright runtime against the four original
+route/viewport combinations: `/lens-system/` at mobile-430, desktop-1024, and
+desktop-1280, and the Mathews Archery case at tablet-768. The local server was
+`127.0.0.1:5191`. All four rows had no non-blocked request failures, HTTP
+errors, console errors, or broken eager images. The intentional third-party
+block recorded two resources per row.
+
+This is a current targeted result, not a replacement for the prior 196/200
+full-run evidence. It shows that the original route/viewport combinations can
+load cleanly in isolation. It does not identify the root cause of the earlier
+Mathews image failure or clear it from the historical record.
