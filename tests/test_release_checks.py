@@ -1,11 +1,16 @@
 from __future__ import annotations
 
 import importlib.util
+import http.server
 import json
 import os
 import re
+import shutil
+import socket
 import subprocess
 import sys
+import threading
+import time
 from pathlib import Path
 
 import pytest
@@ -430,18 +435,164 @@ def test_responsive_qa_keeps_csp_suppression_narrow_and_reports_resource_failure
     assert "CONSOLE: " in source
 
 
-def test_responsive_qa_owns_late_events_by_request_navigation():
-    source = (ROOT / "scripts/responsive-qa.mjs").read_text(encoding="utf-8")
+def test_responsive_qa_browser_fixture_isolates_pages_and_preserves_failures(tmp_path):
+    node_bin = os.environ.get("ASKJAMIE_NODE") or shutil.which("node")
+    bundled_node = Path(
+        "/Users/okh/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node"
+    )
+    if not node_bin and bundled_node.exists():
+        node_bin = str(bundled_node)
+    node_modules = os.environ.get("NODE_PATH")
+    repo_modules = ROOT / "node_modules"
+    if not node_modules and (repo_modules / "playwright").exists():
+        node_modules = str(repo_modules)
+    bundled_modules = Path(
+        "/Users/okh/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules"
+    )
+    if not node_modules and (bundled_modules / "playwright").exists():
+        node_modules = str(bundled_modules)
+    if not node_bin or not node_modules or not (Path(node_modules) / "playwright").exists():
+        pytest.skip("Playwright runtime is unavailable")
 
-    assert "requestOwners: new WeakMap()" in source
-    assert "w.requestOwners.set(req, owner)" in source
-    assert "navigationId: owner.id" in source
-    assert "eventUrl: w.page.url()" in source
-    assert "undefined,\n        { timeout: 5000 }" in source
-    assert "navigation.blockedExternal" in source
-    assert "!i.complete || i.naturalWidth === 0" in source
-    assert "HTTP ${r.status}: [${r.resourceType}] ${r.url}" in source
-    assert "ERR_ABORTED" not in source
+    events = []
+    state = {"active": 0, "max_active": 0}
+    lock = threading.Lock()
+    png_header = b"\x89PNG\r\n\x1a\n"
+
+    class FixtureHandler(http.server.BaseHTTPRequestHandler):
+        def log_message(self, _format, *_args):
+            return
+
+        def _record(self, phase, path):
+            with lock:
+                events.append((phase, path, time.monotonic()))
+
+        def do_GET(self):
+            path = self.path.split("?", 1)[0]
+            if path in {"/lazy/", "/clean/", "/abort/", "/console-404/", "/timeout/"}:
+                body = {
+                    "/lazy/": '<img src="/slow-lazy.png" loading="lazy" width="10" height="10">',
+                    "/clean/": "",
+                    "/abort/": '<img src="/aborted.png" width="10" height="10">',
+                    "/console-404/": '<script>console.error("fixture console failure")</script><img src="/missing.png" width="10" height="10">',
+                    "/timeout/": '<img src="/delayed.png" width="10" height="10">',
+                }[path]
+                payload = (
+                    '<!doctype html><html><head><meta name="viewport" '
+                    'content="width=device-width"><title>Fixture</title></head>'
+                    f"<body><h1>Fixture</h1>{body}</body></html>"
+                ).encode()
+                self.send_response(200)
+                self.send_header("Content-Type", "text/html")
+                self.send_header("Content-Length", str(len(payload)))
+                self.end_headers()
+                self.wfile.write(payload)
+                return
+
+            if path == "/missing.png":
+                self.send_error(404, "missing fixture image")
+                return
+
+            if path == "/aborted.png":
+                self._record("start", path)
+                self.close_connection = True
+                self.connection.shutdown(socket.SHUT_RDWR)
+                self.connection.close()
+                self._record("end", path)
+                return
+
+            if path == "/slow-lazy.png":
+                self._record("start", path)
+                self.send_response(200)
+                self.send_header("Content-Type", "image/png")
+                self.send_header("Content-Length", "999999")
+                self.end_headers()
+                self.wfile.write(png_header)
+                self.wfile.flush()
+                time.sleep(0.5)
+                self.close_connection = True
+                self._record("end", path)
+                return
+
+            if path == "/delayed.png":
+                self._record("start", path)
+                with lock:
+                    state["active"] += 1
+                    state["max_active"] = max(state["max_active"], state["active"])
+                try:
+                    self.send_response(200)
+                    self.send_header("Content-Type", "image/png")
+                    self.send_header("Content-Length", "999999")
+                    self.end_headers()
+                    self.wfile.write(png_header)
+                    self.wfile.flush()
+                    time.sleep(6)
+                finally:
+                    with lock:
+                        state["active"] -= 1
+                    self._record("end", path)
+                return
+
+            self.send_error(404, "unknown fixture route")
+
+    server = http.server.ThreadingHTTPServer(("127.0.0.1", 0), FixtureHandler)
+    server.daemon_threads = True
+    server_thread = threading.Thread(target=server.serve_forever, daemon=True)
+    server_thread.start()
+
+    fixture_root = tmp_path / "runner"
+    (fixture_root / "scripts").mkdir(parents=True)
+    shutil.copy2(ROOT / "scripts/responsive-qa.mjs", fixture_root / "scripts/responsive-qa.mjs")
+    sitemap = (
+        '<?xml version="1.0"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
+        + "".join(f"<url><loc>https://askjamie.bot{path}</loc></url>" for path in (
+            "/lazy/", "/clean/", "/abort/", "/console-404/", "/timeout/"
+        ))
+        + "</urlset>"
+    )
+    (fixture_root / "sitemap.xml").write_text(sitemap, encoding="utf-8")
+
+    try:
+        result = subprocess.run(
+            [
+                node_bin,
+                "scripts/responsive-qa.mjs",
+                f"--base=http://127.0.0.1:{server.server_address[1]}",
+            ],
+            cwd=fixture_root,
+            text=True,
+            capture_output=True,
+            timeout=30,
+            env={**os.environ, "NODE_PATH": node_modules},
+        )
+    finally:
+        server.shutdown()
+        server.server_close()
+        server_thread.join(timeout=2)
+
+    report = json.loads(
+        (fixture_root / "assets/audit/responsive-qa/results.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    rows = {path: [row for row in report["results"] if path in row["url"]] for path in (
+        "/lazy/", "/clean/", "/abort/", "/console-404/", "/timeout/"
+    )}
+
+    assert result.returncode == 1
+    assert report["total_checks"] == 40
+    assert all(row["pass"] for row in rows["/lazy/"])
+    assert all(row["pass"] for row in rows["/clean/"])
+    assert all(any("REQUEST FAILED" in error or "BROKEN IMG" in error for error in row["errors"])
+               for row in rows["/abort/"])
+    assert all(any("CONSOLE:" in error for error in row["errors"]) and
+               any("HTTP 404" in error for error in row["errors"])
+               for row in rows["/console-404/"])
+    assert all(any("BROKEN IMG" in error or "REQUEST FAILED" in error for error in row["errors"])
+               for row in rows["/timeout/"])
+    assert state["max_active"] <= 8
+    lazy_starts = [event for event in events if event[0] == "start" and event[1] == "/slow-lazy.png"]
+    assert 0 < len(lazy_starts) <= 8
 
 
 def test_index_freshness_checks_content_instead_of_checkout_times(tmp_path, monkeypatch):

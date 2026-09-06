@@ -94,125 +94,83 @@ async function runWithPlaywright() {
     return { ok: false, reason: 'Chromium could not be launched' };
   }
 
-  // Create one persistent context+page per viewport (8 total) so we never pay
-  // context-creation overhead more than once. External resources (fonts, GA,
-  // GTM, and Mermaid's jsDelivr module) are blocked so browser QA measures
-  // local layout and assets rather than third-party availability.
+  // Reuse contexts for isolation and speed, but create a fresh page for every
+  // route. External resources are blocked so browser QA measures local assets.
   const EXTERNAL_BLOCK = /fonts\.(gstatic|googleapis)\.com|google-analytics\.com|googletagmanager\.com|cdn\.jsdelivr\.net/;
 
   const workers = await Promise.all(VIEWPORTS.map(async vp => {
     const ctx  = await browser.newContext({ viewport: { width: vp.width, height: vp.height } });
+    return { vp, ctx };
+  }));
+
+  const allResults = [];
+
+  async function runViewport(worker, path, url) {
+    const { vp, ctx } = worker;
     const page = await ctx.newPage();
-    const worker = {
-      vp,
-      ctx,
-      page,
-      activeNavigation: null,
-      navigationSequence: 0,
-      requestOwners: new WeakMap(),
+    const blockedExternal = new Set();
+    const consoleErrors = [];
+    const requestFailures = [];
+    const failedResponses = [];
+    const requestInfo = new WeakMap();
+    const warnings = [];
+
+    const onConsole = msg => {
+      const sourceUrl = msg.location().url || '';
+      if (msg.type() === 'error' &&
+          !msg.text().includes('ERR_FAILED') &&
+          !isMermaidInlineStyleWarning(msg)) {
+        consoleErrors.push(sourceUrl ? `${sourceUrl} :: ${msg.text()}` : msg.text());
+      }
     };
-    await page.route('**/*', (route) => {
+    const onRequest = req => {
+      requestInfo.set(req, {
+        requestedUrl: req.url(),
+        documentUrl: req.frame()?.url() || '',
+        createdAt: Date.now(),
+      });
+    };
+    const onRequestFailed = req => {
+      if (blockedExternal.has(req.url())) return;
+      const info = requestInfo.get(req);
+      requestFailures.push({
+        url: req.url(),
+        resourceType: req.resourceType(),
+        error: req.failure()?.errorText || 'unknown request failure',
+        requestedAt: info?.createdAt,
+        documentUrl: info?.documentUrl || req.frame()?.url() || '',
+        eventUrl: page.url(),
+        eventAt: Date.now(),
+      });
+    };
+    const onResponse = resp => {
+      if (resp.status() < 400 || blockedExternal.has(resp.url())) return;
+      const info = requestInfo.get(resp.request());
+      failedResponses.push({
+        url: resp.url(),
+        resourceType: resp.request().resourceType(),
+        status: resp.status(),
+        requestedAt: info?.createdAt,
+        documentUrl: info?.documentUrl || resp.request().frame()?.url() || '',
+        eventUrl: page.url(),
+        eventAt: Date.now(),
+      });
+    };
+
+    await page.route('**/*', route => {
       if (EXTERNAL_BLOCK.test(route.request().url())) {
-        if (worker.activeNavigation) {
-          worker.activeNavigation.blockedExternal.add(route.request().url());
-        }
+        blockedExternal.add(route.request().url());
         return route.abort();
       }
       return route.continue();
     });
-    return worker;
-  }));
+    page.on('console', onConsole);
+    page.on('request', onRequest);
+    page.on('requestfailed', onRequestFailed);
+    page.on('response', onResponse);
 
-  // Attach persistent event listeners.
-  // ERR_FAILED console messages come from our own route-blocking of external
-  // resources. They are testing artifacts, not real errors. The blocked URLs
-  // are reported separately as warnings on every affected viewport row.
-  for (const w of workers) {
-    w.page.on('console', msg => {
-      const sourceUrl = msg.location().url || '';
-      const mermaidRuntimeCspWarning = isMermaidInlineStyleWarning(msg);
-      if (msg.type() === 'error' &&
-          !msg.text().includes('ERR_FAILED') &&
-          !mermaidRuntimeCspWarning &&
-          w.activeNavigation) {
-        w.activeNavigation.consoleErrors.push({
-          text: sourceUrl ? `${sourceUrl} :: ${msg.text()}` : msg.text(),
-          at: Date.now(),
-          pageUrl: w.page.url(),
-        });
-        w.activeNavigation.refreshResult?.();
-      }
-    });
-    w.page.on('request', req => {
-      const owner = w.activeNavigation;
-      if (owner) {
-        w.requestOwners.set(req, owner);
-        owner.requested.push({
-          requestedUrl: req.url(),
-          documentUrl: req.frame()?.url() || '',
-          createdAt: Date.now(),
-        });
-      }
-    });
-    w.page.on('requestfailed', req => {
-      const owner = w.requestOwners.get(req) || w.activeNavigation;
-      if (!owner) return;
-      const url = req.url();
-      if (owner.blockedExternal.has(url)) return;
-      owner.requestFailures.push({
-        url,
-        resourceType: req.resourceType(),
-        error: req.failure()?.errorText || 'unknown request failure',
-        navigationId: owner.id,
-        documentUrl: req.frame()?.url() || '',
-        eventUrl: w.page.url(),
-        eventAt: Date.now(),
-      });
-      owner.refreshResult?.();
-    });
-    w.page.on('response', resp => {
-      const owner = w.requestOwners.get(resp.request()) || w.activeNavigation;
-      if (resp.status() >= 400) {
-        if (!owner) return;
-        const url = resp.url();
-        if (owner.blockedExternal.has(url)) return;
-        owner.failedResponses.push({
-          url,
-          resourceType: resp.request().resourceType(),
-          status: resp.status(),
-          navigationId: owner.id,
-          documentUrl: resp.request().frame()?.url() || '',
-          eventUrl: w.page.url(),
-          eventAt: Date.now(),
-        });
-        owner.refreshResult?.();
-      }
-    });
-  }
-
-  const allResults = [];
-
-  for (const path of PUBLIC_PATHS) {
-    const url = BASE_URL + path;
-
-    // Navigate all 8 viewports in parallel
-    const vpResults = await Promise.all(workers.map(async (w) => {
-      const { vp, page } = w;
-      const navigation = {
-        id: ++w.navigationSequence,
-        url,
-        consoleErrors: [],
-        requestFailures: [],
-        failedResponses: [],
-        requested: [],
-        blockedExternal: new Set(),
-        refreshResult: null,
-      };
-      w.activeNavigation = navigation;
-      const warnings = [];
+    try {
       try {
-        // `commit` is local-document readiness. A bounded DOMContentLoaded
-        // wait avoids making a local route depend on a blocked CDN module.
         await page.goto(url, { waitUntil: 'commit', timeout: 30000 });
         await page.waitForLoadState('domcontentloaded', { timeout: 5000 }).catch(() => {
           warnings.push('DOMContentLoaded not observed within 5s after local document commit');
@@ -220,64 +178,66 @@ async function runWithPlaywright() {
       } catch (err) {
         return { url, viewport: vp.name, width: vp.width, height: vp.height,
                  mode: 'playwright', pass: false,
-                 errors: ['navigation timeout: ' + err.message.split('\n')[0]] };
+                 errors: ['navigation timeout: ' + err.message.split('\n')[0]], warnings };
       }
 
       const overflow = await page.evaluate(() =>
         document.documentElement.scrollWidth > window.innerWidth
       );
-
-      // Wait for eager images to finish loading (avoids domcontentloaded timing race).
-      // Lazy images are intentionally deferred until scroll — skip them.
       await page.waitForFunction(
         () => Array.from(document.querySelectorAll('img'))
           .filter(i => i.loading !== 'lazy')
           .every(i => i.complete),
         undefined,
         { timeout: 5000 }
-      ).catch(() => {}); // If some eager imgs never load, we still capture them below
+      ).catch(() => {});
 
       const brokenImages = await page.evaluate(() =>
         Array.from(document.querySelectorAll('img'))
           .filter(i => i.loading !== 'lazy' && (!i.complete || i.naturalWidth === 0))
           .map(i => i.src)
       );
-      // The route handler intentionally aborts third-party assets so the
-      // check is deterministic. Those aborted images are warnings, not page
-      // defects; only report broken images that were not intentionally blocked.
       const unexpectedBrokenImages = brokenImages.filter(src =>
-        ![...navigation.blockedExternal].some(blocked => blocked === src)
+        ![...blockedExternal].some(blocked => blocked === src)
       );
-
-      const buildErrors = () => [
+      const errors = [
         ...(overflow ? [`OVERFLOW: scrollWidth > ${vp.width}px`] : []),
-        ...navigation.consoleErrors.slice(0, 5).map(e => 'CONSOLE: ' + e.text),
-        ...navigation.requestFailures.slice(0, 5).map(r =>
+        ...consoleErrors.slice(0, 5).map(e => 'CONSOLE: ' + e),
+        ...requestFailures.slice(0, 5).map(r =>
           `REQUEST FAILED: [${r.resourceType}] ${r.url} (${r.error})`
         ),
-        ...navigation.failedResponses.slice(0, 5).map(r =>
+        ...failedResponses.slice(0, 5).map(r =>
           `HTTP ${r.status}: [${r.resourceType}] ${r.url}`
         ),
         ...unexpectedBrokenImages.slice(0, 5).map(s => 'BROKEN IMG: ' + s),
       ];
-      if (navigation.blockedExternal.size > 0) {
-        warnings.push(`blocked third-party resources: ${[...navigation.blockedExternal].join(', ')}`);
+      if (blockedExternal.size > 0) {
+        warnings.push(`blocked third-party resources: ${[...blockedExternal].join(', ')}`);
       }
 
       const row = { url, viewport: vp.name, width: vp.width, height: vp.height,
-                    mode: 'playwright', pass: true, errors: [], warnings };
-      navigation.refreshResult = () => {
-        row.errors = buildErrors();
-        row.pass = row.errors.length === 0;
-      };
-      navigation.refreshResult();
-      const pass = row.pass;
-      if (!pass) {
+                    mode: 'playwright', pass: errors.length === 0, errors, warnings };
+      if (!row.pass) {
         const ssFile = `${path.replace(/\//g, '_')}_${vp.name}.png`;
         await page.screenshot({ path: resolve(SCREENSHOTS_DIR, ssFile) });
       }
       return row;
-    }));
+    } finally {
+      page.removeListener('console', onConsole);
+      page.removeListener('request', onRequest);
+      page.removeListener('requestfailed', onRequestFailed);
+      page.removeListener('response', onResponse);
+      await page.close();
+    }
+  }
+
+  for (const path of PUBLIC_PATHS) {
+    const url = BASE_URL + path;
+
+    // Navigate all 8 viewports in parallel
+    const vpResults = await Promise.all(workers.map(worker =>
+      runViewport(worker, path, url)
+    ));
 
     const fails = vpResults.filter(r => !r.pass);
     if (fails.length > 0) {
