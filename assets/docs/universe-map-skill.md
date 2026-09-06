@@ -1,6 +1,6 @@
 # Maintained universe maps
 
-Canonical package: `OKHP3/skillz/mermaid/okhp3-universe-map`, version 0.1.1.
+Canonical package: `OKHP3/skillz/mermaid/okhp3-universe-map`, version 0.1.2.
 Installed copy: `.agents/skills/okhp3-universe-map/SKILL.md`.
 Site-owned configuration: `universe-map.config.json`.
 

@@ -23,6 +23,12 @@ try {
         await group.locator("svg .node").first().waitFor({ timeout: 20000 });
         await page.waitForFunction(element => element.querySelectorAll("svg a[href]").length === element.querySelectorAll("a[data-universe-node]").length, await group.elementHandle());
         assert.equal(await group.locator("svg .node").count(), report.diagrams[i].nodes.length);
+        const labels = await group.locator(".nodeLabel").allTextContents();
+        const expectedLabels = report.diagrams[i].nodes.map(id => {
+          const node = report.nodes.find(item => item.id === id);
+          return `${node.title} (${node.status})`.replace(/\s+/g, " ").trim();
+        });
+        assert.deepEqual(labels.map(value => value.replace(/\s+/g, " ").trim()).sort(), expectedLabels.sort(), "Mermaid must decode titles and symbols exactly");
         const colors = await group.locator(".nodeLabel p").first().evaluate(e => [getComputedStyle(e).color, getComputedStyle(e.closest(".node").querySelector("rect")).fill]);
         assert.notEqual(colors[0], "rgb(0, 0, 0)", "Node text must use the brand foreground");
         assert.notEqual(colors[0], colors[1], "Node text must differ from its surface");
