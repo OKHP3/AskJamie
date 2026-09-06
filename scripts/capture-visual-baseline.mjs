@@ -1,6 +1,13 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { createRequire } from "node:module";
+import {
+  SAMPLE_ROUTES,
+  VIEWPORTS,
+  assessCaptureReadiness,
+  estimateImageScaleRatio,
+  validateCaptureDestination,
+} from "./capture-visual-baseline-core.mjs";
 
 const require = createRequire(import.meta.url);
 const { chromium } = require("playwright");
@@ -8,36 +15,6 @@ const { chromium } = require("playwright");
 const baseUrl = process.env.BASE_URL || "http://127.0.0.1:5000";
 const outputDir = process.env.OUTPUT_DIR || "assets/audit/visual-baseline";
 const reportFile = process.env.REPORT_FILE || path.join(outputDir, "capture-readiness.json");
-const viewports = [
-  { name: "desktop", width: 1280, height: 900 },
-  { name: "mobile", width: 390, height: 844 },
-];
-const sampleRoutes = [
-  {
-    name: "homepage",
-    route: "/",
-    captureSelector: "body",
-    focusSelector: ".askjamie-hero",
-  },
-  {
-    name: "lens-hub",
-    route: "/lens-system/",
-    captureSelector: "body",
-    focusSelector: ".askjamie-hero",
-  },
-  {
-    name: "brandguard-detail",
-    route: "/lens-system/okhp3-brandguard/bfs-framing-intelligent-futures/",
-    captureSelector: "body",
-    focusSelector: ".askjamie-hero",
-  },
-  {
-    name: "universe",
-    route: "/universe/",
-    captureSelector: "body",
-    focusSelector: ".askjamie-mermaid-shell",
-  },
-];
 const baseOrigin = new URL(baseUrl).origin;
 const report = {
   baseUrl,
@@ -45,19 +22,31 @@ const report = {
     cache: "fresh browser context per sample",
     throttle: "none",
     externalRequests: "blocked to same-origin requests",
-    samplesPerViewport: sampleRoutes.length,
-    viewports: viewports.map((viewport) => `${viewport.width}x${viewport.height}`),
+    samplesPerViewport: SAMPLE_ROUTES.length,
+    deviceScaleFactor: 1,
+    viewportEmulation: VIEWPORTS.map((viewport) => `${viewport.width}x${viewport.height}`),
   },
   captures: [],
 };
 
 await fs.mkdir(outputDir, { recursive: true });
+const outputEntries = await fs.readdir(outputDir).catch(() => []);
+const validatedTarget = validateCaptureDestination({
+  repoRoot: process.cwd(),
+  outputDir,
+  reportFile,
+  committedBaselineDir: path.join(process.cwd(), "assets/audit/visual-baseline"),
+  allowCommittedReplacement: process.env.ALLOW_COMMITTED_BASELINE_REPLACEMENT === "1",
+  outputEntries,
+});
 
 const browser = await chromium.launch({ headless: true });
 
 async function createContext(viewport) {
   const context = await browser.newContext({
     viewport,
+    deviceScaleFactor: 1,
+    hasTouch: false,
     colorScheme: "light",
     reducedMotion: "no-preference",
   });
@@ -97,6 +86,7 @@ async function traverseLazyContent(page) {
 }
 
 async function waitForReadiness(page, selector, routeName, viewportName) {
+  const readinessStarted = Date.now();
   await page.waitForLoadState("domcontentloaded");
   await page.waitForLoadState("networkidle");
   await page.waitForFunction(() => document.readyState === "complete", null, { timeout: 15000 });
@@ -110,11 +100,13 @@ async function waitForReadiness(page, selector, routeName, viewportName) {
     }
   });
   await traverseLazyContent(page);
+  const animationSettleStarted = Date.now();
   await settleAnimations(page);
   await page.waitForFunction(() => {
     const reveals = [...document.querySelectorAll(".reveal-on-scroll")];
     return reveals.every((element) => getComputedStyle(element).opacity === "1");
   }, null, { timeout: 15000 });
+  const animationSettleMs = Date.now() - animationSettleStarted;
 
   const target = page.locator(selector).first();
   try {
@@ -123,8 +115,13 @@ async function waitForReadiness(page, selector, routeName, viewportName) {
     const diagnostics = await page.evaluate((routeNameValue) => {
       const images = [...document.images].map((image) => ({
         src: image.currentSrc || image.src,
+        alt: image.alt || "",
         complete: image.complete,
         naturalWidth: image.naturalWidth,
+        naturalHeight: image.naturalHeight,
+        renderedWidth: Number(image.getBoundingClientRect().width.toFixed(1)),
+        renderedHeight: Number(image.getBoundingClientRect().height.toFixed(1)),
+        scaleRatio: Number((image.naturalWidth / Math.max(1, image.getBoundingClientRect().width)).toFixed(2)),
         loading: image.loading || "eager",
       }));
       const resources = performance.getEntriesByType("resource").map((entry) => ({
@@ -141,6 +138,10 @@ async function waitForReadiness(page, selector, routeName, viewportName) {
         scrollHeight: document.documentElement.scrollHeight,
         imageCount: images.length,
         loadedImages: images.filter((image) => image.complete && image.naturalWidth > 0).length,
+        requestBytes: {
+          transferred: resources.reduce((sum, entry) => sum + (entry.transferSize || 0), 0),
+          encoded: resources.reduce((sum, entry) => sum + (entry.encodedBodySize || 0), 0),
+        },
         revealCount: document.querySelectorAll(".reveal-on-scroll").length,
         visibleReveals: [...document.querySelectorAll(".reveal-on-scroll")].filter((element) => getComputedStyle(element).opacity === "1").length,
         resourceSummary: resources.reduce((summary, entry) => {
@@ -160,6 +161,10 @@ async function waitForReadiness(page, selector, routeName, viewportName) {
     element.scrollIntoView({ block: "center", inline: "nearest" });
   });
   await settleAnimations(page);
+  return {
+    readinessWaitMs: Date.now() - readinessStarted,
+    animationSettleMs,
+  };
 }
 
 async function summarizeRequests(page) {
@@ -172,11 +177,17 @@ async function summarizeRequests(page) {
       encodedBodySize: entry.encodedBodySize,
     }));
     const images = [...document.images].map((image) => ({
-      src: image.currentSrc || image.src,
-      complete: image.complete,
-      naturalWidth: image.naturalWidth,
-      loading: image.loading || "eager",
-      fetchPriority: image.fetchPriority || "auto",
+      ...({
+        src: image.currentSrc || image.src,
+        alt: image.alt || "",
+        complete: image.complete,
+        naturalWidth: image.naturalWidth,
+        naturalHeight: image.naturalHeight,
+        renderedWidth: Number(image.getBoundingClientRect().width.toFixed(1)),
+        renderedHeight: Number(image.getBoundingClientRect().height.toFixed(1)),
+        loading: image.loading || "eager",
+        fetchPriority: image.fetchPriority || "auto",
+      }),
     }));
     return {
       readyState: document.readyState,
@@ -188,6 +199,10 @@ async function summarizeRequests(page) {
         summary[entry.initiatorType] = (summary[entry.initiatorType] || 0) + 1;
         return summary;
       }, {}),
+      requestBytes: {
+        transferred: resources.reduce((sum, entry) => sum + (entry.transferSize || 0), 0),
+        encoded: resources.reduce((sum, entry) => sum + (entry.encodedBodySize || 0), 0),
+      },
       resourceSample: resources.slice(0, 12),
       imageSample: images.slice(0, 12),
       revealCount: document.querySelectorAll(".reveal-on-scroll").length,
@@ -219,9 +234,15 @@ async function captureSample(viewport, sample) {
   const captureBase = `${sample.name}-${viewport.width}`;
   try {
     await page.goto(`${baseUrl}${sample.route}`, { waitUntil: "domcontentloaded" });
-    await waitForReadiness(page, sample.focusSelector, sample.name, `${viewport.width}x${viewport.height}`);
+    const readinessTiming = await waitForReadiness(
+      page,
+      sample.focusSelector,
+      sample.name,
+      `${viewport.width}x${viewport.height}`
+    );
 
-    await page.locator(sample.captureSelector).first().screenshot({
+    const captureTarget = page.locator(sample.captureSelector).first();
+    await captureTarget.screenshot({
       path: `${outputDir}/${captureBase}.png`,
       animations: "disabled",
       caret: "hide",
@@ -233,6 +254,13 @@ async function captureSample(viewport, sample) {
         caret: "hide",
       });
     }
+    const sampleSummary = await summarizeRequests(page);
+    sampleSummary.readinessWaitMs = readinessTiming.readinessWaitMs;
+    sampleSummary.animationSettleMs = readinessTiming.animationSettleMs;
+    sampleSummary.imageSample = sampleSummary.imageSample.map((image) => ({
+      ...image,
+      scaleRatio: estimateImageScaleRatio(image),
+    }));
 
     report.captures.push({
       route: sample.route,
@@ -240,6 +268,13 @@ async function captureSample(viewport, sample) {
       viewport: `${viewport.width}x${viewport.height}`,
       screenshot: `${captureBase}.png`,
       focusScreenshot: sample.focusSelector !== sample.captureSelector ? `${captureBase}-focus.png` : null,
+      readiness: assessCaptureReadiness({
+        imageCount: sampleSummary.imageCount,
+        loadedImages: sampleSummary.loadedImages,
+        responseErrors: responses,
+        readinessWaitMs: sampleSummary.readinessWaitMs,
+        animationSettleMs: sampleSummary.animationSettleMs,
+      }),
       requestCount: requests.length,
       responseErrors: responses,
       requestSummary: requests.reduce((summary, request) => {
@@ -247,7 +282,7 @@ async function captureSample(viewport, sample) {
         return summary;
       }, {}),
       requestSample: requests.slice(0, 12),
-      pageSummary: await summarizeRequests(page),
+      pageSummary: sampleSummary,
     });
   } catch (error) {
     const failurePath = `${outputDir}/${captureBase}-failure.png`;
@@ -271,13 +306,13 @@ async function captureSample(viewport, sample) {
   }
 }
 
-for (const viewport of viewports) {
-  for (const sample of sampleRoutes) {
+for (const viewport of VIEWPORTS) {
+  for (const sample of SAMPLE_ROUTES) {
     await captureSample(viewport, sample);
   }
 }
 
 await browser.close();
-await fs.writeFile(reportFile, `${JSON.stringify(report, null, 2)}\n`);
-console.log(`Visual baseline captured in ${outputDir}`);
-console.log(`Readiness summary written to ${reportFile}`);
+await fs.writeFile(validatedTarget.reportFile, `${JSON.stringify(report, null, 2)}\n`);
+console.log(`Visual baseline captured in ${validatedTarget.outputDir}`);
+console.log(`Readiness summary written to ${validatedTarget.reportFile}`);
