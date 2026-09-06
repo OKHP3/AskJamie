@@ -50,6 +50,7 @@ try {
   await noJs.goto(`${base}/universe/`);
   await noJs.locator(".universe-map-group summary").first().click();
   assert.ok(await noJs.locator(".universe-map-group[open] a[data-universe-node]").first().isVisible());
+  assert.equal(await noJs.locator(".universe-map-group[open] .mermaid").first().evaluate(e => getComputedStyle(e).visibility), "hidden", "Raw diagram syntax must stay hidden without JavaScript");
   const keyboard = await browser.newPage();
   await keyboard.goto(`${base}/universe/`);
   await keyboard.locator(".universe-map-group summary").first().focus();
