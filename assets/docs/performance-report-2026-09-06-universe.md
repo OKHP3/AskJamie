@@ -3,7 +3,7 @@
 The universe page now uses a compact brand overview and six bounded detail
 maps for 25 indexed pages. Diagrams render lazily on expansion. No new runtime
 dependency or third-party script was added. The portable Python package remains
-version 0.1.0 and unchanged from Skillz.
+version 0.1.1 and unchanged from Skillz.
 
 Local validation passed: structural HTML, link inventory, canonical audit,
 asset fingerprints, map/index freshness, 11 generator regression cases,
@@ -20,3 +20,7 @@ Visual baseline changes are limited to the intentional universe overview.
 The release workflow also runs the dedicated universe browser checks. Publishing
 and hosted acceptance are verified separately after the pull request merges.
 No Lighthouse performance score or human screen-reader result is claimed.
+
+Linux CI run 34038504280 passed all release gates, including all 39 Python
+tests and the three POSIX process fixtures. Package v0.1.1 pins LF line endings
+for byte-identical installation across platforms; generator behavior is unchanged.
