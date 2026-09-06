@@ -33,6 +33,12 @@ try {
         assert.notEqual(colors[0], "rgb(0, 0, 0)", "Node text must use the brand foreground");
         assert.notEqual(colors[0], colors[1], "Node text must differ from its surface");
         assert.equal(await group.locator("svg a[href^='/']").count(), report.diagrams[i].nodes.length);
+        assert.ok(await group.locator(".mermaid-scroll-wrap").evaluate(element => element.inert), "Decorative hidden diagrams must be inert");
+        await group.locator("summary").focus();
+        await page.keyboard.press("Tab");
+        assert.equal(await page.evaluate(() => Boolean(document.activeElement.closest('[aria-hidden="true"]'))), false, "Tab must skip hidden diagram anchors");
+        await group.locator("a[data-universe-node]").first().focus();
+        assert.ok(await group.locator("a[data-universe-node]").first().evaluate(element => element === document.activeElement), "Equivalent visible page links remain focusable");
         if (i === 0 && process.env.OUTPUT_DIR) {
           await fs.mkdir(process.env.OUTPUT_DIR, { recursive: true });
           await group.screenshot({ path: `${process.env.OUTPUT_DIR}/universe-detail-${width}-${theme}.png` });

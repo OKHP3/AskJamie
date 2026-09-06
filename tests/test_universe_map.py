@@ -50,6 +50,7 @@ def test_add_remove_idempotence_and_readonly_check(tmp_path):
     before = page.read_bytes()
     assert b'New &lt;page&gt;' in before and b'href="/new/"' in before
     assert b'click n' not in before and b'Keep this introduction' in before
+    assert b'class="mermaid-scroll-wrap" aria-hidden="true" inert' in before
     rows.pop()
     index.write_text(json.dumps({'entries': rows}))
     with pytest.raises(ValueError, match='Stale universe output'):
