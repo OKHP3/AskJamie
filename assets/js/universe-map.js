@@ -1,5 +1,5 @@
 // Keep Mermaid strict. Add navigation only from the generated ordinary links.
-const groups = document.querySelectorAll(".universe-map-group");
+const diagrams = document.querySelectorAll(".askjamie-mermaid-shell .mermaid");
 function linkNodes(group) {
   for (const link of group.querySelectorAll("a[data-universe-node]")) {
     const id = link.dataset.universeNode;
@@ -15,12 +15,17 @@ function linkNodes(group) {
     anchor.append(node);
   }
 }
-for (const group of groups) {
+for (const diagram of diagrams) {
+  const finish = () => {
+    if (!diagram.querySelector("svg .node")) return false;
+    const group = diagram.closest(".universe-map-group");
+    if (group) linkNodes(group);
+    diagram.dataset.universeReady = "1";
+    return true;
+  };
+  if (finish()) continue;
   const observer = new MutationObserver(() => {
-    if (!group.querySelector("svg .node")) return;
-    observer.disconnect();
-    linkNodes(group);
+    if (finish()) observer.disconnect();
   });
-  observer.observe(group, { childList: true, subtree: true });
-  linkNodes(group);
+  observer.observe(diagram, { childList: true, subtree: true });
 }
