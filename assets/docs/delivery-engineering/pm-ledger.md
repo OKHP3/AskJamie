@@ -22,10 +22,10 @@ bounded fallback. This is a tooling dispatch blocker, not a package pass.
 
 | Package | Current disposition | Evidence or next action |
 | --- | --- | --- |
-| WP-05 | Implemented in isolation, integrated rerun pending | Commit `d6f060a`; required browser launch and missing-CSP regressions now fail clearly. Full browser evidence remains 196/200. |
-| WP-09 | Implemented in isolation, Architect acceptance pending | Commits `c852738` and correction `bebdc1e`; eight focused safety regressions pass. No sibling write was run. |
-| WP-10 | Implemented in isolation, integrated rerun pending | Commit `c6a61bb`; CI Node runtime moved to 24 with 18 focused tests passing in a disposable verification environment. |
-| WP-11 | Implemented in isolation, integrated rerun pending | Commit `c6a61bb`; source collector tests explicitly exclude `dist-pages/` and `.scratch/`. |
+| WP-05 | Integrated, hosted/runtime acceptance open | Integrated as `22dafc5` from worker commit `d6f060a`; required browser launch and missing-CSP regressions now fail clearly. Full browser evidence remains 196/200. |
+| WP-09 | Integrated, accepted locally | Integrated into `a7ca31f` from worker commits `c852738` and `bebdc1e`; 24 combined unittest cases pass, including the nine worker safety cases. No sibling write was run. |
+| WP-10 | Integrated, clean-install evidence bounded | Integrated as `fb9346b` from worker commit `c6a61bb`; CI Node runtime moved to 24. Worker recorded 18 focused tests in a disposable environment. |
+| WP-11 | Integrated, source boundary covered | Integrated as `fb9346b`; source collector tests explicitly exclude `dist-pages/` and `.scratch/`. |
 | WP-14 | Decision packet only | `_headers` is not proven enforced by GitHub Pages. Settings, branch protection, analytics, and hosted measurement require owner approval and live readback. |
 | Translation cleanup | Retained and inactive | No locale activation, translated route, locale index, or switcher markup. Catalog regeneration remains blocked by duplicate janitor packaging. |
 | Ignored `.DS_Store` findings | Preserve and disposition | Eight ignored paths are hygiene findings. Do not delete without exact-path inventory and recovery decision. |
