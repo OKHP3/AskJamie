@@ -51,9 +51,8 @@ const VIEWPORTS = [
   { name: 'desktop-1440', width: 1440, height: 900  },
   { name: 'desktop-1920', width: 1920, height: 1080 },
 ];
-// The CI preview uses Python's single-threaded HTTPServer with a backlog of 5.
-// Keep browser request bursts below that service boundary while preserving all
-// viewport rows in the release inventory.
+// Cap concurrent viewport work at four to limit browser request bursts while
+// preserving every viewport row in the release inventory.
 const VIEWPORT_CONCURRENCY = 4;
 
 // The sitemap is the release inventory. This avoids silently testing a stale

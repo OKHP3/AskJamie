@@ -46,20 +46,20 @@ async function ready(page, route = '/') {
       return { suggestions };
     } finally { await ctx.close(); }
   });
-  await check('Skip link focuses main content', async () => {
+  await check('Skip link focuses main content and updates its fragment', async () => {
     const ctx = await context();
     try {
       const page = await ctx.newPage(); await ready(page);
       await page.keyboard.press('Tab');
       await page.keyboard.press('Enter');
       await page.waitForFunction(() => document.activeElement?.id === 'main');
-      assert.equal(await page.evaluate(() => location.hash), '');
+      assert.equal(await page.evaluate(() => location.hash), '#main');
       assert.equal(await page.evaluate(() => document.activeElement?.tagName), 'MAIN');
       assert.equal(await page.evaluate(() => document.activeElement?.id), 'main');
       return { activeTag: 'MAIN', activeId: 'main' };
     } finally { await ctx.close(); }
   });
-  await check('Reduced motion internal anchors use instant scrolling', async () => {
+  await check('Reduced motion internal anchors update their fragment and scroll instantly', async () => {
     const ctx = await context({ reducedMotion: 'reduce' });
     try {
       const page = await ctx.newPage(); await ready(page);
@@ -76,7 +76,7 @@ async function ready(page, route = '/') {
       const calls = await page.evaluate(() => window.__scrollIntoViewCalls);
       assert.equal(calls[0].behavior, 'auto');
       assert.equal(calls[0].block, 'start');
-      assert.equal(await page.evaluate(() => location.hash), '');
+      assert.equal(await page.evaluate(() => location.hash), '#uses');
       return { behavior: calls[0].behavior, block: calls[0].block };
     } finally { await ctx.close(); }
   });

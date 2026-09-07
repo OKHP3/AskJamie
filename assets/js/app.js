@@ -416,7 +416,7 @@ document.addEventListener("DOMContentLoaded", () => {
       target.focus({ preventScroll: true });
       if (location.hash !== href) history.pushState(history.state, "", href);
       target.scrollIntoView({
-        behavior: prefersReducedMotion ? "auto" : "smooth",
+        behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
         block: "start",
       });
     });
