@@ -5,8 +5,8 @@
   "sources": [
     {
       "origin": "https://askjamie.bot",
-      "sha256": "f22becdbb21853ae0daf38316704403815a8ca4ffc28a61350e9a1c701d7b158",
-      "records": 25
+      "sha256": "91b7d5ca7ad95cc7b66e910f39a65859f10c2de104b971f687b43a24c0de546c",
+      "records": 26
     }
   ],
   "nodes": [
@@ -35,6 +35,16 @@
       "url": "https://askjamie.bot/contact/",
       "title": "Contact AskJamie™ | Project Inquiries & Collaboration",
       "description": "Contact AskJamie™ for project inquiries, collaboration, and professional engagements. Reach out about AI persona work, BrandGuard™, or the Lens System.",
+      "origin": "https://askjamie.bot",
+      "status": "Published page",
+      "indexed": true,
+      "parent": "https://askjamie.bot/"
+    },
+    {
+      "id": "https://askjamie.bot/found-ry/",
+      "url": "https://askjamie.bot/found-ry/",
+      "title": "AskJamie Found-Ry | A Workbench for Useful Capabilities",
+      "description": "Inside AskJamie Found-Ry: a private local workbench for assistant specifications, decision tools, guided workflows, and reviewable capability packages.",
       "origin": "https://askjamie.bot",
       "status": "Published page",
       "indexed": true,
@@ -270,10 +280,10 @@
         "https://askjamie.bot/",
         "https://askjamie.bot/about/",
         "https://askjamie.bot/contact/",
+        "https://askjamie.bot/found-ry/",
         "https://askjamie.bot/how-askjamie-works/",
         "https://askjamie.bot/legal/",
-        "https://askjamie.bot/lens-system/",
-        "https://askjamie.bot/search/"
+        "https://askjamie.bot/lens-system/"
       ]
     },
     {
@@ -281,6 +291,7 @@
       "parent": "https://askjamie.bot/",
       "nodes": [
         "https://askjamie.bot/",
+        "https://askjamie.bot/search/",
         "https://askjamie.bot/universe/"
       ]
     },

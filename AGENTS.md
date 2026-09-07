@@ -105,6 +105,7 @@ Out of scope unless explicitly requested:
 ```text
 index.html                  Homepage
 about/ contact/ legal/      Primary interior pages
+found-ry/                   Public feature page for the private local workbench
 how-askjamie-works/          Explanation of the Lens System and its boundaries
 universe/                   Mermaid ecosystem map
 search/                     Dedicated client-side search page
@@ -138,7 +139,10 @@ viewports, producing 200 route/viewport rows. The two utility pages,
 `404.html` and `under-construction.html`, are covered by structural and audit
 checks. Tracked generated copies under `dist-pages/` are not additional source
 pages. Refresh counts from source rather than recursive on-disk totals.
-The current evidence boundaries are recorded in
+The 2026-09-07 feature-page change adds `/found-ry/` to the source, search,
+sitemap and release allowlist: 28 QA-relevant source pages and 26 content
+routes, producing 208 responsive route/viewport rows. The older counts above
+record the September 5 baseline. The current evidence boundaries are recorded in
 `assets/docs/project-scorecard.md`.
 
 ### Agent skills

@@ -37,6 +37,7 @@ PUBLIC_PAGE_DIRS = {
     "about",
     "contact",
     "how-askjamie-works",
+    "found-ry",
     "legal",
     "lens-system",
     "search",
