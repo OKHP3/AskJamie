@@ -3,6 +3,12 @@
 
   <!-- Core pages -->
   <url>
+    <loc>https://askjamie.bot/found-ry/</loc>
+    <lastmod>2026-09-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://askjamie.bot/</loc>
     <lastmod>2026-05-03</lastmod>
     <changefreq>weekly</changefreq>

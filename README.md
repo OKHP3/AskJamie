@@ -27,6 +27,7 @@ universe/             # OKHP³ Universe — ecosystem map (Mermaid diagram)
 contact/              # Contact — six labeled inquiry-path cards
 legal/                # Legal — terms, privacy, BrandGuard™ disclaimer
 how-askjamie-works/    # How the Lens System works and where its limits are
+found-ry/             # Feature page for the private local capability workbench
 search/               # Site Search — full-text client-side search
 lens-system/          # Lens System hub — four purpose-built GPTs
   resume-representative/     # GPT-AJ01
@@ -41,13 +42,13 @@ assets/
   css/theme.css        # Single stylesheet — GLOBAL → OKH → GLEE → ASKJAMIE tiers
   js/app.js            # Single JS file — analytics, search modal, nav, GA4 events
   js/mermaid-init.js   # Mermaid v11 ESM init (universe page only)
-  data/search-index.json  # Pre-built search index (25 content pages)
+  data/search-index.json  # Pre-built search index (26 content pages)
   img/                 # Brand assets, avatars, case study images
   docs/                # Generated docs (audit reports, QA results, specs)
   templates/           # 9 developer page templates (excluded from QA)
 scripts/
   audit-site.py        # Static-site auditor: quality gates; rerun for current findings
-  responsive-qa.mjs    # Playwright + static-lint QA (200 rows across 25 sitemap routes)
+  responsive-qa.mjs    # Playwright + static-lint QA (208 rows across 26 sitemap routes)
   build-search-index.py   # Regenerates assets/data/search-index.json
   archive/             # Reference-only and retired maintenance scripts
 ```
