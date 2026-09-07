@@ -8,3 +8,4 @@
 - [Plain-language term validation](plain-language-term-validation.md) — check explanatory prose only, with stack-safe exclusion handling for shared UI
 - [Portable skill package integrity](portable-skill-package-integrity.md) — resolve every referenced resource before treating a skill as portable
 - [Public tree audit traversal](public-tree-audit-traversal.md) — prune workspace-managed directories before recursive validation scans
+- [Pages artifact working tree](pages-artifact-working-tree.md) — artifact preparation can touch the tracked dist-pages tree; restore it before cleanup or pushing
