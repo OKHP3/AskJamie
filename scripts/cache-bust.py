@@ -18,7 +18,7 @@ from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 ROOT = Path(__file__).resolve().parents[1]
 ASSETS = (
     "assets/css/theme.css", "assets/js/app.js", "assets/js/mermaid-init.js",
-    "assets/js/askjamie-analytics.js", "assets/js/deferred-fonts.js",
+    "assets/js/universe-map.js", "assets/js/askjamie-analytics.js", "assets/js/deferred-fonts.js",
 )
 MARKER = "<!-- AUTOGEN:SHARED-ASSETS -->"
 MAP_START = "<!-- AUTOGEN:BRAND-IMPORT-MAP -->"

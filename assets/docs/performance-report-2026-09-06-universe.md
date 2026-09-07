@@ -1,0 +1,52 @@
+# Universe map release validation, September 6, 2026
+
+The universe page now uses a compact brand overview and six bounded detail
+maps for 25 indexed pages. Diagrams render lazily on expansion. No new runtime
+dependency or third-party script was added. The portable Python package remains
+version 0.1.3 and unchanged from Skillz.
+
+Local validation passed: structural HTML, link inventory, canonical audit,
+asset fingerprints, map/index freshness, 16 generator regression cases,
+36 Python tests excluding three POSIX process fixtures, and all 200 responsive
+browser checks. The three POSIX fixtures require the Linux CI runner; Windows
+shell adapters did not execute them reliably. No local pass is claimed for them.
+
+The dedicated browser test verifies all six maps at 390px and 1280px, both
+color schemes, node/link counts, full indexed URL coverage, expandable keyboard
+controls, and ordinary navigation without JavaScript. Phone diagrams scroll
+within their container rather than shrinking their labels to unreadable sizes.
+Visual baseline changes are limited to the intentional universe overview.
+
+The release workflow also runs the dedicated universe browser checks. Publishing
+and hosted acceptance are verified separately after the pull request merges.
+No Lighthouse performance score or human screen-reader result is claimed.
+
+Linux CI run 34038504280 passed all release gates, including all 39 Python
+tests and the three POSIX process fixtures. LF portability was introduced in v0.1.1 and is retained in the current
+v0.1.3 package for byte-identical installation across platforms. The later
+v0.1.2 behavior fixes and their regression evidence are described below.
+
+
+## Post-merge review follow-up
+
+PR 18 review found two portable-generator edge cases: an origin-only homepage
+URL must normalize to a trailing slash, and output cannot be placed inside the
+skill package. Both are fixed in canonical package v0.1.2 with regression tests.
+
+The character-escaping comments are false positives. Mermaid uses decimal
+`#NNNN;` escapes, as documented in its
+[entity-code syntax](https://mermaid.js.org/syntax/flowchart.html#entity-codes-to-escape-characters).
+The dedicated browser test now compares every rendered label with its indexed
+title and status, including punctuation and trademark symbols.
+
+Version 0.1.3 extends URL normalization to lifecycle overlay keys and parent
+references, rejects duplicate aliases, and retains explicit concept parents.
+All 16 portable regression cases pass; current site diagram content is unchanged.
+
+The page now reveals diagrams only after SVG nodes exist, not on Mermaid’s
+early data-processed flag. A browser regression simulates that intermediate
+state and confirms raw source remains hidden.
+
+The final v0.1.3 source is Skillz main commit
+`e3f4559b923472ce52d3dd88984cf8bb9fee01dd` (PR 78). All canonical checks
+and its automated review completed before this installation was finalized.

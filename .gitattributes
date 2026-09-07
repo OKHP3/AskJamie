@@ -1,1 +1,5 @@
 scripts/post-merge.sh text eol=lf
+
+# Retained generator output uses byte-exact freshness checks.
+assets/audit/universe-map/** text=auto eol=lf
+assets/data/universe-map.json text=auto eol=lf

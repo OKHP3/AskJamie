@@ -363,11 +363,10 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  // Scroll reveal
   const prefersReducedMotion = window.matchMedia(
     "(prefers-reduced-motion: reduce)"
   ).matches;
-
-  // Scroll reveal
 
   if (!prefersReducedMotion && "IntersectionObserver" in window) {
     const revealEls = document.querySelectorAll(".reveal-on-scroll");
@@ -400,19 +399,26 @@ document.addEventListener("DOMContentLoaded", () => {
   // Smooth scroll for internal anchors
   document.querySelectorAll('a[href^="#"]').forEach((link) => {
     link.addEventListener("click", (e) => {
+      if (e.button !== 0 || e.metaKey || e.ctrlKey || e.altKey || e.shiftKey) return;
       const href = link.getAttribute("href");
       if (!href || href === "#") return;
-      const target = document.querySelector(href);
+      let target;
+      try { target = document.getElementById(decodeURIComponent(href.slice(1))); }
+      catch (error) { return; }
       if (!target) return;
       e.preventDefault();
+      // Make every internal target reachable from keyboard navigation.
+      const addedTabindex = !target.hasAttribute("tabindex") && target.tabIndex < 0;
+      if (addedTabindex) {
+        target.setAttribute("tabindex", "-1");
+        target.addEventListener("blur", () => target.removeAttribute("tabindex"), { once: true });
+      }
+      target.focus({ preventScroll: true });
+      if (location.hash !== href) history.pushState(history.state, "", href);
       target.scrollIntoView({
         behavior: prefersReducedMotion ? "auto" : "smooth",
         block: "start",
       });
-      if (target instanceof HTMLElement && target.id === "main") {
-        if (!target.hasAttribute("tabindex")) target.setAttribute("tabindex", "-1");
-        target.focus({ preventScroll: true });
-      }
     });
   });
 
@@ -509,56 +515,75 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
-// ── 4. Sticky TOC: smooth-lerp scroll-follow for #toc-widget ───────────────
-// Only activates on wide viewports (≥1024px) when the widget and footer exist.
+// 4. Centered TOC scroll-follow. Shared by every #toc-widget sidebar.
 (function () {
-  if (window.innerWidth < 1024) return;
-
   const toc = document.getElementById("toc-widget");
   const footer = document.querySelector(".site-footer");
   if (!toc || !footer) return;
 
-  let lerpedY = 0;
-  let targetY = 0;
-  const SPEED = 0.08;
-  const NAV_H = 112;
-  const PAD = 32;
+  const wide = window.matchMedia("(min-width: 1024px)");
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const rail = toc.closest(".sidebar-rail, .manifesto-sidebar");
+  const header = document.querySelector(".site-header");
+  let position = 0;
+  let frame = 0;
+  let previousTime = 0;
 
-  function lerp(a, b, t) {
-    return a + (b - a) * t;
+  function schedule() {
+    if (!frame) frame = requestAnimationFrame(tick);
   }
-  function getNaturalTop(element) {
-    let top = 0;
-    while (element) {
-      top += element.offsetTop;
-      element = element.offsetParent;
+
+  function tick(time) {
+    frame = 0;
+    if (!wide.matches || !toc.getClientRects().length) {
+      position = 0;
+      previousTime = 0;
+      toc.style.removeProperty("transform");
+      toc.style.removeProperty("max-height");
+      toc.classList.remove("toc-follow-active");
+      if (rail) rail.classList.remove("toc-follow-rail");
+      return;
     }
-    return top;
+
+    // A sticky ancestor and a translated child otherwise fight over position.
+    if (rail) rail.classList.add("toc-follow-rail");
+    toc.classList.add("toc-follow-active");
+    const topGap = Math.max(112, (header ? header.getBoundingClientRect().height : 0) + 16);
+    toc.style.maxHeight = `${Math.max(80, window.innerHeight - topGap - 32)}px`;
+    const box = toc.getBoundingClientRect();
+    const naturalTop = box.top + window.scrollY - position;
+    const centered = Math.max(topGap, (window.innerHeight - box.height) / 2);
+    const footerTop = footer.getBoundingClientRect().top + window.scrollY;
+    const maximum = Math.max(0, footerTop - 32 - naturalTop - box.height);
+    const target = Math.min(Math.max(0, window.scrollY + centered - naturalTop), maximum);
+    // Preserve the Mac Studio 8%-per-frame feel at 60 Hz on faster displays too.
+    const elapsed = previousTime ? Math.min(64, time - previousTime) : 1000 / 60;
+    const blend = reduced.matches ? 1 : 1 - Math.pow(0.92, elapsed / (1000 / 60));
+    position += (target - position) * blend;
+    // Clamp immediately at the footer even during a fast fling toward the bottom.
+    position = Math.min(position, maximum);
+    if (Math.abs(target - position) < 0.1) position = target;
+    toc.style.transform = `translateY(${position}px)`;
+    previousTime = time;
+    if (position !== target) schedule();
+    else previousTime = 0;
   }
 
-  let tocNaturalTop = getNaturalTop(toc);
-  let tocHeight = toc.offsetHeight;
-
-  function tick() {
-    const scrollY = window.scrollY;
-    const footerTop = footer.offsetTop;
-    const centeredOffset = Math.max(NAV_H, (window.innerHeight - tocHeight) / 2);
-    const raw = Math.max(0, scrollY + centeredOffset - tocNaturalTop);
-    const max = Math.max(0, footerTop - PAD - tocNaturalTop - tocHeight);
-    targetY = Math.min(raw, max);
-    lerpedY = lerp(lerpedY, targetY, SPEED);
-    toc.style.transform = `translateY(${lerpedY.toFixed(2)}px)`;
-    requestAnimationFrame(tick);
-  }
-
-  requestAnimationFrame(tick);
-  window.addEventListener("resize", () => {
-    toc.style.transform = "";
-    if (window.innerWidth >= 1024) {
-      tocNaturalTop = getNaturalTop(toc);
-      tocHeight = toc.offsetHeight;
-    }
+  window.addEventListener("scroll", schedule, { passive: true });
+  window.addEventListener("resize", schedule);
+  [wide, reduced].forEach((query) => {
+    if (typeof query.addEventListener === "function") query.addEventListener("change", schedule);
+    else if (typeof query.addListener === "function") query.addListener(schedule);
   });
+  // Fonts, images and diagrams can change the sidebar's natural position.
+  if (typeof ResizeObserver !== "undefined") {
+    const observer = new ResizeObserver(schedule);
+    observer.observe(document.body);
+    observer.observe(toc);
+  }
+  if (document.fonts) document.fonts.ready.then(schedule);
+  window.addEventListener("load", schedule);
+  schedule();
 }());
 
 // ── 4b. TOC scrollspy — active-link tracking for #toc-widget ───────────
@@ -589,12 +614,15 @@ document.addEventListener("DOMContentLoaded", () => {
 }());
 
 // ── 5. OKH Search — overlay + dedicated /search/ page ──────────────────────
-// Consolidated from search.js (2026-05-03). Loaded by the shared page shell.
+// Consolidated from search.js (2026-05-03). All 26 production pages load this.
 // Index: /assets/data/search-index.json  Styles: inlined into theme.css (2026-05-04)
 // Keyboard: Ctrl/Cmd+K or "/" to open · Esc to close · ↑/↓ navigate · ↵ follow
 (function () {
   "use strict";
 
+  // French is the only reviewed, indexable locale. German and Spanish remain
+  // noindex drafts with intentionally empty indexes, so they search the
+  // English catalog until their publication gate explicitly promotes them.
   const isAskJamie = document.body.classList.contains("askjamie-main");
   // AskJamie publishes only the English catalog. Keep the shared family's
   // existing locale mapping separate from this site's publication state.
@@ -606,15 +634,23 @@ document.addEventListener("DOMContentLoaded", () => {
     ? pageLocale !== "en"
     : pageLocale === "de" || pageLocale === "es";
   const scopeNotice = usesEnglishFallback ? " Search English content." : "";
-  const searchCopy = isAskJamie ? {
+  const isGlee = () => document.body.classList.contains("glee-main");
+  const searchCopy = () => isGlee() ? {
+    label: "Search Glee‑fully Tools",
+    placeholder: "Search tools, branches, and everyday tasks…",
+    introduction: "Find Tool-ettes, branch guides, and pages across the Glee‑fully Toolbox.",
+    suggestions: ["resume", "budget", "scheduling", "travel", "journal"],
+    noResultsHtml: "Try resume, budget, scheduling, or travel.",
+  } : isAskJamie ? {
     label: "Search AskJamie",
     placeholder: "Search AskJamie: lenses, BrandGuard cases, and how it works…",
     introduction: "Search AskJamie pages, the Lens System, and public BrandGuard demonstrations.",
     suggestions: ["BrandGuard", "BFS", "résumé", "portfolio", "enterprise", "Coca-Cola"],
+    suggestionLabels: ["BrandGuard", "BFS", "résumé", "portfolio", "enterprise", "Coca-Cola"],
     noResultsHtml: "Try BrandGuard, BFS, résumé, or portfolio.",
   } : {
     label: "Search OverKill Hill",
-    placeholder: "Search the Forge \u2014 articles, projects, ideas…",
+    placeholder: "Search the Forge: articles, projects, ideas…",
     introduction: "Search across writings, projects, manifesto, and the Council archives.",
     suggestions: ["mermaid", "ROY", "council", "manifesto", "diagram", "visual edition"],
     suggestionLabels: ["Mermaid", "ROY", "Council", "Manifesto", "diagram", "v0.3 Visual Edition"],
@@ -631,9 +667,9 @@ document.addEventListener("DOMContentLoaded", () => {
           return r.json();
         })
         .then((d) => {
-          if (Array.isArray(d.entries)) return d.entries;
-          if (Array.isArray(d.pages)) return d.pages;
-          return [];
+          const entries = Array.isArray(d.entries) ? d.entries : d.pages;
+          if (!Array.isArray(entries)) throw new Error("Invalid search index schema");
+          return entries.map((entry) => ({ ...entry, category: entry.category || entry.section || "Page" }));
         })
         .catch((err) => {
           console.warn("[okh-search] index load failed:", err);
@@ -644,16 +680,24 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ----- scoring -----
+  function normalizeSearchText(value) {
+    return String(value || "")
+      .normalize("NFKD")
+      .replace(/\p{M}/gu, "")
+      .toLowerCase();
+  }
   function tokenize(q) {
-    return q.toLowerCase().split(/[^a-z0-9'-]+/i).filter((t) => t.length >= 2);
+    return normalizeSearchText(q)
+      .split(/[^\p{L}\p{N}'-]+/gu)
+      .filter((t) => t.length >= 2);
   }
   function scoreEntry(entry, tokens) {
     if (!tokens.length) return 0;
-    const title    = (entry.title       || "").toLowerCase();
-    const desc     = (entry.description || "").toLowerCase();
-    const headings = (entry.headings    || []).join(" ").toLowerCase();
-    const body     = (entry.body        || "").toLowerCase();
-    const url      = (entry.url         || "").toLowerCase();
+    const title    = normalizeSearchText(entry.title);
+    const desc     = normalizeSearchText(entry.description);
+    const headings = normalizeSearchText((entry.headings || []).join(" "));
+    const body     = normalizeSearchText(entry.body);
+    const url      = normalizeSearchText(entry.url);
 
     let score = 0;
     let allHit = true;
@@ -695,19 +739,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ----- snippet + highlight -----
   function escapeHtml(s) {
-    return s.replace(/[&<>"']/g, (c) => ({
+    return String(s ?? "").replace(/[&<>"']/g, (c) => ({
       "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
     }[c]));
   }
   function snippetFor(entry, tokens, length) {
     const body = entry.body || entry.description || "";
-    if (!body) return "";
-    const lower = body.toLowerCase();
-    let bestIdx = -1;
-    for (const t of tokens) {
-      const i = lower.indexOf(t);
-      if (i !== -1 && (bestIdx === -1 || i < bestIdx)) bestIdx = i;
-    }
+    if (!body || !tokens.length) return "";
+    const bestIdx = normalizedMatchRanges(body, tokens, true)[0]?.[0] ?? -1;
     let start = 0;
     if (bestIdx > 80) start = Math.max(0, bestIdx - 60);
     let snip = body.slice(start, start + (length || 220));
@@ -715,14 +754,61 @@ document.addEventListener("DOMContentLoaded", () => {
     if (start + (length || 220) < body.length) snip += "…";
     return snip;
   }
-  function highlight(text, tokens) {
-    let html = escapeHtml(text);
-    for (const t of tokens) {
-      if (!t) continue;
-      const re = new RegExp("(" + t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + ")", "ig");
-      html = html.replace(re, "<mark>$1</mark>");
+  function normalizedMatchRanges(text, tokens, firstOnly = false) {
+    if (!tokens.length) return [];
+    const original = String(text ?? "");
+    const normalized = normalizeSearchText(original);
+    if (firstOnly) {
+      let first = -1;
+      for (const token of tokens) {
+        const at = token ? normalized.indexOf(token) : -1;
+        if (at !== -1 && (first === -1 || at < first)) first = at;
+      }
+      if (first === -1) return [];
+      let offset = 0;
+      // Snippets need one source offset, not every occurrence in a long article.
+      for (const match of original.matchAll(/\P{M}\p{M}*|\p{M}+/gu)) {
+        offset += normalizeSearchText(match[0]).length;
+        if (offset > first) return [[match.index, match.index + match[0].length]];
+      }
+      return [];
     }
-    return html;
+    const starts = [];
+    const ends = [];
+    // Preserve original offsets through accents and compatibility expansions
+    // (P³, decomposed accents, ligatures). Include combining marks in the span.
+    for (const match of original.matchAll(/\P{M}\p{M}*|\p{M}+/gu)) {
+      const folded = normalizeSearchText(match[0]);
+      for (let i = 0; i < folded.length; i++) {
+        starts.push(match.index);
+        ends.push(match.index + match[0].length);
+      }
+    }
+    const ranges = [];
+    for (const token of tokens) {
+      if (!token) continue;
+      for (let at = normalized.indexOf(token); at !== -1; at = normalized.indexOf(token, at + 1)) {
+        ranges.push([starts[at], ends[at + token.length - 1]]);
+      }
+    }
+    ranges.sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+    const merged = [];
+    for (const range of ranges) {
+      const previous = merged[merged.length - 1];
+      if (previous && range[0] <= previous[1]) previous[1] = Math.max(previous[1], range[1]);
+      else merged.push(range);
+    }
+    return merged;
+  }
+  function highlight(text, tokens) {
+    const original = String(text ?? "");
+    let html = "";
+    let offset = 0;
+    for (const [start, end] of normalizedMatchRanges(original, tokens)) {
+      html += escapeHtml(original.slice(offset, start)) + "<mark>" + escapeHtml(original.slice(start, end)) + "</mark>";
+      offset = end;
+    }
+    return html + escapeHtml(original.slice(offset));
   }
 
   // ----- result rendering -----
@@ -732,6 +818,8 @@ document.addEventListener("DOMContentLoaded", () => {
     return (
       '<div class="okh-search-result-meta">' +
         '<span class="okh-search-result-cat">'  + escapeHtml(e.category || "Page") + "</span>" +
+        (e.branch_label ? '<span>' + escapeHtml(e.branch_label) + '</span>' : "") +
+        (e.publication_state ? '<span class="okh-search-result-state">' + escapeHtml({live: "Live catalog entry", beta: "Beta", unavailable: "Unavailable"}[e.publication_state] || e.publication_state) + '</span>' : "") +
         '<span class="okh-search-result-url">'  + escapeHtml(e.url) + "</span>" +
       "</div>" +
       '<h3 class="okh-search-result-title">' + highlight(e.title || e.url, tokens) + "</h3>" +
@@ -746,7 +834,7 @@ document.addEventListener("DOMContentLoaded", () => {
     wrap.className = "okh-search-overlay";
     wrap.setAttribute("role", "dialog");
     wrap.setAttribute("aria-modal", "true");
-    wrap.setAttribute("aria-label", searchCopy.label);
+    wrap.setAttribute("aria-label", searchCopy().label);
     wrap.innerHTML = (
       '<div class="okh-search-panel" role="document">' +
         '<div class="okh-search-input-row">' +
@@ -754,7 +842,7 @@ document.addEventListener("DOMContentLoaded", () => {
             '<circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" />' +
           "</svg>" +
           '<input type="search" class="okh-search-input" autocomplete="off" spellcheck="false" ' +
-            'placeholder="' + escapeHtml(searchCopy.placeholder) + '" aria-label="Search" />' +
+            'placeholder="' + escapeHtml(searchCopy().placeholder) + '" aria-label="Search" />' +
           '<button type="button" class="okh-search-close" aria-label="Close search">Esc</button>' +
         "</div>" +
         '<div class="okh-search-results" role="list" aria-label="Search results"></div>' +
@@ -776,13 +864,9 @@ document.addEventListener("DOMContentLoaded", () => {
   function emptyStateHtml() {
     return (
       '<div class="okh-search-empty">' +
-        "<p>" + escapeHtml(searchCopy.introduction) + "</p>" +
+        "<p>" + escapeHtml(searchCopy().introduction) + "</p>" +
         '<ul class="okh-search-hint-list">' +
-          searchCopy.suggestions.map((query, index) =>
-            '<li><button type="button" data-q="' + escapeHtml(query) + '">' +
-              escapeHtml((searchCopy.suggestionLabels || searchCopy.suggestions)[index]) +
-            '</button></li>'
-          ).join("") +
+          searchCopy().suggestions.map((q) => '<li><button type="button" data-q="' + escapeHtml(q) + '">' + escapeHtml(q) + '</button></li>').join("") +
         "</ul>" +
       "</div>"
     );
@@ -801,6 +885,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let currentResults = [];
     let lastTokens     = [];
     let lastFocus      = null;
+    let focusTimer     = null;
 
     function setLoadError(error) {
       list.innerHTML =
@@ -826,9 +911,10 @@ document.addEventListener("DOMContentLoaded", () => {
       )).filter((el) => el.offsetParent !== null || el === input);
     }
 
-    function open() {
+    function open(opener) {
       if (overlay.dataset.open === "true") return;
-      lastFocus = document.activeElement;
+      // Pointer activation does not focus buttons in every browser.
+      lastFocus = opener || document.activeElement;
       overlay.dataset.open = "true";
       document.documentElement.style.overflow = "hidden";
       loadIndex().then((d) => {
@@ -836,9 +922,12 @@ document.addEventListener("DOMContentLoaded", () => {
         if (input.value.trim()) render();
         else renderEmpty();
       }).catch(setLoadError);
-      setTimeout(() => input.focus(), 30);
+      focusTimer = setTimeout(() => {
+        if (overlay.dataset.open === "true") input.focus();
+      }, 30);
     }
     function close() {
+      clearTimeout(focusTimer);
       overlay.dataset.open = "false";
       document.documentElement.style.overflow = "";
       if (lastFocus && typeof lastFocus.focus === "function") {
@@ -847,6 +936,7 @@ document.addEventListener("DOMContentLoaded", () => {
       lastFocus = null;
     }
     function renderEmpty() {
+      overlay.querySelector(".okh-search-footer a").href = "/search/";
       list.innerHTML = emptyStateHtml();
       status.textContent = "Search ready. Enter a term or choose a suggested search.";
       list.querySelectorAll("button[data-q]").forEach((btn) => {
@@ -871,15 +961,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     function render() {
       const q = input.value.trim();
+      overlay.querySelector(".okh-search-footer a").href = "/search/" + (q ? "?q=" + encodeURIComponent(q) : "");
       if (!q) { renderEmpty(); currentResults = []; lastTokens = []; return; }
       lastTokens     = tokenize(q);
       currentResults = search(entries, q, 12);
       if (!currentResults.length) {
         list.innerHTML =
           '<div class="okh-search-noresults"><p>No matches for <strong>' +
-          escapeHtml(q) + "</strong>.</p><p>" +
-          searchCopy.noResultsHtml +
-          "</p></div>";
+          escapeHtml(q) + "</strong>.</p><p>" + searchCopy().noResultsHtml + "</p></div>";
         status.textContent = "No search results for " + q + ".";
         return;
       }
@@ -953,7 +1042,7 @@ document.addEventListener("DOMContentLoaded", () => {
       '<span class="okh-search-label">Search</span>' +
       '<kbd>' + shortcut + '</kbd>'
     );
-    btn.addEventListener("click", (e) => { e.preventDefault(); openFn(); });
+    btn.addEventListener("click", (e) => { e.preventDefault(); openFn(btn); });
 
     // Primary: prepend into .header-controls so search sits left of theme toggle
     const controls = document.querySelector(".header-controls");
@@ -971,27 +1060,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ── Dedicated /search/ page ─────────────────────────────────────────────
   function initSearchPage() {
-    const input = document.getElementById("search-page-input");
-    const list  = document.getElementById("search-results");
-    const stats = document.getElementById("search-stats");
-    const cats  = document.getElementById("search-categories");
+    const input = document.getElementById("search-page-input") || document.querySelector("[data-glee-search-inline-input]");
+    const list  = document.getElementById("search-results") || document.querySelector("[data-glee-search-inline-results]");
+    const stats = document.getElementById("search-stats") || document.querySelector("[data-glee-search-inline-status]");
+    const cats  = document.getElementById("search-categories") || document.querySelector("[data-glee-search-inline-categories]");
     if (!input || !list) return;
 
     let entries        = [];
     let activeCategory = "all";
     let indexLoadError = null;
+    let activeIdx = 0;
+    let editingQuery = false;
+    const listMarkup = (html) => list.tagName === "UL" ? "<li>" + html + "</li>" : html;
 
     function setIndexLoadError(error) {
       indexLoadError = error || null;
       if (error) {
-        list.innerHTML =
+        list.innerHTML = listMarkup(
           '<div class="okh-search-noresults okh-search-noresults--error">' +
             "<p>Search could not load the index.</p>" +
             "<p>Check your connection, then try again.</p>" +
-            '<a class="okh-search-retry" href="' +
-              escapeHtml(window.location.pathname + window.location.search) +
-            '">Retry search index</a>' +
-          "</div>";
+            '<button type="button" class="okh-search-retry">Retry search index</button>' +
+          "</div>");
+        list.querySelector(".okh-search-retry").addEventListener("click", () => initialize(true));
         if (stats) stats.textContent = "Search index failed to load.";
         return true;
       }
@@ -1011,7 +1102,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (category && category !== "all") url.searchParams.set("cat", category);
       else url.searchParams.delete("cat");
       const method = replace ? "replaceState" : "pushState";
-      window.history[method]({}, "", url.toString());
+      if (url.toString() !== window.location.href) window.history[method]({}, "", url.toString());
     }
 
     function normalizeCategory(category) {
@@ -1035,7 +1126,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const historyMode = options && options.historyMode === "push" ? "push" : "replace";
       const q = input.value.trim();
       writeQueryToURL(q, activeCategory, historyMode === "replace");
-      if (!q) {
+      if (!q && !isGlee()) {
         list.innerHTML = "";
         if (stats) stats.textContent = entries.length
           ? "Type to search " + entries.length + " indexed entries." + scopeNotice
@@ -1047,24 +1138,40 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
       const tokens = tokenize(q);
-      const results  = search(entries, q, { limit: 60, category: activeCategory });
+      const results = q ? search(entries, q, { limit: 60, category: activeCategory })
+        : entries.filter((entry) => activeCategory === "all" || entry.category === activeCategory)
+          .slice(0, 60).map((entry) => ({ entry }));
       if (!results.length) {
-        list.innerHTML =
+        list.innerHTML = listMarkup(
           '<div class="search-empty-state"><p>No matches for <strong>' +
           escapeHtml(q) + "</strong>" +
           (activeCategory !== "all" ? ' in <em>' + escapeHtml(activeCategory) + "</em>" : "") +
-          ".</p></div>";
+          ".</p></div>");
         if (stats) stats.textContent = "0 results";
         return;
       }
       if (stats) stats.textContent =
         results.length + " result" + (results.length === 1 ? "" : "s") +
-        " for \u201c" + q + "\u201d" + scopeNotice;
+        (q ? " for \u201c" + q + "\u201d" : ". Type to search the catalog.") + scopeNotice;
       list.innerHTML = results.map((r) => (
-        '<a class="okh-search-result" href="' + escapeHtml(r.entry.url) + '">' +
+        listMarkup('<a class="okh-search-result" href="' + escapeHtml(r.entry.url) + '">' +
           renderResultHtml(r, tokens) +
-        "</a>"
+        "</a>")
       )).join("");
+      setActive(0, false);
+    }
+
+    function setActive(index, scroll) {
+      const links = list.querySelectorAll(".okh-search-result");
+      activeIdx = Math.max(0, Math.min(index, links.length - 1));
+      links.forEach((link, position) => {
+        if (position === activeIdx) link.setAttribute("data-active", "true");
+        else link.removeAttribute("data-active");
+      });
+      if (scroll && links[activeIdx]) {
+        links[activeIdx].scrollIntoView({ block: "nearest" });
+        if (stats) stats.textContent = "Selected: " + links[activeIdx].querySelector("h3").textContent;
+      }
     }
 
     function buildCategoryChips() {
@@ -1083,6 +1190,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }).join("");
       cats.querySelectorAll("button").forEach((b) => {
         b.addEventListener("click", () => {
+          editingQuery = false;
           activeCategory = b.getAttribute("data-cat") || "all";
           cats.querySelectorAll("button").forEach((x) =>
             x.setAttribute("aria-pressed", x === b ? "true" : "false")
@@ -1093,6 +1201,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function syncFromURL(skipFocus) {
+      editingQuery = false;
       const urlState = readQueryFromURL();
       input.value = urlState.q;
       activeCategory = normalizeCategory(urlState.category || "all");
@@ -1105,44 +1214,57 @@ document.addEventListener("DOMContentLoaded", () => {
       syncFromURL(true);
     });
 
-    loadIndex().then((d) => {
-      entries = d;
-      const initial = readQueryFromURL();
-      input.value = initial.q;
-      activeCategory = initial.category || "all";
-      buildCategoryChips();
-      activeCategory = normalizeCategory(activeCategory);
-      syncCategoryButtons();
-      input.focus();
-      render();
-    }).catch((err) => {
-      setIndexLoadError(err);
-    });
+    function initialize(retry) {
+      if (stats) stats.textContent = "Loading index…";
+      loadIndex(retry).then((d) => {
+        indexLoadError = null;
+        entries = d;
+        const initial = readQueryFromURL();
+        input.value = initial.q;
+        activeCategory = initial.category || "all";
+        buildCategoryChips();
+        activeCategory = normalizeCategory(activeCategory);
+        syncCategoryButtons();
+        input.focus();
+        render();
+      }).catch(setIndexLoadError);
+    }
+    input.value = readQueryFromURL().q;
+    initialize(false);
 
-    input.addEventListener("input", render);
+    input.addEventListener("input", () => {
+      render({ historyMode: editingQuery ? "replace" : "push" });
+      editingQuery = true;
+    });
+    input.addEventListener("change", () => { editingQuery = false; });
     if (isAskJamie) {
       input.addEventListener("keydown", (event) => {
-        if (event.isComposing || event.ctrlKey || event.metaKey || event.altKey || event.shiftKey) return;
         if (event.key === "Escape") {
           event.preventDefault();
           input.value = "";
           render();
-        } else if (event.key === "Enter") {
-          const firstResult = list.querySelector("a.okh-search-result");
-          if (firstResult) {
-            event.preventDefault();
-            firstResult.click();
-          }
         }
       });
     }
+    input.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+        event.preventDefault();
+        setActive(activeIdx + (event.key === "ArrowDown" ? 1 : -1), true);
+      } else if (event.key === "Enter") {
+        event.preventDefault();
+        const links = list.querySelectorAll(".okh-search-result");
+        if (links[activeIdx]) window.location.href = links[activeIdx].getAttribute("href");
+      }
+    });
+    const form = input.closest("form");
+    if (form) form.addEventListener("submit", (event) => { event.preventDefault(); render(); });
   }
 
   // ── Bootstrap ────────────────────────────────────────────────────────────
   function loadBrandModule() {
     const body = document.body;
     const moduleUrl = body.classList.contains("glee-main")
-      ? "/assets/js/glee-site-enhancements.js"
+      ? "/assets/js/glee-site-enhancements.js?v=ebfa263e"
       : body.classList.contains("askjamie-main")
         ? "/assets/js/askjamie-analytics.js"
         : null;
@@ -1155,7 +1277,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function start() {
     loadBrandModule();
-    if (document.getElementById("search-page-input") && document.getElementById("search-results")) {
+    if ((document.getElementById("search-page-input") && document.getElementById("search-results")) || document.querySelector("[data-glee-search-inline-input]")) {
       initSearchPage();
       initOverlay(); // search button still works on the search page itself
     } else {

@@ -10,7 +10,8 @@ cannot be mistaken for current pipeline commands.
 | Script | Classification | Use |
 | --- | --- | --- |
 | `audit-site.py` | active | Canonical site audit |
-| `build-search-index.py` | active | Rebuild the generated search index |
+| `build-search-index.py` | active | Rebuild search and then refresh the universe map |
+| `sync-universe-map.py` | active | Generate/check the universe page and public provenance from the installed skill |
 | `cache-bust.py` | active | Generate/check LF-normalized shared asset hashes, deferred app loading, and the brand import map |
 | `check-links.py` | active | Check internal and external links |
 | `prepare-pages-artifact.py` | active | Build the allowlisted static release artifact |
