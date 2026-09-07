@@ -150,7 +150,7 @@ async function ready(page, route = '/') {
       const overlay = page.locator('.okh-search-overlay'); await overlay.locator('button[data-q]').first().waitFor();
       assert.equal(await overlay.getAttribute('aria-label'), 'Search OverKill Hill');
       assert.match(await overlay.locator('input').getAttribute('placeholder'), /Search the Forge/);
-      assert.deepEqual(await overlay.locator('button[data-q]').evaluateAll(es => es.map(e => e.textContent)), ['mermaid', 'ROY', 'council', 'manifesto', 'diagram', 'visual edition']);
+      assert.deepEqual(await overlay.locator('button[data-q]').evaluateAll(es => es.map(e => e.textContent)), ['Mermaid', 'ROY', 'Council', 'Manifesto', 'diagram', 'v0.3 Visual Edition']);
       return { fixtureOnly: true };
     } finally { await ctx.close(); }
   });

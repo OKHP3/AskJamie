@@ -865,7 +865,7 @@ document.addEventListener("DOMContentLoaded", () => {
       '<div class="okh-search-empty">' +
         "<p>" + escapeHtml(searchCopy().introduction) + "</p>" +
         '<ul class="okh-search-hint-list">' +
-          searchCopy().suggestions.map((q) => '<li><button type="button" data-q="' + escapeHtml(q) + '">' + escapeHtml(q) + '</button></li>').join("") +
+          searchCopy().suggestions.map((q, index) => '<li><button type="button" data-q="' + escapeHtml(q) + '">' + escapeHtml(searchCopy().suggestionLabels[index] || q) + '</button></li>').join("") +
         "</ul>" +
       "</div>"
     );
