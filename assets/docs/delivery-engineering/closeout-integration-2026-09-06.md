@@ -20,9 +20,8 @@ future publication.
 | Publication | Not performed |
 
 The integration retained the current Universe Map implementation, its skill,
-generator, generated map data, and browser coverage. It retained the candidate
-release evidence and regression coverage when the search-QA branch proposed
-their removal. It also retained search suggestion display labels and the IME
+generator, generated map data, and browser coverage. It preserved the earlier candidate release evidence and regression coverage
+alongside the newer search-QA changes. It also retained search suggestion display labels and the IME
 composition-key guard. Shared asset references, CSP metadata, and the search
 index were regenerated from the resolved source.
 
@@ -40,7 +39,7 @@ browser checks.
 | `python3 scripts/check-links.py` | Pass. 794 internal and 543 external links, 0 broken, 0 style issues. | `assets/audit/links-report-2026-09-06.json` |
 | `python3 scripts/cache-bust.py --check` | Pass. 36 pages and templates, 0 stale. | Console result from this integration run. |
 | `python3 scripts/build-search-index.py --check` | Pass. 25 pages indexed. | `assets/data/search-index.json` |
-| `python3 scripts/audit-site.py --quiet` | Pass. 0 issues. | `assets/docs/audit-report.md` |
+| `python3 scripts/audit-site.py --quiet` | Pass. 0 issues. | Generated local `assets/docs/audit-report.md` (ignored, not committed). |
 | `node scripts/responsive-qa.mjs --base=http://127.0.0.1:5000` | Pass. 25 routes by 8 viewports, 200 of 200 checks. | `assets/docs/delivery-engineering/evidence/2026-09-05-release-candidate/responsive-qa/closeout-integration-200-of-200.json` |
 | `node tests/test_universe_map.spec.mjs` | Pass. 25 indexed pages, 6 diagrams, two widths, both themes, keyboard and no-JavaScript links. | Console result from this integration run. |
 | `node tests/test_js_smoke.spec.mjs` | Pass. Mermaid, search overlay, dark mode, deferred app, and fingerprinted analytics. | Console result from this integration run. |
