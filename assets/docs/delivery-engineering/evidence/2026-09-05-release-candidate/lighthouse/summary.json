@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "tool": "Lighthouse 12.8.2",
+  "environment": "Local or supplied static server, desktop preset",
+  "property": "http://127.0.0.1:5200",
+  "samples": [
+    "2026-09-05-candidate-1",
+    "2026-09-05-candidate-2",
+    "2026-09-05-candidate-3"
+  ],
+  "routes": {
+    "homepage": {"path": "/", "median": {"performance": 100, "accessibility": 96, "bestPractices": 100, "seo": 100, "lcpMs": 721, "cls": 0.004232, "tbtMs": 0, "fcpMs": 581}},
+    "brandguard": {"path": "/lens-system/okhp3-brandguard/", "median": {"performance": 100, "accessibility": 96, "bestPractices": 100, "seo": 100, "lcpMs": 741, "cls": 0.017077, "tbtMs": 0, "fcpMs": 501}},
+    "universe": {"path": "/universe/", "median": {"performance": 100, "accessibility": 96, "bestPractices": 100, "seo": 100, "lcpMs": 602, "cls": 0.00484, "tbtMs": 0, "fcpMs": 522}},
+    "search": {"path": "/search/", "median": {"performance": 100, "accessibility": 96, "bestPractices": 100, "seo": 100, "lcpMs": 721, "cls": 0.021322, "tbtMs": 0, "fcpMs": 541}}
+  }
+}

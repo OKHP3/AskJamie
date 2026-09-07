@@ -407,8 +407,9 @@ document.addEventListener("DOMContentLoaded", () => {
       catch (error) { return; }
       if (!target) return;
       e.preventDefault();
-      // Move keyboard navigation with the viewport, including non-focusable main.
-      if (!target.hasAttribute("tabindex") && target.tabIndex < 0) {
+      // Make every internal target reachable from keyboard navigation.
+      const addedTabindex = !target.hasAttribute("tabindex") && target.tabIndex < 0;
+      if (addedTabindex) {
         target.setAttribute("tabindex", "-1");
         target.addEventListener("blur", () => target.removeAttribute("tabindex"), { once: true });
       }
@@ -416,7 +417,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (location.hash !== href) history.pushState(history.state, "", href);
       target.scrollIntoView({
         behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
-        block: "start"
+        block: "start",
       });
     });
   });

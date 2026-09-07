@@ -1,8 +1,8 @@
 {
   "generated": "2026-09-06",
   "pages_scanned": 27,
-  "internal_links": 764,
-  "external_links": 534,
+  "internal_links": 794,
+  "external_links": 543,
   "broken_links": [],
   "style_issues": [],
   "sitemap": {
@@ -144,8 +144,8 @@
     },
     {
       "path": "universe/index.html",
-      "internal_links": 31,
-      "external_links": 18
+      "internal_links": 61,
+      "external_links": 27
     }
   ]
 }

@@ -2,14 +2,14 @@
 /**
  * AskJamie™ responsive QA script.
  *
- * MODE A — Playwright (when available):
+ * MODE A — Playwright:
  *   Visits each public page at 8 viewport widths and checks:
  *   - No horizontal overflow (scrollWidth > innerWidth)
  *   - No JS console errors
  *   - All images loaded (no broken img src)
  *   - CSS and JS assets load (no 404 on critical resources)
  *
- * MODE B — Static lint (Playwright not available):
+ * MODE B — Static lint (`--static` only):
  *   Runs 10 structural checks per page per viewport (same pass/fail schema).
  *   Checks that are viewport-agnostic (viewport meta, h1, alt, etc.) are
  *   run once per page and applied to all 8 viewport rows — clearly flagged
@@ -51,6 +51,9 @@ const VIEWPORTS = [
   { name: 'desktop-1440', width: 1440, height: 900  },
   { name: 'desktop-1920', width: 1920, height: 1080 },
 ];
+// Cap concurrent viewport work at four to limit browser request bursts while
+// preserving every viewport row in the release inventory.
+const VIEWPORT_CONCURRENCY = 4;
 
 // The sitemap is the release inventory. This avoids silently testing a stale
 // hand-maintained list when a public route is added or retired.
@@ -81,7 +84,7 @@ async function runWithPlaywright() {
     const require = createRequire(import.meta.url);
     pw = require('playwright');
   } catch {
-    return null; // playwright not installed — fall back to MODE B
+    return { ok: false, reason: 'Playwright is not installed' };
   }
 
   mkdirSync(RESULTS_DIR, { recursive: true });
@@ -91,69 +94,86 @@ async function runWithPlaywright() {
   try {
     browser = await pw.chromium.launch({ headless: true });
   } catch {
-    return null; // chromium binary not available — fall back to MODE B
+    return { ok: false, reason: 'Chromium could not be launched' };
   }
 
-  // Create one persistent context+page per viewport (8 total) so we never pay
-  // context-creation overhead more than once. External resources (fonts, GA,
-  // GTM, and Mermaid's jsDelivr module) are blocked so browser QA measures
-  // local layout and assets rather than third-party availability.
+  // Reuse contexts for isolation and speed, but create a fresh page for every
+  // route. External resources are blocked so browser QA measures local assets.
   const EXTERNAL_BLOCK = /fonts\.(gstatic|googleapis)\.com|google-analytics\.com|googletagmanager\.com|cdn\.jsdelivr\.net/;
 
   const workers = await Promise.all(VIEWPORTS.map(async vp => {
     const ctx  = await browser.newContext({ viewport: { width: vp.width, height: vp.height } });
+    return { vp, ctx };
+  }));
+
+  const allResults = [];
+
+  async function runViewport(worker, path, url) {
+    const { vp, ctx } = worker;
     const page = await ctx.newPage();
     const blockedExternal = new Set();
-    await page.route('**/*', (route) => {
+    const consoleErrors = [];
+    const requestFailures = [];
+    const failedResponses = [];
+    const requestInfo = new WeakMap();
+    const warnings = [];
+
+    const onConsole = msg => {
+      const sourceUrl = msg.location().url || '';
+      if (msg.type() === 'error' &&
+          !msg.text().includes('ERR_FAILED') &&
+          !isMermaidInlineStyleWarning(msg)) {
+        consoleErrors.push(sourceUrl ? `${sourceUrl} :: ${msg.text()}` : msg.text());
+      }
+    };
+    const onRequest = req => {
+      requestInfo.set(req, {
+        requestedUrl: req.url(),
+        documentUrl: req.frame()?.url() || '',
+        createdAt: Date.now(),
+      });
+    };
+    const onRequestFailed = req => {
+      if (blockedExternal.has(req.url())) return;
+      const info = requestInfo.get(req);
+      requestFailures.push({
+        url: req.url(),
+        resourceType: req.resourceType(),
+        error: req.failure()?.errorText || 'unknown request failure',
+        requestedAt: info?.createdAt,
+        documentUrl: info?.documentUrl || req.frame()?.url() || '',
+        eventUrl: page.url(),
+        eventAt: Date.now(),
+      });
+    };
+    const onResponse = resp => {
+      if (resp.status() < 400 || blockedExternal.has(resp.url())) return;
+      const info = requestInfo.get(resp.request());
+      failedResponses.push({
+        url: resp.url(),
+        resourceType: resp.request().resourceType(),
+        status: resp.status(),
+        requestedAt: info?.createdAt,
+        documentUrl: info?.documentUrl || resp.request().frame()?.url() || '',
+        eventUrl: page.url(),
+        eventAt: Date.now(),
+      });
+    };
+
+    await page.route('**/*', route => {
       if (EXTERNAL_BLOCK.test(route.request().url())) {
         blockedExternal.add(route.request().url());
         return route.abort();
       }
       return route.continue();
     });
-    return { vp, ctx, page, consoleErrors: [], failed404s: [], blockedExternal };
-  }));
+    page.on('console', onConsole);
+    page.on('request', onRequest);
+    page.on('requestfailed', onRequestFailed);
+    page.on('response', onResponse);
 
-  // Attach persistent event listeners.
-  // ERR_FAILED console messages come from our own route-blocking of external
-  // resources. They are testing artifacts, not real errors. The blocked URLs
-  // are reported separately as warnings on every affected viewport row.
-  for (const w of workers) {
-    w.page.on('console', msg => {
-      const sourceUrl = msg.location().url || '';
-      const mermaidRuntimeCspWarning =
-        msg.type() === 'error' &&
-        msg.text().startsWith('Applying inline style violates the following Content Security Policy directive') &&
-        /\/assets\/vendor\/mermaid\//.test(sourceUrl);
-      if (msg.type() === 'error' &&
-          !msg.text().includes('ERR_FAILED') &&
-          !mermaidRuntimeCspWarning)
-        w.consoleErrors.push(msg.text());
-    });
-    w.page.on('response', resp => {
-      if (resp.status() === 404 && resp.url().match(/\.(css|js|json)$/)) w.failed404s.push(resp.url());
-    });
-  }
-
-  const allResults = [];
-  let totalFails   = 0;
-
-  for (const path of PUBLIC_PATHS) {
-    const url = BASE_URL + path;
-
-    // Clear per-page accumulators
-    for (const w of workers) {
-      w.consoleErrors.length = 0;
-      w.failed404s.length = 0;
-      w.blockedExternal.clear();
-    }
-
-    // Navigate all 8 viewports in parallel
-    const vpResults = await Promise.all(workers.map(async ({ vp, page, consoleErrors, failed404s, blockedExternal }) => {
-      const warnings = [];
+    try {
       try {
-        // `commit` is local-document readiness. A bounded DOMContentLoaded
-        // wait avoids making a local route depend on a blocked CDN module.
         await page.goto(url, { waitUntil: 'commit', timeout: 30000 });
         await page.waitForLoadState('domcontentloaded', { timeout: 5000 }).catch(() => {
           warnings.push('DOMContentLoaded not observed within 5s after local document commit');
@@ -161,61 +181,69 @@ async function runWithPlaywright() {
       } catch (err) {
         return { url, viewport: vp.name, width: vp.width, height: vp.height,
                  mode: 'playwright', pass: false,
-                 errors: ['navigation timeout: ' + err.message.split('\n')[0]] };
+                 errors: ['navigation timeout: ' + err.message.split('\n')[0]], warnings };
       }
 
       const overflow = await page.evaluate(() =>
         document.documentElement.scrollWidth > window.innerWidth
       );
-
-      // Wait for eager images to finish loading (avoids domcontentloaded timing race).
-      // Lazy images are intentionally deferred until scroll — skip them.
       await page.waitForFunction(
         () => Array.from(document.querySelectorAll('img'))
           .filter(i => i.loading !== 'lazy')
           .every(i => i.complete),
+        undefined,
         { timeout: 5000 }
-      ).catch(() => {}); // If some eager imgs never load, we still capture them below
+      ).catch(() => {});
 
       const brokenImages = await page.evaluate(() =>
         Array.from(document.querySelectorAll('img'))
           .filter(i => i.loading !== 'lazy' && (!i.complete || i.naturalWidth === 0))
           .map(i => i.src)
       );
-      // The route handler intentionally aborts third-party assets so the
-      // check is deterministic. Those aborted images are warnings, not page
-      // defects; only report broken images that were not intentionally blocked.
       const unexpectedBrokenImages = brokenImages.filter(src =>
         ![...blockedExternal].some(blocked => blocked === src)
       );
-
-      // The static CSP validator owns inline-style policy coverage. Chromium
-      // reports blocked dynamic style applications as console errors even when
-      // the page is otherwise healthy; keep that diagnostic out of this layout
-      // gate while leaving all other console errors as hard failures.
-      const effectiveConsoleErrors = consoleErrors.filter(error =>
-        !error.startsWith('Applying inline style violates the following Content Security Policy directive')
-      );
-      const pageConsoleErrors = effectiveConsoleErrors;
-
       const errors = [
         ...(overflow ? [`OVERFLOW: scrollWidth > ${vp.width}px`] : []),
-        ...pageConsoleErrors.slice(0, 5).map(e => 'CONSOLE: ' + e),
+        ...consoleErrors.slice(0, 5).map(e => 'CONSOLE: ' + e),
+        ...requestFailures.slice(0, 5).map(r =>
+          `REQUEST FAILED: [${r.resourceType}] ${r.url} (${r.error})`
+        ),
+        ...failedResponses.slice(0, 5).map(r =>
+          `HTTP ${r.status}: [${r.resourceType}] ${r.url}`
+        ),
         ...unexpectedBrokenImages.slice(0, 5).map(s => 'BROKEN IMG: ' + s),
-        ...failed404s.slice(0, 5).map(u => '404: ' + u),
       ];
       if (blockedExternal.size > 0) {
         warnings.push(`blocked third-party resources: ${[...blockedExternal].join(', ')}`);
       }
 
-      const pass = errors.length === 0;
-      if (!pass) {
+      const row = { url, viewport: vp.name, width: vp.width, height: vp.height,
+                    mode: 'playwright', pass: errors.length === 0, errors, warnings };
+      if (!row.pass) {
         const ssFile = `${path.replace(/\//g, '_')}_${vp.name}.png`;
         await page.screenshot({ path: resolve(SCREENSHOTS_DIR, ssFile) });
       }
-      return { url, viewport: vp.name, width: vp.width, height: vp.height,
-               mode: 'playwright', pass, errors, warnings };
-    }));
+      return row;
+    } finally {
+      page.removeListener('console', onConsole);
+      page.removeListener('request', onRequest);
+      page.removeListener('requestfailed', onRequestFailed);
+      page.removeListener('response', onResponse);
+      await page.close();
+    }
+  }
+
+  for (const path of PUBLIC_PATHS) {
+    const url = BASE_URL + path;
+
+    const vpResults = [];
+    for (let start = 0; start < workers.length; start += VIEWPORT_CONCURRENCY) {
+      const batch = await Promise.all(workers
+        .slice(start, start + VIEWPORT_CONCURRENCY)
+        .map(worker => runViewport(worker, path, url)));
+      vpResults.push(...batch);
+    }
 
     const fails = vpResults.filter(r => !r.pass);
     if (fails.length > 0) {
@@ -228,7 +256,6 @@ async function runWithPlaywright() {
 
     for (const row of vpResults) {
       allResults.push(row);
-      if (!row.pass) totalFails++;
     }
   }
 
@@ -243,11 +270,12 @@ async function runWithPlaywright() {
     viewports_checked: VIEWPORTS.length,
     total_checks: allResults.length,
     passing_checks: allResults.filter(r => r.pass).length,
-    failing_checks: totalFails,
+    failing_checks: allResults.filter(r => !r.pass).length,
     results: allResults,
   };
   writeFileSync(RESULTS_FILE, JSON.stringify(report, null, 2));
 
+  const totalFails = allResults.filter(r => !r.pass).length;
   console.log(`\nTotal: ${allResults.length} checks — ${totalFails} failures`);
   console.log(`Results: ${RESULTS_FILE}`);
   if (totalFails > 0) process.exit(1);
@@ -318,7 +346,7 @@ function staticLintPage(path, html) {
 }
 
 async function staticAnalysis() {
-  console.log('Playwright not available — running static-lint analysis (MODE B).\n');
+  console.log('Static-lint requested with --static.\n');
   console.log('NOTE: Static lint checks HTML structure only. It cannot detect');
   console.log('      horizontal overflow, JS console errors, or broken images');
   console.log('      at runtime. Run with Playwright for full browser coverage.\n');
@@ -399,7 +427,18 @@ async function staticAnalysis() {
   console.log(`Pages: ${PUBLIC_PATHS.length} | Viewports: ${VIEWPORTS.length}\n`);
 
   const pwResult = FORCE_STATIC ? null : await runWithPlaywright();
+  if (pwResult?.ok === false) {
+    console.error(`Required browser QA could not start: ${pwResult.reason}`);
+    console.error('Run with --static only if you explicitly want the structural lint mode.');
+    process.exit(1);
+  }
   if (!pwResult) {
     await staticAnalysis();
   }
 })();
+
+function isMermaidInlineStyleWarning(msg) {
+  return msg.type() === 'error' &&
+    msg.text().startsWith('Applying inline style violates the following Content Security Policy directive') &&
+    /\/assets\/vendor\/mermaid\//.test(msg.location().url || '');
+}

@@ -7285,6 +7285,19 @@ html[data-theme="light"] .askjamie-main {
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
 }
 
+/* Keep BrandGuard case links as one keyboard-focusable card box. */
+.askjamie-main .brandguard-case-card {
+  display: block;
+  height: 100%;
+  color: inherit;
+  text-decoration: none;
+}
+
+.askjamie-main .brandguard-case-card:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 4px;
+}
+
 .askjamie-main .btn-primary {
   background: linear-gradient(135deg, #2d6f7e, #3c8ea1);
   color: #f9fafb;

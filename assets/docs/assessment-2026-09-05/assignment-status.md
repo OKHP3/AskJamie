@@ -16,21 +16,21 @@ individual worker assignments and acceptance evidence in its stream ledger.
 
 | Work | Accountable PM | Status at dispatch |
 | --- | --- | --- |
-| WP-01 artifact safety; WP-04 operating guidance | Engineering and release | Previously implemented and reviewed; current release verification assigned |
-| WP-02 search; WP-03 content visibility/footer | Experience and content | Previously implemented and reviewed; regression preservation assigned |
-| Translation cleanup | Engineering and release | Previously implemented, 60 tooling and 14 browser checks recorded; current release verification assigned |
-| WP-05 required browser/CSP diagnostics | Engineering and release | Dispatched for implementation and validation |
-| WP-06 keyboard/search/motion/link-card behavior | Experience and content | Dispatched for reproduction, bounded repairs, and validation |
-| WP-07 claims and GPT availability | Experience and content | Dispatched; unsupported owner facts require concrete decision packet |
-| WP-08 public source publication route | Experience and content | Dispatched for inventory and reviewable options; private material/publication requires owner decision |
-| WP-09 sibling-sync maintenance safety | Engineering and release | Dispatched for local-tool repairs with synthetic fixtures, no sibling execution |
-| WP-10 supported CI/supply chain | Engineering and release | Dispatched for current evidence and bounded compatibility work |
-| WP-11 source/generated boundaries | Engineering and release | Dispatched; preserve recovery evidence and canonical source |
-| WP-12 measured performance/capture readiness | Experience and content | Dispatched for measurement and justified local improvements |
-| WP-13 human usability/assistive technology | Experience and content | Test packet and automated checks dispatched; human execution remains separate |
-| WP-14 hosted governance/measurement | Engineering and release | Concrete settings/measurement decision packet dispatched; no remote setting mutation |
-| Ignored audit cruft and stale skill catalog | Engineering and release | Scoped disposition assigned; verify duplicates and preserve useful work |
-| Final cross-stream acceptance and release decision | Architect | Pending PM evidence and integrated validation |
+| WP-01 artifact safety; WP-04 operating guidance | Engineering and release | Implemented and included in combined local acceptance |
+| WP-02 search; WP-03 content visibility/footer | Experience and content | Implemented; regression preservation included in combined local acceptance |
+| Translation cleanup | Engineering and release | Implemented; five exact-pair suites and i18n suite are included in combined local acceptance |
+| WP-05 required browser/CSP diagnostics | Engineering and release | Implemented locally with narrow CSP handling, page-lifecycle isolation, bounded browser scheduling, and actionable diagnostics; dated failed browser records remain preserved beside the final combined 200/200 local run |
+| WP-06 keyboard/search/motion/link-card behavior | Experience and content | Implemented and browser-regression covered |
+| WP-07 claims and GPT availability | Experience and content | Owner decision packet complete; no unsupported fact was published |
+| WP-08 public source publication route | Experience and content | Inventory and owner decision options complete; private/publication decision remains external |
+| WP-09 sibling-sync maintenance safety | Engineering and release | Implemented and locally validated with synthetic fixtures; no sibling execution |
+| WP-10 supported CI/supply chain | Engineering and release | Node 24 and bounded clean-install evidence integrated |
+| WP-11 source/generated boundaries | Engineering and release | Implemented; generated/deployment boundaries are regression covered |
+| WP-12 measured performance/capture readiness | Experience and content | Implemented with capture-safety coverage and a nav-only request-size improvement; not an LCP or field-performance claim |
+| WP-13 human usability/assistive technology | Experience and content | Automated packet and browser coverage complete; human assistive-technology verification remains separate |
+| WP-14 hosted governance/measurement | Engineering and release | Read-only evidence and concrete owner decision packet complete; no remote setting mutation |
+| Ignored audit cruft and stale skill catalog | Engineering and release | Redundant catalog package removed with recovery evidence; saved-root ignored-file quarantine procedure remains for Architect integration |
+| Final cross-stream acceptance and release decision | Architect | Combined candidate cleared local acceptance; no publication decision implied |
 
 ## Model and effort policy
 
@@ -119,31 +119,16 @@ not mean creation failed.
 | WP-06 cards/browser acceptance | `01a074ba-0893-7de1-8360-804e7a8b55f3` | GPT-5.4 mini / medium |
 | WP-12 performance/capture | `01a074ba-3a28-7bf0-9b2b-00393852549f` | GPT-5.4 mini / medium |
 
-WP-09 commit `c852738` was not accepted because review found worktree-lock
-resolution and preimage-test gaps. Correction remains with the same worker.
-The full engineering browser result remains failed at 196/200 pending
-request-level diagnosis. Separate 15/15 experience checks and card geometry
-passes do not replace that failed full run. Current accepted commits and
-queued/running states remain the responsibility of the PM stream ledgers.
+WP-09 correction `bebdc1e` closed the worktree-lock and preimage-test gaps and
+is integrated in the Engineering stream. WP-05 later added narrow CSP handling,
+resource diagnostics, and regression coverage. The historical engineering
+browser result remains failed at 196/200 as dated evidence. Focused Experience
+checks and capture evidence do not replace it. The final combined browser run
+must be recorded independently at its exact candidate revision.
 
 ### Experience acceptance escalation
 
-The Experience PM was moved from Luna/medium to Terra/medium in the same task
-for its remaining acceptance work. Repeated incomplete handoffs included an
-incorrect worker-creation blocker, an unavailable-browser assumption despite
-bundled tooling, contradictory browser-validation prose, and performance
-criteria left as a future-run packet. The purpose is to reduce repeated
-Architect corrections. Existing small workers remain on mini; no duplicate
-PM or implementation task was created. WP-12 remains partial until measured
-evidence and justified optimization decisions satisfy its original criteria.
-
-Engineering subsequently received the same PM-only escalation to Terra/medium.
-Its integrated handoff still retained blanket inline-style CSP suppression,
-omitted integrated pytest despite an available worker environment, and treated
-authorized duplicate cleanup as a new approval dependency. The same workers
-remain assigned, with medium reasoning requested for the remaining WP-05
-diagnostics. This escalation changes acceptance supervision, not project scope
-or publication authority.
-
-The earlier in-process PM and two workers completed their bounded first-batch
-and cleanup assignments; they are not being resumed at the Architect's model.
+The Experience and Engineering PMs completed their bounded repair and
+acceptance work in isolated worktrees. The final candidate retains their
+separate histories, preserves the saved-local and remote histories, and keeps
+publication authority with the Architect and owner.

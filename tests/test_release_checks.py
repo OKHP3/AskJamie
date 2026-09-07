@@ -1,11 +1,16 @@
 from __future__ import annotations
 
 import importlib.util
+import http.server
 import json
 import os
 import re
+import shutil
+import socket
 import subprocess
 import sys
+import threading
+import time
 from pathlib import Path
 
 import pytest
@@ -328,8 +333,9 @@ def test_source_checks_ignore_generated_pages(tmp_path, monkeypatch):
             spec = importlib.util.spec_from_file_location(filename, ROOT / "scripts" / filename)
             module = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(module)
-            (tmp_path / "dist-pages").mkdir(exist_ok=True)
-            (tmp_path / "dist-pages/index.html").write_text("<title>Generated duplicate</title>")
+            for prefix in ("dist-pages", ".scratch/generated"):
+                (tmp_path / prefix).mkdir(parents=True, exist_ok=True)
+                (tmp_path / prefix / "index.html").write_text("<title>Generated duplicate</title>")
             monkeypatch.setattr(module, root_name, tmp_path)
             assert list(getattr(module, collector)()) == []
     finally:
@@ -353,6 +359,252 @@ def test_csp_allows_the_configured_google_analytics_pixel():
     expected = "img-src 'self' data: https://www.googletagmanager.com;"
     assert all(expected in policy for policy in module.build_policies().values())
     assert expected in module.build_edge_policy()
+
+
+def test_generate_csp_check_fails_when_a_page_is_missing_csp(tmp_path, monkeypatch, capsys):
+    spec = importlib.util.spec_from_file_location("csp_missing_check", ROOT / "scripts/generate-csp.py")
+    module = importlib.util.module_from_spec(spec)
+    sys.path.insert(0, str(ROOT / "scripts"))
+    try:
+        spec.loader.exec_module(module)
+    finally:
+        sys.path.pop(0)
+
+    page = tmp_path / "index.html"
+    page.write_text(
+        '<html><head><title>Test</title></head><body><h1>Test</h1></body></html>',
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(module, "all_pages", lambda: [page])
+    policies = {"standard": "default-src 'self'"}
+    monkeypatch.setattr(module, "build_policies", lambda: policies)
+    monkeypatch.setattr(module, "page_class", lambda _page: "standard")
+    policy_file = tmp_path / "csp-policies.json"
+    policy_file.write_text(
+        json.dumps({"schema": 1, "policies": policies}, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(module, "POLICY_FILE", policy_file)
+
+    assert module.main(["--check"]) == 1
+    captured = capsys.readouterr()
+    assert "missing CSP meta tag" in captured.out
+
+
+def test_responsive_qa_requires_browser_unless_static_is_explicit(tmp_path):
+    preload = tmp_path / "preload.cjs"
+    preload.write_text(
+        """
+const Module = require('module');
+const originalRequire = Module.prototype.require;
+Module.prototype.require = function (id) {
+  if (id === 'playwright') {
+    throw new Error('playwright unavailable');
+  }
+  return originalRequire.apply(this, arguments);
+};
+""".strip()
+        + "\n",
+        encoding="utf-8",
+    )
+
+    result = subprocess.run(
+        [
+            "node",
+            "scripts/responsive-qa.mjs",
+            "--base=http://127.0.0.1:0",
+        ],
+        cwd=ROOT,
+        text=True,
+        capture_output=True,
+        env={**os.environ, "NODE_OPTIONS": f"--require {preload}"},
+    )
+
+    assert result.returncode == 1
+    assert "Required browser QA could not start" in result.stderr
+    assert "static-lint mode" not in result.stdout
+
+
+def test_responsive_qa_keeps_csp_suppression_narrow_and_reports_resource_failures():
+    source = (ROOT / "scripts/responsive-qa.mjs").read_text(encoding="utf-8")
+
+    assert "effectiveConsoleErrors" not in source
+    assert "isMermaidInlineStyleWarning" in source
+    assert "REQUEST FAILED: [" in source
+    assert "HTTP ${r.status}: [" in source
+    assert "CONSOLE: " in source
+
+
+def test_responsive_qa_browser_fixture_isolates_pages_and_preserves_failures(tmp_path):
+    node_bin = os.environ.get("ASKJAMIE_NODE") or shutil.which("node")
+    bundled_node = Path(
+        "/Users/okh/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node"
+    )
+    if not node_bin and bundled_node.exists():
+        node_bin = str(bundled_node)
+    node_modules = os.environ.get("NODE_PATH")
+    repo_modules = ROOT / "node_modules"
+    if not node_modules and (repo_modules / "playwright").exists():
+        node_modules = str(repo_modules)
+    bundled_modules = Path(
+        "/Users/okh/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules"
+    )
+    if not node_modules and (bundled_modules / "playwright").exists():
+        node_modules = str(bundled_modules)
+    if not node_bin or not node_modules or not (Path(node_modules) / "playwright").exists():
+        pytest.skip("Playwright runtime is unavailable")
+
+    events = []
+    state = {"active": 0, "max_active": 0, "page_active": 0, "page_max_active": 0}
+    page_paths = {"/lazy/", "/clean/", "/abort/", "/console-404/", "/timeout/"}
+    lock = threading.Lock()
+    png_header = b"\x89PNG\r\n\x1a\n"
+
+    class FixtureHandler(http.server.BaseHTTPRequestHandler):
+        def log_message(self, _format, *_args):
+            return
+
+        def _record(self, phase, path):
+            with lock:
+                events.append((phase, path, time.monotonic()))
+                if path in page_paths:
+                    if phase == "start":
+                        state["page_active"] += 1
+                        state["page_max_active"] = max(
+                            state["page_max_active"], state["page_active"]
+                        )
+                    elif phase == "end":
+                        state["page_active"] -= 1
+
+        def do_GET(self):
+            path = self.path.split("?", 1)[0]
+            if path in page_paths:
+                self._record("start", path)
+                body = {
+                    "/lazy/": '<img src="/slow-lazy.png" loading="lazy" width="10" height="10">',
+                    "/clean/": "",
+                    "/abort/": '<img src="/aborted.png" width="10" height="10">',
+                    "/console-404/": '<script>console.error("fixture console failure")</script><img src="/missing.png" width="10" height="10">',
+                    "/timeout/": '<img src="/delayed.png" width="10" height="10">',
+                }[path]
+                payload = (
+                    '<!doctype html><html><head><meta name="viewport" '
+                    'content="width=device-width"><title>Fixture</title></head>'
+                    f"<body><h1>Fixture</h1>{body}</body></html>"
+                ).encode()
+                self.send_response(200)
+                self.send_header("Content-Type", "text/html")
+                self.send_header("Content-Length", str(len(payload)))
+                self.end_headers()
+                self.wfile.write(payload)
+                time.sleep(0.01)
+                self._record("end", path)
+                return
+
+            if path == "/missing.png":
+                self.send_error(404, "missing fixture image")
+                return
+
+            if path == "/aborted.png":
+                self._record("start", path)
+                self.close_connection = True
+                self.connection.shutdown(socket.SHUT_RDWR)
+                self.connection.close()
+                self._record("end", path)
+                return
+
+            if path == "/slow-lazy.png":
+                self._record("start", path)
+                self.send_response(200)
+                self.send_header("Content-Type", "image/png")
+                self.send_header("Content-Length", "999999")
+                self.end_headers()
+                self.wfile.write(png_header)
+                self.wfile.flush()
+                time.sleep(0.5)
+                self.close_connection = True
+                self._record("end", path)
+                return
+
+            if path == "/delayed.png":
+                self._record("start", path)
+                with lock:
+                    state["active"] += 1
+                    state["max_active"] = max(state["max_active"], state["active"])
+                try:
+                    self.send_response(200)
+                    self.send_header("Content-Type", "image/png")
+                    self.send_header("Content-Length", "999999")
+                    self.end_headers()
+                    self.wfile.write(png_header)
+                    self.wfile.flush()
+                    time.sleep(6)
+                finally:
+                    with lock:
+                        state["active"] -= 1
+                    self._record("end", path)
+                return
+
+            self.send_error(404, "unknown fixture route")
+
+    server = http.server.ThreadingHTTPServer(("127.0.0.1", 0), FixtureHandler)
+    server.daemon_threads = True
+    server_thread = threading.Thread(target=server.serve_forever, daemon=True)
+    server_thread.start()
+
+    fixture_root = tmp_path / "runner"
+    (fixture_root / "scripts").mkdir(parents=True)
+    shutil.copy2(ROOT / "scripts/responsive-qa.mjs", fixture_root / "scripts/responsive-qa.mjs")
+    sitemap = (
+        '<?xml version="1.0"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
+        + "".join(f"<url><loc>https://askjamie.bot{path}</loc></url>" for path in (
+            "/lazy/", "/clean/", "/abort/", "/console-404/", "/timeout/"
+        ))
+        + "</urlset>"
+    )
+    (fixture_root / "sitemap.xml").write_text(sitemap, encoding="utf-8")
+
+    try:
+        result = subprocess.run(
+            [
+                node_bin,
+                "scripts/responsive-qa.mjs",
+                f"--base=http://127.0.0.1:{server.server_address[1]}",
+            ],
+            cwd=fixture_root,
+            text=True,
+            capture_output=True,
+            timeout=30,
+            env={**os.environ, "NODE_PATH": node_modules},
+        )
+    finally:
+        server.shutdown()
+        server.server_close()
+        server_thread.join(timeout=2)
+
+    report = json.loads(
+        (fixture_root / "assets/audit/responsive-qa/results.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    rows = {path: [row for row in report["results"] if path in row["url"]] for path in (
+        "/lazy/", "/clean/", "/abort/", "/console-404/", "/timeout/"
+    )}
+
+    assert result.returncode == 1
+    assert report["total_checks"] == 40
+    assert all(row["pass"] for row in rows["/lazy/"])
+    assert all(row["pass"] for row in rows["/clean/"])
+    assert all(any("REQUEST FAILED" in error or "BROKEN IMG" in error for error in row["errors"])
+               for row in rows["/abort/"])
+    assert all(any("CONSOLE:" in error for error in row["errors"]) and
+               any("HTTP 404" in error for error in row["errors"])
+               for row in rows["/console-404/"])
+    assert all(any("BROKEN IMG" in error or "REQUEST FAILED" in error for error in row["errors"])
+               for row in rows["/timeout/"])
+    assert state["page_max_active"] <= 4
+    lazy_starts = [event for event in events if event[0] == "start" and event[1] == "/slow-lazy.png"]
+    assert 0 < len(lazy_starts) <= 8
 
 
 def test_index_freshness_checks_content_instead_of_checkout_times(tmp_path, monkeypatch):
