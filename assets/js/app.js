@@ -1246,6 +1246,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
     input.addEventListener("keydown", (event) => {
+      if (event.isComposing || event.keyCode === 229 || event.ctrlKey || event.metaKey || event.altKey || event.shiftKey) return;
       if (event.key === "ArrowDown" || event.key === "ArrowUp") {
         event.preventDefault();
         setActive(activeIdx + (event.key === "ArrowDown" ? 1 : -1), true);
