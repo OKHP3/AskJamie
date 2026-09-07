@@ -22,6 +22,7 @@ import os
 import re
 import sys
 import argparse
+import subprocess
 from datetime import datetime, timezone
 from html.parser import HTMLParser
 
@@ -214,6 +215,8 @@ def process_file(rel_path: str) -> dict | None:
         print(f"  ! failed to read {rel_path}: {e}", file=sys.stderr)
         return None
 
+    # Generated navigation must never feed its own index.
+    html = re.sub(r"<!-- AUTOGEN:UNIVERSE-MAP -->.*?<!-- /AUTOGEN:UNIVERSE-MAP -->", "", html, flags=re.S)
     parser = TextExtractor()
     try:
         parser.feed(html)
@@ -331,7 +334,7 @@ def main():
     print(f"✓ Wrote {INDEX_OUT}")
     print(f"  Pages indexed: {len(out['entries'])}")
     print(f"  File size:     {size_kb:.1f} KB")
-    return 0
+    return subprocess.call([sys.executable, os.path.join(REPO_ROOT, "scripts", "sync-universe-map.py")])
 
 
 if __name__ == "__main__":

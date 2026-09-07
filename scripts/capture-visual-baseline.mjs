@@ -40,7 +40,7 @@ for (const viewport of viewports) {
   const page = await context.newPage();
   await page.setViewportSize(viewport);
   await page.goto(`${baseUrl}/universe/`, { waitUntil: "networkidle" });
-  const diagram = page.locator(".askjamie-mermaid-shell");
+  const diagram = page.locator(".askjamie-mermaid-shell").first();
   await diagram.scrollIntoViewIfNeeded();
   await diagram.locator("svg").first().waitFor({ state: "visible", timeout: 20000 });
   await diagram.screenshot({
