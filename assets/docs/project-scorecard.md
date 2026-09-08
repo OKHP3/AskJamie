@@ -1,7 +1,7 @@
 # AskJamie Project Scorecard
 
 **Current as of:** 2026-09-08
-**Source baseline:** `9cf7eb4`
+**Source baseline:** `4f4a566`
 **Purpose:** One current record of shipped capability, dated verification,
 conditional evidence, and deliberately deferred work.
 
@@ -9,15 +9,15 @@ The [September 5 assessment](assessment-2026-09-05/delivery-plan.md) records
 priorities and assigned work packages. Its evidence files preserve the baseline
 before local repairs. A local patch is not a published release.
 
-The September 8 closeout is published from `9cf7eb4`. The validated Pages
+The September 8 closeout is published from `4f4a566`. The validated Pages
 artifact passed the repository release workflow and deployed successfully.
 
 ## Shipped capabilities
 
 | Capability | Current source evidence |
 | --- | --- |
-| Static website | 27 source HTML pages plus 9 developer templates. Tracked `dist-pages/` copies are generated release material, excluded from source-page counts. |
-| Discovery and explanation | 25 sitemap routes and 25 generated search entries, plus the How AskJamie Works explanation page within that inventory. |
+| Static website | 28 source HTML pages plus 9 developer templates. Tracked `dist-pages/` copies are generated release material, excluded from source-page counts. |
+| Discovery and explanation | 26 sitemap routes and 26 generated search entries, including the How AskJamie Works explanation page. |
 | Client-side search | Shared overlay and dedicated search route in `assets/js/app.js`, backed by generated JSON. |
 | Analytics and typography | Unconditional GA4 `G-MT9Y10YY0G` and intentionally external Google Fonts. The Legal page describes analytics use. |
 | Universe diagram | Locally vendored Mermaid 11.17.2, browser initialization, and a static fallback. |
@@ -37,7 +37,7 @@ artifact passed the repository release workflow and deployed successfully.
 | Generated index and fingerprints | PASS. Search index is current for 26 pages and shared asset checks report 0 stale files. |
 | Canonical local audit | PASS, 0 issues. |
 | Local full pytest | PASS, 69 tests. |
-| Production and CI | PASS. GitHub Actions run `34234732119` completed site validation and deployed the validated Pages artifact. |
+| Production and CI | PASS. GitHub Actions run `34235509946` completed site validation and deployed the validated Pages artifact. |
 
 ## Evidence still required
 
