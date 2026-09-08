@@ -179,6 +179,37 @@ node scripts/lighthouse-routes.mjs --preset=mobile --date=2026-08-25
 The runner keeps mobile reports in a `-mobile` dated directory and preserves
 the existing desktop command and output path.
 
+
+## Controlled mobile measurement
+
+The route runner supports a controlled mobile pass that blocks Google Fonts,
+Google Tag Manager, and Google Analytics requests:
+
+```bash
+node scripts/lighthouse-routes.mjs --preset=mobile --controlled --date=2026-09-07
+```
+
+Controlled reports are written to a `-mobile-controlled` directory and label
+the blocked third-party conditions in `summary.json`. This isolates external
+font and analytics timing when comparing the first-party HTML, CSS, media, and
+Mermaid work. It is a controlled lab measurement only, not field data, and it
+must not be compared directly with a normal run as if the visitor experience
+were identical.
+
+The final controlled pass for this change was captured on **2026-09-07** in
+`assets/audit/lighthouse-2026-09-07-final-mobile-controlled/`:
+
+| Page | Performance | LCP | CLS | TBT | LCP element |
+| --- | ---: | ---: | ---: | ---: | --- |
+| BrandGuard hub | 85 | 4.05 s | 0.000 | 11 ms | `#hero-title` |
+| Universe `/universe/` | 90 | 3.15 s | 0.000 | 0 ms | `.askjamie-hero-tagline` |
+
+These controlled samples materially improve the target routes versus the
+2026-09-04 after sample, while the mobile 2.5 second LCP budget remains a
+reviewed lab exception. The remaining render delay is reported explicitly
+instead of being presented as field performance or hidden by third-party
+blocking.
+
 ## Mobile performance remediation verification
 
 The remediation was measured on **2026-09-04** with Lighthouse 12.8.2 against
@@ -225,7 +256,7 @@ reducing first-view work:
   remain available as fallback content, and generated links retain their
   accessibility hardening.
 - BrandGuard and Universe prefetch Google Fonts without making the stylesheet
-  render-blocking, then enable the branded stylesheet after page load. The
+  render-blocking, then enable the branded stylesheet after document parse. The
   bounded `display=fallback` policy prevents a late webfont swap from
   redefining mobile LCP while retaining the branded face on faster visits.
 - BrandGuard uses `content-visibility: auto` for below-the-fold portfolio
@@ -239,6 +270,61 @@ new mobile lazy-render condition. All Lighthouse numbers above are lab data;
 they remain sensitive to browser version, simulated throttling, Google Fonts
 responses, analytics responses, and CPU contention, and should not be
 presented as real-user or field metrics.
+
+The current follow-up path keeps the branded Google Fonts stylesheet available
+after the first paint while removing its early preload from the BrandGuard and
+Universe shells. Their above-fold avatar media now uses a 320px responsive
+variant for the 260px BrandGuard hero and an 80px source for the 40px header
+mark. The source artwork, alt text, intrinsic dimensions, metadata, and
+desktop layout remain unchanged.
+
+## Task #118 mobile first-paint follow-up
+
+On **2026-09-07**, the target routes received a narrow loading pass against the
+same four-route Lighthouse runner and mobile preset. The raw final mobile
+reports are in `assets/audit/lighthouse-2026-09-07-task118-r4-mobile/`; the
+desktop regression run is in
+`assets/audit/lighthouse-2026-09-07-task118-desktop/`. The run remains local
+Lighthouse lab evidence, not field data.
+
+The implementation:
+
+- serves right-sized WebP hero logo/avatar variants with the existing PNG
+  fallback on BrandGuard;
+- enables the already-preloaded branded font stylesheet after DOMContentLoaded
+  rather than waiting for the third-party analytics request to finish;
+- keeps GA4 unconditional: the page-shell queue still receives `js`, `config`,
+  and interaction events immediately, while only the Google-hosted script
+  download is deferred until after the first load opportunity on BrandGuard and
+  Universe;
+- preserves Mermaid's deferred import, fallback source, accessibility hooks,
+  and no-JavaScript navigation.
+
+### Final comparison
+
+| Page | 2026-09-04 performance | 2026-09-07 performance | LCP before | LCP after | TBT after |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| BrandGuard hub | 71 | 70 | 7.80 s | 6.83 s | 176 ms |
+| Universe `/universe/` | 70 | 85 | 6.46 s | 3.01 s | 225 ms |
+| Homepage `/` | 60 | 75 | 8.94 s | 4.51 s | 231 ms |
+| Search `/search/` | 72 | 65 | 6.75 s | 7.96 s | 180 ms |
+
+The homepage and Search markup were not changed by this task, so their movement
+is treated as lab variance rather than a product regression. Four target-route
+mobile samples were reviewed during the pass: BrandGuard ranged from
+6.83–7.73 s LCP and Universe ranged from 3.01–4.43 s LCP. Universe is now
+materially closer to the target and below the prior 6.46 s result; BrandGuard
+improved by about one second but still misses the 2.5 s LCP budget. The
+remaining BrandGuard hero-rendering gap is intentionally carried into the
+proposed follow-up task rather than being presented as solved.
+
+The desktop regression run remained healthy: Homepage 88 performance / 1.69 s
+LCP, BrandGuard 99 / 0.73 s, Universe 99 / 0.73 s, and Search 96 / 1.28 s.
+The current browser/static checks also passed: 27-page structural validation,
+200/200 responsive checks, zero site-audit issues, seven focused privacy/cache
+tests, and current search-index integrity. No visual baseline was refreshed
+because the changes alter delivery and scheduling, not the intended visual
+design.
 
 ## Visual reference set
 

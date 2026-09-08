@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-07",
+  "tool": "Lighthouse 12.8.2",
+  "environment": "Local or supplied static server, desktop preset",
+  "property": "http://127.0.0.1:5000",
+  "baseline": "assets/audit/lighthouse-baseline-2026-08-22.json",
+  "controls": {
+    "thirdPartyFonts": "in flight",
+    "analytics": "in flight",
+    "interpretation": "No third-party isolation applied."
+  },
+  "pages": {
+    "homepage": {
+      "path": "/",
+      "performance": 81,
+      "accessibility": 96,
+      "bestPractices": 100,
+      "seo": 100,
+      "lcpMs": 1725,
+      "cls": 0.171319,
+      "tbtMs": 162,
+      "fcpMs": 819,
+      "lcpElement": "div.askjamie-hero-grid > div.askjamie-hero-visual > picture > img.askjamie-avatar",
+      "deltaPerformance": -6,
+      "deltaLcpMs": -2032
+    },
+    "brandguard": {
+      "path": "/lens-system/okhp3-brandguard/",
+      "performance": 99,
+      "accessibility": 96,
+      "bestPractices": 100,
+      "seo": 100,
+      "lcpMs": 926,
+      "cls": 0.044265,
+      "tbtMs": 0,
+      "fcpMs": 485,
+      "lcpElement": "div.container > div.askjamie-hero-grid > div.askjamie-hero-copy > h1#hero-title",
+      "deltaPerformance": 24,
+      "deltaLcpMs": -5685
+    },
+    "universe": {
+      "path": "/universe/",
+      "performance": 99,
+      "accessibility": 100,
+      "bestPractices": 100,
+      "seo": 100,
+      "lcpMs": 671,
+      "cls": 0.056094,
+      "tbtMs": 37,
+      "fcpMs": 531,
+      "lcpElement": "div.askjamie-hero-grid > div.askjamie-hero-copy > div.askjamie-hero-content > h1#hero-title",
+      "deltaPerformance": 55,
+      "deltaLcpMs": -5485
+    },
+    "search": {
+      "path": "/search/",
+      "performance": 96,
+      "accessibility": 100,
+      "bestPractices": 100,
+      "seo": 100,
+      "lcpMs": 1285,
+      "cls": 0.060982,
+      "tbtMs": 0,
+      "fcpMs": 525,
+      "lcpElement": "main#main > div.container > section.search-hero > p.search-hero-lede",
+      "deltaPerformance": 21,
+      "deltaLcpMs": -5171
+    }
+  }
+}

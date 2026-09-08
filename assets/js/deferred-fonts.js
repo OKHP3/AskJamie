@@ -1,6 +1,6 @@
-// Enable the optional Google Fonts stylesheet after the first page load.
+// Enable the optional Google Fonts stylesheet after the document is parsed.
 // The route's local stylesheet can paint immediately with system fallbacks;
-// branded type still settles in for the rest of the visit.
+// branded type settles without waiting for third-party analytics to finish.
 const deferredFonts = document.querySelectorAll("link[data-deferred-fonts]");
 
 if (deferredFonts.length) {
@@ -12,9 +12,9 @@ if (deferredFonts.length) {
     });
   };
 
-  if (document.readyState === "complete") {
-    setTimeout(enableFonts, 0);
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", enableFonts, { once: true });
   } else {
-    window.addEventListener("load", enableFonts, { once: true });
+    enableFonts();
   }
 }

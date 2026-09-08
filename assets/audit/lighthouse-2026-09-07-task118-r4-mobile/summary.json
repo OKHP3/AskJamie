@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-07-task118-r4",
+  "tool": "Lighthouse 12.8.2",
+  "environment": "Local or supplied static server, mobile preset",
+  "property": "http://127.0.0.1:5000",
+  "baseline": "assets/audit/lighthouse-baseline-2026-08-22.json",
+  "pages": {
+    "homepage": {
+      "path": "/",
+      "performance": 75,
+      "accessibility": 100,
+      "bestPractices": 100,
+      "seo": 100,
+      "lcpMs": 4506,
+      "cls": 0.05778,
+      "tbtMs": 231,
+      "fcpMs": 2630,
+      "lcpElement": null,
+      "deltaPerformance": -12,
+      "deltaLcpMs": 749
+    },
+    "brandguard": {
+      "path": "/lens-system/okhp3-brandguard/",
+      "performance": 70,
+      "accessibility": 100,
+      "bestPractices": 100,
+      "seo": 100,
+      "lcpMs": 6832,
+      "cls": 0.033384,
+      "tbtMs": 176,
+      "fcpMs": 2631,
+      "lcpElement": null,
+      "deltaPerformance": -5,
+      "deltaLcpMs": 221
+    },
+    "universe": {
+      "path": "/universe/",
+      "performance": 85,
+      "accessibility": 100,
+      "bestPractices": 100,
+      "seo": 100,
+      "lcpMs": 3006,
+      "cls": 0.082707,
+      "tbtMs": 225,
+      "fcpMs": 2706,
+      "lcpElement": null,
+      "deltaPerformance": 41,
+      "deltaLcpMs": -3150
+    },
+    "search": {
+      "path": "/search/",
+      "performance": 65,
+      "accessibility": 100,
+      "bestPractices": 100,
+      "seo": 100,
+      "lcpMs": 7955,
+      "cls": 0.069503,
+      "tbtMs": 180,
+      "fcpMs": 3454,
+      "lcpElement": null,
+      "deltaPerformance": -10,
+      "deltaLcpMs": 1499
+    }
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-07",
+  "tool": "Lighthouse 12.8.2",
+  "environment": "Local or supplied static server, mobile preset",
+  "property": "http://127.0.0.1:5000",
+  "baseline": "assets/audit/lighthouse-baseline-2026-08-22.json",
+  "controls": {
+    "thirdPartyFonts": "in flight",
+    "analytics": "in flight",
+    "interpretation": "No third-party isolation applied."
+  },
+  "pages": {
+    "homepage": {
+      "path": "/",
+      "performance": 67,
+      "accessibility": 100,
+      "bestPractices": 100,
+      "seo": 100,
+      "lcpMs": 7279,
+      "cls": 0.05778,
+      "tbtMs": 259,
+      "fcpMs": 2553,
+      "lcpElement": "div.container > div.askjamie-hero-grid > div.askjamie-hero-copy > p.hero-tagline",
+      "deltaPerformance": -20,
+      "deltaLcpMs": 3522
+    },
+    "brandguard": {
+      "path": "/lens-system/okhp3-brandguard/",
+      "performance": 84,
+      "accessibility": 100,
+      "bestPractices": 100,
+      "seo": 100,
+      "lcpMs": 3982,
+      "cls": 0.002979,
+      "tbtMs": 115,
+      "fcpMs": 2256,
+      "lcpElement": "div.container > div.askjamie-hero-grid > div.askjamie-hero-copy > h1#hero-title",
+      "deltaPerformance": 9,
+      "deltaLcpMs": -2629
+    },
+    "universe": {
+      "path": "/universe/",
+      "performance": 88,
+      "accessibility": 100,
+      "bestPractices": 100,
+      "seo": 100,
+      "lcpMs": 3006,
+      "cls": 0.082707,
+      "tbtMs": 150,
+      "fcpMs": 2480,
+      "lcpElement": "div.askjamie-hero-grid > div.askjamie-hero-copy > div.askjamie-hero-content > p.askjamie-hero-tagline",
+      "deltaPerformance": 44,
+      "deltaLcpMs": -3150
+    },
+    "search": {
+      "path": "/search/",
+      "performance": 70,
+      "accessibility": 100,
+      "bestPractices": 100,
+      "seo": 100,
+      "lcpMs": 7955,
+      "cls": 0.073681,
+      "tbtMs": 144,
+      "fcpMs": 2477,
+      "lcpElement": "main#main > div.container > section.search-hero > p.search-hero-lede",
+      "deltaPerformance": -5,
+      "deltaLcpMs": 1499
+    }
+  }
+}

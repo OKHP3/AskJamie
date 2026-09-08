@@ -8,6 +8,7 @@
  *
  *   node scripts/lighthouse-routes.mjs
  *   node scripts/lighthouse-routes.mjs --preset=mobile
+ *   node scripts/lighthouse-routes.mjs --preset=mobile --controlled
  *   node scripts/lighthouse-routes.mjs --base-url=https://askjamie.bot
  */
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
@@ -27,7 +28,13 @@ if (!["desktop", "mobile"].includes(preset)) {
 }
 const dateArg = process.argv.find((arg) => arg.startsWith("--date="));
 const date = dateArg ? dateArg.slice("--date=".length) : new Date().toISOString().slice(0, 10);
-const outputDir = resolve(root, "assets/audit", `lighthouse-${date}${preset === "mobile" ? "-mobile" : ""}`);
+const controlled = process.argv.includes("--controlled");
+if (controlled && preset !== "mobile") {
+  console.error("The controlled third-party isolation mode is only supported with --preset=mobile.");
+  process.exit(1);
+}
+const outputSuffix = `${preset === "mobile" ? "-mobile" : ""}${controlled ? "-controlled" : ""}`;
+const outputDir = resolve(root, "assets/audit", `lighthouse-${date}${outputSuffix}`);
 const routes = {
   homepage: "/",
   brandguard: "/lens-system/okhp3-brandguard/",
@@ -36,6 +43,13 @@ const routes = {
 };
 const baseline = JSON.parse(readFileSync(baselinePath, "utf8"));
 const lighthouseBin = resolve(root, "node_modules/.bin/lighthouse");
+const controlledBlockedUrlPatterns = [
+  "https://fonts.googleapis.com/*",
+  "https://fonts.gstatic.com/*",
+  "https://www.googletagmanager.com/*",
+  "https://www.google-analytics.com/*",
+  "https://*.google-analytics.com/*",
+];
 const chromePath = process.env.CHROME_PATH || (() => {
   try {
     return execFileSync(process.execPath, ["-e", "process.stdout.write(require('playwright').chromium.executablePath())"], {
@@ -61,9 +75,22 @@ const summary = {
   schemaVersion: 1,
   capturedAt: date,
   tool: "Lighthouse 12.8.2",
-  environment: `Local or supplied static server, ${preset} preset`,
+  environment: controlled
+    ? "Local or supplied static server, controlled mobile preset"
+    : `Local or supplied static server, ${preset} preset`,
   property: baseUrl,
   baseline: "assets/audit/lighthouse-baseline-2026-08-22.json",
+  controls: controlled
+    ? {
+        thirdPartyFonts: "blocked",
+        analytics: "blocked",
+        interpretation: "Controlled lab measurement only. Not field data.",
+      }
+    : {
+        thirdPartyFonts: "in flight",
+        analytics: "in flight",
+        interpretation: "No third-party isolation applied.",
+      },
   pages: {},
 };
 
@@ -76,6 +103,9 @@ for (const [name, path] of Object.entries(routes)) {
     "--output=json",
     `--output-path=${reportPath}`,
     ...(preset === "desktop" ? ["--preset=desktop"] : ["--form-factor=mobile"]),
+    ...(controlled
+      ? controlledBlockedUrlPatterns.map((pattern) => `--blocked-url-patterns=${pattern}`)
+      : []),
     "--chrome-flags=--headless --no-sandbox --disable-dev-shm-usage",
     "--quiet",
   ], { cwd: root, stdio: "inherit", env: { ...process.env, CHROME_PATH: chromePath } });
@@ -84,6 +114,7 @@ for (const [name, path] of Object.entries(routes)) {
   const audits = report.audits;
   const page = baseline.pages[name] || {};
   const metric = (id) => audits[id]?.numericValue ?? null;
+  const lcpElement = audits["largest-contentful-paint-element"]?.details?.items?.[0]?.items?.[0]?.node;
   summary.pages[name] = {
     path,
     performance: Math.round((report.categories.performance?.score || 0) * 100),
@@ -94,7 +125,7 @@ for (const [name, path] of Object.entries(routes)) {
     cls: Number(metric("cumulative-layout-shift")?.toFixed(6)),
     tbtMs: Math.round(metric("total-blocking-time")),
     fcpMs: Math.round(metric("first-contentful-paint")),
-    lcpElement: audits["largest-contentful-paint-element"]?.details?.items?.[0]?.node?.selector || null,
+    lcpElement: lcpElement?.selector || null,
     deltaPerformance: Math.round((report.categories.performance?.score || 0) * 100) - (page.performance ?? 0),
     deltaLcpMs: Math.round(metric("largest-contentful-paint")) - (page.lcpMs ?? 0),
   };
