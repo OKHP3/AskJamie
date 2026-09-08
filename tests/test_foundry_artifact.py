@@ -116,6 +116,7 @@ class FoundryArtifactTests(unittest.TestCase):
         self.assertTrue((output / "assets/js/app.js").is_file())
         self.assertTrue((output / "assets/js/deferred-fonts.js").is_file())
         self.assertTrue((output / "assets/js/askjamie-analytics.js").is_file())
+        self.assertTrue((output / "assets/js/analytics-loader.js").is_file())
 
         foundry_html = foundry_page.read_text(encoding="utf-8")
         self.assertIn(
