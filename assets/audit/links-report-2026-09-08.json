@@ -1,8 +1,8 @@
 {
   "generated": "2026-09-08",
   "pages_scanned": 28,
-  "internal_links": 830,
-  "external_links": 553,
+  "internal_links": 834,
+  "external_links": 550,
   "broken_links": [],
   "style_issues": [],
   "sitemap": {
@@ -30,7 +30,7 @@
     {
       "path": "found-ry/index.html",
       "internal_links": 33,
-      "external_links": 13
+      "external_links": 14
     },
     {
       "path": "how-askjamie-works/index.html",
@@ -69,13 +69,13 @@
     },
     {
       "path": "lens-system/okhp3-brandguard/coca-cola/index.html",
-      "internal_links": 25,
-      "external_links": 25
+      "internal_links": 26,
+      "external_links": 24
     },
     {
       "path": "lens-system/okhp3-brandguard/costco/index.html",
-      "internal_links": 27,
-      "external_links": 22
+      "internal_links": 28,
+      "external_links": 21
     },
     {
       "path": "lens-system/okhp3-brandguard/discount-tire/index.html",
@@ -104,8 +104,8 @@
     },
     {
       "path": "lens-system/okhp3-brandguard/lvmh/index.html",
-      "internal_links": 27,
-      "external_links": 24
+      "internal_links": 28,
+      "external_links": 23
     },
     {
       "path": "lens-system/okhp3-brandguard/mathews-archery/index.html",
@@ -124,8 +124,8 @@
     },
     {
       "path": "lens-system/okhp3-brandguard/starbucks/index.html",
-      "internal_links": 27,
-      "external_links": 23
+      "internal_links": 28,
+      "external_links": 22
     },
     {
       "path": "lens-system/professional-portfolio/index.html",
