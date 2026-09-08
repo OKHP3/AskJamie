@@ -9,3 +9,5 @@
 - [Portable skill package integrity](portable-skill-package-integrity.md) — resolve every referenced resource before treating a skill as portable
 - [Public tree audit traversal](public-tree-audit-traversal.md) — prune workspace-managed directories before recursive validation scans
 - [Pages artifact working tree](pages-artifact-working-tree.md) — artifact preparation can touch the tracked dist-pages tree; restore it before cleanup or pushing
+- [Merge marker false positives](merge-marker-false-positives.md) — conflict resolvers may mistake decorative seven-equals comment rules for unresolved markers
+- [Branch cleanup recovery refs](branch-cleanup-recovery.md) — date-stamped recovery refs and a full ref snapshot protect local-only branch deletion
