@@ -7392,6 +7392,57 @@ html[data-theme="light"] .askjamie-main {
   margin-bottom: 0.5rem;
 }
 
+/* Let enlarged text reflow without changing sibling-site layout rules. */
+.askjamie-main main {
+  overflow-wrap: anywhere;
+}
+
+.askjamie-main .site-header .container {
+  height: auto;
+  min-height: 3.75rem;
+  flex-wrap: wrap;
+}
+
+.askjamie-main .askjamie-hero-grid > *,
+.askjamie-main .two-column > *,
+.askjamie-main .footer-column {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.askjamie-main .askjamie-hero-copy {
+  max-width: min(38rem, 100%);
+}
+
+.askjamie-main .section-header p {
+  max-width: min(36rem, 100%);
+}
+
+.askjamie-main .footer-built-with {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 899px) {
+  .askjamie-main .askjamie-hero-grid,
+  .askjamie-main .two-column {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .askjamie-main .primary-nav .has-submenu > .submenu {
+    min-width: 0;
+  }
+  .askjamie-main .primary-nav .submenu a {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+}
+
+@media (min-width: 900px) {
+  .askjamie-main .footer-grid {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1.2fr) minmax(0, 1.2fr);
+  }
+}
+
 /* Footer – soften OverKill’s dark footer just for AskJamie */
 .askjamie-main .site-footer {
   background: #f7f3ee;
