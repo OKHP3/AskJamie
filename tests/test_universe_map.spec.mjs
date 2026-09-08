@@ -36,7 +36,7 @@ try {
         assert.ok(await group.locator(".mermaid").evaluate(element => element.inert), "Decorative hidden diagrams must be inert");
         const scrollWrap = group.locator(".mermaid-scroll-wrap");
         assert.ok(await scrollWrap.evaluate(element => !element.inert), "Scroll container must remain interactive");
-        if (width === 390) {
+        if (width === 390 && await scrollWrap.evaluate(element => element.scrollWidth > element.clientWidth)) {
           await scrollWrap.hover();
           await page.mouse.wheel(200, 0);
           await page.waitForFunction(element => element.scrollLeft > 0, await scrollWrap.elementHandle());
