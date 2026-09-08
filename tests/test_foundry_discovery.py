@@ -33,6 +33,7 @@ class FoundryDiscoveryTests(unittest.TestCase):
         self.assertIn("https://askjamie.bot/found-ry/", llms)
         self.assertIn("<loc>https://askjamie.bot/found-ry/</loc>", sitemap)
         self.assertIn('<link rel="canonical" href="https://askjamie.bot/found-ry/" />', foundry)
+        self.assertIn('href="https://github.com/OKHP3/AskJamie-FoundRy/blob/main/docs/workbench.md"', foundry)
 
         builder_pages = list(builder.collect_pages())
         self.assertTrue(any(page["url"] == "/found-ry/" for page in builder_pages))
