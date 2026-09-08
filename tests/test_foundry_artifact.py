@@ -83,6 +83,7 @@ class FoundryArtifactTests(unittest.TestCase):
             "assets/js/mermaid-init.js": "console.log('mermaid');\n",
             "assets/js/universe-map.js": "console.log('universe');\n",
             "assets/js/deferred-fonts.js": "console.log('fonts');\n",
+            "assets/js/analytics-loader.js": "console.log('loader');\n",
             "assets/js/askjamie-analytics.js": "console.log('analytics');\n",
         }
 
