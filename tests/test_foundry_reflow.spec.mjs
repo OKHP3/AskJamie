@@ -8,7 +8,7 @@ try {
     for (const fontSize of [16, 32]) {
       const page = await browser.newPage({ viewport: { width, height: 900 } });
       await page.route("**/*", route => new URL(route.request().url()).origin === new URL(base).origin ? route.continue() : route.abort());
-      await page.goto(`${base}/found-ry/`);
+      await page.goto(`${base}/found-ry/`, { waitUntil: "domcontentloaded" });
       await page.evaluate(size => {
         document.documentElement.style.fontSize = `${size}px`;
         document.body.style.fontSize = `${size}px`;
@@ -29,6 +29,8 @@ try {
       const menu = page.locator(".nav-toggle");
       if (await menu.isVisible()) {
         await menu.click();
+        await page.waitForFunction(() =>
+          document.querySelector(".nav-toggle")?.getAttribute("aria-expanded") === "true");
         await check("navigation open");
         assert.equal(await menu.getAttribute("aria-expanded"), "true");
       }

@@ -61,5 +61,6 @@ def test_check_is_read_only_and_detects_asset_drift(tmp_path, monkeypatch):
 def test_canonical_inventory_excludes_generated_pages_includes_templates():
     pages = [p.relative_to(ROOT).as_posix() for p in cache.iter_html_files(ROOT)]
     assert 'index.html' in pages
+    assert 'found-ry/index.html' in pages
     assert 'assets/templates/template--homepage.html' in pages
     assert not any(p.startswith(('dist-pages/', '.scratch/', 'assets/audit/', '.agents/')) for p in pages)
