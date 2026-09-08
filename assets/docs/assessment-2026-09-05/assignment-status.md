@@ -1,5 +1,44 @@
 # Architect assignment status
 
+## Verified closeout, September 8, 2026
+
+The original Architect implementation and evidence were integrated through
+[PR 28](https://github.com/OKHP3/AskJamie/pull/28) at
+`dae67306100a50c7ab9c1489a3453653be9512c4`. That release is an ancestor of
+`origin/main` at the closeout inspection (`9e51286`). The original release's
+[validation and Pages deployment](https://github.com/OKHP3/AskJamie/actions/runs/34076448894)
+passed. Later source and route counts supersede its dated 67-test and
+200-row browser baseline.
+
+The seven original PM and Worker threads listed below were verified completed
+and archived on September 8. Their seven worker worktrees and the combined
+release worktree were removed during the earlier publication closeout. The
+completed release branch was merged and removed. Recovery refs, a Git bundle,
+and archived local QA evidence remain preserved. No squash or history rewrite
+was necessary to preserve the integrated work.
+
+Implementation completion is not completion of every proposed outcome:
+
+- WP-07: owner decisions on GPT availability, status wording, and supported
+  claims remain open in the decision packet. Historical URL probes are not
+  current availability proof.
+- WP-08: private-source publication scope and destination decisions remain open.
+- WP-13: human assistive-technology and usability execution remains open.
+- WP-14: external governance and measurement decisions remain open.
+- WP-12: local capture and request-size improvements are complete; lab results
+  do not establish field performance or real-user outcomes.
+
+New Found-Ry delegation and repository reconciliation were active in separate
+threads during this inspection. Their queue, PRs, and worktrees are outside
+this original assignment record and must not be deleted or labeled complete
+because the original Architect implementation has shipped.
+
+## Historical dispatch and acceptance record
+
+The sections below preserve the original sequence. Statements such as local,
+provisional, pending, or not published describe their recorded stage and do
+not supersede the verified closeout above.
+
 ## Corrected delivery status
 
 The first assessment delegated and implemented WP-01 through WP-04, followed
