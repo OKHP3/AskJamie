@@ -32,3 +32,10 @@ page, not as an auth or transient error.
 If the owner wants these four to become reachable again, the missing action is
 on the provider side: the public ChatGPT destination URLs need to resolve to
 live pages. No local repository edit can manufacture that state.
+
+## Website treatment
+
+The four case studies now show a dated unavailable status, an availability-check
+label, and a contact option. Source links and domain boundaries remain available.
+The scheduled monitor still reports HTTP 404 accurately. This repository change
+does not claim that provider-side access has been restored.
