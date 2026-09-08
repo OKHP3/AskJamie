@@ -1,13 +1,16 @@
 # AskJamie Project Scorecard
 
-**Current as of:** 2026-09-05
-**Source baseline:** `fd1ea19`
+**Current as of:** 2026-09-08
+**Source baseline:** `9cf7eb4`
 **Purpose:** One current record of shipped capability, dated verification,
 conditional evidence, and deliberately deferred work.
 
 The [September 5 assessment](assessment-2026-09-05/delivery-plan.md) records
 priorities and assigned work packages. Its evidence files preserve the baseline
 before local repairs. A local patch is not a published release.
+
+The September 8 closeout is published from `9cf7eb4`. The validated Pages
+artifact passed the repository release workflow and deployed successfully.
 
 ## Shipped capabilities
 
@@ -22,18 +25,19 @@ before local repairs. A local patch is not a published release.
 | Release boundary | `scripts/prepare-pages-artifact.py` constructs an allowlisted artifact. Use its current manifest for file counts, not a copied historical total. |
 | Hosted checks | Separate scheduled hosted JavaScript and public GPT destination workflows retain diagnostics. Their existence does not prove any particular hosted run passed. |
 
-## September 5 baseline verification
+## September 8 release verification
 
 | Check | Result and limit |
 | --- | --- |
-| Source structure | PASS, 27 source pages. See [validator output](assessment-2026-09-05/evidence/validate-site.txt). |
-| Static responsive rows | PASS, 200 rows from 25 routes at eight viewport configurations. This is source inspection, not a rendered-layout result. See [static output](assessment-2026-09-05/evidence/static-responsive.txt). |
-| Link check | PASS for 764 internal links and 534 external URL-format checks. This does not establish network reachability of those external destinations. See [link output](assessment-2026-09-05/evidence/links.txt). |
-| Generated index and fingerprints | PASS at baseline. See [index](assessment-2026-09-05/evidence/index.txt) and [asset checks](assessment-2026-09-05/evidence/cache.txt). |
-| Canonical local audit | FAIL at baseline because eight ignored `.DS_Store` files were found. No source-content finding was reported. See [audit report](assessment-2026-09-05/evidence/canonical-audit.md). |
-| Local browser baseline | First run recorded two timeout-related console failures on Scheels at larger viewports. Do not treat the 200 visited rows as a clean pass. See [browser evidence](assessment-2026-09-05/evidence/browser-responsive-baseline.json). |
-| Local full pytest | NOT RUN because pytest was unavailable in the inspected local runtimes. The worker's focused standard-library safety tests are a separate result. |
-| Production and CI | Use the Architect's dated remote and HTTP evidence in the assessment folder. A baseline hosted success does not validate subsequent local changes. |
+| Source structure | PASS, 28 HTML pages. |
+| Static responsive rows | PASS, 208 rows from 26 routes at eight viewport configurations. This is source inspection, not a rendered-layout result. |
+| Browser responsive QA | PASS, 208 rendered route and viewport checks with 0 failures. |
+| JavaScript smoke suite | PASS, Mermaid rendering, search overlay, color mode, deferred app loading, analytics loading, and duplicate-event checks. |
+| Link check | PASS for 834 internal links and 554 external URL-format checks, with 0 broken links and 0 style issues. This does not establish network reachability of every external destination. |
+| Generated index and fingerprints | PASS. Search index is current for 26 pages and shared asset checks report 0 stale files. |
+| Canonical local audit | PASS, 0 issues. |
+| Local full pytest | PASS, 69 tests. |
+| Production and CI | PASS. GitHub Actions run `34234732119` completed site validation and deployed the validated Pages artifact. |
 
 ## Evidence still required
 
@@ -47,6 +51,10 @@ before local repairs. A local patch is not a published release.
   enforced GitHub Pages control.
 - Public accessibility and appropriate publication status of case-study source
   destinations and represented external GPTs.
+- `npm audit` reports 20 transitive development-only vulnerabilities in the
+  Lighthouse and Puppeteer toolchain. Production dependencies report 0
+  vulnerabilities, and the audit tool found no safe automatic fix. This is a
+  tooling maintenance item, not a deployed-site finding.
 
 ## Intentional non-goals
 
