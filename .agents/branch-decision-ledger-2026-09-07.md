@@ -71,6 +71,23 @@ because its built-in fetch step reached an SSH host-key confirmation prompt;
 the existing fetched refs and direct Git comparisons above were left
 unchanged.
 
+## Undocumented local branches flagged (2026-09-08)
+
+The current local checkout contains two branch heads that are not named in the
+retention decisions or explicit exclusions above. They are flagged for an
+owner-reviewed decision; neither branch is deleted, renamed, merged, or
+cherry-picked by this audit.
+
+| Branch | Tip SHA | Current evidence | Status |
+|---|---|---|---|
+| `subrepl-3ht43wzg` | `1d3d8240f3a4ef11033ebcb98910cd47e0109be9` | Four patch-unique commits relative to `origin/main`, ending in the same patch-unique branch-review outcome represented by the active line. Its tree differs from `origin/main` in the branch ledger and BrandGuard page. | **Flagged: no written retention decision** |
+| `subrepl-leu6hyei` | `c9b863b2727f5757980a5058038f211bcacf29bf` | Five patch-unique commits relative to `origin/main`, including the earlier retention-ledger and recovery-ref work plus the mobile-performance lineage. Its large tree delta is not sufficient evidence for deletion or archival. | **Flagged: no written retention decision** |
+
+The current GitHub refresh also found three active `codex/w04-*`,
+`codex/w05-*`, and `codex/w06-*` remote branches attached to open draft PRs
+(`#32`, `#33`, and `#31`). Those are hosted active work, not undocumented local
+heads, and remain untouched.
+
 ## Next cleanup gate
 
 This ledger records decisions, not deletion approval. A later cleanup may consider exact archive refs or local-branch deletion only after the owner approves the named branches, a dated recovery plan is recorded, and the pre/post ref snapshot is verified.
