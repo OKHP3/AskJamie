@@ -1,0 +1,90 @@
+{
+  "base": "http://127.0.0.1:5187",
+  "sourceBase": "9e51286ebb338e49c3b0cbf28f84b488fa220543",
+  "rows": [
+    {
+      "width": 320,
+      "normal": {
+        "width": 320,
+        "scrollWidth": 320,
+        "h1": 1,
+        "main": 1
+      },
+      "first": {
+        "text": "Skip to content",
+        "href": "#main"
+      },
+      "focus": "main",
+      "enlarged": {
+        "scrollWidth": 400,
+        "width": 320,
+        "rootFont": "32px",
+        "bodyFont": "32px"
+      },
+      "errors": []
+    },
+    {
+      "width": 390,
+      "normal": {
+        "width": 390,
+        "scrollWidth": 390,
+        "h1": 1,
+        "main": 1
+      },
+      "first": {
+        "text": "Skip to content",
+        "href": "#main"
+      },
+      "focus": "main",
+      "enlarged": {
+        "scrollWidth": 400,
+        "width": 390,
+        "rootFont": "32px",
+        "bodyFont": "32px"
+      },
+      "errors": []
+    },
+    {
+      "width": 768,
+      "normal": {
+        "width": 768,
+        "scrollWidth": 768,
+        "h1": 1,
+        "main": 1
+      },
+      "first": {
+        "text": "Skip to content",
+        "href": "#main"
+      },
+      "focus": "main",
+      "enlarged": {
+        "scrollWidth": 768,
+        "width": 768,
+        "rootFont": "32px",
+        "bodyFont": "32px"
+      },
+      "errors": []
+    },
+    {
+      "width": 1280,
+      "normal": {
+        "width": 1280,
+        "scrollWidth": 1280,
+        "h1": 1,
+        "main": 1
+      },
+      "first": {
+        "text": "Skip to content",
+        "href": "#main"
+      },
+      "focus": "main",
+      "enlarged": {
+        "scrollWidth": 1384,
+        "width": 1280,
+        "rootFont": "32px",
+        "bodyFont": "32px"
+      },
+      "errors": []
+    }
+  ]
+}

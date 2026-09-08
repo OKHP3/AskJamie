@@ -1,62 +1,42 @@
-# W06 Found-Ry visitor journey
+# W06 Found-Ry visitor journey: corrected review
 
-Date: 2026-09-08. Branch: `codex/w06-foundry-journey`. Base SHA:
-`e9902c5358506252ae0aba8b805c26f7f9d18924`.
+Date: 2026-09-08. Website baseline: `9e51286`. Original worker commit:
+`6949dd2`. Scope: issue #30, W06.
 
-## Scope
+## Correction to the original handoff
 
-Public-safe synthetic review of the website-to-repository-to-local-start path
-for the AskJamie Found-Ry feature page. I checked the public page copy against
-the repository README and Replit notes, then looked for a clear next step that
-would help a maintainer move from the site to local startup without guessing.
+The worker inspected the AskJamie website README and attributed its static
+HTTP server command to the Found-Ry workbench. Those are separate repositories.
+`python3 -m http.server 5000` previews the website; it does not launch the
+capability workbench. The original "private repo" recommendation also conflicts
+with the owner's public-source policy for AskJamie-FoundRy.
 
-## Observed path
+The correct source journey is the public AskJamie feature page, then
+`OKHP3/AskJamie-FoundRy` and its `docs/workbench.md`. That application's README
+specifies installing its requirements in a configured environment and running
+`python3 -m workbench --port 8765`. Draft state remains local and private.
+This review checked the source instructions, not an installation or a hosted
+application. The Found-Ry integration owner owns executable startup acceptance.
 
-1. The public feature page at `/found-ry/` presents Found-Ry as a private local
-   alpha and says there is no public hosted version.
-2. The repository docs say the project is a static site and that the local start
-   command is `python3 -m http.server 5000 --bind 0.0.0.0`.
-3. `replit.md` repeats the same local start command and says the preview serves
-   the repository root.
+## Visitor-facing result
 
-## Availability claims that may confuse visitors
+The feature page's contact path and local-alpha availability wording are
+consistent with the current application contract. Its links provide a
+consultative journey, but there is no direct link to the public workbench
+operating guide for someone who wants to inspect or run the source.
 
-- The page says the workbench is a "Working local alpha" and that a public
-  hosted version is not available. That is accurate for a maintainer, but a
-  casual visitor can read it as if there is no local way to try the workbench
-  at all.
-- The page says "Contact Jamie" for discussion, but it does not point a
-  maintainer toward the repository docs or the local start command.
-- The page avoids any repository link, which is good for privacy, but it also
-  means the journey ends at a contact prompt instead of a clear maintainer
-  handoff.
+Proposed addition near the FAQ: "Want to inspect the source or run it locally?
+Read the AskJamie Found-Ry operating guide. Your drafts stay on your computer."
+The intended destination is
+`https://github.com/OKHP3/AskJamie-FoundRy/blob/main/docs/workbench.md`.
 
-## Broken-link check
+This is a copy/navigation proposal, not an applied feature or a verified
+external launch. No public hosted-app promise, private account locator or
+incorrect website start command should be added. No message was sent through
+the contact journey.
 
-- I did not find a broken internal link in the Found-Ry page source during this
-  review.
-- The external links in the page source are syntactically valid, but I did not
-  treat live availability as proven because this was a source-level review.
+## Disposition
 
-## Concise corrections
-
-1. Keep the privacy boundary, but replace the availability copy with a clearer
-   maintainer split. Suggested direction: "This public page explains the
-   private workbench. Maintainers can start it locally from the repository."
-2. Add one short next-step cue that points to the repo instructions instead of
-   only the contact path. Suggested direction: "If you maintain the workbench,
-   open the repository README or Replit notes for the local start command."
-3. Keep the public page free of private repo links. The correction should be a
-   wording change, not a public source disclosure.
-
-## Evidence summary
-
-- Public page inspected: [`found-ry/index.html`](/Users/okh/.codex/worktrees/10c7/AskJamie/found-ry/index.html)
-- Repo start command documented in [`README.md`](/Users/okh/.codex/worktrees/10c7/AskJamie/README.md)
-- Same start command repeated in [`replit.md`](/Users/okh/.codex/worktrees/10c7/AskJamie/replit.md)
-
-## Recommended disposition
-
-CLEAR for documentation-only follow-up. The issue is not a broken page route.
-It is a missing maintainer handoff sentence that would make the private local
-path easier to recognize.
+Review complete; initial source confusion corrected. Public source guidance
+is suitable for a separately integrated page edit. No source HTML changed in
+this task and no model-platform or installation acceptance is claimed.
