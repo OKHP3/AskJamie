@@ -37,8 +37,8 @@ def generate(root=ROOT):
         source = re.sub(r"^\s*classDef\s+.*$", "", source, flags=re.M)
         blocks.extend([f'<details class="card universe-map-group"><summary>{title} (group {number})</summary>',
                        '<figure class="askjamie-mermaid-shell">',
-                       '<div class="mermaid-scroll-wrap" aria-hidden="true" inert>',
-                       f'<div class="mermaid" data-diagram-label="{title}">{html.escape(source)}</div>',
+                       '<div class="mermaid-scroll-wrap" aria-hidden="true" tabindex="-1">',
+                       f'<div class="mermaid" inert data-diagram-label="{title}">{html.escape(source)}</div>',
                        '</div>', REFERRAL, f'<figcaption>Pages beneath {title}. The links below provide the same navigation.</figcaption>', '</figure>', '<ul class="link-list">'])
         for key in diagram["nodes"]:
             node = nodes[key]
