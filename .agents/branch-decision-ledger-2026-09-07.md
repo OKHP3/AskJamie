@@ -24,7 +24,7 @@
 
 | Branch | Decision | Tip SHA | Evidence and rationale |
 |---|---|---|---|
-| `replit-agent` | **keep** | `dc1ef14a392793667b6a9df839d6c33be2254a31` | Has 24 patch-unique commits relative to `origin/main`, including the latest audit-report work. Its generated name is not sufficient grounds for deletion; retain for review or revival. |
+| `replit-agent` | **archive** | `dc1ef14a392793667b6a9df839d6c33be2254a31` | Review completed 2026-09-08: its substantive work is represented on the active line by equivalent later history, including the audit report. The remaining tree delta is only the newer branch-decision ledger and recovery-memory files on the active line. Retain the exact tip; do not delete without owner approval. |
 | `subrepl-18mu80ad` | **archive** | `d9b928a4d2273e2167b56dda1806b0505bb280b8` | Its keyboard-order commit is patch-equivalent to `origin/main`; the six-file tree difference is already represented upstream. Retain the exact tip, but no revival is currently indicated. |
 | `subrepl-46ay7r19` | **archive** | `2097f9e4e8abf17cb72fe42763cb60a7021d1f70` | Its public-site audit hardening commit is patch-equivalent to `origin/main`. Preserve the tip as historical recovery, not as an unreviewed delete target. |
 | `subrepl-4idi6all` | **archive** | `eba57b9f6076d5207d9e69c82815bac9ce2c7ab8` | Its keyboard-focus evidence update is patch-equivalent to `origin/main`; the remaining difference is documentation only. |
@@ -32,9 +32,9 @@
 | `subrepl-ab3sqx8f` | **archive** | `c9f78e8a3d6675ae6c17db4c30aa02c278fb84ac` | All 17 commits are patch-equivalent to `origin/main`, including release-gate and screen-reader evidence. This is a redundant release snapshot, not disposable-by-name. |
 | `subrepl-f4jb3f1a` | **archive** | `eeb7b7b87be985ac2059985188bafd05baf90d5f` | Its brand-terms content is patch-equivalent to `origin/main`; preserve the snapshot for provenance. |
 | `subrepl-h4tlbpdo` | **archive** | `23bb4bb790c977745f03f28359ce84da822981ec` | All 13 commits are patch-equivalent to `origin/main`, including spoken-output evidence. It is superseded by landed work. |
-| `subrepl-ili4a5c9` | **keep** | `54df8979cebe558e3da9da9ac60157edc0a7d230` | Contains two patch-unique commits: the FK-scoring memory correction and plain-language updates. Preserve because the work is not represented by `origin/main`. |
+| `subrepl-ili4a5c9` | **archive** | `54df8979cebe558e3da9da9ac60157edc0a7d230` | Review completed 2026-09-08: the FK-scoring correction and reading-level work are represented on the active line by equivalent later commits (`54df897`/`7e9f643`), with later page edits superseding this branch's exact tree. Retain the exact tip; do not delete without owner approval. |
 | `subrepl-j0iqy3mq` | **archive** | `8d3fd352e82af963227858fde999d8b8400e9f22` | Its static-site release skill evaluation evidence is patch-equivalent to `origin/main`; retain as a historical evaluation snapshot. |
-| `subrepl-j940c6i6` | **keep** | `905d38060dc91ec54802a8572c5e087b524bb890` | Contains one patch-unique commit packaging the static-site release validation skill. Preserve because the packaged skill work is not fully represented in `origin/main`. |
+| `subrepl-j940c6i6` | **archive** | `905d38060dc91ec54802a8572c5e087b524bb890` | Review completed 2026-09-08: the Pages artifact hardening is already on the active line, and the portable static-site release skill is represented by `711854e` plus later evaluation and grading evidence. Retain the exact tip; do not delete without owner approval. |
 | `subrepl-jbcjwvjz` | **archive** | `1ddd4d0a00c456633a93d3ffc1772d287a42142c` | All 16 commits are patch-equivalent to `origin/main`, including the spoken-accessibility evidence boundary. It is a redundant evidence snapshot. |
 | `subrepl-kvueapkn` | **keep** | `6a5a8b40e132f732cbfd3f21050efd5b218594e2` | Its tree is identical to the checked-out `integration/mobile-performance-reconcile` branch and contains active mobile-performance work plus recovery handling. Keep until the performance task and branch-recovery follow-ups are resolved. |
 | `subrepl-paxtu6hz` | **archive** | `6dd08e411c6d11f7b1f05762151a8cf0428dd6b4` | All six commits are patch-equivalent to `origin/main`, including Lighthouse evidence. Retain as a dated performance-history snapshot. |
@@ -51,6 +51,25 @@ These refs are not part of the 19-branch decision set:
 - `integration/mobile-performance-reconcile` — current checkout; never a cleanup candidate.
 - `main`, `subrepl-imiwej7r`, and `subrepl-s9r7crbb` — active mobile-performance work covered by the existing performance task; keep unchanged.
 - `subrepl-1aunpswo`, `subrepl-4415rcr0`, `subrepl-4hm3zoon`, and `subrepl-gkf1bczs` — already reachable from `origin/main`; no action is taken in this review.
+
+## Patch-unique review outcome (2026-09-08)
+
+The three branches named in Task #129 were reviewed at commit and file level
+against both `origin/main` and `integration/mobile-performance-reconcile`.
+Useful work was already promoted into the active line; no additional
+cherry-pick or merge is required:
+
+| Branch | Patch-unique work reviewed | Active-line disposition |
+|---|---|---|
+| `replit-agent` | 24 commits, ending in the 2026-09-07 audit-report merge | **Promoted/reconciled.** The active line contains the substantive changes. Its exact tip is retained as an archive snapshot; the only direct tree difference is that the active line also contains this ledger and the branch-recovery memory note. |
+| `subrepl-ili4a5c9` | FK-scoring guidance plus plain-language edits to `contact/`, `legal/`, and the Coca-Cola BrandGuard page | **Promoted/reconciled.** The scoring guidance remains active, and equivalent reading-level work appears in active commits `7e9f643` and its later page revisions. The branch's older page tree is superseded rather than merged again. |
+| `subrepl-j940c6i6` | Pages artifact hardening and the `okhp3-static-site-release` portable skill package | **Promoted/reconciled.** Artifact hardening is present on the active line, and the skill package is present with later evaluation/grading additions after `711854e`. The branch is historical provenance only. |
+
+No branch, remote ref, stash, archive ref, or unreachable object was deleted or
+pruned. The read-only janitor audit script was not refreshed in this pass
+because its built-in fetch step reached an SSH host-key confirmation prompt;
+the existing fetched refs and direct Git comparisons above were left
+unchanged.
 
 ## Next cleanup gate
 
