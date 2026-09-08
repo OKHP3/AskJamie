@@ -33,7 +33,14 @@ try {
         assert.notEqual(colors[0], "rgb(0, 0, 0)", "Node text must use the brand foreground");
         assert.notEqual(colors[0], colors[1], "Node text must differ from its surface");
         assert.equal(await group.locator("svg a[href^='/']").count(), report.diagrams[i].nodes.length);
-        assert.ok(await group.locator(".mermaid-scroll-wrap").evaluate(element => element.inert), "Decorative hidden diagrams must be inert");
+        assert.ok(await group.locator(".mermaid").evaluate(element => element.inert), "Decorative hidden diagrams must be inert");
+        const scrollWrap = group.locator(".mermaid-scroll-wrap");
+        assert.ok(await scrollWrap.evaluate(element => !element.inert), "Scroll container must remain interactive");
+        if (width === 390 && await scrollWrap.evaluate(element => element.scrollWidth > element.clientWidth)) {
+          await scrollWrap.hover();
+          await page.mouse.wheel(200, 0);
+          await page.waitForFunction(element => element.scrollLeft > 0, await scrollWrap.elementHandle());
+        }
         await group.locator("summary").focus();
         await page.keyboard.press("Tab");
         assert.equal(await page.evaluate(() => Boolean(document.activeElement.closest('[aria-hidden="true"]'))), false, "Tab must skip hidden diagram anchors");
