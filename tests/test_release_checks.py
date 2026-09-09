@@ -435,6 +435,68 @@ def test_responsive_qa_keeps_csp_suppression_narrow_and_reports_resource_failure
     assert "CONSOLE: " in source
 
 
+def test_lighthouse_routes_preserves_controlled_mobile_isolation_contract():
+    source = (ROOT / "scripts/lighthouse-routes.mjs").read_text(encoding="utf-8")
+
+    assert 'if (controlled && preset !== "mobile") {' in source
+    assert "The controlled third-party isolation mode is only supported with --preset=mobile." in source
+    assert 'const outputSuffix = `${preset === "mobile" ? "-mobile" : ""}${controlled ? "-controlled" : ""}`;' in source
+
+    blocked_patterns_start = source.index("const controlledBlockedUrlPatterns = [")
+    blocked_patterns_end = source.index("];", blocked_patterns_start) + 2
+    blocked_patterns = re.findall(
+        r'"([^"]+)"',
+        source[blocked_patterns_start:blocked_patterns_end],
+    )
+    assert blocked_patterns == [
+        "https://fonts.googleapis.com/*",
+        "https://fonts.gstatic.com/*",
+        "https://www.googletagmanager.com/*",
+        "https://www.google-analytics.com/*",
+        "https://*.google-analytics.com/*",
+    ]
+    assert "controlledBlockedUrlPatterns.map((pattern) => `--blocked-url-patterns=${pattern}`)" in source
+
+    assert 'thirdPartyFonts: "blocked"' in source
+    assert 'analytics: "blocked"' in source
+    assert "Controlled lab measurement only. Not field data." in source
+    assert 'lcpElement: lcpElement?.selector || null' in source
+    assert 'audits["largest-contentful-paint-element"]?.details?.items?.[0]?.items?.[0]?.node' in source
+
+
+def test_lighthouse_routes_preserves_normal_output_contract():
+    source = (ROOT / "scripts/lighthouse-routes.mjs").read_text(encoding="utf-8")
+
+    assert '...(preset === "desktop" ? ["--preset=desktop"] : ["--form-factor=mobile"])' in source
+    assert 'thirdPartyFonts: "in flight"' in source
+    assert 'analytics: "in flight"' in source
+    assert "No third-party isolation applied." in source
+
+    for field in (
+        "schemaVersion",
+        "capturedAt",
+        "tool",
+        "environment",
+        "property",
+        "baseline",
+        "controls",
+        "pages",
+        "performance",
+        "accessibility",
+        "bestPractices",
+        "seo",
+        "lcpMs",
+        "cls",
+        "tbtMs",
+        "fcpMs",
+        "lcpElement",
+        "deltaPerformance",
+        "deltaLcpMs",
+    ):
+        assert f"{field}:" in source
+    assert "path," in source
+
+
 def test_responsive_qa_browser_fixture_isolates_pages_and_preserves_failures(tmp_path):
     node_bin = os.environ.get("ASKJAMIE_NODE") or shutil.which("node")
     bundled_node = Path(
