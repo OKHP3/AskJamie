@@ -603,11 +603,19 @@ button {
   display: block;
 }
 
-/* ========== Header: shared language-link disclosure ========== */
-/* Inactive on AskJamie until reviewed locale links are added to page shells.
-   Retained as shared family styling, not evidence of translated routes.
-   The disclosure is a flex sibling of nav.primary-nav and .header-controls.
-   Any AskJamie activation also needs a paper-first brand styling review. */
+/* ========== Header: pilot-language dropdown switcher ========== */
+/* Rendered only on the four pilot routes (home, about, projects, contact)
+   and their /fr/, /de/, /es/ equivalents. English/USA is the default
+   shown on every EN page; a page's own locale flag shows once someone is
+   on a translated page. Click reveals the other options -- same
+   disclosure shape as the light/dark/system theme toggle, adapted for
+   real navigation since each option is a link to a different page
+   rather than a client-side state change.
+   Lives as its own header section: a flex sibling of nav.primary-nav
+   and .header-controls (search + display-mode switcher), never inside
+   the collapsible nav link list and never folded into the
+   search/theme-toggle cluster. The right-hand rule below is the visual
+   boundary that keeps it a distinct section from .header-controls. */
 .site-header .lang-switch {
   position: relative;
   display: flex;
@@ -1151,14 +1159,21 @@ html[data-theme="light"] body:not(.glee-main):not(.askjamie-main) .hero-subline 
 /* ===== SCROLL REVEAL ===================================================== */
 
 .reveal-on-scroll {
-  opacity: 0;
-  transform: translateY(16px);
-  transition: opacity 0.5s ease, transform 0.5s ease;
-}
-
-.reveal-on-scroll.is-visible {
   opacity: 1;
   transform: translateY(0);
+}
+
+/* Content never waits on JavaScript. Only a delivered intersection starts
+   this finite animation; a missing or failed controller leaves it readable. */
+@media (min-width: 1025px) and (prefers-reduced-motion: no-preference) {
+  .reveal-on-scroll.is-visible {
+    animation: scroll-reveal-in 0.5s ease;
+  }
+}
+
+@keyframes scroll-reveal-in {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* Chat mock layout – shared structure, brand-specific colors layered on top */
@@ -2265,6 +2280,127 @@ body.construction-dismissed .construction-overlay,
   font-size: 0.8rem; color: var(--color-muted, #6b7280);
   margin-top: 0.5rem; font-style: italic; padding-left: 0.5rem;
 }
+/* Story-only framing: the full creature leads, not the decorative backdrop. */
+#murderbird {
+  min-height: 0;
+  isolation: isolate;
+  background: var(--color-bg);
+  color: var(--color-fg);
+}
+
+#murderbird .hero-inner {
+  width: 100%;
+  padding: clamp(2rem, 4vw, 3.5rem) 1.5rem;
+}
+
+#murderbird .hero-grid {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(2rem, 3vw, 3rem);
+  align-items: center;
+}
+
+#murderbird .hero-visual {
+  width: 100%;
+  max-width: 520px;
+  margin: 0 0 0 auto;
+}
+
+#murderbird .hero-visual img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 0.75rem;
+}
+
+#murderbird .hero-blueprint-bg {
+  z-index: 0;
+  opacity: 0.2;
+}
+
+#murderbird .brand-stripes {
+  z-index: 0;
+  opacity: 0.08;
+  animation: none;
+}
+
+#murderbird .hero-blueprint-bg::before,
+#murderbird .hero-blueprint-bg::after {
+  animation: none;
+}
+
+#murderbird h1,
+#murderbird .hero-tagline {
+  color: var(--color-fg);
+}
+
+#murderbird h1 {
+  font-size: clamp(2.05rem, 3.6vw, 3rem);
+}
+
+#murderbird .story-brand-name {
+  white-space: nowrap;
+}
+
+#murderbird .hero-eyebrow,
+#murderbird .hero-eyebrow a {
+  color: var(--color-muted);
+}
+
+#murderbird .btn-quiet {
+  color: var(--color-fg);
+  background: var(--color-surface);
+  border-color: var(--color-muted);
+}
+
+#murderbird a:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 4px;
+}
+
+@media (max-width: 1024px) {
+  #murderbird .hero-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  #murderbird .hero-visual {
+    max-width: none;
+    margin: 0;
+  }
+}
+
+#the-maker .murderbird-scene,
+#the-mechanic .murderbird-scene,
+#the-water .murderbird-scene,
+#the-builder .murderbird-scene,
+#the-sentinel .murderbird-scene {
+  width: 100%;
+  margin: 2rem 0;
+  scroll-margin-top: 12rem;
+}
+
+#the-maker .murderbird-scene img,
+#the-mechanic .murderbird-scene img,
+#the-water .murderbird-scene img,
+#the-builder .murderbird-scene img,
+#the-builder .murderbird-scene video,
+#the-sentinel .murderbird-scene img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 0.75rem;
+}
+
+#the-maker .murderbird-scene figcaption,
+#the-mechanic .murderbird-scene figcaption,
+#the-water .murderbird-scene figcaption,
+#the-builder .murderbird-scene figcaption,
+#the-sentinel .murderbird-scene figcaption {
+  margin-top: 0.75rem;
+  color: var(--color-muted);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
 .murderbird-grid {
   display: grid; grid-template-columns: 1fr 1fr;
   gap: 3rem; align-items: start; margin: 2rem 0;
@@ -3644,6 +3780,20 @@ body:not(.glee-main):not(.askjamie-main) h3 {
 }
 
 /* For Home hero title (“Precision · Protocol · Promptcraft”) */
+/* A14 Option B: editorial project cards keep context visible while one clear
+   action carries each card forward. */
+.home-selected-work .project-card {
+  border-top: 3px solid var(--okh-orange);
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+.home-selected-work .project-card > p:last-child { margin-top: auto; }
+.home-selected-work .project-card .btn-primary { display: inline-flex; }
+@media (max-width: 600px) {
+  .home-selected-work .grid { grid-template-columns: 1fr; }
+  .home-selected-work .project-card { min-height: 0; }
+}
 body:not(.glee-main):not(.askjamie-main) .hero h1 {
   font-size: clamp(2.4rem, 3.6vw, 3.0rem);  /* Slightly smaller for readability */
   letter-spacing: 0.08em;     /* Further breathing room between letters */
@@ -7285,19 +7435,6 @@ html[data-theme="light"] .askjamie-main {
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
 }
 
-/* Keep BrandGuard case links as one keyboard-focusable card box. */
-.askjamie-main .brandguard-case-card {
-  display: block;
-  height: 100%;
-  color: inherit;
-  text-decoration: none;
-}
-
-.askjamie-main .brandguard-case-card:focus-visible {
-  outline: 3px solid var(--color-accent);
-  outline-offset: 4px;
-}
-
 .askjamie-main .btn-primary {
   background: linear-gradient(135deg, #2d6f7e, #3c8ea1);
   color: #f9fafb;
@@ -7392,57 +7529,6 @@ html[data-theme="light"] .askjamie-main {
   margin-bottom: 0.5rem;
 }
 
-/* Let enlarged text reflow without changing sibling-site layout rules. */
-.askjamie-main main {
-  overflow-wrap: anywhere;
-}
-
-.askjamie-main .site-header .container {
-  height: auto;
-  min-height: 3.75rem;
-  flex-wrap: wrap;
-}
-
-.askjamie-main .askjamie-hero-grid > *,
-.askjamie-main .two-column > *,
-.askjamie-main .footer-column {
-  min-width: 0;
-  overflow-wrap: anywhere;
-}
-
-.askjamie-main .askjamie-hero-copy {
-  max-width: min(38rem, 100%);
-}
-
-.askjamie-main .section-header p {
-  max-width: min(36rem, 100%);
-}
-
-.askjamie-main .footer-built-with {
-  white-space: normal;
-  overflow-wrap: anywhere;
-}
-
-@media (max-width: 899px) {
-  .askjamie-main .askjamie-hero-grid,
-  .askjamie-main .two-column {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .askjamie-main .primary-nav .has-submenu > .submenu {
-    min-width: 0;
-  }
-  .askjamie-main .primary-nav .submenu a {
-    white-space: normal;
-    overflow-wrap: anywhere;
-  }
-}
-
-@media (min-width: 900px) {
-  .askjamie-main .footer-grid {
-    grid-template-columns: minmax(0, 2fr) minmax(0, 1.2fr) minmax(0, 1.2fr);
-  }
-}
-
 /* Footer – soften OverKill’s dark footer just for AskJamie */
 .askjamie-main .site-footer {
   background: #f7f3ee;
@@ -7463,33 +7549,6 @@ html[data-theme="light"] .askjamie-main {
 .askjamie-main .footer-bottom {
   background: #f7f3ee;
   color: var(--color-muted);
-}
-
-/* Outrank the shared dark-footer text rules while retaining theme tokens. */
-html[data-theme="light"] .askjamie-main .site-footer,
-html[data-theme="light"] .askjamie-main .footer-bottom {
-  color: var(--color-muted);
-}
-html[data-theme="light"] .askjamie-main .site-footer a,
-html[data-theme="light"] .askjamie-main .site-footer a:hover,
-html[data-theme="light"] .askjamie-main .site-footer a:focus-visible {
-  color: var(--color-inline-link);
-}
-html[data-theme="light"] .askjamie-main .site-footer h3,
-html[data-theme="light"] .askjamie-main .site-footer h4 {
-  color: var(--color-fg);
-}
-
-/* Static content is visible even if enhancement scripts never initialize. */
-.askjamie-main .reveal-on-scroll {
-  opacity: 1;
-  transform: none;
-}
-@media (min-width: 1025px) and (prefers-reduced-motion: no-preference) {
-  .askjamie-main .reveal-on-scroll.is-reveal-ready:not(.is-visible) {
-    opacity: 0;
-    transform: translateY(16px);
-  }
 }
 
 /* Expand the hero paper card edge-to-edge on AskJamie. Without this override
@@ -7905,4 +7964,29 @@ html[data-color-scheme="dark"] .glee-search-page__form, html[data-color-scheme="
   visibility: hidden;
   font-size: 0;
   min-height: 2rem;
+}
+
+/* Selected A14 editorial presentation: preserve the existing brand and card depth. */
+.a14-editorial-hero h1 { max-width: 17ch; }
+.a14-editorial-hero .hero-visual img { max-height: 380px; width: auto; max-width: 100%; object-fit: contain; }
+[data-status-presentation="disclosure"] ~ section .project-card,
+section[data-status-presentation="disclosure"] .project-card { border-top: 2px solid var(--okh-orange); }
+[data-project-status-disclosure] { margin: .6rem 0 1rem; }
+[data-project-status-brief] { font-size: .9rem; line-height: 1.5; }
+[data-project-status-disclosure] summary, .home-more-from-forge > details > summary { cursor: pointer; min-height: 44px; padding: .65rem 0; }
+[data-project-status-disclosure] summary:focus-visible, .home-more-from-forge summary:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+.home-more-from-forge .hero-forge-card { max-width: none; }
+@media (max-width: 600px) {
+  .a14-editorial-hero .container { padding-left: 16px; padding-right: 16px; }
+  .a14-editorial-hero .hero-visual img { max-height: 260px; }
+  .a14-editorial-hero h1 { font-size: 1.9rem; }
+  .home-selected-work { padding-left: 16px; padding-right: 16px; }
+}
+
+.a14-editorial-hero { min-height: 0; }
+.a14-editorial-hero .hero-inner { padding-top: 2rem; padding-bottom: 2rem; }
+@media (max-width: 600px) {
+ body:not(.glee-main):not(.askjamie-main) .a14-editorial-hero h1 { font-size: 1.9rem; }
+ .a14-editorial-hero .hero-inner { padding-top: 1.25rem; padding-bottom: 1.25rem; }
+ .a14-editorial-hero .hero-grid { gap: .75rem; }
 }
