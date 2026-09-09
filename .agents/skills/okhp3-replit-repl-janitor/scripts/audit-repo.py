@@ -3,7 +3,9 @@
 
 Reports local branch facts, naming violations, and nested detritus folders as
 JSON. The script never deletes, renames, prunes, merges, or force-pushes.
-Network fetch is opt-in with --fetch and still never prunes.
+Network fetch is opt-in with --fetch and still never prunes. Recovery snapshots
+and verification are also read-only; an approval only identifies the exact
+local branch removal that the comparison is allowed to observe.
 """
 
 from __future__ import annotations
@@ -69,6 +71,194 @@ def ensure_repository(root: Path) -> None:
 
 def ensure_base(root: Path, base: str) -> None:
     run(["git", "rev-parse", "--verify", f"{base}^{{commit}}"], root)
+
+
+def git_ref_snapshot(root: Path) -> dict[str, str]:
+    """Return every ref and its object ID in stable, machine-readable form."""
+    output = run(
+        ["git", "for-each-ref", "--format=%(refname)%00%(objectname)"],
+        root,
+    )
+    refs: dict[str, str] = {}
+    for line in output.splitlines():
+        name, separator, object_id = line.partition("\0")
+        if not separator or not name or not object_id:
+            raise AuditError(f"malformed Git ref record: {line!r}")
+        refs[name] = object_id
+    return dict(sorted(refs.items()))
+
+
+def reachable_object_snapshot(root: Path) -> list[str]:
+    """Return all objects reachable from refs, sorted for deterministic diffs."""
+    output = run(["git", "rev-list", "--all", "--objects"], root)
+    object_ids = {
+        line.split(maxsplit=1)[0]
+        for line in output.splitlines()
+        if line
+    }
+    return sorted(object_ids)
+
+
+def recovery_snapshot(root: Path) -> dict[str, object]:
+    """Capture refs, stashes, and reachable objects without changing Git."""
+    return {
+        "format": 1,
+        "current_branch": run(["git", "branch", "--show-current"], root) or None,
+        "refs": git_ref_snapshot(root),
+        "stashes": run(
+            ["git", "stash", "list", "--format=%H%x00%gd%x00%s"], root
+        ).splitlines(),
+        "reachable_objects": reachable_object_snapshot(root),
+    }
+
+
+def validate_recovery_snapshot(snapshot: object) -> dict[str, object]:
+    """Reject malformed or incomplete snapshots before comparing them."""
+    if not isinstance(snapshot, dict) or snapshot.get("format") != 1:
+        raise AuditError("recovery snapshot has an unsupported format")
+    refs = snapshot.get("refs")
+    stashes = snapshot.get("stashes")
+    reachable = snapshot.get("reachable_objects")
+    if not isinstance(refs, dict) or not all(
+        isinstance(name, str) and isinstance(object_id, str)
+        for name, object_id in refs.items()
+    ):
+        raise AuditError("recovery snapshot has malformed refs")
+    if not isinstance(stashes, list) or not all(
+        isinstance(stash, str) for stash in stashes
+    ):
+        raise AuditError("recovery snapshot has malformed stashes")
+    if not isinstance(reachable, list) or not all(
+        isinstance(object_id, str) for object_id in reachable
+    ):
+        raise AuditError("recovery snapshot has malformed reachable objects")
+    return snapshot
+
+
+def approved_local_ref(branch: str) -> str:
+    """Convert an exact branch approval into a fully qualified local ref."""
+    if branch.startswith("refs/") or not branch:
+        raise AuditError(
+            "approved deletion must be a local branch name, not a ref path"
+        )
+    return f"refs/heads/{branch}"
+
+
+def compare_recovery_snapshots(
+    before: dict[str, object],
+    after: dict[str, object],
+    approved_deletions: Iterable[str] = (),
+) -> dict[str, object]:
+    """Compare snapshots, permitting only exact approved local deletions."""
+    before = validate_recovery_snapshot(before)
+    after = validate_recovery_snapshot(after)
+    before_refs = before["refs"]
+    after_refs = after["refs"]
+    assert isinstance(before_refs, dict)
+    assert isinstance(after_refs, dict)
+
+    approved_refs = {approved_local_ref(branch) for branch in approved_deletions}
+    current_branch = before.get("current_branch")
+    if "refs/heads/main" in approved_refs:
+        raise AuditError("main is protected and cannot be approved for deletion")
+    if current_branch and f"refs/heads/{current_branch}" in approved_refs:
+        raise AuditError("the checked-out branch cannot be approved for deletion")
+
+    removed_refs = sorted(set(before_refs) - set(after_refs))
+    changed_refs = sorted(
+        name for name in set(before_refs) & set(after_refs)
+        if before_refs[name] != after_refs[name]
+    )
+    unexpected_removed_refs = sorted(set(removed_refs) - approved_refs)
+    missing_approved_refs = sorted(approved_refs - set(removed_refs))
+
+    approved_tip_ids = {
+        before_refs[ref] for ref in approved_refs if ref in before_refs
+    }
+    added_refs = sorted(set(after_refs) - set(before_refs))
+    invalid_added_refs = sorted(
+        name for name in added_refs
+        if not (
+            name.startswith("refs/recovery/")
+            and after_refs[name] in approved_tip_ids
+        )
+    )
+    missing_recovery_refs = sorted(
+        ref for ref in approved_refs
+        if ref in before_refs
+        and not any(
+            name.startswith("refs/recovery/")
+            and object_id == before_refs[ref]
+            for name, object_id in after_refs.items()
+        )
+    )
+
+    before_stashes = before["stashes"]
+    after_stashes = after["stashes"]
+    assert isinstance(before_stashes, list)
+    assert isinstance(after_stashes, list)
+    stash_changed = before_stashes != after_stashes
+
+    before_objects = set(before["reachable_objects"])
+    after_objects = set(after["reachable_objects"])
+    unreachable_objects = sorted(before_objects - after_objects)
+    errors: list[str] = []
+    if unexpected_removed_refs:
+        errors.append(
+            "unexpected refs removed: " + ", ".join(unexpected_removed_refs)
+        )
+    if missing_approved_refs:
+        errors.append(
+            "approved local refs were not removed: "
+            + ", ".join(missing_approved_refs)
+        )
+    if changed_refs:
+        errors.append("refs changed: " + ", ".join(changed_refs))
+    if invalid_added_refs:
+        errors.append(
+            "unexpected refs added: " + ", ".join(invalid_added_refs)
+        )
+    if missing_recovery_refs:
+        errors.append(
+            "removed local refs lack recovery refs: "
+            + ", ".join(missing_recovery_refs)
+        )
+    if stash_changed:
+        errors.append("stash entries changed")
+    if unreachable_objects:
+        errors.append(
+            f"{len(unreachable_objects)} previously reachable objects were lost"
+        )
+
+    return {
+        "passed": not errors,
+        "approved_local_deletions": sorted(approved_refs),
+        "removed_refs": removed_refs,
+        "changed_refs": changed_refs,
+        "added_refs": added_refs,
+        "unexpected_removed_refs": unexpected_removed_refs,
+        "invalid_added_refs": invalid_added_refs,
+        "missing_recovery_refs": missing_recovery_refs,
+        "stashes_unchanged": not stash_changed,
+        "unreachable_objects": unreachable_objects,
+        "errors": errors,
+    }
+
+
+def write_recovery_snapshot(path: Path, snapshot: dict[str, object]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        json.dumps(snapshot, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+
+
+def read_recovery_snapshot(path: Path) -> dict[str, object]:
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise AuditError(f"could not read recovery snapshot {path}: {exc}") from exc
+    return validate_recovery_snapshot(data)
 
 
 def audit_branches(root: Path, base: str) -> tuple[list[dict[str, object]], str]:
@@ -184,6 +374,26 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="run `git fetch --all` before auditing; never prunes",
     )
+    parser.add_argument(
+        "--snapshot-recovery",
+        metavar="PATH",
+        help="write a read-only snapshot of refs, stashes, and reachable objects",
+    )
+    parser.add_argument(
+        "--verify-recovery",
+        metavar="PATH",
+        help="compare the current read-only state with a recovery snapshot",
+    )
+    parser.add_argument(
+        "--approve-local-deletion",
+        action="append",
+        default=[],
+        metavar="BRANCH",
+        help=(
+            "allow exactly this local branch ref to be absent during "
+            "--verify-recovery; does not delete anything"
+        ),
+    )
     return parser.parse_args()
 
 
@@ -192,8 +402,41 @@ def main() -> int:
     root = Path(args.root).resolve()
     try:
         ensure_repository(root)
+        if args.snapshot_recovery and args.verify_recovery:
+            raise AuditError(
+                "--snapshot-recovery and --verify-recovery are mutually exclusive"
+            )
+        if args.fetch and (args.snapshot_recovery or args.verify_recovery):
+            raise AuditError(
+                "--fetch cannot be combined with the read-only recovery guard"
+            )
+        if args.approve_local_deletion and not args.verify_recovery:
+            raise AuditError(
+                "--approve-local-deletion requires --verify-recovery"
+            )
         if args.fetch:
             run(["git", "fetch", "--all"], root)
+        if args.snapshot_recovery:
+            snapshot = recovery_snapshot(root)
+            path = Path(args.snapshot_recovery).resolve()
+            write_recovery_snapshot(path, snapshot)
+            print(json.dumps({
+                "snapshot_file": str(path),
+                "recovery_snapshot": snapshot,
+            }, indent=2, sort_keys=True))
+            return 0
+        if args.verify_recovery:
+            before = read_recovery_snapshot(Path(args.verify_recovery).resolve())
+            result = compare_recovery_snapshots(
+                before,
+                recovery_snapshot(root),
+                args.approve_local_deletion,
+            )
+            print(json.dumps({
+                "snapshot_file": str(Path(args.verify_recovery).resolve()),
+                "recovery_guard": result,
+            }, indent=2, sort_keys=True))
+            return 0 if result["passed"] else 1
         ensure_base(root, args.base)
         branches, current = audit_branches(root, args.base)
         report = {

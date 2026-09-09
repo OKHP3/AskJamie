@@ -75,7 +75,10 @@ evidence-led, and destructive only after the owner approves exact line items.
 6. **Rename atomically.** A file rename must update every importer and link in
    the same change. A public URL needs a redirect or transition plan.
 7. **Protect recovery paths.** Never rewrite `main`, force-push, or delete
-   stashes or archive refs under this skill.
+   stashes or archive refs under this skill. Before an approved local branch
+   deletion, take a recovery snapshot and verify it afterward. The snapshot
+   must prove that every non-target ref, stash entry, and previously reachable
+   object is still present; each removed branch must also have a recovery ref.
 
 ---
 
@@ -195,6 +198,31 @@ For an approved merge:
 
 For approved files, use `git rm` and `git mv` so the change is explicit. Plain
 `rm` is acceptable only for an untracked or gitignored working file.
+
+For an approved local-only branch deletion, protect and verify the exact
+operation without giving the audit permission to delete anything:
+
+```bash
+snapshot="$(mktemp)"
+python3 .agents/skills/okhp3-replit-repl-janitor/scripts/audit-repo.py \
+  --root . \
+  --snapshot-recovery "$snapshot"
+
+# Create refs/recovery/<dated-name> at the approved branch tip, then run the
+# explicitly approved git branch deletion outside the read-only audit.
+python3 .agents/skills/okhp3-replit-repl-janitor/scripts/audit-repo.py \
+  --root . \
+  --verify-recovery "$snapshot" \
+  --approve-local-deletion 'feature/example'
+rm "$snapshot"
+```
+
+`--approve-local-deletion` is an exact comparison allowance, not an execution
+switch. Without it, any removed ref fails verification. The guard also fails
+if `main`, a remote/archive/recovery ref, a stash entry, or any object
+reachable before the operation changes. It rejects new refs outside
+`refs/recovery/` and requires a recovery ref pointing to every approved
+branch tip.
 
 ### 7. Verify and report
 

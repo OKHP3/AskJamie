@@ -14,6 +14,27 @@ Use these categories after refreshing the remote and checking GitHub pull-reques
 
 Before any deletion, record the full branch name, its tip SHA, PR number/state, reachability result, and recovery ref. Refresh after the merge or deletion and verify the expected remote state.
 
+## Local deletion recovery guard
+
+For local-only branch deletion, run the one-Repl janitor's recovery snapshot
+before the operation and its verification afterward:
+
+```bash
+python3 .agents/skills/okhp3-replit-repl-janitor/scripts/audit-repo.py \
+  --root . --snapshot-recovery /tmp/janitor-recovery.json
+# Create a dated refs/recovery/ ref at the approved tip, then delete only the
+# exact approved local branch with the normal Git command.
+python3 .agents/skills/okhp3-replit-repl-janitor/scripts/audit-repo.py \
+  --root . --verify-recovery /tmp/janitor-recovery.json \
+  --approve-local-deletion '<exact-local-branch>'
+```
+
+The snapshot records all refs, stash entries, and objects reachable from refs.
+Verification is read-only and fails unless the only removed ref is the exact
+approved local branch, its tip has a recovery ref, all other refs and stashes
+are unchanged, and no previously reachable object disappeared. It never
+authorizes deletion by itself.
+
 ## Retention-ledger consistency gate
 
 Before proposing local-branch cleanup, compare every non-current local branch
