@@ -7,6 +7,7 @@ Never mutates the repository. Prints a JSON report to stdout.
 
 Usage:
     python3 audit-repo.py [--root PATH] [--base origin/main]
+        [--active-line BRANCH]
 
 What it reports:
   1. Branch ledger: every local branch, its last commit date/author,
@@ -15,11 +16,13 @@ What it reports:
      versus a human-named branch.
   2. Decision-ledger consistency: missing non-current branches, tip-SHA
       drift, and stale decision or exclusion rows.
-  3. Naming violations: files/folders whose names break the kebab-case
+  3. Archive equivalence: named archive tips compared with the active line
+      at commit, tree, and file level, including patch promotion status.
+  4. Naming violations: files/folders whose names break the kebab-case
      default (PascalCase, camelCase, spaces, uppercase extensions) outside
      the recognized structural exceptions (React components/hooks, root
      governance files, tool-required filenames).
-  4. Known detritus folder names present in the tree (attached_assets,
+  5. Known detritus folder names present in the tree (attached_assets,
      tmp, temp, _unused, unused, _drafts, _scratch, _old, and hyphen
      variants), with tracked/untracked/gitignored status for each.
 
@@ -269,6 +272,185 @@ def audit_decision_ledger(
     }
 
 
+def _git_result(root: Path, *args: str) -> subprocess.CompletedProcess[str]:
+    """Run a read-only Git command and retain its status for ref validation."""
+    return subprocess.run(
+        ["git", *args],
+        cwd=root,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+
+def _verified_commit(root: Path, ref: str) -> str | None:
+    """Return a full commit SHA when ref resolves to a commit, otherwise None."""
+    result = _git_result(root, "rev-parse", "--verify", f"{ref}^{{commit}}")
+    if result.returncode != 0:
+        return None
+    value = result.stdout.strip()
+    return value if SHA_PATTERN.fullmatch(value) else None
+
+
+def _parse_commit_lines(output: str, *, patch_status: str | None = None):
+    commits: list[dict[str, str]] = []
+    for line in output.splitlines():
+        sha, separator, subject = line.partition("\t")
+        if separator and SHA_PATTERN.fullmatch(sha):
+            item = {"sha": sha, "subject": subject}
+            if patch_status is not None:
+                item["patch_status"] = patch_status
+            commits.append(item)
+    return commits
+
+
+def _parse_cherry_lines(output: str) -> list[dict[str, str]]:
+    commits: list[dict[str, str]] = []
+    for line in output.splitlines():
+        match = re.match(r"^([+-])\s+([0-9a-f]{7,40})\s?(.*)$", line)
+        if not match:
+            continue
+        marker, abbreviated_sha, subject = match.groups()
+        status = "already-promoted" if marker == "-" else "unrepresented"
+        commits.append({
+            "sha": abbreviated_sha,
+            "subject": subject,
+            "patch_status": status,
+        })
+    return commits
+
+
+def _parse_file_differences(output: str) -> list[dict[str, str]]:
+    differences: list[dict[str, str]] = []
+    for line in output.splitlines():
+        status, separator, path = line.partition("\t")
+        if separator and path:
+            differences.append({"status": status, "path": path})
+    return differences
+
+
+def audit_archive_equivalents(
+    root: Path,
+    ledger_path: Path,
+    active_line: str,
+) -> dict[str, object]:
+    """Compare every ledger archive tip with the active line without mutation."""
+    ledger = parse_decision_ledger(ledger_path)
+    archive_rows = [
+        row for row in ledger.decisions if row["decision"] == "archive"
+    ]
+    active_tip = _verified_commit(root, active_line)
+    reports: list[dict[str, object]] = []
+
+    for row in archive_rows:
+        branch = row["branch"]
+        tip_sha = row["tip_sha"]
+        branch_tip = _verified_commit(root, branch)
+        report: dict[str, object] = {
+            "branch": branch,
+            "tip_sha": tip_sha,
+            "branch_tip_sha": branch_tip,
+        }
+        if not SHA_PATTERN.fullmatch(tip_sha):
+            report.update({
+                "classification": "unverifiable",
+                "error": "ledger tip SHA is not a full commit SHA",
+            })
+            reports.append(report)
+            continue
+        if branch_tip is not None:
+            report["tip_sha_matches_branch"] = branch_tip == tip_sha
+        if active_tip is None:
+            report.update({
+                "classification": "unverifiable",
+                "error": f"active line does not resolve to a commit: {active_line}",
+            })
+            reports.append(report)
+            continue
+        if _verified_commit(root, tip_sha) is None:
+            report.update({
+                "classification": "unverifiable",
+                "error": f"archive tip does not resolve to a commit: {tip_sha}",
+            })
+            reports.append(report)
+            continue
+
+        cherry = _git_result(root, "cherry", "-v", active_line, tip_sha)
+        archive_commits = _parse_cherry_lines(cherry.stdout)
+        active_only = _git_result(
+            root, "log", "--format=%H%x09%s", f"{tip_sha}..{active_line}"
+        )
+        archive_only = _git_result(
+            root, "log", "--format=%H%x09%s", f"{active_line}..{tip_sha}"
+        )
+        tree_result = _git_result(root, "rev-parse", f"{active_line}^{{tree}}")
+        archive_tree_result = _git_result(root, "rev-parse", f"{tip_sha}^{{tree}}")
+        active_tree = tree_result.stdout.strip()
+        archive_tree = archive_tree_result.stdout.strip()
+        file_diff = _git_result(
+            root,
+            "diff",
+            "--no-renames",
+            "--name-status",
+            active_line,
+            tip_sha,
+        )
+        unrepresented = sum(
+            item["patch_status"] == "unrepresented"
+            for item in archive_commits
+        )
+        classification = (
+            "unrepresented-changes" if unrepresented else "already-promoted"
+        )
+        report.update({
+            "classification": classification,
+            "commit_differences": {
+                "archive_commits": archive_commits,
+                "archive_only_commits": _parse_commit_lines(archive_only.stdout),
+                "active_only_commits": _parse_commit_lines(active_only.stdout),
+                "unrepresented_commit_count": unrepresented,
+                "promoted_commit_count": sum(
+                    item["patch_status"] == "already-promoted"
+                    for item in archive_commits
+                ),
+            },
+            "tree_difference": {
+                "active_line_tree": active_tree,
+                "archive_tip_tree": archive_tree,
+                "same": bool(active_tree and active_tree == archive_tree),
+            },
+            "file_differences": _parse_file_differences(file_diff.stdout),
+        })
+        reports.append(report)
+
+    already_promoted = [
+        report["branch"]
+        for report in reports
+        if report.get("classification") == "already-promoted"
+    ]
+    unrepresented = [
+        report["branch"]
+        for report in reports
+        if report.get("classification") == "unrepresented-changes"
+    ]
+    unverifiable = [
+        report["branch"]
+        for report in reports
+        if report.get("classification") == "unverifiable"
+    ]
+    return {
+        "ledger_path": str(ledger_path),
+        "active_line": active_line,
+        "active_line_tip_sha": active_tip,
+        "archive_count": len(reports),
+        "archives": reports,
+        "already_promoted": sorted(already_promoted),
+        "unrepresented_changes": sorted(unrepresented),
+        "unverifiable": sorted(unverifiable),
+        "ok": not unrepresented and not unverifiable,
+    }
+
+
 def is_exception(name: str, path: Path) -> bool:
     if name in ROOT_GOVERNANCE_FILES or name in WEB_STANDARD_FILES:
         return True
@@ -338,6 +520,14 @@ def main():
             f"(default: {DEFAULT_DECISION_LEDGER})"
         ),
     )
+    ap.add_argument(
+        "--active-line",
+        default="",
+        help=(
+            "branch or commit to treat as the active line "
+            "(default: current branch)"
+        ),
+    )
     args = ap.parse_args()
     root = Path(args.root).resolve()
 
@@ -360,8 +550,16 @@ def main():
             ),
             "",
         )
+        active_line = args.active_line or current
+        if not active_line:
+            raise ValueError(
+                "active line could not be determined; pass --active-line"
+            )
         decision_ledger = audit_decision_ledger(
             root, branches, current, ledger_path
+        )
+        archive_equivalents = audit_archive_equivalents(
+            root, ledger_path, active_line
         )
         report = {
             "root": str(root),
@@ -369,6 +567,7 @@ def main():
             "remote_refresh": remote_refresh,
             "branches": branches,
             "decision_ledger": decision_ledger,
+            "archive_equivalents": archive_equivalents,
             "naming_violations": audit_naming(root),
             "detritus_folders": audit_detritus(root),
         }
@@ -380,6 +579,7 @@ def main():
     return 0 if (
         remote_refresh["status"] == "ok"
         and bool(decision_ledger["ok"])
+        and bool(archive_equivalents["ok"])
     ) else 1
 
 

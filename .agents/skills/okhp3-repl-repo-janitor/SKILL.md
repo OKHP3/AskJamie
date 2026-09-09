@@ -57,9 +57,14 @@ python3 .agents/skills/okhp3-repl-repo-janitor/scripts/audit-repo.py \
 
 This performs a non-interactive `git fetch --all` and prints a JSON report: every local branch with its last-commit metadata,
 whether it is merged into the base branch, whether its name matches a known
-Replit-generated pattern, and whether the non-current local refs match the
-decision ledger. The ledger check reports missing branches, tip-SHA drift, and
-stale ledger rows, and exits nonzero when any of those conditions is present.
+Replit-generated pattern, whether the non-current local refs match the
+decision ledger, and whether each named archive tip is represented on the
+active line. Use `--active-line <branch-or-ref>` when the checked-out branch is
+not the active line; otherwise the current branch is used. Archive reports
+include patch-equivalent versus unrepresented commits, tree hashes, and
+name-status file differences. The ledger check reports missing branches,
+tip-SHA drift, and stale ledger rows, while archive verification reports
+unrepresented or unverifiable archive work; either condition exits nonzero.
 If the remote cannot be refreshed, `remote_refresh.classification` is
 `remote-unavailable`; local branch, naming, and detritus evidence is still
 printed, but the nonzero exit status blocks cleanup planning until refresh

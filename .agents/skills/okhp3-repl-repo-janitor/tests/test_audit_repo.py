@@ -106,6 +106,79 @@ class DecisionLedgerTests(unittest.TestCase):
         self.assertEqual(result["stale_ledger_rows"], [])
         self.assertFalse(result["ok"])
 
+    def test_archive_equivalence_distinguishes_promoted_and_unrepresented_work(self) -> None:
+        root, initial = self.make_repo()
+        git(root, "branch", "promoted-archive")
+        git(root, "checkout", "-q", "promoted-archive")
+        (root / "promoted.txt").write_text("promoted\n", encoding="utf-8")
+        git(root, "add", "promoted.txt")
+        git(root, "commit", "-qm", "archive promoted change")
+        promoted_tip = git(root, "rev-parse", "HEAD")
+
+        git(root, "checkout", "-q", "main")
+        git(root, "cherry-pick", "-n", promoted_tip)
+        git(root, "commit", "-qm", "promoted change on active line")
+
+        git(root, "branch", "unrepresented-archive")
+        git(root, "checkout", "-q", "unrepresented-archive")
+        (root / "unrepresented.txt").write_text("not promoted\n", encoding="utf-8")
+        git(root, "add", "unrepresented.txt")
+        git(root, "commit", "-qm", "active-only change")
+        unrepresented_tip = git(root, "rev-parse", "HEAD")
+
+        git(root, "checkout", "-q", "main")
+        (root / "active-only.txt").write_text("active\n", encoding="utf-8")
+        git(root, "add", "active-only.txt")
+        git(root, "commit", "-qm", "active line change")
+        active_tip = git(root, "rev-parse", "HEAD")
+
+        ledger = self.write_ledger(
+            root,
+            "\n".join([
+                f"| `promoted-archive` | **archive** | `{promoted_tip}` | promoted |",
+                f"| `unrepresented-archive` | **archive** | `{unrepresented_tip}` | stale |",
+            ]),
+        )
+        result = audit_repo.audit_archive_equivalents(root, ledger, "main")
+
+        self.assertEqual(result["active_line_tip_sha"], active_tip)
+        self.assertEqual(result["already_promoted"], ["promoted-archive"])
+        self.assertEqual(result["unrepresented_changes"], ["unrepresented-archive"])
+        self.assertEqual(result["unverifiable"], [])
+        self.assertFalse(result["ok"])
+
+        promoted = result["archives"][0]
+        self.assertEqual(promoted["classification"], "already-promoted")
+        self.assertFalse(promoted["tree_difference"]["same"])
+        self.assertEqual(promoted["file_differences"][0]["status"], "D")
+        self.assertEqual(
+            promoted["commit_differences"]["unrepresented_commit_count"], 0
+        )
+
+        stale = result["archives"][1]
+        self.assertEqual(stale["classification"], "unrepresented-changes")
+        self.assertGreater(
+            stale["commit_differences"]["unrepresented_commit_count"], 0
+        )
+
+    def test_archive_equivalence_reports_unverifiable_tip_without_mutation(self) -> None:
+        root, initial = self.make_repo()
+        ledger = self.write_ledger(
+            root,
+            f"| `missing-archive` | **archive** | `{'0' * 40}` | missing |",
+        )
+        before = git(root, "for-each-ref", "--format=%(refname) %(objectname)")
+
+        result = audit_repo.audit_archive_equivalents(root, ledger, "main")
+
+        self.assertEqual(result["unverifiable"], ["missing-archive"])
+        self.assertFalse(result["ok"])
+        self.assertEqual(result["archives"][0]["classification"], "unverifiable")
+        self.assertEqual(
+            before,
+            git(root, "for-each-ref", "--format=%(refname) %(objectname)"),
+        )
+
 
 class RemoteRefreshTests(unittest.TestCase):
     def make_repo(self) -> Path:
