@@ -88,6 +88,31 @@ The current GitHub refresh also found three active `codex/w04-*`,
 (`#32`, `#33`, and `#31`). Those are hosted active work, not undocumented local
 heads, and remain untouched.
 
+## Hosted generated-branch review (2026-09-09)
+
+The configured GitHub connection was queried for the exact hosted branch names
+in Task #127. `OKHP3/askjamie` returned HTTP 404 (`Branch not found`) for each
+of the following refs: `subrepl-4415rcr0`, `subrepl-4hm3zoon`, and
+`subrepl-gkf1bczs`. Each exact head query returned no pull requests in any
+state and no deployments for that branch ref. Protection is not applicable to
+an absent GitHub branch.
+
+The three similarly named Replit SSH remotes were also probed read-only with
+non-interactive SSH. Each remote rejected the checkout's SSH key with
+`Permission denied (password,publickey)`, so those remotes' hosted refs,
+protection, deployments, and pull-request associations remain unverified.
+That access failure is not evidence that a hosted branch is safe to remove.
+
+| Hosted branch | GitHub ref | GitHub protection | GitHub deployments | GitHub PRs | Replit remote | Decision |
+|---|---|---|---|---|---|---|
+| `subrepl-4415rcr0` | absent (404) | n/a | none | none | unverified: SSH denied | retain; no deletion approval |
+| `subrepl-4hm3zoon` | absent (404) | n/a | none | none | unverified: SSH denied | retain; no deletion approval |
+| `subrepl-gkf1bczs` | absent (404) | n/a | none | none | unverified: SSH denied | retain; no deletion approval |
+
+No hosted branch was deleted. A future hosted cleanup must obtain access to
+the Replit remotes and exact owner approval for each branch before taking any
+remote action.
+
 ## Next cleanup gate
 
 This ledger records decisions, not deletion approval. A later cleanup may consider exact archive refs or local-branch deletion only after the owner approves the named branches, a dated recovery plan is recorded, and the pre/post ref snapshot is verified.
