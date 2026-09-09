@@ -11,3 +11,4 @@
 - [Pages artifact working tree](pages-artifact-working-tree.md) — artifact preparation can touch the tracked dist-pages tree; restore it before cleanup or pushing
 - [Merge marker false positives](merge-marker-false-positives.md) — conflict resolvers may mistake decorative seven-equals comment rules for unresolved markers
 - [Branch cleanup recovery refs](branch-cleanup-recovery.md) — date-stamped recovery refs and a full ref snapshot protect local-only branch deletion
+- [Mobile critical-rendering evidence](mobile-critical-rendering-evidence.md) — isolate deferred theme/font gains from lab variance and keep the 2.5-second claim evidence-bound

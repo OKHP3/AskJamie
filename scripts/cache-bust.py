@@ -17,7 +17,7 @@ from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 ROOT = Path(__file__).resolve().parents[1]
 ASSETS = (
-    "assets/css/theme.css", "assets/js/app.js", "assets/js/mermaid-init.js",
+    "assets/css/theme.css", "assets/css/critical-hero.css", "assets/js/app.js", "assets/js/mermaid-init.js",
     "assets/js/universe-map.js", "assets/js/askjamie-analytics.js", "assets/js/deferred-fonts.js",
     "assets/js/analytics-loader.js",
 )

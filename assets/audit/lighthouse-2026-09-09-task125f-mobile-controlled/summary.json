@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-09-task125f",
+  "tool": "Lighthouse 12.8.2",
+  "environment": "Local or supplied static server, controlled mobile preset",
+  "property": "http://127.0.0.1:5000",
+  "baseline": "assets/audit/lighthouse-baseline-2026-08-22.json",
+  "controls": {
+    "thirdPartyFonts": "blocked",
+    "analytics": "blocked",
+    "interpretation": "Controlled lab measurement only. Not field data."
+  },
+  "pages": {
+    "homepage": {
+      "path": "/",
+      "performance": 72,
+      "accessibility": 100,
+      "bestPractices": 100,
+      "seo": 100,
+      "lcpMs": 7431,
+      "cls": 0.030405,
+      "tbtMs": 0,
+      "fcpMs": 2556,
+      "lcpElement": "div.container > div.askjamie-hero-grid > div.askjamie-hero-copy > p.hero-tagline",
+      "deltaPerformance": -15,
+      "deltaLcpMs": 3674
+    },
+    "brandguard": {
+      "path": "/lens-system/okhp3-brandguard/",
+      "performance": 79,
+      "accessibility": 96,
+      "bestPractices": 100,
+      "seo": 100,
+      "lcpMs": 3230,
+      "cls": 0.26759,
+      "tbtMs": 0,
+      "fcpMs": 1668,
+      "lcpElement": "div.container > div.askjamie-hero-grid > div.askjamie-hero-copy > h1#hero-title",
+      "deltaPerformance": 4,
+      "deltaLcpMs": -3381
+    },
+    "universe": {
+      "path": "/universe/",
+      "performance": 81,
+      "accessibility": 100,
+      "bestPractices": 100,
+      "seo": 100,
+      "lcpMs": 2931,
+      "cls": 0.282123,
+      "tbtMs": 0,
+      "fcpMs": 1054,
+      "lcpElement": "div.askjamie-hero-grid > div.askjamie-hero-copy > div.askjamie-hero-content > p.askjamie-hero-tagline",
+      "deltaPerformance": 37,
+      "deltaLcpMs": -3225
+    },
+    "search": {
+      "path": "/search/",
+      "performance": 73,
+      "accessibility": 100,
+      "bestPractices": 100,
+      "seo": 100,
+      "lcpMs": 7202,
+      "cls": 0.023779,
+      "tbtMs": 0,
+      "fcpMs": 2477,
+      "lcpElement": "main#main > div.container > section.search-hero > p.search-hero-lede",
+      "deltaPerformance": -2,
+      "deltaLcpMs": 746
+    }
+  }
+}

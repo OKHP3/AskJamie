@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-09-task125-final",
+  "tool": "Lighthouse 12.8.2",
+  "environment": "Local or supplied static server, mobile preset",
+  "property": "http://127.0.0.1:5000",
+  "baseline": "assets/audit/lighthouse-baseline-2026-08-22.json",
+  "controls": {
+    "thirdPartyFonts": "in flight",
+    "analytics": "in flight",
+    "interpretation": "No third-party isolation applied."
+  },
+  "pages": {
+    "homepage": {
+      "path": "/",
+      "performance": 53,
+      "accessibility": 100,
+      "bestPractices": 100,
+      "seo": 100,
+      "lcpMs": 7283,
+      "cls": 0.05778,
+      "tbtMs": 792,
+      "fcpMs": 2557,
+      "lcpElement": "div.container > div.askjamie-hero-grid > div.askjamie-hero-copy > p.hero-tagline",
+      "deltaPerformance": -34,
+      "deltaLcpMs": 3526
+    },
+    "brandguard": {
+      "path": "/lens-system/okhp3-brandguard/",
+      "performance": 80,
+      "accessibility": 96,
+      "bestPractices": 100,
+      "seo": 100,
+      "lcpMs": 2928,
+      "cls": 0.26905,
+      "tbtMs": 76,
+      "fcpMs": 1522,
+      "lcpElement": "div.container > div.askjamie-hero-grid > div.askjamie-hero-copy > h1#hero-title",
+      "deltaPerformance": 5,
+      "deltaLcpMs": -3683
+    },
+    "universe": {
+      "path": "/universe/",
+      "performance": 77,
+      "accessibility": 100,
+      "bestPractices": 100,
+      "seo": 100,
+      "lcpMs": 3080,
+      "cls": 0.348703,
+      "tbtMs": 68,
+      "fcpMs": 1354,
+      "lcpElement": "div.askjamie-hero-grid > div.askjamie-hero-copy > div.askjamie-hero-content > p.askjamie-hero-tagline",
+      "deltaPerformance": 33,
+      "deltaLcpMs": -3076
+    },
+    "search": {
+      "path": "/search/",
+      "performance": 84,
+      "accessibility": 100,
+      "bestPractices": 100,
+      "seo": 100,
+      "lcpMs": 3758,
+      "cls": 0.073681,
+      "tbtMs": 106,
+      "fcpMs": 2481,
+      "lcpElement": "main#main > div.container > section.search-hero > p.search-hero-lede",
+      "deltaPerformance": 9,
+      "deltaLcpMs": -2698
+    }
+  }
+}

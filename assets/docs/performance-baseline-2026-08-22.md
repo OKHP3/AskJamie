@@ -326,6 +326,34 @@ tests, and current search-index integrity. No visual baseline was refreshed
 because the changes alter delivery and scheduling, not the intended visual
 design.
 
+## Task 125 mobile critical-rendering pass
+
+On **2026-09-09**, BrandGuard and Universe received a mobile-safe critical
+rendering layer. The target shells now paint a small local hero stylesheet
+with system fallbacks while the 237 KiB shared theme and Google Fonts remain
+deferred. The full branded cascade still activates after the initial mobile
+load window; desktop keeps the full theme activation at load. BrandGuard's
+existing artwork, intrinsic dimensions, metadata, semantic text, fallback
+content, and accessibility hooks remain in place. Its mobile hero avatar keeps
+the same source set and is now lower priority because it is below the heading
+on narrow screens.
+
+The final controlled Lighthouse sample was run with Google Fonts and analytics
+blocked, and the final normal sample was run without third-party isolation.
+These are separate lab conditions and neither is field evidence:
+
+| Page | Controlled LCP | Normal LCP | Controlled performance | Normal performance |
+| --- | ---: | ---: | ---: | ---: |
+| BrandGuard hub | 3.23 s | 2.93 s | 79 | 80 |
+| Universe `/universe/` | 2.93 s | 3.08 s | 81 | 77 |
+
+The critical path reduced controlled LCP substantially from the 2026-09-07
+sample (BrandGuard 6.83 s; Universe 3.01 s), with repeat-run variance still
+visible. The current run does not support claiming a consistent 2.5 s pass for
+either route, so the budget remains an active measurement target rather than
+being represented as solved. The raw controlled and normal reports are kept
+under the dated `assets/audit/` directories for this run.
+
 ## Visual reference set
 
 The committed reference images are in `assets/audit/visual-baseline/`:

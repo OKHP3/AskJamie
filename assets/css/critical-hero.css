@@ -1,0 +1,343 @@
+/*
+ * Critical shell for the BrandGuard and Universe routes.
+ *
+ * The full theme remains the source of truth and is enabled by
+ * deferred-fonts.js after this small sheet has painted. Keep this layer
+ * limited to first-viewport structure, typography fallbacks, and the
+ * diagram reservation so it cannot drift into a second site-wide theme.
+ */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-padding-top: 10rem;
+}
+
+body.askjamie-main {
+  margin: 0;
+  overflow-x: hidden;
+  background: #f6f2ee;
+  color: #2e2b29;
+  font-family: "Open Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+body.askjamie-main img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+body.askjamie-main a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.askjamie-main .site-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: #f6f2ee;
+  border-bottom: 1px solid #d7d7d7;
+}
+
+.askjamie-main .site-header > .container,
+.askjamie-main .site-header .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 3.75rem;
+  flex-wrap: wrap;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.askjamie-main .logo {
+  display: flex;
+  align-items: center;
+}
+
+.askjamie-main .logo img {
+  width: 40px;
+  height: 40px;
+  border-radius: 0.8rem;
+}
+
+.askjamie-main .primary-nav {
+  position: fixed;
+  inset: 3.75rem 0 auto 0;
+  z-index: 40;
+  background: #f6f2ee;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  transform: translateY(-120%);
+}
+
+.askjamie-main .primary-nav ul {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+  margin: 0;
+  padding: 1rem 1.5rem 1.5rem;
+  list-style: none;
+}
+
+.askjamie-main .primary-nav a {
+  color: #2e2b29;
+}
+
+.askjamie-main .nav-toggle {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  border-radius: 999px;
+  background: rgba(246, 242, 238, 0.98);
+}
+
+.askjamie-main .nav-toggle .bar {
+  display: block;
+  width: 26px;
+  height: 3px;
+  margin: 4px 0;
+  border-radius: 999px;
+  background: #2e2b29;
+}
+
+.askjamie-main .site-specials--jamie {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  padding: 0.45rem 1rem;
+  background: #e4f0ee;
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+.askjamie-main .site-specials--jamie .site-specials-link {
+  min-width: 0;
+}
+
+.askjamie-main .askjamie-hero {
+  position: relative;
+  min-height: 0;
+  padding: 2.5rem 0 2.75rem;
+  overflow: hidden;
+  background: none;
+  color: #2e2b29;
+}
+
+.askjamie-main .askjamie-hero > .brand-stripes {
+  position: absolute;
+  inset: -12% 0;
+  z-index: -2;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    #007c84 0%, #007c84 20%,
+    #76b2ba 20%, #76b2ba 40%,
+    #f5ead9 40%, #f5ead9 60%,
+    #d5ba9a 60%, #d5ba9a 80%,
+    #69584c 80%, #69584c 100%
+  );
+  opacity: 0.6;
+}
+
+.askjamie-main .askjamie-paper {
+  position: absolute;
+  inset: 6% 10% 0;
+  z-index: 0;
+  pointer-events: none;
+  background: #f6f2ee;
+}
+
+.askjamie-main .askjamie-hero-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.askjamie-main .askjamie-hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2rem;
+  align-items: center;
+}
+
+.askjamie-main .askjamie-hero-copy {
+  min-width: 0;
+  max-width: min(38rem, 100%);
+  padding: 0 1.75rem;
+  overflow-wrap: anywhere;
+}
+
+.askjamie-main .askjamie-hero-copy .eyebrow {
+  margin: 0 0 0.75rem;
+  color: #3c8ea1;
+  font-family: "Kalam", "Segoe UI", sans-serif;
+  font-size: 0.95rem;
+}
+
+.askjamie-main .askjamie-breadcrumb {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.askjamie-main .askjamie-logo--crumb {
+  display: inline-block;
+  margin-bottom: 0;
+}
+
+.askjamie-main .askjamie-logo--crumb img {
+  width: auto;
+  max-width: 7.5rem;
+  height: auto;
+}
+
+.askjamie-main .askjamie-hero-copy h1 {
+  margin: 0 0 0.75rem;
+  color: #2e2b29;
+  font-family: "Baloo 2", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: clamp(2.2rem, 4vw, 2.8rem);
+  line-height: 1.2;
+}
+
+.askjamie-main .askjamie-hero-copy .hero-subtitle {
+  margin: 0 0 0.75rem;
+  color: #4b5563;
+  font-family: "Kalam", "Segoe UI", sans-serif;
+  font-size: 1.02rem;
+}
+
+.askjamie-main .askjamie-hero-copy .hero-tagline,
+.askjamie-main .askjamie-hero-copy .askjamie-hero-tagline {
+  margin: 0 0 1.6rem;
+  color: #6b6b6b;
+}
+
+.askjamie-main .hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.askjamie-main .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0.7rem 1.4rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.askjamie-main .btn-primary {
+  background: linear-gradient(135deg, #2d6f7e, #3c8ea1);
+  color: #f9fafb;
+}
+
+.askjamie-main .btn-quiet {
+  border-color: #d7d7d7;
+  color: #4b5563;
+}
+
+.askjamie-main .askjamie-hero-visual {
+  display: flex;
+  justify-content: center;
+  min-width: 0;
+}
+
+.askjamie-main .askjamie-hero--universe .askjamie-hero-visual {
+  align-items: stretch;
+}
+
+.askjamie-main .askjamie-mermaid-shell {
+  width: 100%;
+  margin: 0;
+}
+
+.askjamie-main .mermaid-scroll-wrap {
+  max-width: 100%;
+  min-height: 14rem;
+  overflow: hidden;
+}
+
+.askjamie-main .askjamie-hero--universe .mermaid-scroll-wrap {
+  min-height: 14rem;
+}
+
+.askjamie-main .askjamie-hero .mermaid:not([data-universe-ready="1"]) {
+  visibility: hidden;
+  min-height: 2rem;
+  font-size: 0;
+}
+
+.askjamie-main .askjamie-hero > .reveal-on-scroll {
+  opacity: 1;
+  transform: none;
+}
+
+@media (min-width: 900px) {
+  .askjamie-main .askjamie-hero-grid {
+    grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+    gap: 2.5rem;
+  }
+
+  .askjamie-main .askjamie-hero-copy {
+    padding: 0 1.75rem;
+  }
+
+  .askjamie-main .askjamie-hero-visual {
+    justify-content: flex-end;
+  }
+}
+
+@media (min-width: 769px) {
+  .askjamie-main .primary-nav {
+    position: static;
+    inset: auto;
+    background: transparent;
+    border-bottom: 0;
+    transform: none;
+  }
+
+  .askjamie-main .primary-nav ul {
+    flex-direction: row;
+    align-items: center;
+    gap: 1.25rem;
+    padding: 0;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .askjamie-main .nav-toggle {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .askjamie-main .askjamie-hero {
+    padding-top: 2rem;
+  }
+
+  .askjamie-main .site-specials--jamie {
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    padding: 0.6rem 0.75rem;
+  }
+}
