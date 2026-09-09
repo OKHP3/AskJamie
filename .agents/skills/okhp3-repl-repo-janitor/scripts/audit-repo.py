@@ -28,6 +28,7 @@ Treat its output as evidence for a plan, not as an execution instruction.
 """
 import argparse
 import json
+import os
 import re
 import subprocess
 import sys
@@ -66,13 +67,61 @@ def sh(args, cwd):
     ).stdout.strip()
 
 
+def refresh_remote(root: Path) -> dict[str, object]:
+    """Refresh remote-tracking refs without allowing an interactive prompt."""
+    env = os.environ.copy()
+    env["GIT_TERMINAL_PROMPT"] = "0"
+    ssh_command = env.get("GIT_SSH_COMMAND", "ssh").strip() or "ssh"
+    ssh_command, replaced = re.subn(
+        r"(?i)(-o\s+BatchMode)(?:\s+|=)(?:yes|no)",
+        r"\1=yes",
+        ssh_command,
+    )
+    if not replaced:
+        ssh_command = f"{ssh_command} -o BatchMode=yes"
+    env["GIT_SSH_COMMAND"] = ssh_command
+    try:
+        result = subprocess.run(
+            ["git", "fetch", "--all"],
+            cwd=root,
+            capture_output=True,
+            text=True,
+            check=False,
+            env=env,
+            stdin=subprocess.DEVNULL,
+        )
+    except OSError as exc:
+        return {
+            "status": "unavailable",
+            "classification": "remote-unavailable",
+            "non_interactive": True,
+            "detail": f"{type(exc).__name__}: {exc}",
+        }
+    if result.returncode == 0:
+        return {
+            "status": "ok",
+            "classification": "refreshed",
+            "non_interactive": True,
+        }
+
+    detail = (result.stderr or result.stdout).strip()
+    return {
+        "status": "unavailable",
+        "classification": "remote-unavailable",
+        "non_interactive": True,
+        "exit_code": result.returncode,
+        "detail": detail[:500] or "git fetch --all failed without diagnostic output",
+    }
+
+
 class DecisionLedger(NamedTuple):
     decisions: list[dict[str, str]]
     exclusions: list[str]
 
 
-def audit_branches(root: Path, base: str):
-    sh(["git", "fetch", "--all"], root)  # refresh remote-tracking refs only
+def audit_branches(root: Path, base: str, *, refresh: bool = True):
+    if refresh:
+        refresh_remote(root)
     branches = sh(
         ["git", "for-each-ref", "--format=%(refname:short)", "refs/heads/"],
         root,
@@ -301,7 +350,8 @@ def main():
         ledger_path = root / ledger_path
 
     try:
-        branches = audit_branches(root, args.base)
+        remote_refresh = refresh_remote(root)
+        branches = audit_branches(root, args.base, refresh=False)
         current = next(
             (
                 str(branch["branch"])
@@ -316,6 +366,7 @@ def main():
         report = {
             "root": str(root),
             "base": args.base,
+            "remote_refresh": remote_refresh,
             "branches": branches,
             "decision_ledger": decision_ledger,
             "naming_violations": audit_naming(root),
@@ -326,7 +377,10 @@ def main():
         return 1
 
     print(json.dumps(report, indent=2))
-    return 0 if bool(decision_ledger["ok"]) else 1
+    return 0 if (
+        remote_refresh["status"] == "ok"
+        and bool(decision_ledger["ok"])
+    ) else 1
 
 
 if __name__ == "__main__":

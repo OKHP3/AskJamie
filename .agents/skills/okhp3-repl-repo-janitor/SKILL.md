@@ -38,7 +38,7 @@ Use this skill instead of those two when the scope is "one Repl, tidy the branch
 ## Safety contract
 
 1. Start read-only. Run the bundled audit script or equivalent `git`/`gh` inspection before proposing any change. Never delete a branch, PR, file, or folder during discovery.
-2. `git fetch --all` to refresh remote-tracking refs. Never pass `--prune` until every stale remote branch has been classified.
+2. Refresh remote-tracking refs non-interactively. The audit uses `GIT_TERMINAL_PROMPT=0`, SSH `BatchMode=yes`, and a closed stdin; if refresh is unavailable it still prints local evidence but marks `remote_refresh.classification` as `remote-unavailable` and blocks cleanup planning. Never pass `--prune` until every stale remote branch has been classified.
 3. Treat "merged into origin/main," "closed pull request," and "abandoned with no PR" as three different facts. Check the actual PR state (via the `git-remote` skill or `gh pr view`) before recommending deletion — an old branch can still have an open, wanted PR.
 4. A Replit-generated name (`subrepl-*`, `replit-agent`, `agent/*`) is a hint that the branch may be an ephemeral task-agent artifact, not proof it is safe to delete. Confirm it is merged or explicitly abandoned before including it in the delete list. The current/active branch (checked out, or the one the live agent session is using) is never a deletion candidate.
 5. For naming cleanup, apply the kebab-case default (`references/naming-conventions.md`) but respect the documented exceptions: PascalCase React components, camelCase hooks, ALL-CAPS root governance files (`README.md`, `LICENSE`, `CHANGELOG.md`, `AGENTS.md`, etc.), and files whose name is dictated by a tool or a web standard (`package.json`, `.replit`, `robots.txt`, `CNAME`, ...).
@@ -51,16 +51,19 @@ Use this skill instead of those two when the scope is "one Repl, tidy the branch
 ### 1. Inventory branches and PRs
 
 ```bash
-git fetch --all
 python3 .agents/skills/okhp3-repl-repo-janitor/scripts/audit-repo.py \
   --root . --base origin/main --decision-ledger .agents/branch-decision-ledger-YYYY-MM-DD.md
 ```
 
-This prints a JSON report: every local branch with its last-commit metadata,
+This performs a non-interactive `git fetch --all` and prints a JSON report: every local branch with its last-commit metadata,
 whether it is merged into the base branch, whether its name matches a known
 Replit-generated pattern, and whether the non-current local refs match the
 decision ledger. The ledger check reports missing branches, tip-SHA drift, and
 stale ledger rows, and exits nonzero when any of those conditions is present.
+If the remote cannot be refreshed, `remote_refresh.classification` is
+`remote-unavailable`; local branch, naming, and detritus evidence is still
+printed, but the nonzero exit status blocks cleanup planning until refresh
+succeeds.
 Explicit exclusions in the ledger count as written coverage. It never mutates
 anything.
 

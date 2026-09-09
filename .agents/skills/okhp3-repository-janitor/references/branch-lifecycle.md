@@ -1,6 +1,12 @@
 # Branch lifecycle rules
 
 Use these categories after refreshing the remote and checking GitHub pull-request state.
+The single-checkout audit performs that refresh non-interactively: it disables
+Git terminal prompts, runs SSH in batch mode, and closes stdin. If refresh is
+unavailable, it still prints local branch, naming, and detritus evidence but
+reports `remote_refresh.classification: remote-unavailable` and exits nonzero.
+Treat that classification as a safety block: do not plan cleanup from stale
+remote-tracking refs.
 
 | Evidence | Decision | Action |
 |---|---|---|
