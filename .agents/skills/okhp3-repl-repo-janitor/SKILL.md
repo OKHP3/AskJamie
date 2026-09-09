@@ -52,10 +52,17 @@ Use this skill instead of those two when the scope is "one Repl, tidy the branch
 
 ```bash
 git fetch --all
-python3 .agents/skills/okhp3-repl-repo-janitor/scripts/audit-repo.py --root . --base origin/main
+python3 .agents/skills/okhp3-repl-repo-janitor/scripts/audit-repo.py \
+  --root . --base origin/main --decision-ledger .agents/branch-decision-ledger-YYYY-MM-DD.md
 ```
 
-This prints a JSON report: every local branch with its last-commit metadata, whether it's merged into the base branch, and whether its name matches a known Replit-generated pattern. It never mutates anything.
+This prints a JSON report: every local branch with its last-commit metadata,
+whether it is merged into the base branch, whether its name matches a known
+Replit-generated pattern, and whether the non-current local refs match the
+decision ledger. The ledger check reports missing branches, tip-SHA drift, and
+stale ledger rows, and exits nonzero when any of those conditions is present.
+Explicit exclusions in the ledger count as written coverage. It never mutates
+anything.
 
 For each **unmerged** branch, resolve its pull-request state before deciding: use the `git-remote` skill (or `gh pr list --head <branch>` / `gh pr view` if the `gh` CLI and a token are available) to check open/closed/merged status and CI checks. Do not assume a branch is dead just because it's old — check for an open PR first.
 

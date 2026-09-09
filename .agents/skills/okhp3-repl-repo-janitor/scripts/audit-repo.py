@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-audit-repo.py -- read-only Git branch + file/folder naming audit for a single
+audit-repo.py -- read-only Git branch + decision-ledger + file/folder naming audit for a single
 local repository (designed for one-repo-per-Replit-workspace checkouts).
 
 Never mutates the repository. Prints a JSON report to stdout.
@@ -13,11 +13,13 @@ What it reports:
      whether it is merged into the base branch, and whether it matches a
      known Replit-generated pattern (subrepl-*, replit-agent, agent/*)
      versus a human-named branch.
-  2. Naming violations: files/folders whose names break the kebab-case
+  2. Decision-ledger consistency: missing non-current branches, tip-SHA
+      drift, and stale decision or exclusion rows.
+  3. Naming violations: files/folders whose names break the kebab-case
      default (PascalCase, camelCase, spaces, uppercase extensions) outside
      the recognized structural exceptions (React components/hooks, root
      governance files, tool-required filenames).
-  3. Known detritus folder names present in the tree (attached_assets,
+  4. Known detritus folder names present in the tree (attached_assets,
      tmp, temp, _unused, unused, _drafts, _scratch, _old, and hyphen
      variants), with tracked/untracked/gitignored status for each.
 
@@ -30,6 +32,7 @@ import re
 import subprocess
 import sys
 from pathlib import Path
+from typing import NamedTuple
 
 ROOT_GOVERNANCE_FILES = {
     "README.md", "LICENSE", "CHANGELOG.md", "CONTRIBUTING.md",
@@ -53,12 +56,19 @@ DETRITUS_FOLDER_NAMES = {
 }
 KEBAB_OK = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
 REPLIT_BRANCH_PATTERNS = re.compile(r"^(subrepl-|replit-agent$|agent/)")
+SHA_PATTERN = re.compile(r"^[0-9a-f]{40}$")
+DEFAULT_DECISION_LEDGER = ".agents/branch-decision-ledger-2026-09-07.md"
 
 
 def sh(args, cwd):
     return subprocess.run(
         args, cwd=cwd, capture_output=True, text=True, check=False
     ).stdout.strip()
+
+
+class DecisionLedger(NamedTuple):
+    decisions: list[dict[str, str]]
+    exclusions: list[str]
 
 
 def audit_branches(root: Path, base: str):
@@ -82,6 +92,7 @@ def audit_branches(root: Path, base: str):
         ledger.append({
             "branch": b,
             "is_current": b == sh(["git", "branch", "--show-current"], root),
+            "tip_sha": sh(["git", "rev-parse", b], root),
             "merged_into_base": b in merged,
             "last_commit_date": date,
             "last_commit_author": author,
@@ -89,6 +100,124 @@ def audit_branches(root: Path, base: str):
             "replit_generated_pattern": bool(REPLIT_BRANCH_PATTERNS.match(b)),
         })
     return ledger
+
+
+def _table_cells(line: str) -> list[str]:
+    """Return markdown table cells without leading/trailing separators."""
+    if not line.lstrip().startswith("|"):
+        return []
+    return [cell.strip() for cell in line.strip().strip("|").split("|")]
+
+
+def parse_decision_ledger(path: Path) -> DecisionLedger:
+    """Parse the decision table and explicit holds from a markdown ledger."""
+    if not path.is_file():
+        raise ValueError(f"decision ledger does not exist: {path}")
+
+    decisions: list[dict[str, str]] = []
+    exclusions: list[str] = []
+    section = ""
+    for line in path.read_text(encoding="utf-8").splitlines():
+        heading = re.match(r"^##\s+(.+?)\s*$", line)
+        if heading:
+            section = heading.group(1).lower()
+            continue
+
+        if section == "branch decisions":
+            cells = _table_cells(line)
+            if len(cells) < 3:
+                continue
+            branch_match = re.fullmatch(r"`([^`]+)`", cells[0])
+            if not branch_match:
+                continue
+            decisions.append({
+                "branch": branch_match.group(1),
+                "decision": re.sub(
+                    r"^\*\*|\*\*$", "", cells[1]
+                ).strip().lower(),
+                "tip_sha": cells[2].strip("`").lower(),
+            })
+        elif section == "explicit exclusions and holds" and line.lstrip().startswith("-"):
+            # A bullet may document several refs, e.g. "`main`, `branch-a`,
+            # and `branch-b` — active work".
+            branch_list = line.split("—", 1)[0]
+            exclusions.extend(re.findall(r"`([^`]+)`", branch_list))
+
+    if not decisions and not exclusions:
+        raise ValueError(f"decision ledger has no branch coverage rows: {path}")
+    return DecisionLedger(decisions=decisions, exclusions=sorted(set(exclusions)))
+
+
+def audit_decision_ledger(
+    root: Path,
+    branches: list[dict[str, object]],
+    current: str,
+    ledger_path: Path,
+) -> dict[str, object]:
+    """Compare non-current local branches with written ledger coverage."""
+    ledger = parse_decision_ledger(ledger_path)
+    local_by_name = {
+        str(branch["branch"]): branch
+        for branch in branches
+        if str(branch["branch"]) != current
+    }
+    decision_by_name = {row["branch"]: row for row in ledger.decisions}
+    covered = set(decision_by_name) | set(ledger.exclusions)
+
+    missing_branches = sorted(set(local_by_name) - covered)
+    tip_sha_drift: list[dict[str, str]] = []
+    invalid_tip_sha: list[dict[str, str]] = []
+    for branch, row in decision_by_name.items():
+        if branch not in local_by_name:
+            continue
+        expected = row["tip_sha"]
+        actual = str(local_by_name[branch]["tip_sha"])
+        if not SHA_PATTERN.fullmatch(expected):
+            invalid_tip_sha.append({
+                "branch": branch,
+                "expected_tip_sha": expected,
+                "actual_tip_sha": actual,
+            })
+        elif expected != actual:
+            tip_sha_drift.append({
+                "branch": branch,
+                "expected_tip_sha": expected,
+                "actual_tip_sha": actual,
+            })
+
+    stale_ledger_rows: list[dict[str, str]] = []
+    for row in ledger.decisions:
+        if row["branch"] not in local_by_name:
+            stale_ledger_rows.append({
+                "branch": row["branch"],
+                "kind": "decision",
+                "tip_sha": row["tip_sha"],
+            })
+    for branch in ledger.exclusions:
+        if branch not in local_by_name and branch != current:
+            stale_ledger_rows.append({
+                "branch": branch,
+                "kind": "exclusion",
+            })
+
+    return {
+        "ledger_path": str(ledger_path),
+        "covered_branch_count": len(covered),
+        "decision_row_count": len(ledger.decisions),
+        "exclusion_branch_count": len(ledger.exclusions),
+        "missing_branches": missing_branches,
+        "tip_sha_drift": sorted(tip_sha_drift, key=lambda item: item["branch"]),
+        "invalid_tip_sha": sorted(invalid_tip_sha, key=lambda item: item["branch"]),
+        "stale_ledger_rows": sorted(
+            stale_ledger_rows, key=lambda item: (item["branch"], item["kind"])
+        ),
+        "ok": not (
+            missing_branches
+            or tip_sha_drift
+            or invalid_tip_sha
+            or stale_ledger_rows
+        ),
+    }
 
 
 def is_exception(name: str, path: Path) -> bool:
@@ -150,22 +279,55 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--root", default=".")
     ap.add_argument("--base", default="origin/main")
+    ap.add_argument(
+        "--decision-ledger",
+        "--ledger",
+        dest="decision_ledger",
+        default=DEFAULT_DECISION_LEDGER,
+        help=(
+            "markdown branch-decision ledger to compare with local refs "
+            f"(default: {DEFAULT_DECISION_LEDGER})"
+        ),
+    )
     args = ap.parse_args()
     root = Path(args.root).resolve()
 
     if not (root / ".git").exists():
         print(json.dumps({"error": f"{root} is not a Git repository root"}))
-        sys.exit(1)
+        return 1
 
-    report = {
-        "root": str(root),
-        "base": args.base,
-        "branches": audit_branches(root, args.base),
-        "naming_violations": audit_naming(root),
-        "detritus_folders": audit_detritus(root),
-    }
+    ledger_path = Path(args.decision_ledger)
+    if not ledger_path.is_absolute():
+        ledger_path = root / ledger_path
+
+    try:
+        branches = audit_branches(root, args.base)
+        current = next(
+            (
+                str(branch["branch"])
+                for branch in branches
+                if bool(branch["is_current"])
+            ),
+            "",
+        )
+        decision_ledger = audit_decision_ledger(
+            root, branches, current, ledger_path
+        )
+        report = {
+            "root": str(root),
+            "base": args.base,
+            "branches": branches,
+            "decision_ledger": decision_ledger,
+            "naming_violations": audit_naming(root),
+            "detritus_folders": audit_detritus(root),
+        }
+    except (OSError, ValueError) as exc:
+        print(json.dumps({"error": str(exc), "root": str(root)}))
+        return 1
+
     print(json.dumps(report, indent=2))
+    return 0 if bool(decision_ledger["ok"]) else 1
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

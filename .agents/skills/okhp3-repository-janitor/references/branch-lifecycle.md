@@ -13,3 +13,16 @@ Use these categories after refreshing the remote and checking GitHub pull-reques
 | `gh-pages`, deployment, release, or explicitly protected branch | Retain | Do not apply ordinary feature-branch cleanup rules. |
 
 Before any deletion, record the full branch name, its tip SHA, PR number/state, reachability result, and recovery ref. Refresh after the merge or deletion and verify the expected remote state.
+
+## Retention-ledger consistency gate
+
+Before proposing local-branch cleanup, compare every non-current local branch
+with the current written decision ledger. The read-only audit must report:
+
+- **missing branches** — local refs with no decision or explicit hold;
+- **tip-SHA drift** — a decision row whose recorded tip no longer matches the
+  local branch;
+- **stale ledger rows** — decisions or holds for refs no longer present locally.
+
+Any of these findings blocks cleanup planning until the ledger is refreshed.
+This gate does not authorize deletion, pruning, or recovery-ref changes.
