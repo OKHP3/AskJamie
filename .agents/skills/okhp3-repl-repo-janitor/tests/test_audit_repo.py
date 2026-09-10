@@ -142,6 +142,93 @@ class DecisionLedgerTests(unittest.TestCase):
         self.assertEqual(result["stale_ledger_rows"], [])
         self.assertFalse(result["ok"])
 
+    def test_reports_malformed_decision_rows(self) -> None:
+        root, initial = self.make_repo()
+        git(root, "branch", "reviewed")
+        ledger = self.write_ledger(
+            root,
+            "\n".join([
+                f"| `reviewed` | **keep** | `{initial}` | valid |",
+                "| reviewed | **keep** | missing backticks | malformed |",
+                "| `truncated` | **keep** |",
+            ]),
+        )
+
+        result = audit_repo.audit_decision_ledger(
+            root, self.branch_facts(root), "main", ledger
+        )
+
+        self.assertEqual(
+            [item["reason"] for item in result["malformed_decision_rows"]],
+            [
+                "branch cell must contain one backticked branch name",
+                "decision row has fewer than three cells",
+            ],
+        )
+        self.assertFalse(result["ok"])
+
+    def test_reports_malformed_and_duplicate_exclusions(self) -> None:
+        root, initial = self.make_repo()
+        git(root, "branch", "held")
+        ledger = self.write_ledger(
+            root,
+            "",
+            "\n".join([
+                "- `held` — active work",
+                "- `held` — repeated hold",
+                "- held — missing backticks",
+            ]),
+        )
+
+        result = audit_repo.audit_decision_ledger(
+            root, self.branch_facts(root), "main", ledger
+        )
+
+        self.assertEqual(result["exclusion_branch_count"], 1)
+        self.assertEqual(
+            result["duplicate_exclusion_entries"][0]["branch"], "held"
+        )
+        self.assertEqual(
+            result["malformed_exclusion_entries"][0]["reason"],
+            (
+                "exclusion entry must list backticked branch names "
+                "followed by an em-dash explanation"
+            ),
+        )
+        self.assertFalse(result["ok"])
+
+    def test_cli_reports_malformed_content_and_exits_nonzero(self) -> None:
+        root, initial = self.make_repo()
+        ledger = self.write_ledger(
+            root,
+            "| not-a-branch-row | **keep** | malformed |",
+            "- `main` — current branch",
+        )
+
+        result = subprocess.run(
+            [
+                sys.executable,
+                str(SCRIPT),
+                "--root",
+                str(root),
+                "--base",
+                "main",
+                "--decision-ledger",
+                str(ledger),
+            ],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+
+        self.assertEqual(result.returncode, 1)
+        report = json.loads(result.stdout)
+        self.assertEqual(
+            report["decision_ledger"]["malformed_decision_rows"][0]["line"],
+            4,
+        )
+        self.assertFalse(report["decision_ledger"]["ok"])
+
     def test_archive_equivalence_distinguishes_promoted_and_unrepresented_work(self) -> None:
         root, initial = self.make_repo()
         git(root, "branch", "promoted-archive")

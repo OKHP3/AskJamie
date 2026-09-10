@@ -150,6 +150,9 @@ def refresh_remote(root: Path) -> dict[str, object]:
 class DecisionLedger(NamedTuple):
     decisions: list[dict[str, str]]
     exclusions: list[str]
+    malformed_decision_rows: list[dict[str, object]]
+    malformed_exclusion_entries: list[dict[str, object]]
+    duplicate_exclusion_entries: list[dict[str, object]]
 
 
 def audit_branches(root: Path, base: str, *, refresh: bool = True):
@@ -198,8 +201,14 @@ def parse_decision_ledger(path: Path) -> DecisionLedger:
 
     decisions: list[dict[str, str]] = []
     exclusions: list[str] = []
+    malformed_decision_rows: list[dict[str, object]] = []
+    malformed_exclusion_entries: list[dict[str, object]] = []
+    duplicate_exclusion_entries: list[dict[str, object]] = []
+    seen_exclusions: dict[str, int] = {}
     section = ""
-    for line in path.read_text(encoding="utf-8").splitlines():
+    for line_number, line in enumerate(
+        path.read_text(encoding="utf-8").splitlines(), start=1
+    ):
         heading = re.match(r"^##\s+(.+?)\s*$", line)
         if heading:
             section = heading.group(1).lower()
@@ -207,10 +216,41 @@ def parse_decision_ledger(path: Path) -> DecisionLedger:
 
         if section == "branch decisions":
             cells = _table_cells(line)
+            if not line.strip():
+                continue
+            normalized_cells = [cell.lower() for cell in cells]
+            if normalized_cells[:3] == ["branch", "decision", "tip sha"]:
+                continue
+            if cells and all(re.fullmatch(r":?-{3,}:?", cell) for cell in cells):
+                continue
             if len(cells) < 3:
+                malformed_decision_rows.append({
+                    "line": line_number,
+                    "content": line,
+                    "reason": "decision row has fewer than three cells",
+                })
                 continue
             branch_match = re.fullmatch(r"`([^`]+)`", cells[0])
             if not branch_match:
+                malformed_decision_rows.append({
+                    "line": line_number,
+                    "content": line,
+                    "reason": "branch cell must contain one backticked branch name",
+                })
+                continue
+            if not cells[1].strip():
+                malformed_decision_rows.append({
+                    "line": line_number,
+                    "content": line,
+                    "reason": "decision cell is empty",
+                })
+                continue
+            if not cells[2].strip():
+                malformed_decision_rows.append({
+                    "line": line_number,
+                    "content": line,
+                    "reason": "tip SHA cell is empty",
+                })
                 continue
             decisions.append({
                 "branch": branch_match.group(1),
@@ -219,15 +259,57 @@ def parse_decision_ledger(path: Path) -> DecisionLedger:
                 ).strip().lower(),
                 "tip_sha": cells[2].strip("`").lower(),
             })
-        elif section == "explicit exclusions and holds" and line.lstrip().startswith("-"):
+        elif section == "explicit exclusions and holds":
+            if not line.strip():
+                continue
+            if not line.lstrip().startswith("-"):
+                continue
             # A bullet may document several refs, e.g. "`main`, `branch-a`,
             # and `branch-b` — active work".
-            branch_list = line.split("—", 1)[0]
-            exclusions.extend(re.findall(r"`([^`]+)`", branch_list))
+            match = re.fullmatch(
+                r"\s*-\s+"
+                r"(?P<branches>`[^`]+`"
+                r"(?:\s*(?:,\s*(?:and\s+)?|\band\s+)`[^`]+`)*)"
+                r"\s+—\s+(?P<reason>\S.*)",
+                line,
+            )
+            if not match:
+                malformed_exclusion_entries.append({
+                    "line": line_number,
+                    "content": line,
+                    "reason": (
+                        "exclusion entry must list backticked branch names "
+                        "followed by an em-dash explanation"
+                    ),
+                })
+                continue
+            branch_names = re.findall(r"`([^`]+)`", match.group("branches"))
+            for branch in branch_names:
+                if branch in seen_exclusions:
+                    duplicate_exclusion_entries.append({
+                        "line": line_number,
+                        "content": line,
+                        "branch": branch,
+                        "first_line": seen_exclusions[branch],
+                    })
+                else:
+                    seen_exclusions[branch] = line_number
+                exclusions.append(branch)
 
-    if not decisions and not exclusions:
+    if not (
+        decisions
+        or exclusions
+        or malformed_decision_rows
+        or malformed_exclusion_entries
+    ):
         raise ValueError(f"decision ledger has no branch coverage rows: {path}")
-    return DecisionLedger(decisions=decisions, exclusions=sorted(set(exclusions)))
+    return DecisionLedger(
+        decisions=decisions,
+        exclusions=sorted(set(exclusions)),
+        malformed_decision_rows=malformed_decision_rows,
+        malformed_exclusion_entries=malformed_exclusion_entries,
+        duplicate_exclusion_entries=duplicate_exclusion_entries,
+    )
 
 
 def audit_decision_ledger(
@@ -293,11 +375,17 @@ def audit_decision_ledger(
         "stale_ledger_rows": sorted(
             stale_ledger_rows, key=lambda item: (item["branch"], item["kind"])
         ),
+        "malformed_decision_rows": ledger.malformed_decision_rows,
+        "malformed_exclusion_entries": ledger.malformed_exclusion_entries,
+        "duplicate_exclusion_entries": ledger.duplicate_exclusion_entries,
         "ok": not (
             missing_branches
             or tip_sha_drift
             or invalid_tip_sha
             or stale_ledger_rows
+            or ledger.malformed_decision_rows
+            or ledger.malformed_exclusion_entries
+            or ledger.duplicate_exclusion_entries
         ),
     }
 
