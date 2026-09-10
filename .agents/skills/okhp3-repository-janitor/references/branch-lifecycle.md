@@ -38,7 +38,8 @@ accepted as a shorthand. Each request produces its own `hosted_lifecycle`
 entry with the provider, exact `refs/heads/...` ref, tip when present, and
 the classification `present`, `missing`, or `inaccessible`. A missing ref is
 not the same as an inaccessible remote: both set `deletion_blocked`, but they
-require different recovery actions.
+require different recovery actions. Inaccessible evidence is an explicit
+retain/review outcome, never a deletion candidate.
 
 For a GitHub remote, the audit also records branch protection, deployments,
 and all matching open/closed pull requests when the `gh` CLI is installed and

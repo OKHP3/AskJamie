@@ -7,6 +7,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 
 SCRIPT = Path(__file__).parents[1] / "scripts" / "audit-repo.py"
@@ -79,22 +80,128 @@ class AuditRepoTests(unittest.TestCase):
         with self.assertRaises(audit_repo.AuditError):
             audit_repo.parse_hosted_branch("github")
 
-    def test_hosted_missing_and_inaccessible_are_distinct_blocks(self) -> None:
+    def test_hosted_lifecycle_fixture_blocks_unverified_cleanup(self) -> None:
         directory = tempfile.TemporaryDirectory()
         self.addCleanup(directory.cleanup)
         root = self.git_repo_from(directory)
-        self.git(root, "remote", "add", "origin", str(root))
-        missing = audit_repo.audit_hosted_branches(
-            root, ["origin=feature/example"]
-        )["entries"][0]
-        inaccessible = audit_repo.audit_hosted_branches(
-            root, ["missing-remote=feature/example"]
-        )["entries"][0]
+        remote = root / "redacted-hosted.git"
+        self.git(root, "init", "--bare", "-q", str(remote))
+        self.git(root, "remote", "add", "fixture-host", str(remote))
+        for branch in (
+            "feature/protected",
+            "feature/deployed",
+            "feature/pr-associated",
+        ):
+            self.git(root, "branch", branch)
+            self.git(root, "push", "-q", "fixture-host", branch)
 
-        self.assertEqual(missing["classification"], "missing")
-        self.assertEqual(inaccessible["classification"], "inaccessible")
-        self.assertTrue(missing["deletion_blocked"])
-        self.assertTrue(inaccessible["deletion_blocked"])
+        evidence_fixtures = {
+            "feature/protected": {
+                "protection": {"status": "protected", "source": "fixture"},
+                "deployments": {
+                    "status": "available", "count": 0, "items": [],
+                },
+                "pull_requests": {
+                    "status": "available", "count": 0, "items": [],
+                },
+            },
+            "feature/deployed": {
+                "protection": {"status": "unprotected", "source": "fixture"},
+                "deployments": {
+                    "status": "available",
+                    "count": 1,
+                    "items": [{"id": 7, "environment": "production"}],
+                },
+                "pull_requests": {
+                    "status": "available", "count": 0, "items": [],
+                },
+            },
+            "feature/pr-associated": {
+                "protection": {"status": "unprotected", "source": "fixture"},
+                "deployments": {
+                    "status": "available", "count": 0, "items": [],
+                },
+                "pull_requests": {
+                    "status": "available",
+                    "count": 1,
+                    "items": [{
+                        "number": 42,
+                        "state": "open",
+                        "merged_at": None,
+                    }],
+                },
+            },
+        }
+
+        def fixture_evidence(
+            _root: Path, _remote_url: str | None, branch: str
+        ) -> dict[str, object]:
+            return evidence_fixtures[branch]
+
+        with patch.object(
+            audit_repo, "github_hosted_evidence", side_effect=fixture_evidence
+        ):
+            report = audit_repo.audit_hosted_branches(
+                root,
+                [
+                    "fixture-host=feature/missing",
+                    "fixture-host=feature/protected",
+                    "fixture-host=feature/deployed",
+                    "fixture-host=feature/pr-associated",
+                    "missing-remote=feature/inaccessible",
+                ],
+            )
+        entries = {entry["ref"]: entry for entry in report["entries"]}
+
+        self.assertEqual(entries["feature/missing"]["classification"], "missing")
+        self.assertEqual(
+            entries["feature/protected"]["classification"], "present"
+        )
+        self.assertEqual(
+            entries["feature/deployed"]["classification"], "present"
+        )
+        self.assertEqual(
+            entries["feature/pr-associated"]["classification"], "present"
+        )
+        self.assertEqual(
+            entries["feature/inaccessible"]["classification"], "inaccessible"
+        )
+
+        for branch in (
+            "feature/missing",
+            "feature/protected",
+            "feature/deployed",
+            "feature/pr-associated",
+            "feature/inaccessible",
+        ):
+            self.assertTrue(entries[branch]["deletion_blocked"], branch)
+
+        self.assertIn(
+            "hosted-ref-missing",
+            entries["feature/missing"]["blocking_reasons"],
+        )
+        self.assertIn(
+            "hosted-ref-protected",
+            entries["feature/protected"]["blocking_reasons"],
+        )
+        self.assertIn(
+            "hosted-ref-has-deployments",
+            entries["feature/deployed"]["blocking_reasons"],
+        )
+        self.assertIn(
+            "hosted-open-pull-request",
+            entries["feature/pr-associated"]["blocking_reasons"],
+        )
+        self.assertIn(
+            "hosted-remote-inaccessible",
+            entries["feature/inaccessible"]["blocking_reasons"],
+        )
+        deletion_candidates = [
+            entry["ref"]
+            for entry in report["entries"]
+            if not entry["deletion_blocked"]
+        ]
+        self.assertNotIn("feature/inaccessible", deletion_candidates)
 
     def test_hosted_present_ref_reports_tip_independently(self) -> None:
         directory = tempfile.TemporaryDirectory()
