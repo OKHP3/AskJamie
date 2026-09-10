@@ -224,6 +224,13 @@ reachable before the operation changes. It rejects new refs outside
 `refs/recovery/` and requires a recovery ref pointing to every approved
 branch tip.
 
+The recovery guard must also survive ordinary Git maintenance. In an isolated
+fixture, `git repack -ad` is a safe deterministic check: it rewrites packed
+object storage without pruning refs. Run the recovery verification afterward
+and confirm each deleted tip still resolves through its `refs/recovery/` ref.
+If the recovery ref is missing, the guard must fail rather than treating the
+maintenance run as successful.
+
 ### 7. Verify and report
 
 After every approved batch:

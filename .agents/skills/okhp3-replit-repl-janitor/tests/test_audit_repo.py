@@ -225,7 +225,9 @@ class AuditRepoTests(unittest.TestCase):
         self.assertEqual(missing["classification"], "missing")
         self.assertTrue(report["deletion_blocked"])
 
-    def test_approved_local_deletion_preserves_recovery_state(self) -> None:
+    def test_approved_local_deletion_preserves_recovery_after_maintenance(
+        self,
+    ) -> None:
         directory = tempfile.TemporaryDirectory()
         self.addCleanup(directory.cleanup)
         root = self.git_repo_from(directory)
@@ -245,6 +247,7 @@ class AuditRepoTests(unittest.TestCase):
         before = audit_repo.recovery_snapshot(root)
         self.git(root, "update-ref", "refs/recovery/feature-recover", feature_tip)
         self.git(root, "branch", "-D", "feature/recover")
+        self.git(root, "repack", "-ad")
         after = audit_repo.recovery_snapshot(root)
         result = audit_repo.compare_recovery_snapshots(
             before, after, ["feature/recover"]
@@ -262,6 +265,11 @@ class AuditRepoTests(unittest.TestCase):
             before["refs"]["refs/remotes/origin/main"],
             after["refs"]["refs/remotes/origin/main"],
         )
+        self.assertEqual(
+            self.git(root, "rev-parse", "refs/recovery/feature-recover"),
+            feature_tip,
+        )
+        self.git(root, "cat-file", "-e", f"{feature_tip}^{{commit}}")
 
     def test_guard_is_read_only_without_exact_approval(self) -> None:
         directory = tempfile.TemporaryDirectory()
@@ -358,7 +366,7 @@ class AuditRepoTests(unittest.TestCase):
         ):
             audit_repo.compare_recovery_snapshots(tampered, snapshot)
 
-    def test_lost_objects_fail_even_with_approval(self) -> None:
+    def test_lost_objects_fail_even_with_approval_after_maintenance(self) -> None:
         directory = tempfile.TemporaryDirectory()
         self.addCleanup(directory.cleanup)
         root = self.git_repo_from(directory)
@@ -370,6 +378,7 @@ class AuditRepoTests(unittest.TestCase):
         self.git(root, "checkout", "-q", "main")
         before = audit_repo.recovery_snapshot(root)
         self.git(root, "branch", "-D", "feature/lost")
+        self.git(root, "repack", "-ad")
         after = audit_repo.recovery_snapshot(root)
 
         result = audit_repo.compare_recovery_snapshots(
@@ -379,6 +388,10 @@ class AuditRepoTests(unittest.TestCase):
         self.assertFalse(result["passed"])
         self.assertIn(
             "refs/heads/feature/lost", result["missing_recovery_refs"]
+        )
+        self.assertIn(
+            "removed local refs lack recovery refs: refs/heads/feature/lost",
+            result["errors"],
         )
         self.assertTrue(result["unreachable_objects"])
 
