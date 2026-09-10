@@ -331,6 +331,33 @@ class AuditRepoTests(unittest.TestCase):
             json.loads(verify_result.stdout)["recovery_guard"]["passed"]
         )
 
+    def test_tampered_protected_ref_snapshot_is_rejected(self) -> None:
+        directory = tempfile.TemporaryDirectory()
+        self.addCleanup(directory.cleanup)
+        root = self.git_repo_from(directory)
+        snapshot = audit_repo.recovery_snapshot(root)
+        tampered = json.loads(json.dumps(snapshot))
+        tampered["refs"]["refs/heads/main"] = "0" * 40
+
+        with self.assertRaisesRegex(
+            audit_repo.AuditError, "integrity check failed"
+        ):
+            audit_repo.validate_recovery_snapshot(tampered)
+
+    def test_tampered_reachable_object_snapshot_is_rejected(self) -> None:
+        directory = tempfile.TemporaryDirectory()
+        self.addCleanup(directory.cleanup)
+        root = self.git_repo_from(directory)
+        snapshot = audit_repo.recovery_snapshot(root)
+        tampered = json.loads(json.dumps(snapshot))
+        tampered["reachable_objects"].append("f" * 40)
+        tampered["reachable_objects"].sort()
+
+        with self.assertRaisesRegex(
+            audit_repo.AuditError, "integrity check failed"
+        ):
+            audit_repo.compare_recovery_snapshots(tampered, snapshot)
+
     def test_lost_objects_fail_even_with_approval(self) -> None:
         directory = tempfile.TemporaryDirectory()
         self.addCleanup(directory.cleanup)

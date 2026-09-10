@@ -11,6 +11,8 @@ local branch removal that the comparison is allowed to observe.
 from __future__ import annotations
 
 import argparse
+import hashlib
+import hmac
 import json
 import os
 import re
@@ -122,7 +124,7 @@ def reachable_object_snapshot(root: Path) -> list[str]:
 
 def recovery_snapshot(root: Path) -> dict[str, object]:
     """Capture refs, stashes, and reachable objects without changing Git."""
-    return {
+    snapshot: dict[str, object] = {
         "format": 1,
         "current_branch": run(["git", "branch", "--show-current"], root) or None,
         "refs": git_ref_snapshot(root),
@@ -131,15 +133,45 @@ def recovery_snapshot(root: Path) -> dict[str, object]:
         ).splitlines(),
         "reachable_objects": reachable_object_snapshot(root),
     }
+    snapshot["integrity"] = recovery_snapshot_integrity(snapshot)
+    return snapshot
+
+
+def recovery_snapshot_integrity(snapshot: dict[str, object]) -> dict[str, str]:
+    """Return a deterministic digest for the snapshot content."""
+    payload = json.dumps(
+        snapshot,
+        ensure_ascii=True,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("utf-8")
+    return {
+        "algorithm": "sha256",
+        "digest": hashlib.sha256(payload).hexdigest(),
+    }
 
 
 def validate_recovery_snapshot(snapshot: object) -> dict[str, object]:
     """Reject malformed or incomplete snapshots before comparing them."""
     if not isinstance(snapshot, dict) or snapshot.get("format") != 1:
         raise AuditError("recovery snapshot has an unsupported format")
+    expected_fields = {
+        "format",
+        "current_branch",
+        "refs",
+        "stashes",
+        "reachable_objects",
+        "integrity",
+    }
+    if set(snapshot) != expected_fields:
+        raise AuditError("recovery snapshot has incomplete or unexpected fields")
+    current_branch = snapshot.get("current_branch")
     refs = snapshot.get("refs")
     stashes = snapshot.get("stashes")
     reachable = snapshot.get("reachable_objects")
+    integrity = snapshot.get("integrity")
+    if current_branch is not None and not isinstance(current_branch, str):
+        raise AuditError("recovery snapshot has malformed current branch")
     if not isinstance(refs, dict) or not all(
         isinstance(name, str) and isinstance(object_id, str)
         for name, object_id in refs.items()
@@ -153,6 +185,23 @@ def validate_recovery_snapshot(snapshot: object) -> dict[str, object]:
         isinstance(object_id, str) for object_id in reachable
     ):
         raise AuditError("recovery snapshot has malformed reachable objects")
+    if len(reachable) != len(set(reachable)) or reachable != sorted(reachable):
+        raise AuditError("recovery snapshot has inconsistent reachable objects")
+    if not (
+        isinstance(integrity, dict)
+        and integrity.keys() == {"algorithm", "digest"}
+        and integrity.get("algorithm") == "sha256"
+        and isinstance(integrity.get("digest"), str)
+        and re.fullmatch(r"[0-9a-f]{64}", integrity["digest"])
+    ):
+        raise AuditError("recovery snapshot has an invalid integrity marker")
+    expected_integrity = recovery_snapshot_integrity(
+        {key: snapshot[key] for key in expected_fields if key != "integrity"}
+    )
+    if not hmac.compare_digest(
+        integrity["digest"], expected_integrity["digest"]
+    ):
+        raise AuditError("recovery snapshot integrity check failed")
     return snapshot
 
 
@@ -267,6 +316,7 @@ def compare_recovery_snapshots(
 
 
 def write_recovery_snapshot(path: Path, snapshot: dict[str, object]) -> None:
+    snapshot = validate_recovery_snapshot(snapshot)
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(
         json.dumps(snapshot, indent=2, sort_keys=True) + "\n",
