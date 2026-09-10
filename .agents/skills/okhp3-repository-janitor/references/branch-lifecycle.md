@@ -20,6 +20,33 @@ remote-tracking refs.
 
 Before any deletion, record the full branch name, its tip SHA, PR number/state, reachability result, and recovery ref. Refresh after the merge or deletion and verify the expected remote state.
 
+### Repeatable hosted-branch check
+
+The one-Repl audit can record hosted evidence without changing the checkout.
+Pass the exact branch name once for each provider or remote; do not rely on a
+similarly named local branch to identify the hosted ref:
+
+```bash
+python3 .agents/skills/okhp3-replit-repl-janitor/scripts/audit-repo.py \
+  --root . --base origin/main \
+  --hosted-branch origin=feature/example \
+  --hosted-branch subrepl-abc123=feature/example
+```
+
+`--hosted-ref` is an alias for `--hosted-branch`, and `PROVIDER:BRANCH` is
+accepted as a shorthand. Each request produces its own `hosted_lifecycle`
+entry with the provider, exact `refs/heads/...` ref, tip when present, and
+the classification `present`, `missing`, or `inaccessible`. A missing ref is
+not the same as an inaccessible remote: both set `deletion_blocked`, but they
+require different recovery actions.
+
+For a GitHub remote, the audit also records branch protection, deployments,
+and all matching open/closed pull requests when the `gh` CLI is installed and
+authenticated. Other providers still receive explicit unknown evidence rather
+than an inferred clean result. Unknown hosted evidence, protected branches,
+deployment refs, open pull requests, and closed unmerged pull requests remain
+deletion holds. The report is read-only; it never deletes a ref or PR.
+
 ## Local deletion recovery guard
 
 For local-only branch deletion, run the one-Repl janitor's recovery snapshot

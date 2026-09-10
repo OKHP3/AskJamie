@@ -67,6 +67,57 @@ class AuditRepoTests(unittest.TestCase):
             with self.assertRaises(audit_repo.AuditError):
                 audit_repo.ensure_base(root, "origin/main")
 
+    def test_hosted_branch_parser_preserves_exact_provider_and_ref(self) -> None:
+        self.assertEqual(
+            audit_repo.parse_hosted_branch("github=agent/feature-one"),
+            ("github", "agent/feature-one"),
+        )
+        self.assertEqual(
+            audit_repo.parse_hosted_branch("replit:agent/feature-one"),
+            ("replit", "agent/feature-one"),
+        )
+        with self.assertRaises(audit_repo.AuditError):
+            audit_repo.parse_hosted_branch("github")
+
+    def test_hosted_missing_and_inaccessible_are_distinct_blocks(self) -> None:
+        directory = tempfile.TemporaryDirectory()
+        self.addCleanup(directory.cleanup)
+        root = self.git_repo_from(directory)
+        self.git(root, "remote", "add", "origin", str(root))
+        missing = audit_repo.audit_hosted_branches(
+            root, ["origin=feature/example"]
+        )["entries"][0]
+        inaccessible = audit_repo.audit_hosted_branches(
+            root, ["missing-remote=feature/example"]
+        )["entries"][0]
+
+        self.assertEqual(missing["classification"], "missing")
+        self.assertEqual(inaccessible["classification"], "inaccessible")
+        self.assertTrue(missing["deletion_blocked"])
+        self.assertTrue(inaccessible["deletion_blocked"])
+
+    def test_hosted_present_ref_reports_tip_independently(self) -> None:
+        directory = tempfile.TemporaryDirectory()
+        self.addCleanup(directory.cleanup)
+        root = self.git_repo_from(directory)
+        remote = root / "hosted.git"
+        self.git(root, "init", "--bare", "-q", str(remote))
+        self.git(root, "remote", "add", "hosted", str(remote))
+        self.git(root, "branch", "feature/example")
+        self.git(root, "push", "-q", "hosted", "feature/example")
+
+        report = audit_repo.audit_hosted_branches(
+            root,
+            ["hosted=feature/example", "hosted=feature/missing"],
+        )
+        present, missing = report["entries"]
+
+        self.assertEqual(present["classification"], "present")
+        self.assertEqual(present["ref"], "feature/example")
+        self.assertEqual(present["tip"], self.git(root, "rev-parse", "HEAD"))
+        self.assertEqual(missing["classification"], "missing")
+        self.assertTrue(report["deletion_blocked"])
+
     def test_approved_local_deletion_preserves_recovery_state(self) -> None:
         directory = tempfile.TemporaryDirectory()
         self.addCleanup(directory.cleanup)

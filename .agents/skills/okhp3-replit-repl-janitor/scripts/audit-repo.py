@@ -12,11 +12,14 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
+import shutil
 import subprocess
 import sys
 from pathlib import Path
 from typing import Iterable
+from urllib.parse import quote, urlparse
 
 
 ROOT_GOVERNANCE_FILES = {
@@ -59,6 +62,24 @@ def run(args: list[str], cwd: Path) -> str:
         detail = result.stderr.strip() or result.stdout.strip() or "no output"
         raise AuditError(f"`{command}` failed ({result.returncode}): {detail}")
     return result.stdout.strip()
+
+
+def hosted_command(args: list[str], cwd: Path) -> subprocess.CompletedProcess[str]:
+    """Run a hosted read-only command without allowing interactive auth."""
+    env = os.environ.copy()
+    env["GIT_TERMINAL_PROMPT"] = "0"
+    ssh_command = env.get("GIT_SSH_COMMAND", "ssh")
+    if "BatchMode" not in ssh_command:
+        ssh_command = f"{ssh_command} -o BatchMode=yes"
+    env["GIT_SSH_COMMAND"] = ssh_command
+    return subprocess.run(
+        args,
+        cwd=cwd,
+        capture_output=True,
+        text=True,
+        stdin=subprocess.DEVNULL,
+        env=env,
+    )
 
 
 def ensure_repository(root: Path) -> None:
@@ -294,6 +315,336 @@ def audit_branches(root: Path, base: str) -> tuple[list[dict[str, object]], str]
     return ledger, current
 
 
+def parse_hosted_branch(value: str) -> tuple[str, str]:
+    """Parse the exact provider/ref pair accepted by the hosted audit."""
+    separator = "=" if "=" in value else ":"
+    if separator not in value:
+        raise AuditError(
+            "hosted branch must use PROVIDER=BRANCH (or PROVIDER:BRANCH)"
+        )
+    provider, branch = value.split(separator, 1)
+    if not provider or not branch:
+        raise AuditError(
+            "hosted branch must include both a provider and an exact branch"
+        )
+    if branch.startswith("refs/heads/"):
+        branch = branch.removeprefix("refs/heads/")
+    if (
+        not branch
+        or branch.startswith("/")
+        or branch.endswith("/")
+        or "\x00" in branch
+        or any(character.isspace() for character in branch)
+    ):
+        raise AuditError(f"invalid hosted branch name: {branch!r}")
+    return provider, branch
+
+
+def remote_url_for_provider(root: Path, provider: str) -> tuple[str, str | None]:
+    """Resolve a configured remote, or accept a URL as an explicit provider."""
+    if "://" in provider or provider.startswith("git@"):
+        return provider, provider
+    result = subprocess.run(
+        ["git", "remote", "get-url", provider],
+        cwd=root,
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode:
+        return provider, None
+    return provider, result.stdout.strip() or None
+
+
+def github_repository(remote_url: str | None) -> tuple[str, str] | None:
+    """Extract owner/repository from common GitHub remote URL forms."""
+    if not remote_url:
+        return None
+    if remote_url.startswith("git@github.com:"):
+        path = remote_url.split(":", 1)[1]
+    else:
+        parsed = urlparse(remote_url)
+        if parsed.hostname != "github.com":
+            return None
+        path = parsed.path.lstrip("/")
+    path = path.removesuffix(".git").strip("/")
+    parts = path.split("/")
+    if len(parts) != 2 or not all(parts):
+        return None
+    return parts[0], parts[1]
+
+
+def unknown_hosted_evidence(reason: str) -> dict[str, object]:
+    return {"status": "unknown", "reason": reason}
+
+
+def gh_api_json(root: Path, endpoint: str) -> tuple[object | None, str | None]:
+    """Read one GitHub API endpoint, returning an explicit failure reason."""
+    if shutil.which("gh") is None:
+        return None, "GitHub CLI (`gh`) is not installed"
+    result = hosted_command(["gh", "api", endpoint], root)
+    if result.returncode:
+        detail = result.stderr.strip() or result.stdout.strip() or "no output"
+        return None, f"GitHub API request failed ({result.returncode}): {detail}"
+    try:
+        return json.loads(result.stdout), None
+    except json.JSONDecodeError as exc:
+        return None, f"GitHub API returned invalid JSON: {exc}"
+
+
+def github_hosted_evidence(
+    root: Path, remote_url: str | None, branch: str
+) -> dict[str, object]:
+    """Collect protection, deployment, and PR evidence when GitHub is usable."""
+    repository = github_repository(remote_url)
+    if repository is None:
+        reason = "no supported hosted-provider evidence adapter"
+        return {
+            "protection": unknown_hosted_evidence(reason),
+            "deployments": unknown_hosted_evidence(reason),
+            "pull_requests": unknown_hosted_evidence(reason),
+        }
+
+    owner, repo = repository
+    encoded_repo = f"{quote(owner, safe='')}/{quote(repo, safe='')}"
+    encoded_branch = quote(branch, safe="")
+    branch_data, branch_error = gh_api_json(
+        root,
+        f"repos/{encoded_repo}/branches/{encoded_branch}",
+    )
+    if branch_error:
+        protection: dict[str, object] = unknown_hosted_evidence(branch_error)
+    elif isinstance(branch_data, dict):
+        protected = branch_data.get("protected")
+        if isinstance(protected, bool):
+            protection = {
+                "status": "protected" if protected else "unprotected",
+                "source": "github-api",
+                "repository": f"{owner}/{repo}",
+                "ref": branch,
+            }
+        else:
+            protection = unknown_hosted_evidence(
+                "GitHub branch response did not include protection status"
+            )
+    else:
+        protection = unknown_hosted_evidence(
+            "GitHub branch response was not an object"
+        )
+
+    deployments_data, deployments_error = gh_api_json(
+        root,
+        f"repos/{encoded_repo}/deployments?ref={encoded_branch}&per_page=100",
+    )
+    if deployments_error:
+        deployments: dict[str, object] = unknown_hosted_evidence(
+            deployments_error
+        )
+    elif isinstance(deployments_data, list):
+        deployments = {
+            "status": "available",
+            "source": "github-api",
+            "count": len(deployments_data),
+            "items": [
+                {
+                    key: item.get(key)
+                    for key in (
+                        "id", "sha", "ref", "environment", "created_at",
+                        "updated_at",
+                    )
+                    if isinstance(item, dict) and key in item
+                }
+                for item in deployments_data
+                if isinstance(item, dict)
+            ],
+        }
+    else:
+        deployments = unknown_hosted_evidence(
+            "GitHub deployments response was not a list"
+        )
+
+    head = quote(f"{owner}:{branch}", safe="")
+    pull_requests_data, pull_requests_error = gh_api_json(
+        root,
+        f"repos/{encoded_repo}/pulls?state=all&head={head}&per_page=100",
+    )
+    if pull_requests_error:
+        pull_requests: dict[str, object] = unknown_hosted_evidence(
+            pull_requests_error
+        )
+    elif isinstance(pull_requests_data, list):
+        pull_requests = {
+            "status": "available",
+            "source": "github-api",
+            "count": len(pull_requests_data),
+            "items": [
+                {
+                    key: item.get(key)
+                    for key in (
+                        "number", "state", "title", "merged_at", "html_url",
+                        "head", "base",
+                    )
+                    if isinstance(item, dict) and key in item
+                }
+                for item in pull_requests_data
+                if isinstance(item, dict)
+            ],
+        }
+    else:
+        pull_requests = unknown_hosted_evidence(
+            "GitHub pull-request response was not a list"
+        )
+    return {
+        "protection": protection,
+        "deployments": deployments,
+        "pull_requests": pull_requests,
+    }
+
+
+def audit_hosted_branches(
+    root: Path, requested: Iterable[str]
+) -> dict[str, object]:
+    """Audit each exact provider/ref pair without collapsing provider state."""
+    entries: list[dict[str, object]] = []
+    for value in requested:
+        provider, branch = parse_hosted_branch(value)
+        remote, remote_url = remote_url_for_provider(root, provider)
+        entry: dict[str, object] = {
+            "provider": provider,
+            "ref": branch,
+            "full_ref": f"refs/heads/{branch}",
+            "remote": remote,
+            "remote_url": remote_url,
+        }
+        if remote_url is None:
+            entry.update({
+                "classification": "inaccessible",
+                "ref_status": "unknown",
+                "reason": f"configured remote is not available: {provider}",
+            })
+            entry.update({
+                "protection": unknown_hosted_evidence(
+                    "hosted remote is inaccessible"
+                ),
+                "deployments": unknown_hosted_evidence(
+                    "hosted remote is inaccessible"
+                ),
+                "pull_requests": unknown_hosted_evidence(
+                    "hosted remote is inaccessible"
+                ),
+                "deletion_blocked": True,
+                "blocking_reasons": ["hosted-remote-inaccessible"],
+            })
+            entries.append(entry)
+            continue
+
+        probe = hosted_command(
+            ["git", "ls-remote", "--heads", remote, entry["full_ref"]],
+            root,
+        )
+        if probe.returncode:
+            detail = probe.stderr.strip() or probe.stdout.strip() or "no output"
+            entry.update({
+                "classification": "inaccessible",
+                "ref_status": "unknown",
+                "reason": detail,
+            })
+            evidence = {
+                "protection": unknown_hosted_evidence(
+                    "hosted remote is inaccessible"
+                ),
+                "deployments": unknown_hosted_evidence(
+                    "hosted remote is inaccessible"
+                ),
+                "pull_requests": unknown_hosted_evidence(
+                    "hosted remote is inaccessible"
+                ),
+            }
+            entry.update(evidence)
+            entry.update({
+                "deletion_blocked": True,
+                "blocking_reasons": ["hosted-remote-inaccessible"],
+            })
+            entries.append(entry)
+            continue
+
+        matching_lines = [
+            line.split()[0]
+            for line in probe.stdout.splitlines()
+            if line.split() and line.split()[-1] == entry["full_ref"]
+        ]
+        if not matching_lines:
+            entry.update({
+                "classification": "missing",
+                "ref_status": "missing",
+                "reason": "hosted branch ref was not returned by the remote",
+            })
+            evidence = {
+                "protection": unknown_hosted_evidence("hosted ref is missing"),
+                "deployments": unknown_hosted_evidence("hosted ref is missing"),
+                "pull_requests": unknown_hosted_evidence("hosted ref is missing"),
+            }
+            entry.update(evidence)
+            entry.update({
+                "deletion_blocked": True,
+                "blocking_reasons": ["hosted-ref-missing"],
+            })
+            entries.append(entry)
+            continue
+
+        entry.update({
+            "classification": "present",
+            "ref_status": "present",
+            "tip": matching_lines[0],
+        })
+        evidence = github_hosted_evidence(root, remote_url, branch)
+        entry.update(evidence)
+        blocking_reasons: list[str] = []
+        protection = evidence["protection"]
+        deployments = evidence["deployments"]
+        pull_requests = evidence["pull_requests"]
+        assert isinstance(protection, dict)
+        assert isinstance(deployments, dict)
+        assert isinstance(pull_requests, dict)
+        if protection.get("status") == "protected":
+            blocking_reasons.append("hosted-ref-protected")
+        elif protection.get("status") == "unknown":
+            blocking_reasons.append("hosted-protection-unknown")
+        if deployments.get("status") != "available":
+            blocking_reasons.append("hosted-deployment-evidence-unknown")
+        elif deployments.get("count", 0):
+            blocking_reasons.append("hosted-ref-has-deployments")
+        if pull_requests.get("status") != "available":
+            blocking_reasons.append("hosted-pull-request-evidence-unknown")
+        else:
+            for pull_request in pull_requests.get("items", []):
+                if not isinstance(pull_request, dict):
+                    continue
+                if pull_request.get("state") == "open":
+                    blocking_reasons.append("hosted-open-pull-request")
+                elif (
+                    pull_request.get("state") == "closed"
+                    and not pull_request.get("merged_at")
+                ):
+                    blocking_reasons.append(
+                        "hosted-closed-unmerged-pull-request"
+                    )
+        entry["deletion_blocked"] = bool(blocking_reasons)
+        entry["blocking_reasons"] = sorted(set(blocking_reasons))
+        entries.append(entry)
+
+    blocking_entries = [
+        f"{entry['provider']}:{entry['ref']}"
+        for entry in entries
+        if entry["deletion_blocked"]
+    ]
+    return {
+        "requested": True,
+        "entries": entries,
+        "deletion_blocked": bool(blocking_entries),
+        "blocking_entries": blocking_entries,
+    }
+
+
 def is_exception(path: Path, root: Path) -> bool:
     name = path.name
     if name in WEB_STANDARD_FILES or TOOL_REQUIRED_PATTERNS.match(name):
@@ -394,6 +745,18 @@ def parse_args() -> argparse.Namespace:
             "--verify-recovery; does not delete anything"
         ),
     )
+    parser.add_argument(
+        "--hosted-branch",
+        "--hosted-ref",
+        dest="hosted_branches",
+        action="append",
+        default=[],
+        metavar="PROVIDER=BRANCH",
+        help=(
+            "audit one exact hosted branch through the named Git remote; "
+            "repeat for each provider/ref pair"
+        ),
+    )
     return parser.parse_args()
 
 
@@ -449,6 +812,10 @@ def main() -> int:
             "naming_violations": audit_naming(root),
             "detritus_folders": audit_detritus(root),
         }
+        if args.hosted_branches:
+            report["hosted_lifecycle"] = audit_hosted_branches(
+                root, args.hosted_branches
+            )
         print(json.dumps(report, indent=2))
         return 0
     except (AuditError, OSError) as exc:
