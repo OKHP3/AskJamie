@@ -79,6 +79,7 @@ class FoundryArtifactTests(unittest.TestCase):
 
         self.assets = {
             "assets/css/theme.css": "body { color: #2e2b29; }\n",
+            "assets/css/critical-hero.css": ".hero { display: grid; }\n",
             "assets/js/app.js": "console.log('app');\n",
             "assets/js/mermaid-init.js": "console.log('mermaid');\n",
             "assets/js/universe-map.js": "console.log('universe');\n",
