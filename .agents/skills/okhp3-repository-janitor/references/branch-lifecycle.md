@@ -44,7 +44,12 @@ authorizes deletion by itself.
 ## Retention-ledger consistency gate
 
 Before proposing local-branch cleanup, compare every non-current local branch
-with the current written decision ledger. The read-only audit must report:
+with the current written decision ledger. The audit selects the active ledger
+deliberately: it uses `.agents/branch-decision-ledger.md` when that stable path
+exists, otherwise it uses the newest valid
+`.agents/branch-decision-ledger-YYYY-MM-DD.md` by ISO date. A historical audit
+must pass `--decision-ledger <path>` explicitly; that override always wins over
+active-ledger discovery. The read-only audit must report:
 
 - **missing branches** — local refs with no decision or explicit hold;
 - **tip-SHA drift** — a decision row whose recorded tip no longer matches the

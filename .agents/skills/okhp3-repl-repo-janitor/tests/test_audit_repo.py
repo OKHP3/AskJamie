@@ -60,6 +60,42 @@ class DecisionLedgerTests(unittest.TestCase):
     def branch_facts(self, root: Path) -> list[dict[str, object]]:
         return audit_repo.audit_branches(root, "main")
 
+    def test_selects_newest_dated_ledger_without_hardcoded_date(self) -> None:
+        root, _ = self.make_repo()
+        agents = root / ".agents"
+        agents.mkdir()
+        older = agents / "branch-decision-ledger-2026-01-15.md"
+        newer = agents / "branch-decision-ledger-2026-09-10.md"
+        older.write_text("older\n", encoding="utf-8")
+        newer.write_text("newer\n", encoding="utf-8")
+
+        self.assertEqual(audit_repo.select_decision_ledger(root), newer)
+
+    def test_stable_active_ledger_wins_over_dated_ledgers(self) -> None:
+        root, _ = self.make_repo()
+        agents = root / ".agents"
+        agents.mkdir()
+        stable = agents / "branch-decision-ledger.md"
+        dated = agents / "branch-decision-ledger-2099-12-31.md"
+        stable.write_text("stable\n", encoding="utf-8")
+        dated.write_text("dated\n", encoding="utf-8")
+
+        self.assertEqual(audit_repo.select_decision_ledger(root), stable)
+
+    def test_explicit_ledger_override_supports_historical_audit(self) -> None:
+        root, _ = self.make_repo()
+        agents = root / ".agents"
+        agents.mkdir()
+        historical = agents / "branch-decision-ledger-2024-05-01.md"
+        historical.write_text("historical\n", encoding="utf-8")
+
+        self.assertEqual(
+            audit_repo.select_decision_ledger(
+                root, ".agents/branch-decision-ledger-2024-05-01.md"
+            ),
+            historical,
+        )
+
     def test_reports_missing_drift_and_stale_rows(self) -> None:
         root, initial = self.make_repo()
         git(root, "branch", "reviewed")

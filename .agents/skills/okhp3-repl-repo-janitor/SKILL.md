@@ -52,7 +52,7 @@ Use this skill instead of those two when the scope is "one Repl, tidy the branch
 
 ```bash
 python3 .agents/skills/okhp3-repl-repo-janitor/scripts/audit-repo.py \
-  --root . --base origin/main --decision-ledger .agents/branch-decision-ledger-YYYY-MM-DD.md
+  --root . --base origin/main
 ```
 
 This performs a non-interactive `git fetch --all` and prints a JSON report: every local branch with its last-commit metadata,
@@ -65,6 +65,11 @@ include patch-equivalent versus unrepresented commits, tree hashes, and
 name-status file differences. The ledger check reports missing branches,
 tip-SHA drift, and stale ledger rows, while archive verification reports
 unrepresented or unverifiable archive work; either condition exits nonzero.
+By default, the audit selects `.agents/branch-decision-ledger.md` when that
+stable active-ledger path exists. Otherwise it selects the newest valid
+`.agents/branch-decision-ledger-YYYY-MM-DD.md` by ISO date. Pass
+`--decision-ledger <path>` to audit a specific historical ledger; an explicit
+path always overrides active-ledger discovery.
 If the remote cannot be refreshed, `remote_refresh.classification` is
 `remote-unavailable`; local branch, naming, and detritus evidence is still
 printed, but the nonzero exit status blocks cleanup planning until refresh

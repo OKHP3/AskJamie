@@ -61,7 +61,37 @@ DETRITUS_FOLDER_NAMES = {
 KEBAB_OK = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
 REPLIT_BRANCH_PATTERNS = re.compile(r"^(subrepl-|replit-agent$|agent/)")
 SHA_PATTERN = re.compile(r"^[0-9a-f]{40}$")
-DEFAULT_DECISION_LEDGER = ".agents/branch-decision-ledger-2026-09-07.md"
+ACTIVE_DECISION_LEDGER = ".agents/branch-decision-ledger.md"
+DATED_DECISION_LEDGER_PATTERN = re.compile(
+    r"^branch-decision-ledger-(\d{4}-\d{2}-\d{2})\.md$"
+)
+DEFAULT_DECISION_LEDGER = "auto"
+
+
+def select_decision_ledger(root: Path, requested: str | None = None) -> Path:
+    """Select the active ledger, or honor an explicit historical override."""
+    if requested and requested != DEFAULT_DECISION_LEDGER:
+        path = Path(requested)
+        return path if path.is_absolute() else root / path
+
+    stable = root / ACTIVE_DECISION_LEDGER
+    if stable.is_file():
+        return stable
+
+    candidates: list[tuple[str, Path]] = []
+    ledger_dir = root / ".agents"
+    for path in ledger_dir.glob("branch-decision-ledger-*.md"):
+        match = DATED_DECISION_LEDGER_PATTERN.fullmatch(path.name)
+        if match and path.is_file():
+            candidates.append((match.group(1), path))
+    if not candidates:
+        raise ValueError(
+            "no active decision ledger found; create "
+            f"{ACTIVE_DECISION_LEDGER} or a dated "
+            ".agents/branch-decision-ledger-YYYY-MM-DD.md, or pass "
+            "--decision-ledger PATH"
+        )
+    return max(candidates, key=lambda item: (item[0], item[1].name))[1]
 
 
 def sh(args, cwd):
@@ -516,8 +546,8 @@ def main():
         dest="decision_ledger",
         default=DEFAULT_DECISION_LEDGER,
         help=(
-            "markdown branch-decision ledger to compare with local refs "
-            f"(default: {DEFAULT_DECISION_LEDGER})"
+            "markdown branch-decision ledger to compare with local refs; "
+            "default selects the active ledger automatically"
         ),
     )
     ap.add_argument(
@@ -535,11 +565,8 @@ def main():
         print(json.dumps({"error": f"{root} is not a Git repository root"}))
         return 1
 
-    ledger_path = Path(args.decision_ledger)
-    if not ledger_path.is_absolute():
-        ledger_path = root / ledger_path
-
     try:
+        ledger_path = select_decision_ledger(root, args.decision_ledger)
         remote_refresh = refresh_remote(root)
         branches = audit_branches(root, args.base, refresh=False)
         current = next(
