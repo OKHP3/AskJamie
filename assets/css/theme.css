@@ -7985,6 +7985,23 @@ section[data-status-presentation="disclosure"] .project-card { border-top: 2px s
 
 .a14-editorial-hero { min-height: 0; }
 .a14-editorial-hero .hero-inner { padding-top: 2rem; padding-bottom: 2rem; }
+/* Let enlarged AskJamie text reflow instead of sizing grids to long words. */
+.askjamie-main .askjamie-hero-inner { width: 100%; min-width: 0; }
+.askjamie-main main { overflow-wrap: anywhere; }
+.askjamie-main .site-header .container { flex-wrap: wrap; }
+.askjamie-main .primary-nav > ul { flex-wrap: wrap; }
+.askjamie-main .grid > *, .askjamie-main .two-column > * { min-width: 0; }
+.askjamie-main .askjamie-hero-grid > *,
+.askjamie-main .footer-grid > * { min-width: 0; overflow-wrap: anywhere; }
+.askjamie-main .hero-actions .btn { max-width: 100%; white-space: normal; overflow-wrap: anywhere; }
+@media (max-width: 899px) {
+  .askjamie-main .askjamie-hero-grid,
+  .askjamie-main .footer-grid { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 768px) {
+  .askjamie-main .askjamie-hero-copy { padding-inline: 0; }
+  .askjamie-main .primary-nav .submenu { min-width: 0; }
+}
 @media (max-width: 600px) {
  body:not(.glee-main):not(.askjamie-main) .a14-editorial-hero h1 { font-size: 1.9rem; }
  .a14-editorial-hero .hero-inner { padding-top: 1.25rem; padding-bottom: 1.25rem; }
