@@ -280,7 +280,7 @@ body.askjamie-main a {
   min-height: 14rem;
 }
 
-.askjamie-main .askjamie-hero .mermaid:not([data-universe-ready="1"]) {
+.askjamie-main .askjamie-mermaid-shell .mermaid:not([data-universe-ready="1"]) {
   visibility: hidden;
   min-height: 2rem;
   font-size: 0;
