@@ -390,7 +390,10 @@ document.addEventListener("DOMContentLoaded", () => {
         { threshold: 0.15 }
       );
 
-      revealEls.forEach((el) => revealObserver.observe(el));
+      revealEls.forEach((el) => {
+        el.classList.add("is-reveal-ready");
+        revealObserver.observe(el);
+      });
     } else {
       document.querySelectorAll(".reveal-on-scroll").forEach((el) => el.classList.add("is-visible"));
     }
@@ -626,10 +629,12 @@ document.addEventListener("DOMContentLoaded", () => {
   // French is the only reviewed, indexable locale. German and Spanish remain
   // noindex drafts with intentionally empty indexes, so they search the
   // English catalog until their publication gate explicitly promotes them.
-  const SEARCH_INDEXES = { fr: "/assets/data/search-index.fr.json" };
+  const isAskJamie = document.body.classList.contains("askjamie-main");
+  // A sibling's published locales do not establish AskJamie catalog coverage.
+  const SEARCH_INDEXES = isAskJamie ? {} : { fr: "/assets/data/search-index.fr.json" };
   const pageLocale = (document.documentElement.lang || "en").toLowerCase().split("-", 1)[0];
   const INDEX_URL = SEARCH_INDEXES[pageLocale] || "/assets/data/search-index.json";
-  const usesEnglishFallback = pageLocale === "de" || pageLocale === "es";
+  const usesEnglishFallback = isAskJamie ? pageLocale !== "en" : pageLocale === "de" || pageLocale === "es";
   const scopeNotice = usesEnglishFallback ? " Search English content." : "";
   const isGlee = () => document.body.classList.contains("glee-main");
   const searchCopy = () => isGlee() ? {
@@ -639,9 +644,9 @@ document.addEventListener("DOMContentLoaded", () => {
     suggestions: ["resume", "budget", "scheduling", "travel", "journal"],
   } : document.body.classList.contains("askjamie-main") ? {
     label: "Search AskJamie",
-    placeholder: "Search tools, guides, and questions…",
-    introduction: "Find tools, guides, and pages across AskJamie.",
-    suggestions: ["writing", "resume", "decisions", "clarity"],
+    placeholder: "Search AskJamie: lenses, BrandGuard cases, and how it works…",
+    introduction: "Search AskJamie pages, the Lens System, and public BrandGuard demonstrations.",
+    suggestions: ["BrandGuard", "BFS", "résumé", "portfolio", "enterprise", "Coca-Cola"],
   } : {
     label: okhLocaleText("Search OverKill Hill", "Rechercher sur OverKill Hill"),
     placeholder: okhLocaleText("Search the Forge: articles, projects, ideas…", "Rechercher dans la forge : articles, projets, idées…"),
@@ -649,6 +654,8 @@ document.addEventListener("DOMContentLoaded", () => {
     suggestions: /^fr(?:-|$)/i.test(document.documentElement.lang || "")
       ? ["projets", "protocoles", "contact", "IA"]
       : ["mermaid", "ROY", "council", "manifesto", "diagram", "visual edition"],
+    suggestionLabels: /^fr(?:-|$)/i.test(document.documentElement.lang || "")
+      ? null : ["Mermaid", "ROY", "Council", "Manifesto", "diagram", "v0.3 Visual Edition"],
   };
 
   // ----- index loader (cached promise) -----
@@ -873,7 +880,7 @@ document.addEventListener("DOMContentLoaded", () => {
       '<div class="okh-search-empty">' +
         "<p>" + escapeHtml(searchCopy().introduction) + "</p>" +
         '<ul class="okh-search-hint-list">' +
-          searchCopy().suggestions.map((q) => '<li><button type="button" data-q="' + escapeHtml(q) + '">' + escapeHtml(q) + '</button></li>').join("") +
+          searchCopy().suggestions.map((q, i) => '<li><button type="button" data-q="' + escapeHtml(q) + '">' + escapeHtml(searchCopy().suggestionLabels?.[i] || q) + '</button></li>').join("") +
         "</ul>" +
       "</div>"
     );
@@ -900,6 +907,7 @@ document.addEventListener("DOMContentLoaded", () => {
       results[Math.min(index, results.length - 1)].focus();
     }
     input.addEventListener("keydown", event => {
+      if (event.isComposing || event.keyCode === 229 || event.ctrlKey || event.metaKey || event.altKey || event.shiftKey) return;
       if (event.key === "ArrowDown" || event.key === "ArrowUp") {
         event.preventDefault();
         const current = links().findIndex(link => link.getAttribute("data-active") === "true");
