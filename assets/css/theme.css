@@ -7988,7 +7988,7 @@ section[data-status-presentation="disclosure"] .project-card { border-top: 2px s
 /* Let enlarged AskJamie text reflow instead of sizing grids to long words. */
 .askjamie-main .askjamie-hero-inner { width: 100%; min-width: 0; }
 .askjamie-main main { overflow-wrap: anywhere; }
-.askjamie-main .site-header .container { flex-wrap: wrap; }
+.askjamie-main .site-header .container { flex-wrap: wrap; height: auto; min-height: 3.75rem; }
 .askjamie-main .primary-nav > ul { flex-wrap: wrap; }
 .askjamie-main .grid > *, .askjamie-main .two-column > * { min-width: 0; }
 .askjamie-main .askjamie-hero-grid > *,
