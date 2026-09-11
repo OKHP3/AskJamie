@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 const base = process.env.BASE_URL || "http://127.0.0.1:5000";
 const browser = await chromium.launch({ headless: true });
 try {
-  for (const width of [320, 390, 768, 1280]) {
+  for (const width of [320, 390, 768, 800, 1280]) {
     for (const fontSize of [16, 32]) {
       const page = await browser.newPage({ viewport: { width, height: 900 } });
       await page.route("**/*", route => new URL(route.request().url()).origin === new URL(base).origin ? route.continue() : route.abort());
@@ -26,6 +26,13 @@ try {
         assert.deepEqual(dimensions.content, [], `${width}px/${fontSize}px ${label}: content is clipped`);
       };
       await check("navigation closed");
+      if (width > 768) {
+        assert.ok(await page.locator(".site-header .container").evaluate(header => {
+          const bottom = header.getBoundingClientRect().bottom;
+          return [...header.children].every(child =>
+            child.getBoundingClientRect().height === 0 || child.getBoundingClientRect().bottom <= bottom + 1);
+        }), `${width}px/${fontSize}px: wrapped header controls overlap following content`);
+      }
       const menu = page.locator(".nav-toggle");
       if (await menu.isVisible()) {
         await menu.click();
