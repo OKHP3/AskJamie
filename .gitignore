@@ -88,3 +88,9 @@ playwright-report/
 coverage/
 .next/
 .vite/
+
+
+# ADR-0007: generated output is not tracked
+dist-pages/
+assets/audit/
+*.pyc

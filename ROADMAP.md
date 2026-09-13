@@ -8,8 +8,8 @@ capability from dated verification and remaining uncertainty.
 
 ## Current
 
-- Vanilla static HTML, CSS, and browser JavaScript, with 27 source pages and
-  25 sitemap/search routes. Nine developer templates are separate from those
+- Vanilla static HTML, CSS, and browser JavaScript, with 28 source pages and
+  26 sitemap/search routes. Nine developer templates are separate from those
   source pages. Generated release copies are not another product.
 - GitHub Actions validates source, asset fingerprints, generated search data,
   Python regressions, browser behavior, and the canonical audit before

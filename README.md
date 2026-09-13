@@ -107,7 +107,7 @@ AI is becoming the default front door for how people find and evaluate brands. A
 Run the release checks after any HTML or content change:
 
 ```bash
-python3 scripts/audit-site.py --quiet        # 0 issues target across 27 source pages
+python3 scripts/audit-site.py --quiet        # 0 issues target across 28 source pages
 node scripts/responsive-qa.mjs --static      # 200/200 static row target
 python3 scripts/build-search-index.py        # rebuild after any copy change
 python3 scripts/build-search-index.py --check # verify committed index is current
@@ -117,8 +117,8 @@ python3 scripts/prepare-pages-artifact.py --output .scratch/pages-review
 The auditor checks: title/description length, canonical links, OG fields, image alt/width/height/loading, external link `noopener noreferrer`, CSP + referrer meta, theme-color, duplicate ids, broken in-page anchors, og:image file existence, sitemap ↔ disk reconciliation, search-index ↔ disk reconciliation. The site validator also guards the first meaningful use of BrandGuard™, OKHP³, OverKill Hill P³™, and Lens System with nearby plain-language definitions.
 
 The September 5 source inventory has 36 HTML files: nine developer templates
-and 27 QA-relevant source pages. The sitemap and search index contain 25
-content routes. The responsive script evaluates 25 routes at eight viewport
+and 28 QA-relevant source pages. The sitemap and search index contain 26
+content routes. The responsive script evaluates 26 routes at eight viewport
 configurations. Generated `dist-pages/` copies are not additional source pages.
 Use the artifact-preparation manifest for the current public file count.
 

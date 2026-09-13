@@ -1,4 +1,4 @@
-modules = ["web", "nodejs-20", "python-3.11"]
+modules = ["web", "nodejs-22", "python-3.11"]
 [agent]
 expertMode = true
 integrations = ["github:1.0.0"]
@@ -32,7 +32,7 @@ author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "python3 -m http.server 5000 --bind 0.0.0.0"
+args = "python3 scripts/serve-site.py"
 waitForPort = 5000
 
 [workflows.workflow.metadata]

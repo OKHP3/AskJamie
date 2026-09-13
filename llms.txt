@@ -1,6 +1,6 @@
 # AskJamie™ — Friendly AI helpdesk for You
 
-> Last-Updated: 2026-09-04
+> Last-Updated: 2026-09-13
 
 > AskJamie™ is the strategic AI persona at the top of the OverKill Hill P³™
 > ecosystem — a calm, articulate "thinking partner" that unifies how
