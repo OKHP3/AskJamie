@@ -128,6 +128,8 @@ body.askjamie-main a {
 
 .askjamie-main .askjamie-hero {
   position: relative;
+  display: flex;
+  align-items: center;
   min-height: 0;
   padding: 2.5rem 0 2.75rem;
   overflow: hidden;
@@ -197,12 +199,12 @@ body.askjamie-main a {
 
 .askjamie-main .askjamie-logo--crumb {
   display: inline-block;
-  margin-bottom: 0;
+  margin-bottom: 1rem;
 }
 
 .askjamie-main .askjamie-logo--crumb img {
   width: auto;
-  max-width: 7.5rem;
+  max-width: 12rem;
   height: auto;
 }
 
@@ -339,5 +341,24 @@ body.askjamie-main a {
     flex-wrap: wrap;
     gap: 0.25rem;
     padding: 0.6rem 0.75rem;
+  }
+}
+
+@media (max-width: 899px) {
+  .askjamie-brandguard-page .askjamie-logo--crumb {
+    margin-bottom: 0;
+  }
+
+  .askjamie-brandguard-page .askjamie-logo--crumb img {
+    max-width: 7.5rem;
+  }
+
+  .askjamie-brandguard-page .askjamie-hero-copy {
+    padding-inline: 0;
+  }
+
+  .askjamie-brandguard-page .askjamie-hero-copy h1 {
+    font-size: 2rem;
+    letter-spacing: -0.02em;
   }
 }

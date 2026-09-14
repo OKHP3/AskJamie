@@ -354,6 +354,35 @@ either route, so the budget remains an active measurement target rather than
 being represented as solved. The raw controlled and normal reports are kept
 under the dated `assets/audit/` directories for this run.
 
+## Task #135 BrandGuard mobile hero delay follow-up
+
+On **2026-09-14**, the BrandGuard critical layer was aligned with the existing
+mobile hero cascade without replacing the branded artwork: the compact
+breadcrumb mark remains the documented 120px mobile treatment, the fallback
+heading keeps the final mobile copy width and line count, and the critical
+hero uses the same flex alignment as the shared theme. Universe keeps its
+existing route behavior.
+
+Repeat mobile Lighthouse samples remain above the 2.5 second target:
+
+| Page | Controlled LCP | Normal LCP | Controlled FCP | Controlled Speed Index | Controlled TBT |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| BrandGuard hub | 3.229 s | 3.228 s | 1.668 s | 1.668 s | 0 ms |
+
+The controlled run blocked Google Fonts and analytics; the normal run did not.
+They are separate lab conditions and neither is field evidence. The Lighthouse
+run reports zero blocking time, `lcpInvalidated: false`, and an observed local
+first paint/first contentful paint/LCP timestamp of 87 ms, while its emulated
+mobile metric reports the 1.561 second gap between Speed Index and LCP shown
+above. A direct local Playwright paint observer also records the hero tagline
+as the LCP candidate at 112 ms without Lighthouse emulation.
+
+This is measured runner variance/constraint rather than evidence of a remaining
+page task. The 2.5 second budget is therefore not claimed as passed; an owner
+must approve any revised budget before this constraint can be treated as
+closed. Controlled and normal samples remain explicitly separated from field
+evidence.
+
 ## Visual reference set
 
 The committed reference images are in `assets/audit/visual-baseline/`:
