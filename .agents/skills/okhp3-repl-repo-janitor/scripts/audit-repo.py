@@ -68,6 +68,7 @@ DATED_DECISION_LEDGER_PATTERN = re.compile(
     r"^branch-decision-ledger-(\d{4}-\d{2}-\d{2})\.md$"
 )
 DEFAULT_DECISION_LEDGER = "auto"
+SUPPORTED_RETENTION_DECISIONS = {"keep", "archive"}
 
 
 def select_decision_ledger(root: Path, requested: str | None = None) -> Path:
@@ -154,6 +155,7 @@ class DecisionLedger(NamedTuple):
     exclusions: list[str]
     archive_reconciliations: list[dict[str, str]]
     malformed_decision_rows: list[dict[str, object]]
+    unsupported_decision_labels: list[dict[str, object]]
     malformed_exclusion_entries: list[dict[str, object]]
     duplicate_exclusion_entries: list[dict[str, object]]
 
@@ -206,6 +208,7 @@ def parse_decision_ledger(path: Path) -> DecisionLedger:
     exclusions: list[str] = []
     archive_reconciliations: list[dict[str, str]] = []
     malformed_decision_rows: list[dict[str, object]] = []
+    unsupported_decision_labels: list[dict[str, object]] = []
     malformed_exclusion_entries: list[dict[str, object]] = []
     duplicate_exclusion_entries: list[dict[str, object]] = []
     seen_exclusions: dict[str, int] = {}
@@ -256,13 +259,22 @@ def parse_decision_ledger(path: Path) -> DecisionLedger:
                     "reason": "tip SHA cell is empty",
                 })
                 continue
+            decision = re.sub(
+                r"^\*\*|\*\*$", "", cells[1]
+            ).strip().lower()
+            branch = branch_match.group(1)
             decisions.append({
-                "branch": branch_match.group(1),
-                "decision": re.sub(
-                    r"^\*\*|\*\*$", "", cells[1]
-                ).strip().lower(),
+                "branch": branch,
+                "decision": decision,
                 "tip_sha": cells[2].strip("`").lower(),
             })
+            if decision not in SUPPORTED_RETENTION_DECISIONS:
+                unsupported_decision_labels.append({
+                    "line": line_number,
+                    "branch": branch,
+                    "decision": decision,
+                    "supported_decisions": sorted(SUPPORTED_RETENTION_DECISIONS),
+                })
         elif section == "archive reconciliation evidence":
             cells = _table_cells(line)
             if not cells:
@@ -342,6 +354,7 @@ def parse_decision_ledger(path: Path) -> DecisionLedger:
         exclusions=sorted(set(exclusions)),
         archive_reconciliations=archive_reconciliations,
         malformed_decision_rows=malformed_decision_rows,
+        unsupported_decision_labels=unsupported_decision_labels,
         malformed_exclusion_entries=malformed_exclusion_entries,
         duplicate_exclusion_entries=duplicate_exclusion_entries,
     )
@@ -411,6 +424,7 @@ def audit_decision_ledger(
             stale_ledger_rows, key=lambda item: (item["branch"], item["kind"])
         ),
         "malformed_decision_rows": ledger.malformed_decision_rows,
+        "unsupported_decision_labels": ledger.unsupported_decision_labels,
         "malformed_exclusion_entries": ledger.malformed_exclusion_entries,
         "duplicate_exclusion_entries": ledger.duplicate_exclusion_entries,
         "ok": not (
@@ -419,6 +433,7 @@ def audit_decision_ledger(
             or invalid_tip_sha
             or stale_ledger_rows
             or ledger.malformed_decision_rows
+            or ledger.unsupported_decision_labels
             or ledger.malformed_exclusion_entries
             or ledger.duplicate_exclusion_entries
         ),

@@ -178,6 +178,49 @@ class DecisionLedgerTests(unittest.TestCase):
         )
         self.assertFalse(result["ok"])
 
+    def test_accepts_supported_keep_and_archive_decisions(self) -> None:
+        root, initial = self.make_repo()
+        git(root, "branch", "kept")
+        git(root, "branch", "archived")
+        ledger = self.write_ledger(
+            root,
+            "\n".join([
+                f"| `kept` | **keep** | `{initial}` | active |",
+                f"| `archived` | **archive** | `{initial}` | retained |",
+            ]),
+        )
+
+        result = audit_repo.audit_decision_ledger(
+            root, self.branch_facts(root), "main", ledger
+        )
+
+        self.assertEqual(result["unsupported_decision_labels"], [])
+        self.assertTrue(result["ok"])
+
+    def test_reports_unsupported_decision_with_line_and_branch_context(self) -> None:
+        root, initial = self.make_repo()
+        git(root, "branch", "ambiguous")
+        ledger = self.write_ledger(
+            root,
+            f"| `ambiguous` | **retain** | `{initial}` | unclear label |",
+        )
+
+        result = audit_repo.audit_decision_ledger(
+            root, self.branch_facts(root), "main", ledger
+        )
+
+        self.assertEqual(
+            result["unsupported_decision_labels"],
+            [{
+                "line": 4,
+                "branch": "ambiguous",
+                "decision": "retain",
+                "supported_decisions": ["archive", "keep"],
+            }],
+        )
+        self.assertEqual(result["missing_branches"], [])
+        self.assertFalse(result["ok"])
+
     def test_reports_malformed_and_duplicate_exclusions(self) -> None:
         root, initial = self.make_repo()
         git(root, "branch", "held")

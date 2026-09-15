@@ -62,9 +62,12 @@ decision ledger, and whether each named archive tip is represented on the
 active line. Use `--active-line <branch-or-ref>` when the checked-out branch is
 not the active line; otherwise the current branch is used. Archive reports
 include patch-equivalent versus unrepresented commits, tree hashes, and
-name-status file differences. The ledger check reports missing branches,
-tip-SHA drift, and stale ledger rows, while archive verification reports
-unrepresented or unverifiable archive work; either condition exits nonzero.
+name-status file differences. Branch-decision rows accept only the retention
+labels **keep** and **archive**; unsupported labels are reported with their
+line and branch and fail the consistency gate. The ledger check also reports
+missing branches, tip-SHA drift, and stale ledger rows, while archive
+verification reports unrepresented or unverifiable archive work; either
+condition exits nonzero.
 By default, the audit selects `.agents/branch-decision-ledger.md` when that
 stable active-ledger path exists. Otherwise it selects the newest valid
 `.agents/branch-decision-ledger-YYYY-MM-DD.md` by ISO date. Pass
