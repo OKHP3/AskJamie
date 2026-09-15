@@ -467,51 +467,93 @@ class AuditRepoTests(unittest.TestCase):
         self.assertEqual(missing["classification"], "missing")
         self.assertTrue(report["deletion_blocked"])
 
-    def test_approved_local_deletion_preserves_recovery_after_maintenance(
+    def test_approved_local_deletion_survives_supported_maintenance_modes(
         self,
     ) -> None:
-        directory = tempfile.TemporaryDirectory()
-        self.addCleanup(directory.cleanup)
-        root = self.git_repo_from(directory)
-        self.git(root, "branch", "feature/recover")
-        self.git(root, "checkout", "-q", "feature/recover")
-        (root / "feature.txt").write_text("recover me\n", encoding="utf-8")
-        self.git(root, "add", "feature.txt")
-        self.git(root, "commit", "-qm", "feature commit")
-        feature_tip = self.git(root, "rev-parse", "feature/recover")
-        self.git(root, "checkout", "-q", "main")
-        self.git(root, "update-ref", "refs/archive/existing", "HEAD")
-        self.git(root, "update-ref", "refs/recovery/existing", "HEAD")
-        self.git(root, "update-ref", "refs/remotes/origin/main", "HEAD")
-        (root / "README.md").write_text("stashed work\n", encoding="utf-8")
-        self.git(root, "stash", "push", "-qm", "preserve this")
+        results = []
+        for mode in audit_repo.RECOVERY_MAINTENANCE_COMMANDS:
+            with self.subTest(mode=mode):
+                with tempfile.TemporaryDirectory() as directory:
+                    root = self.git_repo_at(Path(directory))
+                    self.git(root, "branch", "feature/recover")
+                    self.git(root, "checkout", "-q", "feature/recover")
+                    (root / "feature.txt").write_text(
+                        "recover me\n", encoding="utf-8"
+                    )
+                    self.git(root, "add", "feature.txt")
+                    self.git(root, "commit", "-qm", "feature commit")
+                    feature_tip = self.git(root, "rev-parse", "feature/recover")
+                    self.git(root, "checkout", "-q", "main")
+                    self.git(root, "update-ref", "refs/archive/existing", "HEAD")
+                    self.git(root, "update-ref", "refs/recovery/existing", "HEAD")
+                    self.git(
+                        root, "update-ref", "refs/remotes/origin/main", "HEAD"
+                    )
+                    (root / "README.md").write_text(
+                        "stashed work\n", encoding="utf-8"
+                    )
+                    self.git(root, "stash", "push", "-qm", "preserve this")
 
-        before = audit_repo.recovery_snapshot(root)
-        self.git(root, "update-ref", "refs/recovery/feature-recover", feature_tip)
-        self.git(root, "branch", "-D", "feature/recover")
-        self.git(root, "repack", "-ad")
-        after = audit_repo.recovery_snapshot(root)
-        result = audit_repo.compare_recovery_snapshots(
-            before, after, ["feature/recover"]
+                    before = audit_repo.recovery_snapshot(root)
+                    self.git(
+                        root,
+                        "update-ref",
+                        "refs/recovery/feature-recover",
+                        feature_tip,
+                    )
+                    self.git(root, "branch", "-D", "feature/recover")
+                    maintenance = audit_repo.run_recovery_maintenance(root, mode)
+                    results.append(maintenance)
+                    if maintenance["status"] == "unavailable":
+                        continue
+
+                    after = audit_repo.recovery_snapshot(root)
+                    result = audit_repo.compare_recovery_snapshots(
+                        before, after, ["feature/recover"]
+                    )
+
+                    self.assertTrue(result["passed"], result["errors"])
+                    self.assertEqual(result["changed_refs"], [])
+                    self.assertTrue(result["stashes_unchanged"])
+                    self.assertEqual(result["unreachable_objects"], [])
+                    self.assertEqual(
+                        before["refs"]["refs/archive/existing"],
+                        after["refs"]["refs/archive/existing"],
+                    )
+                    self.assertEqual(
+                        before["refs"]["refs/remotes/origin/main"],
+                        after["refs"]["refs/remotes/origin/main"],
+                    )
+                    self.assertEqual(
+                        self.git(
+                            root,
+                            "rev-parse",
+                            "refs/recovery/feature-recover",
+                        ),
+                        feature_tip,
+                    )
+                    self.git(root, "cat-file", "-e", f"{feature_tip}^{{commit}}")
+
+        self.assertEqual(
+            [item["mode"] for item in results],
+            list(audit_repo.RECOVERY_MAINTENANCE_COMMANDS),
+        )
+        self.assertTrue(
+            all(item["status"] in {"available", "unavailable"} for item in results)
         )
 
-        self.assertTrue(result["passed"], result["errors"])
-        self.assertEqual(result["changed_refs"], [])
-        self.assertTrue(result["stashes_unchanged"])
-        self.assertEqual(result["unreachable_objects"], [])
-        self.assertEqual(
-            before["refs"]["refs/archive/existing"],
-            after["refs"]["refs/archive/existing"],
+    def test_unsupported_maintenance_command_is_reported_unavailable(self) -> None:
+        completed = subprocess.CompletedProcess(
+            ["git", "maintenance", "run", "--task=gc"],
+            129,
+            stdout="",
+            stderr="error: 'maintenance' is not a git command",
         )
-        self.assertEqual(
-            before["refs"]["refs/remotes/origin/main"],
-            after["refs"]["refs/remotes/origin/main"],
-        )
-        self.assertEqual(
-            self.git(root, "rev-parse", "refs/recovery/feature-recover"),
-            feature_tip,
-        )
-        self.git(root, "cat-file", "-e", f"{feature_tip}^{{commit}}")
+        with patch.object(audit_repo.subprocess, "run", return_value=completed):
+            result = audit_repo.run_recovery_maintenance(Path("."), "maintenance-gc")
+
+        self.assertEqual(result["status"], "unavailable")
+        self.assertIn("not a git command", result["reason"])
 
     def test_guard_is_read_only_without_exact_approval(self) -> None:
         directory = tempfile.TemporaryDirectory()
@@ -759,7 +801,10 @@ class AuditRepoTests(unittest.TestCase):
 
     @classmethod
     def git_repo_from(cls, directory: tempfile.TemporaryDirectory[str]) -> Path:
-        root = Path(directory.name)
+        return cls.git_repo_at(Path(directory.name))
+
+    @classmethod
+    def git_repo_at(cls, root: Path) -> Path:
         cls.git(root, "init", "-q", "-b", "main")
         cls.git(root, "config", "user.email", "test@example.com")
         cls.git(root, "config", "user.name", "Test User")

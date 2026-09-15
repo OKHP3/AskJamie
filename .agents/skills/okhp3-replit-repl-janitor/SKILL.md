@@ -229,12 +229,16 @@ reachable before the operation changes. It rejects new refs outside
 `refs/recovery/` and requires a recovery ref pointing to every approved
 branch tip.
 
-The recovery guard must also survive ordinary Git maintenance. In an isolated
-fixture, `git repack -ad` is a safe deterministic check: it rewrites packed
-object storage without pruning refs. Run the recovery verification afterward
-and confirm each deleted tip still resolves through its `refs/recovery/` ref.
-If the recovery ref is missing, the guard must fail rather than treating the
-maintenance run as successful.
+The recovery guard must also survive ordinary Git maintenance. Use a separate
+disposable fixture for each supported storage-changing mode: `git repack -ad`,
+`git gc --prune=now`, `git prune --expire=now`, and
+`git maintenance run --task=gc`. Run the recovery verification afterward and
+confirm each deleted tip still resolves through its `refs/recovery/` ref. Git
+versions that do not provide a command or task must report that mode as
+`unavailable`; they must not count it as a passing check. A command that exists
+but fails is a failed check, not an unavailable one. If the recovery ref is
+missing, the guard must fail rather than treating the maintenance run as
+successful.
 
 ### 7. Verify and report
 

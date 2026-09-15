@@ -51,6 +51,12 @@ IGNORED_DIRS = {
 }
 KEBAB_OK = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 REPLIT_BRANCH_PATTERNS = re.compile(r"^(subrepl-|replit-agent$|agent/)")
+RECOVERY_MAINTENANCE_COMMANDS = {
+    "repack": ["git", "repack", "-ad"],
+    "gc": ["git", "gc", "--prune=now"],
+    "prune": ["git", "prune", "--expire=now"],
+    "maintenance-gc": ["git", "maintenance", "run", "--task=gc"],
+}
 
 
 class AuditError(RuntimeError):
@@ -64,6 +70,48 @@ def run(args: list[str], cwd: Path) -> str:
         detail = result.stderr.strip() or result.stdout.strip() or "no output"
         raise AuditError(f"`{command}` failed ({result.returncode}): {detail}")
     return result.stdout.strip()
+
+
+def run_recovery_maintenance(root: Path, mode: str) -> dict[str, object]:
+    """Run one declared maintenance mode and report unsupported Git features."""
+    if mode not in RECOVERY_MAINTENANCE_COMMANDS:
+        raise AuditError(f"unsupported recovery maintenance mode: {mode}")
+    command = RECOVERY_MAINTENANCE_COMMANDS[mode]
+    result = subprocess.run(
+        command,
+        cwd=root,
+        capture_output=True,
+        text=True,
+    )
+    detail = result.stderr.strip() or result.stdout.strip()
+    unavailable_markers = (
+        "is not a git command",
+        "unknown subcommand",
+        "unknown option",
+        "invalid option",
+        "unrecognized option",
+        "is not a valid task",
+    )
+    if result.returncode and (
+        result.returncode == 129
+        or any(marker in detail.lower() for marker in unavailable_markers)
+    ):
+        return {
+            "mode": mode,
+            "command": command,
+            "status": "unavailable",
+            "reason": detail or f"Git exited with status {result.returncode}",
+        }
+    if result.returncode:
+        raise AuditError(
+            f"`{' '.join(command)}` failed ({result.returncode}): "
+            f"{detail or 'no output'}"
+        )
+    return {
+        "mode": mode,
+        "command": command,
+        "status": "available",
+    }
 
 
 def hosted_command(args: list[str], cwd: Path) -> subprocess.CompletedProcess[str]:
