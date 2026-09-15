@@ -294,12 +294,29 @@ def approved_local_ref(branch: str) -> str:
     return f"refs/heads/{branch}"
 
 
+def parse_recovery_retirement(value: str) -> tuple[str, str]:
+    """Parse one exact recovery-ref retirement decision and its evidence."""
+    ref, separator, evidence = value.partition("=")
+    if (
+        not separator
+        or not ref.startswith("refs/recovery/")
+        or ref == "refs/recovery/"
+        or not evidence.strip()
+    ):
+        raise AuditError(
+            "recovery retirement must use "
+            "refs/recovery/<exact-ref>=<evidence work is no longer needed>"
+        )
+    return ref, evidence.strip()
+
+
 def compare_recovery_snapshots(
     before: dict[str, object],
     after: dict[str, object],
     approved_deletions: Iterable[str] = (),
+    approved_recovery_retirements: Iterable[str] = (),
 ) -> dict[str, object]:
-    """Compare snapshots, permitting only exact approved local deletions."""
+    """Compare snapshots, permitting only exact, evidenced ref removals."""
     before = validate_recovery_snapshot(before)
     after = validate_recovery_snapshot(after)
     before_refs = before["refs"]
@@ -308,6 +325,11 @@ def compare_recovery_snapshots(
     assert isinstance(after_refs, dict)
 
     approved_refs = {approved_local_ref(branch) for branch in approved_deletions}
+    retirement_decisions = dict(
+        parse_recovery_retirement(value)
+        for value in approved_recovery_retirements
+    )
+    approved_recovery_refs = set(retirement_decisions)
     current_branch = before.get("current_branch")
     if "refs/heads/main" in approved_refs:
         raise AuditError("main is protected and cannot be approved for deletion")
@@ -319,8 +341,12 @@ def compare_recovery_snapshots(
         name for name in set(before_refs) & set(after_refs)
         if before_refs[name] != after_refs[name]
     )
-    unexpected_removed_refs = sorted(set(removed_refs) - approved_refs)
+    allowed_removed_refs = approved_refs | approved_recovery_refs
+    unexpected_removed_refs = sorted(set(removed_refs) - allowed_removed_refs)
     missing_approved_refs = sorted(approved_refs - set(removed_refs))
+    missing_approved_recovery_refs = sorted(
+        approved_recovery_refs - set(removed_refs)
+    )
 
     approved_tip_ids = {
         before_refs[ref] for ref in approved_refs if ref in before_refs
@@ -362,6 +388,11 @@ def compare_recovery_snapshots(
             "approved local refs were not removed: "
             + ", ".join(missing_approved_refs)
         )
+    if missing_approved_recovery_refs:
+        errors.append(
+            "approved recovery refs were not removed: "
+            + ", ".join(missing_approved_recovery_refs)
+        )
     if changed_refs:
         errors.append("refs changed: " + ", ".join(changed_refs))
     if invalid_added_refs:
@@ -383,12 +414,17 @@ def compare_recovery_snapshots(
     return {
         "passed": not errors,
         "approved_local_deletions": sorted(approved_refs),
+        "approved_recovery_retirements": [
+            {"ref": ref, "evidence": retirement_decisions[ref]}
+            for ref in sorted(retirement_decisions)
+        ],
         "removed_refs": removed_refs,
         "changed_refs": changed_refs,
         "added_refs": added_refs,
         "unexpected_removed_refs": unexpected_removed_refs,
         "invalid_added_refs": invalid_added_refs,
         "missing_recovery_refs": missing_recovery_refs,
+        "missing_approved_recovery_refs": missing_approved_recovery_refs,
         "stashes_unchanged": not stash_changed,
         "unreachable_objects": unreachable_objects,
         "errors": errors,
@@ -919,6 +955,17 @@ def parse_args() -> argparse.Namespace:
         ),
     )
     parser.add_argument(
+        "--approve-recovery-retirement",
+        action="append",
+        default=[],
+        metavar="REF=EVIDENCE",
+        help=(
+            "allow exactly this refs/recovery/ ref to be absent during "
+            "--verify-recovery and record why its protected work is no longer "
+            "needed; does not delete anything"
+        ),
+    )
+    parser.add_argument(
         "--hosted-branch",
         "--hosted-ref",
         dest="hosted_branches",
@@ -950,6 +997,10 @@ def main() -> int:
             raise AuditError(
                 "--approve-local-deletion requires --verify-recovery"
             )
+        if args.approve_recovery_retirement and not args.verify_recovery:
+            raise AuditError(
+                "--approve-recovery-retirement requires --verify-recovery"
+            )
         if args.fetch:
             run(["git", "fetch", "--all"], root)
         if args.snapshot_recovery:
@@ -967,6 +1018,7 @@ def main() -> int:
                 before,
                 recovery_snapshot(root),
                 args.approve_local_deletion,
+                args.approve_recovery_retirement,
             )
             print(json.dumps({
                 "snapshot_file": str(Path(args.verify_recovery).resolve()),

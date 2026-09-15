@@ -576,6 +576,66 @@ class AuditRepoTests(unittest.TestCase):
             result["removed_refs"],
         )
 
+    def test_guard_rejects_unapproved_recovery_ref_removal(self) -> None:
+        directory = tempfile.TemporaryDirectory()
+        self.addCleanup(directory.cleanup)
+        root = self.git_repo_from(directory)
+        self.git(root, "update-ref", "refs/recovery/retained", "HEAD")
+        before = audit_repo.recovery_snapshot(root)
+        self.git(root, "update-ref", "-d", "refs/recovery/retained")
+
+        result = audit_repo.compare_recovery_snapshots(
+            before, audit_repo.recovery_snapshot(root)
+        )
+
+        self.assertFalse(result["passed"])
+        self.assertEqual(
+            result["unexpected_removed_refs"],
+            ["refs/recovery/retained"],
+        )
+
+    def test_guard_records_exact_evidenced_recovery_ref_retirement(self) -> None:
+        directory = tempfile.TemporaryDirectory()
+        self.addCleanup(directory.cleanup)
+        root = self.git_repo_from(directory)
+        self.git(root, "update-ref", "refs/recovery/merged-work", "HEAD")
+        before = audit_repo.recovery_snapshot(root)
+        self.git(root, "update-ref", "-d", "refs/recovery/merged-work")
+        decision = (
+            "refs/recovery/merged-work="
+            "owner confirmed the protected commit is reachable from main"
+        )
+
+        result = audit_repo.compare_recovery_snapshots(
+            before,
+            audit_repo.recovery_snapshot(root),
+            approved_recovery_retirements=[decision],
+        )
+
+        self.assertTrue(result["passed"], result["errors"])
+        self.assertEqual(
+            result["approved_recovery_retirements"],
+            [{
+                "ref": "refs/recovery/merged-work",
+                "evidence": (
+                    "owner confirmed the protected commit is reachable from main"
+                ),
+            }],
+        )
+        self.assertEqual(result["unreachable_objects"], [])
+
+    def test_recovery_retirement_requires_exact_ref_and_evidence(self) -> None:
+        for decision in (
+            "refs/recovery/missing-evidence=",
+            "refs/heads/not-recovery=owner approved",
+            "recovery/name=owner approved",
+        ):
+            with self.subTest(decision=decision), self.assertRaisesRegex(
+                audit_repo.AuditError,
+                r"refs/recovery/<exact-ref>=<evidence",
+            ):
+                audit_repo.parse_recovery_retirement(decision)
+
     def test_recovery_snapshot_round_trip_and_cli_verification(self) -> None:
         directory = tempfile.TemporaryDirectory()
         self.addCleanup(directory.cleanup)

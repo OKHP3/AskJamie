@@ -75,7 +75,9 @@ evidence-led, and destructive only after the owner approves exact line items.
 6. **Rename atomically.** A file rename must update every importer and link in
    the same change. A public URL needs a redirect or transition plan.
 7. **Protect recovery paths.** Never rewrite `main`, force-push, or delete
-   stashes or archive refs under this skill. Before an approved local branch
+   stashes or archive refs under this skill. A recovery ref remains protected
+   until the owner approves its exact retirement with evidence that the
+   protected work is no longer needed. Before an approved local branch
    deletion, take a recovery snapshot and verify it afterward. The snapshot
    must prove that every non-target ref, stash entry, and previously reachable
    object is still present; each removed branch must also have a recovery ref.
@@ -228,6 +230,41 @@ if `main`, a remote/archive/recovery ref, a stash entry, or any object
 reachable before the operation changes. It rejects new refs outside
 `refs/recovery/` and requires a recovery ref pointing to every approved
 branch tip.
+
+#### Retire a recovery ref only after its retention decision
+
+A recovery window ends only when the owner approves one exact
+`refs/recovery/...` ref and records evidence that its protected work is no
+longer needed. Acceptable evidence identifies a durable replacement path, such
+as the protected commit being reachable from the verified base, preserved by
+another specifically named retained ref, or intentionally abandoned after
+review. A date or elapsed retention period alone is not evidence.
+
+Take a fresh snapshot before the approved removal. Delete the exact recovery
+ref outside the read-only audit, then verify the decision:
+
+```bash
+snapshot="$(mktemp)"
+python3 .agents/skills/okhp3-replit-repl-janitor/scripts/audit-repo.py \
+  --root . \
+  --snapshot-recovery "$snapshot"
+
+# Run only after the owner approves this exact ref and evidence.
+git update-ref -d refs/recovery/feature-example
+python3 .agents/skills/okhp3-replit-repl-janitor/scripts/audit-repo.py \
+  --root . \
+  --verify-recovery "$snapshot" \
+  --approve-recovery-retirement \
+  'refs/recovery/feature-example=commit is reachable from verified origin/main'
+rm "$snapshot"
+```
+
+`--approve-recovery-retirement` is an exact comparison allowance and decision
+record, not a deletion switch. It requires a fully qualified recovery ref plus
+non-empty evidence. Without that approval, removing any recovery ref fails.
+The verification also fails if the approved ref was not removed, if its removal
+makes previously reachable objects unavailable, or if any other protected
+state changes.
 
 The recovery guard must also survive ordinary Git maintenance. Use a separate
 disposable fixture for each supported storage-changing mode: `git repack -ad`,
