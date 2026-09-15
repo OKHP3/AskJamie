@@ -95,6 +95,13 @@ class FoundryArtifactTests(unittest.TestCase):
 
         self.pages_list = [self.site_root / "index.html", self.site_root / "found-ry/index.html"]
 
+    def test_foundry_fixture_covers_shared_asset_inventory(self):
+        self.assertEqual(
+            set(self.assets),
+            set(cache_bust.ASSETS),
+            "update the Found-Ry fixture whenever scripts/cache-bust.py gains an asset",
+        )
+
     def test_foundry_release_artifact_keeps_route_assets_fingerprints_and_csp(self):
         with patch.object(cache_bust, "ROOT", self.site_root), patch.object(
             cache_bust, "iter_html_files", lambda root: iter(self.pages_list)
