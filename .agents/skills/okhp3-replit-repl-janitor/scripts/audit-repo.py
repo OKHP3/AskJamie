@@ -154,7 +154,9 @@ def recovery_snapshot_integrity(snapshot: dict[str, object]) -> dict[str, str]:
 def validate_recovery_snapshot(snapshot: object) -> dict[str, object]:
     """Reject malformed or incomplete snapshots before comparing them."""
     if not isinstance(snapshot, dict) or snapshot.get("format") != 1:
-        raise AuditError("recovery snapshot has an unsupported format")
+        raise AuditError(
+            "recovery snapshot format failed validation: expected format 1"
+        )
     expected_fields = {
         "format",
         "current_branch",
@@ -164,29 +166,53 @@ def validate_recovery_snapshot(snapshot: object) -> dict[str, object]:
         "integrity",
     }
     if set(snapshot) != expected_fields:
-        raise AuditError("recovery snapshot has incomplete or unexpected fields")
+        missing = sorted(expected_fields - set(snapshot))
+        unexpected = sorted(set(snapshot) - expected_fields)
+        details = []
+        if missing:
+            details.append("missing " + ", ".join(missing))
+        if unexpected:
+            details.append("unexpected " + ", ".join(unexpected))
+        raise AuditError(
+            "recovery snapshot format failed validation: " + "; ".join(details)
+        )
     current_branch = snapshot.get("current_branch")
     refs = snapshot.get("refs")
     stashes = snapshot.get("stashes")
     reachable = snapshot.get("reachable_objects")
     integrity = snapshot.get("integrity")
     if current_branch is not None and not isinstance(current_branch, str):
-        raise AuditError("recovery snapshot has malformed current branch")
+        raise AuditError(
+            "recovery snapshot format failed validation: "
+            "current_branch must be a string or null"
+        )
     if not isinstance(refs, dict) or not all(
         isinstance(name, str) and isinstance(object_id, str)
         for name, object_id in refs.items()
     ):
-        raise AuditError("recovery snapshot has malformed refs")
+        raise AuditError(
+            "recovery snapshot ref inventory failed validation: "
+            "expected a mapping of ref names to object IDs"
+        )
     if not isinstance(stashes, list) or not all(
         isinstance(stash, str) for stash in stashes
     ):
-        raise AuditError("recovery snapshot has malformed stashes")
+        raise AuditError(
+            "recovery snapshot stash list failed validation: "
+            "expected a list of stash records"
+        )
     if not isinstance(reachable, list) or not all(
         isinstance(object_id, str) for object_id in reachable
     ):
-        raise AuditError("recovery snapshot has malformed reachable objects")
+        raise AuditError(
+            "recovery snapshot reachable-object inventory failed validation: "
+            "expected a list of object IDs"
+        )
     if len(reachable) != len(set(reachable)) or reachable != sorted(reachable):
-        raise AuditError("recovery snapshot has inconsistent reachable objects")
+        raise AuditError(
+            "recovery snapshot reachable-object inventory failed validation: "
+            "object IDs must be unique and sorted"
+        )
     if not (
         isinstance(integrity, dict)
         and integrity.keys() == {"algorithm", "digest"}
@@ -194,14 +220,20 @@ def validate_recovery_snapshot(snapshot: object) -> dict[str, object]:
         and isinstance(integrity.get("digest"), str)
         and re.fullmatch(r"[0-9a-f]{64}", integrity["digest"])
     ):
-        raise AuditError("recovery snapshot has an invalid integrity marker")
+        raise AuditError(
+            "recovery snapshot integrity marker failed validation: "
+            "expected a sha256 algorithm and 64-character lowercase hex digest"
+        )
     expected_integrity = recovery_snapshot_integrity(
         {key: snapshot[key] for key in expected_fields if key != "integrity"}
     )
     if not hmac.compare_digest(
         integrity["digest"], expected_integrity["digest"]
     ):
-        raise AuditError("recovery snapshot integrity check failed")
+        raise AuditError(
+            "recovery snapshot integrity marker failed validation: "
+            "digest does not match the snapshot evidence"
+        )
     return snapshot
 
 

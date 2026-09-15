@@ -660,7 +660,7 @@ class AuditRepoTests(unittest.TestCase):
         tampered["refs"]["refs/heads/main"] = "0" * 40
 
         with self.assertRaisesRegex(
-            audit_repo.AuditError, "integrity check failed"
+            audit_repo.AuditError, "integrity marker failed validation"
         ):
             audit_repo.validate_recovery_snapshot(tampered)
 
@@ -674,9 +674,59 @@ class AuditRepoTests(unittest.TestCase):
         tampered["reachable_objects"].sort()
 
         with self.assertRaisesRegex(
-            audit_repo.AuditError, "integrity check failed"
+            audit_repo.AuditError, "integrity marker failed validation"
         ):
             audit_repo.compare_recovery_snapshots(tampered, snapshot)
+
+    def test_recovery_validation_names_failed_evidence_section(self) -> None:
+        directory = tempfile.TemporaryDirectory()
+        self.addCleanup(directory.cleanup)
+        snapshot = audit_repo.recovery_snapshot(self.git_repo_from(directory))
+        cases = [
+            ("format", {"format": 2}),
+            ("ref inventory", {"refs": []}),
+            ("stash list", {"stashes": {}}),
+            ("reachable-object inventory", {"reachable_objects": {}}),
+            ("integrity marker", {"integrity": {"algorithm": "md5", "digest": "x"}}),
+        ]
+
+        for section, replacement in cases:
+            with self.subTest(section=section):
+                malformed = json.loads(json.dumps(snapshot))
+                malformed.update(replacement)
+                with self.assertRaisesRegex(
+                    audit_repo.AuditError,
+                    rf"recovery snapshot {section} failed validation",
+                ):
+                    audit_repo.validate_recovery_snapshot(malformed)
+
+    def test_cli_verification_reports_failed_recovery_section(self) -> None:
+        directory = tempfile.TemporaryDirectory()
+        self.addCleanup(directory.cleanup)
+        root = self.git_repo_from(directory)
+        snapshot_path = root / "malformed-recovery.json"
+        malformed = audit_repo.recovery_snapshot(root)
+        malformed["stashes"] = {}
+        snapshot_path.write_text(json.dumps(malformed), encoding="utf-8")
+
+        result = subprocess.run(
+            [
+                sys.executable,
+                str(SCRIPT),
+                "--root",
+                str(root),
+                "--verify-recovery",
+                str(snapshot_path),
+            ],
+            check=False,
+            text=True,
+            capture_output=True,
+        )
+
+        self.assertNotEqual(result.returncode, 0)
+        error = json.loads(result.stdout)["error"]
+        self.assertIn("stash list failed validation", error)
+        self.assertIn("expected a list of stash records", error)
 
     def test_lost_objects_fail_even_with_approval_after_maintenance(self) -> None:
         directory = tempfile.TemporaryDirectory()
