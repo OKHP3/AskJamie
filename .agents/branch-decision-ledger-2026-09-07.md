@@ -44,6 +44,18 @@
 | `subrepl-r42jccji` | **archive** | `7f2c5792b033dc21ce40b89d0ffe52f48b930d06` | Its search announcement fix is patch-equivalent to `origin/main`; the work has already landed elsewhere. |
 | `subrepl-xdx2eorg` | **archive** | `8bd136e8388b3a3397c46539af5da6b67080fb86` | All three commits are patch-equivalent to `origin/main`, covering documentation and prose-validation work. Retain as historical recovery. |
 
+## Archive reconciliation evidence
+
+These rows explain archive tips whose commits are not patch-equivalent to the
+active line. Each disposition is tied to the exact reviewed archive tip; a
+different tip requires a new review.
+
+| Branch | Archive tip SHA | Reviewed active tip SHA | Disposition | Active-line evidence | Rationale |
+|---|---|---|---|---|---|
+| `replit-agent` | `dc1ef14a392793667b6a9df839d6c33be2254a31` | `1790f9015a6dba08dc2fda7fc1752a161c52f4d2` | **reconciled** | Active-line audit report and later branch-decision and recovery evidence | The substantive audit work was promoted through equivalent later history; active-line-only governance additions explain the remaining tree difference. |
+| `subrepl-ili4a5c9` | `54df8979cebe558e3da9da9ac60157edc0a7d230` | `1790f9015a6dba08dc2fda7fc1752a161c52f4d2` | **superseded** | Active commits `54df897` and `7e9f643`, followed by later page revisions | The FK-scoring correction and equivalent reading-level work remain active, while later page edits intentionally replace the archive's older page tree. |
+| `subrepl-j940c6i6` | `905d38060dc91ec54802a8572c5e087b524bb890` | `1790f9015a6dba08dc2fda7fc1752a161c52f4d2` | **superseded** | Active commit `711854e` plus later static-site release evaluation and grading evidence | The Pages hardening and portable skill were promoted, then extended on the active line rather than merged as the archive's exact patch series. |
+
 ## Explicit exclusions and holds
 
 These refs are not part of the 19-branch decision set:

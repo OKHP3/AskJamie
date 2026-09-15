@@ -150,6 +150,7 @@ def refresh_remote(root: Path) -> dict[str, object]:
 class DecisionLedger(NamedTuple):
     decisions: list[dict[str, str]]
     exclusions: list[str]
+    archive_reconciliations: list[dict[str, str]]
     malformed_decision_rows: list[dict[str, object]]
     malformed_exclusion_entries: list[dict[str, object]]
     duplicate_exclusion_entries: list[dict[str, object]]
@@ -201,6 +202,7 @@ def parse_decision_ledger(path: Path) -> DecisionLedger:
 
     decisions: list[dict[str, str]] = []
     exclusions: list[str] = []
+    archive_reconciliations: list[dict[str, str]] = []
     malformed_decision_rows: list[dict[str, object]] = []
     malformed_exclusion_entries: list[dict[str, object]] = []
     duplicate_exclusion_entries: list[dict[str, object]] = []
@@ -259,6 +261,36 @@ def parse_decision_ledger(path: Path) -> DecisionLedger:
                 ).strip().lower(),
                 "tip_sha": cells[2].strip("`").lower(),
             })
+        elif section == "archive reconciliation evidence":
+            cells = _table_cells(line)
+            if not cells:
+                continue
+            normalized_cells = [cell.lower() for cell in cells]
+            if normalized_cells[:5] == [
+                "branch",
+                "archive tip sha",
+                "reviewed active tip sha",
+                "disposition",
+                "active-line evidence",
+            ]:
+                continue
+            if all(re.fullmatch(r":?-{3,}:?", cell) for cell in cells):
+                continue
+            if len(cells) < 6:
+                continue
+            branch_match = re.fullmatch(r"`([^`]+)`", cells[0])
+            if not branch_match:
+                continue
+            archive_reconciliations.append({
+                "branch": branch_match.group(1),
+                "tip_sha": cells[1].strip("`").lower(),
+                "active_tip_sha": cells[2].strip("`").lower(),
+                "disposition": re.sub(
+                    r"^\*\*|\*\*$", "", cells[3]
+                ).strip().lower(),
+                "active_line_evidence": cells[4],
+                "rationale": cells[5],
+            })
         elif section == "explicit exclusions and holds":
             if not line.strip():
                 continue
@@ -306,6 +338,7 @@ def parse_decision_ledger(path: Path) -> DecisionLedger:
     return DecisionLedger(
         decisions=decisions,
         exclusions=sorted(set(exclusions)),
+        archive_reconciliations=archive_reconciliations,
         malformed_decision_rows=malformed_decision_rows,
         malformed_exclusion_entries=malformed_exclusion_entries,
         duplicate_exclusion_entries=duplicate_exclusion_entries,
@@ -457,6 +490,14 @@ def audit_archive_equivalents(
     archive_rows = [
         row for row in ledger.decisions if row["decision"] == "archive"
     ]
+    reconciliation_by_tip = {
+        (row["branch"], row["tip_sha"]): row
+        for row in ledger.archive_reconciliations
+        if row["disposition"] in {"reconciled", "superseded"}
+        and SHA_PATTERN.fullmatch(row["active_tip_sha"])
+        and row["active_line_evidence"]
+        and row["rationale"]
+    }
     active_tip = _verified_commit(root, active_line)
     reports: list[dict[str, object]] = []
 
@@ -513,13 +554,56 @@ def audit_archive_equivalents(
             active_line,
             tip_sha,
         )
+        comparison_results = {
+            "git cherry": cherry,
+            "active-only log": active_only,
+            "archive-only log": archive_only,
+            "active tree": tree_result,
+            "archive tree": archive_tree_result,
+            "file diff": file_diff,
+        }
+        failed_comparisons = [
+            name
+            for name, result in comparison_results.items()
+            if result.returncode != 0
+        ]
+        if failed_comparisons:
+            report.update({
+                "classification": "unverifiable",
+                "error": (
+                    "Git comparison failed: " + ", ".join(failed_comparisons)
+                ),
+            })
+            reports.append(report)
+            continue
         unrepresented = sum(
             item["patch_status"] == "unrepresented"
             for item in archive_commits
         )
-        classification = (
-            "unrepresented-changes" if unrepresented else "already-promoted"
-        )
+        reconciliation = reconciliation_by_tip.get((branch, tip_sha))
+        reconciliation_is_active = False
+        if reconciliation:
+            active_ancestor = _git_result(
+                root,
+                "merge-base",
+                "--is-ancestor",
+                reconciliation["active_tip_sha"],
+                active_tip,
+            )
+            if active_ancestor.returncode > 1:
+                report.update({
+                    "classification": "unverifiable",
+                    "error": "Git comparison failed: reconciliation ancestry check",
+                })
+                reports.append(report)
+                continue
+            reconciliation_is_active = active_ancestor.returncode == 0
+        if not unrepresented:
+            classification = "already-promoted"
+        elif reconciliation_is_active:
+            classification = "confirmed-supersession"
+        else:
+            classification = "unrepresented-changes"
         report.update({
             "classification": classification,
             "commit_differences": {
@@ -539,6 +623,13 @@ def audit_archive_equivalents(
             },
             "file_differences": _parse_file_differences(file_diff.stdout),
         })
+        if reconciliation_is_active and reconciliation:
+            report["reconciliation_evidence"] = {
+                "reviewed_active_tip_sha": reconciliation["active_tip_sha"],
+                "disposition": reconciliation["disposition"],
+                "active_line_evidence": reconciliation["active_line_evidence"],
+                "rationale": reconciliation["rationale"],
+            }
         reports.append(report)
 
     already_promoted = [
@@ -550,6 +641,11 @@ def audit_archive_equivalents(
         report["branch"]
         for report in reports
         if report.get("classification") == "unrepresented-changes"
+    ]
+    confirmed_supersession = [
+        report["branch"]
+        for report in reports
+        if report.get("classification") == "confirmed-supersession"
     ]
     unverifiable = [
         report["branch"]
@@ -563,6 +659,7 @@ def audit_archive_equivalents(
         "archive_count": len(reports),
         "archives": reports,
         "already_promoted": sorted(already_promoted),
+        "confirmed_supersession": sorted(confirmed_supersession),
         "unrepresented_changes": sorted(unrepresented),
         "unverifiable": sorted(unverifiable),
         "ok": not unrepresented and not unverifiable,

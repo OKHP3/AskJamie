@@ -41,7 +41,13 @@ class DecisionLedgerTests(unittest.TestCase):
         git(root, "commit", "-qm", "initial")
         return root, git(root, "rev-parse", "HEAD")
 
-    def write_ledger(self, root: Path, rows: str, exclusions: str = "") -> Path:
+    def write_ledger(
+        self,
+        root: Path,
+        rows: str,
+        exclusions: str = "",
+        reconciliations: str = "",
+    ) -> Path:
         path = root / "ledger.md"
         path.write_text(
             "\n".join([
@@ -49,6 +55,11 @@ class DecisionLedgerTests(unittest.TestCase):
                 "| Branch | Decision | Tip SHA | Evidence |",
                 "|---|---|---|---|",
                 rows,
+                "",
+                "## Archive reconciliation evidence",
+                "| Branch | Archive tip SHA | Reviewed active tip SHA | Disposition | Active-line evidence | Rationale |",
+                "|---|---|---|---|---|---|",
+                reconciliations,
                 "",
                 "## Explicit exclusions and holds",
                 exclusions,
@@ -302,6 +313,177 @@ class DecisionLedgerTests(unittest.TestCase):
             git(root, "for-each-ref", "--format=%(refname) %(objectname)"),
         )
 
+    def test_archive_equivalence_accepts_exact_tip_supersession_evidence(self) -> None:
+        root, _ = self.make_repo()
+        git(root, "branch", "superseded-archive")
+        git(root, "checkout", "-q", "superseded-archive")
+        (root / "copy.txt").write_text("older wording\n", encoding="utf-8")
+        git(root, "add", "copy.txt")
+        git(root, "commit", "-qm", "older archive wording")
+        archive_tip = git(root, "rev-parse", "HEAD")
+
+        git(root, "checkout", "-q", "main")
+        (root / "copy.txt").write_text("newer reconciled wording\n", encoding="utf-8")
+        git(root, "add", "copy.txt")
+        git(root, "commit", "-qm", "replace archive wording")
+        active_tip = git(root, "rev-parse", "HEAD")
+
+        ledger = self.write_ledger(
+            root,
+            f"| `superseded-archive` | **archive** | `{archive_tip}` | reviewed |",
+            reconciliations=(
+                f"| `superseded-archive` | `{archive_tip}` | `{active_tip}` | "
+                "**superseded** | "
+                "`main` replacement commit | Later wording intentionally replaces it. |"
+            ),
+        )
+        before = git(root, "for-each-ref", "--format=%(refname) %(objectname)")
+
+        result = audit_repo.audit_archive_equivalents(root, ledger, "main")
+
+        self.assertTrue(result["ok"])
+        self.assertEqual(result["confirmed_supersession"], ["superseded-archive"])
+        self.assertEqual(result["unrepresented_changes"], [])
+        archive = result["archives"][0]
+        self.assertEqual(archive["classification"], "confirmed-supersession")
+        self.assertEqual(
+            archive["reconciliation_evidence"]["disposition"], "superseded"
+        )
+        self.assertGreater(
+            archive["commit_differences"]["unrepresented_commit_count"], 0
+        )
+        self.assertEqual(
+            before,
+            git(root, "for-each-ref", "--format=%(refname) %(objectname)"),
+        )
+
+    def test_archive_equivalence_rejects_evidence_for_a_different_tip(self) -> None:
+        root, initial = self.make_repo()
+        git(root, "branch", "unrepresented-archive")
+        git(root, "checkout", "-q", "unrepresented-archive")
+        (root / "change.txt").write_text("archive change\n", encoding="utf-8")
+        git(root, "add", "change.txt")
+        git(root, "commit", "-qm", "archive change")
+        archive_tip = git(root, "rev-parse", "HEAD")
+        git(root, "checkout", "-q", "main")
+
+        ledger = self.write_ledger(
+            root,
+            f"| `unrepresented-archive` | **archive** | `{archive_tip}` | reviewed |",
+            reconciliations=(
+                f"| `unrepresented-archive` | `{initial}` | `{initial}` | "
+                "**superseded** | "
+                "`main` evidence | This evidence belongs to the prior tip. |"
+            ),
+        )
+
+        result = audit_repo.audit_archive_equivalents(root, ledger, "main")
+
+        self.assertFalse(result["ok"])
+        self.assertEqual(result["confirmed_supersession"], [])
+        self.assertEqual(result["unrepresented_changes"], ["unrepresented-archive"])
+        self.assertEqual(
+            result["archives"][0]["classification"], "unrepresented-changes"
+        )
+
+    def test_archive_equivalence_rejects_evidence_from_another_active_line(self) -> None:
+        root, initial = self.make_repo()
+        git(root, "branch", "superseded-archive")
+        git(root, "checkout", "-q", "superseded-archive")
+        (root / "archive.txt").write_text("archive work\n", encoding="utf-8")
+        git(root, "add", "archive.txt")
+        git(root, "commit", "-qm", "archive work")
+        archive_tip = git(root, "rev-parse", "HEAD")
+
+        git(root, "checkout", "-q", "main")
+        git(root, "branch", "reviewed-active")
+        git(root, "checkout", "-q", "reviewed-active")
+        (root / "replacement.txt").write_text("replacement\n", encoding="utf-8")
+        git(root, "add", "replacement.txt")
+        git(root, "commit", "-qm", "reviewed replacement")
+        reviewed_tip = git(root, "rev-parse", "HEAD")
+        git(root, "checkout", "-q", "main")
+
+        ledger = self.write_ledger(
+            root,
+            f"| `superseded-archive` | **archive** | `{archive_tip}` | reviewed |",
+            reconciliations=(
+                f"| `superseded-archive` | `{archive_tip}` | `{reviewed_tip}` | "
+                "**superseded** | Reviewed replacement | Replaced on another line. |"
+            ),
+        )
+
+        result = audit_repo.audit_archive_equivalents(root, ledger, "main")
+
+        self.assertFalse(result["ok"])
+        self.assertEqual(result["confirmed_supersession"], [])
+        self.assertEqual(result["unrepresented_changes"], ["superseded-archive"])
+
+    def test_archive_equivalence_treats_git_comparison_failure_as_unverifiable(
+        self,
+    ) -> None:
+        root, _ = self.make_repo()
+        git(root, "branch", "archive")
+        original_git_result = audit_repo._git_result
+
+        def fail_cherry(repo: Path, *args: str):
+            if args[:2] == ("cherry", "-v"):
+                return subprocess.CompletedProcess(
+                    ["git", *args], 128, stdout="", stderr="comparison failed"
+                )
+            return original_git_result(repo, *args)
+
+        ledger = self.write_ledger(
+            root,
+            f"| `archive` | **archive** | `{git(root, 'rev-parse', 'archive')}` | reviewed |",
+        )
+
+        with patch.object(audit_repo, "_git_result", side_effect=fail_cherry):
+            result = audit_repo.audit_archive_equivalents(root, ledger, "main")
+
+        self.assertFalse(result["ok"])
+        self.assertEqual(result["unverifiable"], ["archive"])
+        self.assertEqual(result["archives"][0]["classification"], "unverifiable")
+        self.assertIn("git cherry", result["archives"][0]["error"])
+
+    def test_archive_equivalence_treats_ancestry_failure_as_unverifiable(
+        self,
+    ) -> None:
+        root, initial = self.make_repo()
+        git(root, "branch", "archive")
+        git(root, "checkout", "-q", "archive")
+        (root / "archive.txt").write_text("archive work\n", encoding="utf-8")
+        git(root, "add", "archive.txt")
+        git(root, "commit", "-qm", "archive work")
+        archive_tip = git(root, "rev-parse", "HEAD")
+        git(root, "checkout", "-q", "main")
+        active_tip = git(root, "rev-parse", "HEAD")
+        original_git_result = audit_repo._git_result
+
+        def fail_ancestry(repo: Path, *args: str):
+            if args[:2] == ("merge-base", "--is-ancestor"):
+                return subprocess.CompletedProcess(
+                    ["git", *args], 128, stdout="", stderr="object unavailable"
+                )
+            return original_git_result(repo, *args)
+
+        ledger = self.write_ledger(
+            root,
+            f"| `archive` | **archive** | `{archive_tip}` | reviewed |",
+            reconciliations=(
+                f"| `archive` | `{archive_tip}` | `{active_tip}` | "
+                "**superseded** | Reviewed replacement | Replaced on main. |"
+            ),
+        )
+
+        with patch.object(audit_repo, "_git_result", side_effect=fail_ancestry):
+            result = audit_repo.audit_archive_equivalents(root, ledger, "main")
+
+        self.assertFalse(result["ok"])
+        self.assertEqual(result["unverifiable"], ["archive"])
+        self.assertEqual(result["archives"][0]["classification"], "unverifiable")
+        self.assertIn("ancestry check", result["archives"][0]["error"])
+
 
 class RemoteRefreshTests(unittest.TestCase):
     def make_repo(self) -> Path:
@@ -401,6 +583,38 @@ class RemoteRefreshTests(unittest.TestCase):
         self.assertEqual([branch["branch"] for branch in report["branches"]], ["main"])
         self.assertIn("naming_violations", report)
         self.assertIn("detritus_folders", report)
+
+
+class RepositoryLedgerIntegrationTests(unittest.TestCase):
+    def test_real_ledger_confirms_reviewed_supersession_on_main(self) -> None:
+        root = SCRIPT.parents[4]
+        ledger = root / ".agents" / "branch-decision-ledger-2026-09-07.md"
+        required_refs = [
+            "main",
+            "replit-agent",
+            "subrepl-ili4a5c9",
+            "subrepl-j940c6i6",
+        ]
+        if not ledger.is_file() or any(
+            subprocess.run(
+                ["git", "rev-parse", "--verify", f"{ref}^{{commit}}"],
+                cwd=root,
+                capture_output=True,
+                check=False,
+            ).returncode
+            for ref in required_refs
+        ):
+            self.skipTest("repository-specific ledger refs are unavailable")
+
+        result = audit_repo.audit_archive_equivalents(root, ledger, "main")
+
+        self.assertTrue(result["ok"])
+        self.assertEqual(
+            result["confirmed_supersession"],
+            ["replit-agent", "subrepl-ili4a5c9", "subrepl-j940c6i6"],
+        )
+        self.assertEqual(result["unrepresented_changes"], [])
+        self.assertEqual(result["unverifiable"], [])
 
 
 if __name__ == "__main__":
