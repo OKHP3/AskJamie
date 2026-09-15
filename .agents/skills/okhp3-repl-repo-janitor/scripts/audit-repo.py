@@ -16,8 +16,10 @@ What it reports:
      versus a human-named branch.
   2. Decision-ledger consistency: missing non-current branches, tip-SHA
       drift, and stale decision or exclusion rows.
-  3. Archive equivalence: named archive tips compared with the active line
+   3. Archive equivalence: named archive tips compared with the active line
       at commit, tree, and file level, including patch promotion status.
+      File moves are reported as deterministic add/delete pairs so both
+      paths remain visible in the JSON evidence.
   4. Naming violations: files/folders whose names break the kebab-case
      default (PascalCase, camelCase, spaces, uppercase extensions) outside
      the recognized structural exceptions (React components/hooks, root
@@ -472,6 +474,13 @@ def _parse_cherry_lines(output: str) -> list[dict[str, str]]:
 
 
 def _parse_file_differences(output: str) -> list[dict[str, str]]:
+    """Parse deterministic ``--no-renames`` name-status evidence.
+
+    A move is intentionally retained as separate add/delete records rather
+    than inferred as a rename. This preserves both paths exactly as Git
+    reported them and avoids making similarity-based classifications part of
+    the audit contract.
+    """
     differences: list[dict[str, str]] = []
     for line in output.splitlines():
         status, separator, path = line.partition("\t")
@@ -546,6 +555,8 @@ def audit_archive_equivalents(
         archive_tree_result = _git_result(root, "rev-parse", f"{tip_sha}^{{tree}}")
         active_tree = tree_result.stdout.strip()
         archive_tree = archive_tree_result.stdout.strip()
+        # Keep rename detection disabled so a moved file remains an explicit
+        # add/delete pair and reviewers can see both the old and new paths.
         file_diff = _git_result(
             root,
             "diff",

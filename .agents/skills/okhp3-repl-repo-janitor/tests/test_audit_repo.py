@@ -313,6 +313,43 @@ class DecisionLedgerTests(unittest.TestCase):
             git(root, "for-each-ref", "--format=%(refname) %(objectname)"),
         )
 
+    def test_archive_equivalence_preserves_both_paths_for_a_rename(self) -> None:
+        root, _ = self.make_repo()
+        git(root, "branch", "renamed-archive")
+        git(root, "checkout", "-q", "renamed-archive")
+        (root / "old-name.txt").write_text("same content\n", encoding="utf-8")
+        git(root, "add", "old-name.txt")
+        git(root, "commit", "-qm", "archive path")
+        archive_tip = git(root, "rev-parse", "HEAD")
+
+        git(root, "checkout", "-q", "main")
+        (root / "new-name.txt").write_text("same content\n", encoding="utf-8")
+        git(root, "add", "new-name.txt")
+        git(root, "commit", "-qm", "active path")
+        active_tip = git(root, "rev-parse", "HEAD")
+
+        ledger = self.write_ledger(
+            root,
+            f"| `renamed-archive` | **archive** | `{archive_tip}` | moved |",
+        )
+        before = git(root, "for-each-ref", "--format=%(refname) %(objectname)")
+
+        result = audit_repo.audit_archive_equivalents(root, ledger, "main")
+
+        archive = result["archives"][0]
+        self.assertEqual(result["active_line_tip_sha"], active_tip)
+        self.assertEqual(
+            archive["file_differences"],
+            [
+                {"status": "D", "path": "new-name.txt"},
+                {"status": "A", "path": "old-name.txt"},
+            ],
+        )
+        self.assertEqual(
+            before,
+            git(root, "for-each-ref", "--format=%(refname) %(objectname)"),
+        )
+
     def test_archive_equivalence_accepts_exact_tip_supersession_evidence(self) -> None:
         root, _ = self.make_repo()
         git(root, "branch", "superseded-archive")
