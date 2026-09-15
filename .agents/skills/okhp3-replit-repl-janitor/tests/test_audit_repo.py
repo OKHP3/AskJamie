@@ -203,6 +203,152 @@ class AuditRepoTests(unittest.TestCase):
         ]
         self.assertNotIn("feature/inaccessible", deletion_candidates)
 
+    def test_github_api_fixtures_produce_evidence_and_deletion_holds(self) -> None:
+        directory = tempfile.TemporaryDirectory()
+        self.addCleanup(directory.cleanup)
+        root = self.git_repo_from(directory)
+        self.git(
+            root,
+            "remote",
+            "add",
+            "origin",
+            "https://github.com/example/repository.git",
+        )
+        tip = self.git(root, "rev-parse", "HEAD")
+        branches = ("feature/protected", "feature/unprotected")
+        api_fixtures = {
+            "repos/example/repository/branches/feature%2Fprotected": {
+                "protected": True,
+            },
+            "repos/example/repository/branches/feature%2Funprotected": {
+                "protected": False,
+            },
+            (
+                "repos/example/repository/deployments?"
+                "ref=feature%2Fprotected&per_page=100"
+            ): [],
+            (
+                "repos/example/repository/deployments?"
+                "ref=feature%2Funprotected&per_page=100"
+            ): [{
+                "id": 17,
+                "sha": tip,
+                "ref": "feature/unprotected",
+                "environment": "production",
+                "created_at": "2026-09-15T10:00:00Z",
+                "updated_at": "2026-09-15T10:01:00Z",
+                "ignored": "not included in audit evidence",
+            }],
+            (
+                "repos/example/repository/pulls?"
+                "state=all&head=example%3Afeature%2Fprotected&per_page=100"
+            ): [],
+            (
+                "repos/example/repository/pulls?"
+                "state=all&head=example%3Afeature%2Funprotected&per_page=100"
+            ): [
+                {
+                    "number": 21,
+                    "state": "open",
+                    "title": "Open work",
+                    "merged_at": None,
+                    "html_url": "https://github.com/example/repository/pull/21",
+                },
+                {
+                    "number": 20,
+                    "state": "closed",
+                    "title": "Merged work",
+                    "merged_at": "2026-09-14T09:00:00Z",
+                    "html_url": "https://github.com/example/repository/pull/20",
+                },
+                {
+                    "number": 19,
+                    "state": "closed",
+                    "title": "Closed without merge",
+                    "merged_at": None,
+                    "html_url": "https://github.com/example/repository/pull/19",
+                },
+            ],
+        }
+
+        def hosted_fixture(
+            args: list[str], _root: Path
+        ) -> subprocess.CompletedProcess[str]:
+            if args[:3] == ["git", "ls-remote", "--heads"]:
+                branch = args[-1]
+                return subprocess.CompletedProcess(
+                    args, 0, stdout=f"{tip}\t{branch}\n", stderr=""
+                )
+            self.assertEqual(args[:2], ["gh", "api"])
+            endpoint = args[2]
+            self.assertIn(endpoint, api_fixtures)
+            return subprocess.CompletedProcess(
+                args,
+                0,
+                stdout=json.dumps(api_fixtures[endpoint]),
+                stderr="",
+            )
+
+        with patch.object(
+            audit_repo, "hosted_command", side_effect=hosted_fixture
+        ), patch.object(audit_repo.shutil, "which", return_value="/fixture/gh"):
+            report = audit_repo.audit_hosted_branches(
+                root, [f"origin={branch}" for branch in branches]
+            )
+
+        entries = {entry["ref"]: entry for entry in report["entries"]}
+        protected = entries["feature/protected"]
+        unprotected = entries["feature/unprotected"]
+
+        self.assertEqual(protected["protection"]["status"], "protected")
+        self.assertEqual(protected["protection"]["source"], "github-api")
+        self.assertEqual(protected["deployments"]["items"], [])
+        self.assertEqual(protected["pull_requests"]["items"], [])
+        self.assertEqual(
+            protected["blocking_reasons"], ["hosted-ref-protected"]
+        )
+
+        self.assertEqual(unprotected["protection"]["status"], "unprotected")
+        self.assertEqual(unprotected["deployments"]["count"], 1)
+        self.assertEqual(
+            unprotected["deployments"]["items"][0],
+            {
+                "id": 17,
+                "sha": tip,
+                "ref": "feature/unprotected",
+                "environment": "production",
+                "created_at": "2026-09-15T10:00:00Z",
+                "updated_at": "2026-09-15T10:01:00Z",
+            },
+        )
+        self.assertEqual(unprotected["pull_requests"]["count"], 3)
+        self.assertEqual(
+            [
+                (item["number"], item["state"], item["merged_at"])
+                for item in unprotected["pull_requests"]["items"]
+            ],
+            [
+                (21, "open", None),
+                (20, "closed", "2026-09-14T09:00:00Z"),
+                (19, "closed", None),
+            ],
+        )
+        self.assertEqual(
+            unprotected["blocking_reasons"],
+            [
+                "hosted-closed-unmerged-pull-request",
+                "hosted-open-pull-request",
+                "hosted-ref-has-deployments",
+            ],
+        )
+        self.assertTrue(protected["deletion_blocked"])
+        self.assertTrue(unprotected["deletion_blocked"])
+        self.assertTrue(report["deletion_blocked"])
+        self.assertEqual(
+            report["blocking_entries"],
+            ["origin:feature/protected", "origin:feature/unprotected"],
+        )
+
     def test_hosted_present_ref_reports_tip_independently(self) -> None:
         directory = tempfile.TemporaryDirectory()
         self.addCleanup(directory.cleanup)
