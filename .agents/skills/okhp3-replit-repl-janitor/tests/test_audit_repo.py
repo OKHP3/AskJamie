@@ -581,6 +581,76 @@ class AuditRepoTests(unittest.TestCase):
             json.loads(verify_result.stdout)["recovery_guard"]["passed"]
         )
 
+    def test_recovery_snapshot_repeat_write_preserves_original_file(self) -> None:
+        directory = tempfile.TemporaryDirectory()
+        self.addCleanup(directory.cleanup)
+        root = self.git_repo_from(directory)
+        snapshot_path = root / "recovery.json"
+        original = audit_repo.recovery_snapshot(root)
+        audit_repo.write_recovery_snapshot(snapshot_path, original)
+        original_bytes = snapshot_path.read_bytes()
+
+        changed = json.loads(json.dumps(original))
+        changed["current_branch"] = "different"
+        changed["integrity"] = audit_repo.recovery_snapshot_integrity(
+            {key: value for key, value in changed.items() if key != "integrity"}
+        )
+        with self.assertRaisesRegex(
+            audit_repo.AuditError,
+            (
+                r"preserve the existing snapshot and choose a new "
+                r"--snapshot-recovery path.*--verify-recovery"
+            ),
+        ):
+            audit_repo.write_recovery_snapshot(snapshot_path, changed)
+
+        self.assertEqual(snapshot_path.read_bytes(), original_bytes)
+        self.assertEqual(audit_repo.read_recovery_snapshot(snapshot_path), original)
+
+    def test_cli_repeat_snapshot_reports_recovery_action_without_overwrite(
+        self,
+    ) -> None:
+        directory = tempfile.TemporaryDirectory()
+        self.addCleanup(directory.cleanup)
+        root = self.git_repo_from(directory)
+        snapshot_path = root / "recovery.json"
+        first_result = subprocess.run(
+            [
+                sys.executable,
+                str(SCRIPT),
+                "--root",
+                str(root),
+                "--snapshot-recovery",
+                str(snapshot_path),
+            ],
+            check=False,
+            text=True,
+            capture_output=True,
+        )
+        self.assertEqual(first_result.returncode, 0, first_result.stderr)
+        original_bytes = snapshot_path.read_bytes()
+
+        repeat_result = subprocess.run(
+            [
+                sys.executable,
+                str(SCRIPT),
+                "--root",
+                str(root),
+                "--snapshot-recovery",
+                str(snapshot_path),
+            ],
+            check=False,
+            text=True,
+            capture_output=True,
+        )
+
+        self.assertEqual(repeat_result.returncode, 1)
+        error = json.loads(repeat_result.stdout)["error"]
+        self.assertIn("preserve the existing snapshot", error)
+        self.assertIn("choose a new --snapshot-recovery path", error)
+        self.assertIn("--verify-recovery", error)
+        self.assertEqual(snapshot_path.read_bytes(), original_bytes)
+
     def test_tampered_protected_ref_snapshot_is_rejected(self) -> None:
         directory = tempfile.TemporaryDirectory()
         self.addCleanup(directory.cleanup)

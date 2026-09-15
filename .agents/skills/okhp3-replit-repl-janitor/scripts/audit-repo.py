@@ -318,10 +318,16 @@ def compare_recovery_snapshots(
 def write_recovery_snapshot(path: Path, snapshot: dict[str, object]) -> None:
     snapshot = validate_recovery_snapshot(snapshot)
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(
-        json.dumps(snapshot, indent=2, sort_keys=True) + "\n",
-        encoding="utf-8",
-    )
+    content = json.dumps(snapshot, indent=2, sort_keys=True) + "\n"
+    try:
+        with path.open("x", encoding="utf-8") as snapshot_file:
+            snapshot_file.write(content)
+    except FileExistsError as exc:
+        raise AuditError(
+            f"recovery snapshot already exists: {path}; preserve the existing "
+            "snapshot and choose a new --snapshot-recovery path, or verify the "
+            "existing snapshot with --verify-recovery"
+        ) from exc
 
 
 def read_recovery_snapshot(path: Path) -> dict[str, object]:
