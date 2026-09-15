@@ -91,6 +91,7 @@ class AuditRepoTests(unittest.TestCase):
             "feature/protected",
             "feature/deployed",
             "feature/pr-associated",
+            "feature/closed-unmerged",
         ):
             self.git(root, "branch", branch)
             self.git(root, "push", "-q", "fixture-host", branch)
@@ -131,6 +132,21 @@ class AuditRepoTests(unittest.TestCase):
                     }],
                 },
             },
+            "feature/closed-unmerged": {
+                "protection": {"status": "unprotected", "source": "fixture"},
+                "deployments": {
+                    "status": "available", "count": 0, "items": [],
+                },
+                "pull_requests": {
+                    "status": "available",
+                    "count": 1,
+                    "items": [{
+                        "number": 43,
+                        "state": "closed",
+                        "merged_at": None,
+                    }],
+                },
+            },
         }
 
         def fixture_evidence(
@@ -148,6 +164,7 @@ class AuditRepoTests(unittest.TestCase):
                     "fixture-host=feature/protected",
                     "fixture-host=feature/deployed",
                     "fixture-host=feature/pr-associated",
+                    "fixture-host=feature/closed-unmerged",
                     "missing-remote=feature/inaccessible",
                 ],
             )
@@ -164,6 +181,9 @@ class AuditRepoTests(unittest.TestCase):
             entries["feature/pr-associated"]["classification"], "present"
         )
         self.assertEqual(
+            entries["feature/closed-unmerged"]["classification"], "present"
+        )
+        self.assertEqual(
             entries["feature/inaccessible"]["classification"], "inaccessible"
         )
 
@@ -172,6 +192,7 @@ class AuditRepoTests(unittest.TestCase):
             "feature/protected",
             "feature/deployed",
             "feature/pr-associated",
+            "feature/closed-unmerged",
             "feature/inaccessible",
         ):
             self.assertTrue(entries[branch]["deletion_blocked"], branch)
@@ -193,6 +214,10 @@ class AuditRepoTests(unittest.TestCase):
             entries["feature/pr-associated"]["blocking_reasons"],
         )
         self.assertIn(
+            "hosted-closed-unmerged-pull-request",
+            entries["feature/closed-unmerged"]["blocking_reasons"],
+        )
+        self.assertIn(
             "hosted-remote-inaccessible",
             entries["feature/inaccessible"]["blocking_reasons"],
         )
@@ -202,6 +227,7 @@ class AuditRepoTests(unittest.TestCase):
             if not entry["deletion_blocked"]
         ]
         self.assertNotIn("feature/inaccessible", deletion_candidates)
+        self.assertNotIn("feature/closed-unmerged", deletion_candidates)
         plan = report["cleanup_plan"]
         self.assertEqual(plan["merge"], [])
         self.assertEqual(plan["delete"], [])
@@ -216,12 +242,13 @@ class AuditRepoTests(unittest.TestCase):
         self.assertEqual(
             [(item["provider"], item["ref"]) for item in plan["review"]],
             [
+                ("fixture-host", "feature/closed-unmerged"),
                 ("fixture-host", "feature/missing"),
                 ("missing-remote", "feature/inaccessible"),
             ],
         )
         self.assertEqual(
-            plan["review"][1]["blocking_reasons"],
+            plan["review"][2]["blocking_reasons"],
             ["hosted-remote-inaccessible"],
         )
 
