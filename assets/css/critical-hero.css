@@ -5,6 +5,10 @@
  * deferred-fonts.js after this small sheet has painted. Keep this layer
  * limited to first-viewport structure, typography fallbacks, and the
  * diagram reservation so it cannot drift into a second site-wide theme.
+ *
+ * Synchronization contract: scripts/check-critical-theme-drift.py documents
+ * the shared selectors and properties that must stay aligned. Mobile fallback
+ * geometry and load reservations are intentionally allowed to differ.
  */
 *, *::before, *::after {
   box-sizing: border-box;

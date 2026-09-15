@@ -26,11 +26,23 @@ from __future__ import annotations
 import os
 import re
 import sys
+import importlib.util
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import urlparse, unquote
 
 from csp import build_policies, page_class
+
+
+_DRIFT_CHECKER_PATH = Path(__file__).with_name("check-critical-theme-drift.py")
+_DRIFT_CHECKER_SPEC = importlib.util.spec_from_file_location(
+    "critical_theme_drift", _DRIFT_CHECKER_PATH
+)
+if _DRIFT_CHECKER_SPEC is None or _DRIFT_CHECKER_SPEC.loader is None:
+    raise ImportError(f"unable to load {_DRIFT_CHECKER_PATH}")
+_DRIFT_CHECKER = importlib.util.module_from_spec(_DRIFT_CHECKER_SPEC)
+_DRIFT_CHECKER_SPEC.loader.exec_module(_DRIFT_CHECKER)
+check_contracts = _DRIFT_CHECKER.check_contracts
 
 ROOT = Path(__file__).resolve().parent.parent
 SKIP_DIRS = {".local", ".scratch", ".git", "node_modules", "attached_assets", "dist", "dist-pages", "templates", ".agents"}
@@ -568,6 +580,8 @@ def main() -> int:
     all_findings.extend(validate_mermaid_version_pin(pages))
     all_findings.extend(validate_mermaid_csp_alignment(pages))
     all_findings.extend(check_governance_docs_consistency())
+    for finding in check_contracts():
+        all_findings.append(Finding("ERROR", "assets/css/critical-hero.css", finding))
 
     errors   = [f for f in all_findings if f.severity == "ERROR"]
     warnings = [f for f in all_findings if f.severity == "WARN"]

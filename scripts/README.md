@@ -16,6 +16,7 @@ cannot be mistaken for current pipeline commands.
 | `check-links.py` | active | Check internal and external links |
 | `prepare-pages-artifact.py` | active | Build the allowlisted static release artifact |
 | `validate-site.py` | active | Structural site validation, including external-font-origin regression checks |
+| `check-critical-theme-drift.py` | active | Verify the first-viewport critical CSS contract against the shared AskJamie theme |
 | `sync-foundation-files.py` | active | 3-way sync of theme.css/app.js/mermaid-init.js across the three sibling repos |
 | `responsive-qa.mjs` | active | Responsive QA entry point |
 | `experience-qa.cjs` | active | Focused Playwright checks for AskJamie search, resilient content visibility, and footer contrast |
