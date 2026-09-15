@@ -48,6 +48,13 @@ than an inferred clean result. Unknown hosted evidence, protected branches,
 deployment refs, open pull requests, and closed unmerged pull requests remain
 deletion holds. The report is read-only; it never deletes a ref or PR.
 
+The audit projects these holds into `hosted_lifecycle.cleanup_plan`, preserving
+the exact provider/ref pair and `blocking_reasons`. Protected, deployed, and
+open-PR refs are `keep`; inaccessible or missing refs, unknown evidence, and
+closed-unmerged PRs are `review`. The `merge` and `delete` arrays remain empty
+for hosted holds, so an unverified hosted branch cannot become a delete
+candidate through plan rendering.
+
 ## Local deletion recovery guard
 
 For local-only branch deletion, run the one-Repl janitor's recovery snapshot

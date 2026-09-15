@@ -687,12 +687,49 @@ def audit_hosted_branches(
         for entry in entries
         if entry["deletion_blocked"]
     ]
+    cleanup_plan = hosted_cleanup_plan(entries)
     return {
         "requested": True,
         "entries": entries,
         "deletion_blocked": bool(blocking_entries),
         "blocking_entries": blocking_entries,
+        "cleanup_plan": cleanup_plan,
     }
+
+
+def hosted_cleanup_plan(
+    entries: Iterable[dict[str, object]],
+) -> dict[str, list[dict[str, object]]]:
+    """Project hosted evidence into the human-readable four-bucket plan."""
+    plan: dict[str, list[dict[str, object]]] = {
+        "keep": [],
+        "merge": [],
+        "delete": [],
+        "review": [],
+    }
+    keep_reasons = {
+        "hosted-ref-protected",
+        "hosted-ref-has-deployments",
+        "hosted-open-pull-request",
+    }
+    for entry in entries:
+        reasons = sorted({
+            str(reason)
+            for reason in entry.get("blocking_reasons", [])
+        })
+        if not entry.get("deletion_blocked"):
+            continue
+        bucket = "keep" if keep_reasons.intersection(reasons) else "review"
+        plan[bucket].append({
+            "provider": entry["provider"],
+            "ref": entry["ref"],
+            "blocking_reasons": reasons,
+        })
+    for bucket in plan:
+        plan[bucket].sort(
+            key=lambda item: (str(item["provider"]), str(item["ref"]))
+        )
+    return plan
 
 
 def is_exception(path: Path, root: Path) -> bool:

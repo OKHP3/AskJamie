@@ -139,6 +139,11 @@ Every non-current, non-`main` branch belongs in exactly one bucket:
 | `review` | Unique commits, unknown PR state, failed lookup, or unclear intent |
 
 Generated naming affects the explanation, never the bucket by itself.
+When `hosted_lifecycle.cleanup_plan` is present, carry its exact provider/ref
+items and `blocking_reasons` into these four buckets. Hosted protected,
+deployed, or open-PR refs are `keep`; inaccessible or missing refs, unknown
+hosted evidence, and closed-unmerged PRs are `review`. A hosted entry with
+`deletion_blocked: true` must never appear in `delete`.
 
 ### 4. Audit naming and detritus
 
@@ -254,6 +259,9 @@ Return:
 
 - repository root, current branch, base ref, and whether refs were fetched;
 - the four branch buckets with evidence for every item;
+- hosted `deletion_blocked` entries projected into
+  `hosted_lifecycle.cleanup_plan` as `keep` or `review`, including every
+  blocking reason and never as `delete`;
 - the four file-action sections;
 - unresolved unknowns and the smallest safe next check;
 - exact writes performed, or an explicit statement that discovery was
@@ -271,6 +279,7 @@ Return:
 | Git command or fetch fails | Stop; show the failed command and stderr |
 | Detached HEAD | Audit may continue, but no branch deletion may be recommended until the active work is identified |
 | PR lookup unavailable | Put affected branches in `review`; never infer abandonment |
+| Hosted deletion evidence is blocked | Carry the exact provider/ref and blocking reasons into `keep` or `review`; never show it as `delete` |
 | Unique unmerged commits | Preserve in `review` unless the owner explicitly abandons them |
 | Rename affects public URL | Require redirect or transition plan before execution |
 | Approval is broad or ambiguous | Ask for exact approved line items |

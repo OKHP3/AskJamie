@@ -202,6 +202,75 @@ class AuditRepoTests(unittest.TestCase):
             if not entry["deletion_blocked"]
         ]
         self.assertNotIn("feature/inaccessible", deletion_candidates)
+        plan = report["cleanup_plan"]
+        self.assertEqual(plan["merge"], [])
+        self.assertEqual(plan["delete"], [])
+        self.assertEqual(
+            [(item["provider"], item["ref"]) for item in plan["keep"]],
+            [
+                ("fixture-host", "feature/deployed"),
+                ("fixture-host", "feature/pr-associated"),
+                ("fixture-host", "feature/protected"),
+            ],
+        )
+        self.assertEqual(
+            [(item["provider"], item["ref"]) for item in plan["review"]],
+            [
+                ("fixture-host", "feature/missing"),
+                ("missing-remote", "feature/inaccessible"),
+            ],
+        )
+        self.assertEqual(
+            plan["review"][1]["blocking_reasons"],
+            ["hosted-remote-inaccessible"],
+        )
+
+    def test_hosted_cleanup_plan_never_deletes_blocked_or_unverified_refs(
+        self,
+    ) -> None:
+        entries = [
+            {
+                "provider": "origin",
+                "ref": "feature/unknown",
+                "deletion_blocked": True,
+                "blocking_reasons": [
+                    "hosted-pull-request-evidence-unknown",
+                    "hosted-protection-unknown",
+                ],
+            },
+            {
+                "provider": "origin",
+                "ref": "feature/protected",
+                "deletion_blocked": True,
+                "blocking_reasons": ["hosted-ref-protected"],
+            },
+            {
+                "provider": "origin",
+                "ref": "feature/verified",
+                "deletion_blocked": False,
+                "blocking_reasons": [],
+            },
+        ]
+
+        plan = audit_repo.hosted_cleanup_plan(entries)
+
+        self.assertEqual(plan["merge"], [])
+        self.assertEqual(plan["delete"], [])
+        self.assertEqual(
+            [item["ref"] for item in plan["keep"]],
+            ["feature/protected"],
+        )
+        self.assertEqual(
+            plan["review"],
+            [{
+                "provider": "origin",
+                "ref": "feature/unknown",
+                "blocking_reasons": [
+                    "hosted-protection-unknown",
+                    "hosted-pull-request-evidence-unknown",
+                ],
+            }],
+        )
 
     def test_github_api_fixtures_produce_evidence_and_deletion_holds(self) -> None:
         directory = tempfile.TemporaryDirectory()
