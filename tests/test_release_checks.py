@@ -497,6 +497,84 @@ def test_lighthouse_routes_preserves_normal_output_contract():
     assert "path," in source
 
 
+def test_lighthouse_summary_fixture_covers_normal_and_controlled_outputs_without_browser(tmp_path):
+    fixture = ROOT / "tests/fixtures/lighthouse-summary-report.json"
+    assert fixture.is_file()
+    runner = tmp_path / "summary-fixture.mjs"
+    runner.write_text(
+        """
+import { readFileSync } from "node:fs";
+import { createSummary, summarizePage } from "./scripts/lighthouse-routes.mjs";
+
+const report = JSON.parse(readFileSync("tests/fixtures/lighthouse-summary-report.json", "utf8"));
+const page = { performance: 88, lcpMs: 2000 };
+const emit = (controlled) => {
+  const summary = createSummary({
+    date: "2099-01-02",
+    preset: "mobile",
+    controlled,
+    baseUrl: "https://fixture.invalid"
+  });
+  summary.pages.brandguard = summarizePage({
+    report,
+    path: "/lens-system/okhp3-brandguard/",
+    baselinePage: page
+  });
+  return summary;
+};
+process.stdout.write(JSON.stringify({ normal: emit(false), controlled: emit(true) }));
+""".strip()
+        + "\n",
+        encoding="utf-8",
+    )
+
+    result = subprocess.run(
+        ["node", "--input-type=module", "-e", runner.read_text(encoding="utf-8")],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    emitted = json.loads(result.stdout)
+    assert not list((ROOT / "assets/audit").glob("lighthouse-2099-01-02*"))
+
+    normal = emitted["normal"]
+    assert normal["schemaVersion"] == 1
+    assert normal["capturedAt"] == "2099-01-02"
+    assert normal["environment"] == "Local or supplied static server, mobile preset"
+    assert normal["controls"] == {
+        "thirdPartyFonts": "in flight",
+        "analytics": "in flight",
+        "interpretation": "No third-party isolation applied.",
+    }
+
+    controlled = emitted["controlled"]
+    assert controlled["environment"] == "Local or supplied static server, controlled mobile preset"
+    assert controlled["controls"] == {
+        "thirdPartyFonts": "blocked",
+        "analytics": "blocked",
+        "interpretation": "Controlled lab measurement only. Not field data.",
+    }
+
+    for summary in (normal, controlled):
+        assert summary["property"] == "https://fixture.invalid"
+        assert summary["baseline"] == "assets/audit/lighthouse-baseline-2026-08-22.json"
+        assert summary["pages"]["brandguard"] == {
+            "path": "/lens-system/okhp3-brandguard/",
+            "performance": 91,
+            "accessibility": 95,
+            "bestPractices": 88,
+            "seo": 93,
+            "lcpMs": 2345,
+            "cls": 0.012346,
+            "tbtMs": 17,
+            "fcpMs": 1234,
+            "lcpElement": "div.askjamie-hero-copy > p.hero-tagline",
+            "deltaPerformance": 3,
+            "deltaLcpMs": 345,
+        }
+
+
 def test_responsive_qa_browser_fixture_isolates_pages_and_preserves_failures(tmp_path):
     node_bin = os.environ.get("ASKJAMIE_NODE") or shutil.which("node")
     bundled_node = Path(

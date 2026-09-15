@@ -1,0 +1,29 @@
+{
+  "categories": {
+    "performance": {"score": 0.91},
+    "accessibility": {"score": 0.95},
+    "best-practices": {"score": 0.88},
+    "seo": {"score": 0.93}
+  },
+  "audits": {
+    "largest-contentful-paint": {"numericValue": 2345.4},
+    "cumulative-layout-shift": {"numericValue": 0.01234567},
+    "total-blocking-time": {"numericValue": 16.7},
+    "first-contentful-paint": {"numericValue": 1234.4},
+    "largest-contentful-paint-element": {
+      "details": {
+        "items": [
+          {
+            "items": [
+              {
+                "node": {
+                  "selector": "div.askjamie-hero-copy > p.hero-tagline"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}
