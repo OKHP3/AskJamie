@@ -12,3 +12,4 @@
 - [Merge marker false positives](merge-marker-false-positives.md) — conflict resolvers may mistake decorative seven-equals comment rules for unresolved markers
 - [Branch cleanup recovery refs](branch-cleanup-recovery.md) — date-stamped recovery refs and a full ref snapshot protect local-only branch deletion
 - [Mobile critical-rendering evidence](mobile-critical-rendering-evidence.md) — isolate deferred theme/font gains from lab variance and keep the 2.5-second claim evidence-bound
+- [Lighthouse LCP lab constraint](lighthouse-lcp-lab-constraint.md) — separate emulated mobile LCP from much earlier observed paint when the runner reports zero blocking

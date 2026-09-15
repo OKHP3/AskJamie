@@ -378,10 +378,10 @@ above. A direct local Playwright paint observer also records the hero tagline
 as the LCP candidate at 112 ms without Lighthouse emulation.
 
 This is measured runner variance/constraint rather than evidence of a remaining
-page task. The 2.5 second budget is therefore not claimed as passed; an owner
-must approve any revised budget before this constraint can be treated as
-closed. Controlled and normal samples remain explicitly separated from field
-evidence.
+page task. The owner approved a revised **3.5 second lab budget** for this
+constraint on 2026-09-14. The revised budget applies only to this controlled
+Lighthouse lab measurement; it is not a field-performance target, and
+controlled and normal samples remain explicitly separated from field evidence.
 
 ## Visual reference set
 
