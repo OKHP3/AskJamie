@@ -283,6 +283,71 @@ class DecisionLedgerTests(unittest.TestCase):
         )
         self.assertFalse(report["decision_ledger"]["ok"])
 
+    def test_ledger_check_reports_invalid_draft_without_running_git(self) -> None:
+        root = Path(tempfile.mkdtemp())
+        self.addCleanup(lambda: __import__("shutil").rmtree(root))
+        ledger = self.write_ledger(
+            root,
+            "| reviewed | **retain** | malformed |",
+            "\n".join([
+                "- `held` — active work",
+                "- `held` — repeated hold",
+                "- held — missing backticks",
+            ]),
+        )
+
+        result = subprocess.run(
+            [
+                sys.executable,
+                str(SCRIPT),
+                "--check-ledger",
+                "--root",
+                str(root),
+                "--decision-ledger",
+                str(ledger),
+            ],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+
+        self.assertEqual(result.returncode, 1)
+        report = json.loads(result.stdout)
+        self.assertEqual(report["malformed_decision_rows"][0]["line"], 4)
+        self.assertEqual(report["duplicate_exclusion_entries"][0]["line"], 13)
+        self.assertEqual(report["malformed_exclusion_entries"][0]["line"], 14)
+        self.assertFalse(report["ok"])
+
+    def test_ledger_check_accepts_clean_ledger_without_git_repository(self) -> None:
+        root = Path(tempfile.mkdtemp())
+        self.addCleanup(lambda: __import__("shutil").rmtree(root))
+        ledger = self.write_ledger(
+            root,
+            f"| `reviewed` | **keep** | `{'a' * 40}` | active |",
+            "- `held` — active work",
+        )
+
+        result = subprocess.run(
+            [
+                sys.executable,
+                str(SCRIPT),
+                "--check-ledger",
+                "--root",
+                str(root),
+                "--decision-ledger",
+                str(ledger),
+            ],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+
+        self.assertEqual(result.returncode, 0)
+        report = json.loads(result.stdout)
+        self.assertEqual(report["decision_row_count"], 1)
+        self.assertEqual(report["exclusion_branch_count"], 1)
+        self.assertTrue(report["ok"])
+
     def test_archive_equivalence_distinguishes_promoted_and_unrepresented_work(self) -> None:
         root, initial = self.make_repo()
         git(root, "branch", "promoted-archive")

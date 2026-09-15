@@ -80,6 +80,21 @@ succeeds.
 Explicit exclusions in the ledger count as written coverage. It never mutates
 anything.
 
+To validate a draft ledger before running the repository audit, use:
+
+```bash
+python3 .agents/skills/okhp3-repl-repo-janitor/scripts/audit-repo.py \
+  --check-ledger --root . --decision-ledger path/to/draft-ledger.md
+```
+
+This focused, read-only check parses only the ledger file. It does not require
+the root to be a Git repository, run any Git command, refresh remotes, or use
+network access. It reports the same line-level malformed decision rows,
+unsupported decision labels, malformed exclusions, and duplicate exclusions
+as the full audit. It exits `0` for a clean ledger and `1` when findings or a
+ledger-selection error are present. Omit `--decision-ledger` to use the same
+active-ledger discovery rules as the full audit.
+
 For each **unmerged** branch, resolve its pull-request state before deciding: use the `git-remote` skill (or `gh pr list --head <branch>` / `gh pr view` if the `gh` CLI and a token are available) to check open/closed/merged status and CI checks. Do not assume a branch is dead just because it's old — check for an open PR first.
 
 ### 2. Classify each branch

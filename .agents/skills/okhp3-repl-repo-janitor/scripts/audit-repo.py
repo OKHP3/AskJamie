@@ -8,6 +8,8 @@ Never mutates the repository. Prints a JSON report to stdout.
 Usage:
     python3 audit-repo.py [--root PATH] [--base origin/main]
         [--active-line BRANCH]
+    python3 audit-repo.py --check-ledger [--root PATH]
+        [--decision-ledger PATH]
 
 What it reports:
   1. Branch ledger: every local branch, its last commit date/author,
@@ -358,6 +360,27 @@ def parse_decision_ledger(path: Path) -> DecisionLedger:
         malformed_exclusion_entries=malformed_exclusion_entries,
         duplicate_exclusion_entries=duplicate_exclusion_entries,
     )
+
+
+def validate_decision_ledger_structure(ledger_path: Path) -> dict[str, object]:
+    """Validate ledger syntax without reading Git state or contacting a remote."""
+    ledger = parse_decision_ledger(ledger_path)
+    findings = (
+        ledger.malformed_decision_rows
+        or ledger.unsupported_decision_labels
+        or ledger.malformed_exclusion_entries
+        or ledger.duplicate_exclusion_entries
+    )
+    return {
+        "ledger_path": str(ledger_path),
+        "decision_row_count": len(ledger.decisions),
+        "exclusion_branch_count": len(ledger.exclusions),
+        "malformed_decision_rows": ledger.malformed_decision_rows,
+        "unsupported_decision_labels": ledger.unsupported_decision_labels,
+        "malformed_exclusion_entries": ledger.malformed_exclusion_entries,
+        "duplicate_exclusion_entries": ledger.duplicate_exclusion_entries,
+        "ok": not findings,
+    }
 
 
 def audit_decision_ledger(
@@ -769,15 +792,27 @@ def main():
             "(default: current branch)"
         ),
     )
+    ap.add_argument(
+        "--check-ledger",
+        action="store_true",
+        help=(
+            "validate only ledger structure and supported row syntax; "
+            "does not run Git commands or access the network"
+        ),
+    )
     args = ap.parse_args()
     root = Path(args.root).resolve()
 
-    if not (root / ".git").exists():
+    if not args.check_ledger and not (root / ".git").exists():
         print(json.dumps({"error": f"{root} is not a Git repository root"}))
         return 1
 
     try:
         ledger_path = select_decision_ledger(root, args.decision_ledger)
+        if args.check_ledger:
+            report = validate_decision_ledger_structure(ledger_path)
+            print(json.dumps(report, indent=2))
+            return 0 if bool(report["ok"]) else 1
         remote_refresh = refresh_remote(root)
         branches = audit_branches(root, args.base, refresh=False)
         current = next(
