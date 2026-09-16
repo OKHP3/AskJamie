@@ -28,6 +28,10 @@ echo "Post-merge: running site validator and link checker..."
 python3 scripts/validate-site.py
 python3 scripts/check-links.py >/dev/null
 
+echo "Post-merge: checking shared asset fingerprints and Python regressions..."
+python3 scripts/cache-bust.py --check
+python3 -m pytest
+
 echo "Post-merge: running browser responsive QA and JavaScript smoke tests..."
 
 # Reuse the normal local preview server when one is already running. This

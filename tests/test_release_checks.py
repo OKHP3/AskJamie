@@ -226,7 +226,7 @@ def test_pages_artifact_excludes_repository_only_files(tmp_path):
     assert not (output / ".pages-manifest.json").exists()
 
 
-def _run_post_merge_with_fake_tools(tmp_path, *, reuse_server, fail_browser=False):
+def _run_post_merge_with_fake_tools(tmp_path, *, reuse_server, fail_browser=False, fail_gate=""):
     bin_dir = tmp_path / "bin"
     bin_dir.mkdir()
     server_pid_file = tmp_path / "server.pid"
@@ -248,6 +248,9 @@ printf '%s' "$count" > "$CURL_COUNT_FILE"
 if [ "$1" = "-m" ] && [ "$2" = "http.server" ]; then
   printf '%s' "$$" > "$SERVER_PID_FILE"
   exec sleep 60
+fi
+if [ -n "${FAIL_GATE:-}" ] && [ "$*" = "$FAIL_GATE" ]; then
+  exit 7
 fi
 exit 0
 """,
@@ -275,6 +278,7 @@ exit 0
         "CURL_COUNT_FILE": str(curl_count_file),
         "REUSE_SERVER": "1" if reuse_server else "0",
         "FAIL_BROWSER": "1" if fail_browser else "0",
+        "FAIL_GATE": fail_gate,
     }
     result = subprocess.run(
         ["bash", "scripts/post-merge.sh"],
@@ -294,6 +298,17 @@ def test_post_merge_reuses_existing_server_without_starting_another(tmp_path):
 
     assert result.returncode == 0, result.stderr
     assert "reusing browser server" in result.stdout
+    assert "starting temporary browser server" not in result.stdout
+    assert not server_pid_file.exists()
+
+
+@pytest.mark.parametrize("gate", ["scripts/cache-bust.py --check", "-m pytest"])
+def test_post_merge_stops_before_browser_checks_when_source_gate_fails(tmp_path, gate):
+    result, server_pid_file = _run_post_merge_with_fake_tools(
+        tmp_path, reuse_server=False, fail_gate=gate
+    )
+    assert result.returncode == 7, result.stderr
+    assert "all checks passed" not in result.stdout
     assert "starting temporary browser server" not in result.stdout
     assert not server_pid_file.exists()
 
