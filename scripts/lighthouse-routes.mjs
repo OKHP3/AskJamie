@@ -18,7 +18,7 @@ import { fileURLToPath } from "node:url";
 
 export function createSummary({ date, preset, controlled, baseUrl }) {
   return {
-    schemaVersion: 1,
+    schemaVersion: 2,
     capturedAt: date,
     tool: "Lighthouse 12.8.2",
     environment: controlled
@@ -45,6 +45,9 @@ export function summarizePage({ report, path, baselinePage = {} }) {
   const audits = report.audits ?? {};
   const metric = (id) => audits[id]?.numericValue ?? null;
   const lcpElement = audits["largest-contentful-paint-element"]?.details?.items?.[0]?.items?.[0]?.node;
+  const lcpInvalidated = audits.metrics?.details?.items
+    ?.find((item) => typeof item?.lcpInvalidated === "boolean")
+    ?.lcpInvalidated ?? null;
   const performance = Math.round((report.categories?.performance?.score || 0) * 100);
   const lcpMs = Math.round(metric("largest-contentful-paint"));
 
@@ -58,6 +61,8 @@ export function summarizePage({ report, path, baselinePage = {} }) {
     cls: Number(metric("cumulative-layout-shift")?.toFixed(6)),
     tbtMs: Math.round(metric("total-blocking-time")),
     fcpMs: Math.round(metric("first-contentful-paint")),
+    speedIndexMs: Math.round(metric("speed-index")),
+    lcpInvalidated,
     lcpElement: lcpElement?.selector || null,
     deltaPerformance: performance - (baselinePage.performance ?? 0),
     deltaLcpMs: lcpMs - (baselinePage.lcpMs ?? 0),

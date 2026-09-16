@@ -383,6 +383,28 @@ constraint on 2026-09-14. The revised budget applies only to this controlled
 Lighthouse lab measurement; it is not a field-performance target, and
 controlled and normal samples remain explicitly separated from field evidence.
 
+## BrandGuard lab budget reconfirmation
+
+On **2026-09-16**, the current Lighthouse route runner was run again under both
+mobile conditions. The raw reports are in
+`assets/audit/lighthouse-2026-09-16-mobile-controlled/` and
+`assets/audit/lighthouse-2026-09-16-mobile/`. The conditions remain separate:
+the controlled run blocked Google Fonts and analytics, while the normal run
+left those requests in flight. Neither condition is field evidence.
+
+| Condition | FCP | Speed Index | LCP | TBT | LCP invalidated |
+| --- | ---: | ---: | ---: | ---: | --- |
+| Controlled, third parties blocked | 1.671 s | 1.671 s | 3.234 s | 0 ms | false |
+| Normal, third parties in flight | 0.903 s | 1.373 s | 2.856 s | 121 ms | false |
+
+Both fresh BrandGuard samples remain below the approved **3.5 second
+controlled-lab budget**. The controlled result is consistent with the
+2026-09-14 controlled result of 3.229 s, and the normal result is also below the
+budget despite higher blocking work. The current runner therefore still
+supports the approved budget; owner review is not required again at this time.
+The budget remains a controlled Lighthouse lab allowance, not a real-user
+performance target.
+
 ## Visual reference set
 
 The committed reference images are in `assets/audit/visual-baseline/`:
