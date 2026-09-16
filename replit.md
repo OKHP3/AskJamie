@@ -11,9 +11,9 @@ runtime and workflow configuration. Keep project facts here aligned with
 - GitHub Pages production uses the allowlisted release artifact prepared
   by GitHub Actions. The Replit configuration is a separate publication path.
 - Deployment target: static.
-- Development server: `python3 -m http.server 5000 --bind 0.0.0.0`.
+- Development server: `python3 scripts/serve-site.py`.
 - Local port: 5000, exposed as port 80 by the Replit workflow.
-- Nix modules: web, Node.js 20, and Python 3.11.
+- Nix modules: web, Node.js 22, and Python 3.11.
 - No application build step is required.
 
 ## Current stack
@@ -39,14 +39,38 @@ The `Project` workflow starts the application, responsive QA, and site audit in
 parallel. The individual workflows are:
 
 ```text
-Start application: python3 -m http.server 5000 --bind 0.0.0.0
+Start application: python3 scripts/serve-site.py
 responsive-qa:      node scripts/responsive-qa.mjs --static
 site-audit:         python3 scripts/audit-site.py --quiet
 ```
 
-The post-merge hook is `scripts/post-merge.sh`. It verifies key files, rebuilds
-the search index, and runs the canonical site audit. Review generated-file
-changes before running it with other uncommitted work present.
+The post-merge hook is `scripts/post-merge.sh`, with a 120-second timeout. It
+verifies key files, rebuilds the search index, and checks the audit, structure,
+links, asset fingerprints, Python regressions, responsive browser behavior,
+and JavaScript smoke tests. A failed gate stops the hook. Review generated-file
+changes before running it with other uncommitted work present. GitHub CI runs
+additional browser checks and remains the production deployment gate.
+
+## GitHub synchronization
+
+The Replit workspace and Windows checkout are independent clones. File Explorer
+shows the Windows files; a Replit push does not update those files automatically.
+The canonical remote is `https://github.com/OKHP3/AskJamie.git` (or the equivalent
+SSH URL). Check status and fetch before deciding what to integrate:
+
+```text
+git status --short --branch
+git fetch origin
+git rev-list --left-right --count HEAD...origin/main
+```
+
+For a clean checkout that is only behind, use `git pull --ff-only origin main`.
+If both counts are nonzero or files are modified, preserve and review that work
+before integration. Do not use force-push or discard files to make the counts
+match. Run the validation gates before pushing completed changes, then check
+the GitHub Actions result. A successful push proves source synchronization;
+only a successful deployment run proves publication. Verify a clean status and
+`0 0` counts in both checkouts after integration.
 
 ## Replit-specific boundaries
 
