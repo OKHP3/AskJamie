@@ -621,7 +621,7 @@ def test_responsive_qa_browser_fixture_isolates_pages_and_preserves_failures(tmp
             if path in page_paths:
                 self._record("start", path)
                 body = {
-                    "/lazy/": '<img src="/slow-lazy.png" loading="lazy" width="10" height="10">',
+                    "/lazy/": '<div style="height: 1200px"></div><img src="/slow-lazy.png" loading="lazy" width="10" height="10">',
                     "/clean/": "",
                     "/abort/": '<img src="/aborted.png" width="10" height="10">',
                     "/console-404/": '<script>console.error("fixture console failure")</script><img src="/missing.png" width="10" height="10">',

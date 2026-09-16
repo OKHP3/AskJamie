@@ -116,6 +116,7 @@ async function runWithPlaywright() {
     const requestFailures = [];
     const failedResponses = [];
     const requestInfo = new WeakMap();
+    const requestedUrls = new Set();
     const warnings = [];
 
     const onConsole = msg => {
@@ -127,6 +128,7 @@ async function runWithPlaywright() {
       }
     };
     const onRequest = req => {
+      requestedUrls.add(req.url());
       requestInfo.set(req, {
         requestedUrl: req.url(),
         documentUrl: req.frame()?.url() || '',
@@ -183,6 +185,25 @@ async function runWithPlaywright() {
                  mode: 'playwright', pass: false,
                  errors: ['navigation timeout: ' + err.message.split('\n')[0]], warnings };
       }
+
+      // Lazy loading is viewport-driven. Scroll each lazy image into view so
+      // every runtime observes the same request opportunity before the page
+      // is inspected and closed. The wait is only for request start: lazy
+      // images remain intentionally excluded from completion/broken checks.
+      const lazyImages = page.locator('img[loading="lazy"]');
+      const lazyImageUrls = await lazyImages.evaluateAll(images =>
+        [...new Set(images.map(image => image.currentSrc || image.src).filter(Boolean))]
+      );
+      const pendingLazyRequests = lazyImageUrls
+        .filter(imageUrl => !requestedUrls.has(imageUrl))
+        .map(imageUrl =>
+          page.waitForRequest(request => request.url() === imageUrl, { timeout: 5000 })
+            .catch(() => null)
+        );
+      for (let index = 0, count = await lazyImages.count(); index < count; index += 1) {
+        await lazyImages.nth(index).scrollIntoViewIfNeeded().catch(() => {});
+      }
+      await Promise.all(pendingLazyRequests);
 
       const overflow = await page.evaluate(() =>
         document.documentElement.scrollWidth > window.innerWidth
