@@ -10,6 +10,8 @@
     "cumulative-layout-shift": {"numericValue": 0.01234567},
     "total-blocking-time": {"numericValue": 16.7},
     "first-contentful-paint": {"numericValue": 1234.4},
+    "speed-index": {"numericValue": 1789.6},
+    "metrics": {"details": {"items": [{"lcpInvalidated": false}]}},
     "largest-contentful-paint-element": {
       "details": {
         "items": [

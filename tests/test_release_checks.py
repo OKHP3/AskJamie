@@ -539,7 +539,7 @@ process.stdout.write(JSON.stringify({ normal: emit(false), controlled: emit(true
     assert not list((ROOT / "assets/audit").glob("lighthouse-2099-01-02*"))
 
     normal = emitted["normal"]
-    assert normal["schemaVersion"] == 1
+    assert normal["schemaVersion"] == 2
     assert normal["capturedAt"] == "2099-01-02"
     assert normal["environment"] == "Local or supplied static server, mobile preset"
     assert normal["controls"] == {
@@ -557,6 +557,7 @@ process.stdout.write(JSON.stringify({ normal: emit(false), controlled: emit(true
     }
 
     for summary in (normal, controlled):
+        assert summary["schemaVersion"] == 2
         assert summary["property"] == "https://fixture.invalid"
         assert summary["baseline"] == "assets/audit/lighthouse-baseline-2026-08-22.json"
         assert summary["pages"]["brandguard"] == {
@@ -569,6 +570,8 @@ process.stdout.write(JSON.stringify({ normal: emit(false), controlled: emit(true
             "cls": 0.012346,
             "tbtMs": 17,
             "fcpMs": 1234,
+            "speedIndexMs": 1790,
+            "lcpInvalidated": False,
             "lcpElement": "div.askjamie-hero-copy > p.hero-tagline",
             "deltaPerformance": 3,
             "deltaLcpMs": 345,
