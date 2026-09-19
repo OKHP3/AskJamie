@@ -64,7 +64,7 @@ jobs:
 
       - name: Preserve classified probe report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: public-gpt-links-${{ github.run_number }}-${{ github.run_attempt }}
           path: artifacts/public-gpt-links/
