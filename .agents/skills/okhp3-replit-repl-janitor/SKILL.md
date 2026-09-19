@@ -75,12 +75,7 @@ evidence-led, and destructive only after the owner approves exact line items.
 6. **Rename atomically.** A file rename must update every importer and link in
    the same change. A public URL needs a redirect or transition plan.
 7. **Protect recovery paths.** Never rewrite `main`, force-push, or delete
-   stashes or archive refs under this skill. A recovery ref remains protected
-   until the owner approves its exact retirement with evidence that the
-   protected work is no longer needed. Before an approved local branch
-   deletion, take a recovery snapshot and verify it afterward. The snapshot
-   must prove that every non-target ref, stash entry, and previously reachable
-   object is still present; each removed branch must also have a recovery ref.
+   stashes or archive refs under this skill.
 
 ---
 
@@ -141,11 +136,6 @@ Every non-current, non-`main` branch belongs in exactly one bucket:
 | `review` | Unique commits, unknown PR state, failed lookup, or unclear intent |
 
 Generated naming affects the explanation, never the bucket by itself.
-When `hosted_lifecycle.cleanup_plan` is present, carry its exact provider/ref
-items and `blocking_reasons` into these four buckets. Hosted protected,
-deployed, or open-PR refs are `keep`; inaccessible or missing refs, unknown
-hosted evidence, and closed-unmerged PRs are `review`. A hosted entry with
-`deletion_blocked: true` must never appear in `delete`.
 
 ### 4. Audit naming and detritus
 
@@ -192,7 +182,24 @@ line; obtain an exact go/no-go for each merge, delete, and rename.
 
 ### 6. Execute approved items in small batches
 
-Before each branch operation, refresh and verify the expected head SHA.
+Before each branch operation, run the bundled pre-delete check with the exact
+branch and SHA recorded in the approved plan:
+
+```bash
+python3 .agents/skills/okhp3-replit-repl-janitor/scripts/audit-repo.py \
+  --root . \
+  --check-delete \
+  --branch '<branch>' \
+  --reviewed-head '<reviewed SHA>'
+```
+
+The JSON result records both `reviewed_head` and the freshly read
+`current_head`. If the bucket is `review`, stop, record the hold, and run no
+deletion command. Only a `delete` result may be executed, and its
+`deletion_commands` must be run in the emitted order. The sequence is
+remote-first (`git push origin --delete <branch>`) and local second
+(`git branch -d <branch>`). The check is read-only and never executes either
+command.
 
 For an approved merge:
 
@@ -205,77 +212,6 @@ For an approved merge:
 
 For approved files, use `git rm` and `git mv` so the change is explicit. Plain
 `rm` is acceptable only for an untracked or gitignored working file.
-
-For an approved local-only branch deletion, protect and verify the exact
-operation without giving the audit permission to delete anything:
-
-```bash
-snapshot="$(mktemp)"
-python3 .agents/skills/okhp3-replit-repl-janitor/scripts/audit-repo.py \
-  --root . \
-  --snapshot-recovery "$snapshot"
-
-# Create refs/recovery/<dated-name> at the approved branch tip, then run the
-# explicitly approved git branch deletion outside the read-only audit.
-python3 .agents/skills/okhp3-replit-repl-janitor/scripts/audit-repo.py \
-  --root . \
-  --verify-recovery "$snapshot" \
-  --approve-local-deletion 'feature/example'
-rm "$snapshot"
-```
-
-`--approve-local-deletion` is an exact comparison allowance, not an execution
-switch. Without it, any removed ref fails verification. The guard also fails
-if `main`, a remote/archive/recovery ref, a stash entry, or any object
-reachable before the operation changes. It rejects new refs outside
-`refs/recovery/` and requires a recovery ref pointing to every approved
-branch tip.
-
-#### Retire a recovery ref only after its retention decision
-
-A recovery window ends only when the owner approves one exact
-`refs/recovery/...` ref and records evidence that its protected work is no
-longer needed. Acceptable evidence identifies a durable replacement path, such
-as the protected commit being reachable from the verified base, preserved by
-another specifically named retained ref, or intentionally abandoned after
-review. A date or elapsed retention period alone is not evidence.
-
-Take a fresh snapshot before the approved removal. Delete the exact recovery
-ref outside the read-only audit, then verify the decision:
-
-```bash
-snapshot="$(mktemp)"
-python3 .agents/skills/okhp3-replit-repl-janitor/scripts/audit-repo.py \
-  --root . \
-  --snapshot-recovery "$snapshot"
-
-# Run only after the owner approves this exact ref and evidence.
-git update-ref -d refs/recovery/feature-example
-python3 .agents/skills/okhp3-replit-repl-janitor/scripts/audit-repo.py \
-  --root . \
-  --verify-recovery "$snapshot" \
-  --approve-recovery-retirement \
-  'refs/recovery/feature-example=commit is reachable from verified origin/main'
-rm "$snapshot"
-```
-
-`--approve-recovery-retirement` is an exact comparison allowance and decision
-record, not a deletion switch. It requires a fully qualified recovery ref plus
-non-empty evidence. Without that approval, removing any recovery ref fails.
-The verification also fails if the approved ref was not removed, if its removal
-makes previously reachable objects unavailable, or if any other protected
-state changes.
-
-The recovery guard must also survive ordinary Git maintenance. Use a separate
-disposable fixture for each supported storage-changing mode: `git repack -ad`,
-`git gc --prune=now`, `git prune --expire=now`, and
-`git maintenance run --task=gc`. Run the recovery verification afterward and
-confirm each deleted tip still resolves through its `refs/recovery/` ref. Git
-versions that do not provide a command or task must report that mode as
-`unavailable`; they must not count it as a passing check. A command that exists
-but fails is a failed check, not an unavailable one. If the recovery ref is
-missing, the guard must fail rather than treating the maintenance run as
-successful.
 
 ### 7. Verify and report
 
@@ -300,9 +236,6 @@ Return:
 
 - repository root, current branch, base ref, and whether refs were fetched;
 - the four branch buckets with evidence for every item;
-- hosted `deletion_blocked` entries projected into
-  `hosted_lifecycle.cleanup_plan` as `keep` or `review`, including every
-  blocking reason and never as `delete`;
 - the four file-action sections;
 - unresolved unknowns and the smallest safe next check;
 - exact writes performed, or an explicit statement that discovery was
@@ -320,7 +253,6 @@ Return:
 | Git command or fetch fails | Stop; show the failed command and stderr |
 | Detached HEAD | Audit may continue, but no branch deletion may be recommended until the active work is identified |
 | PR lookup unavailable | Put affected branches in `review`; never infer abandonment |
-| Hosted deletion evidence is blocked | Carry the exact provider/ref and blocking reasons into `keep` or `review`; never show it as `delete` |
 | Unique unmerged commits | Preserve in `review` unless the owner explicitly abandons them |
 | Rename affects public URL | Require redirect or transition plan before execution |
 | Approval is broad or ambiguous | Ask for exact approved line items |

@@ -7,7 +7,6 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
-from unittest.mock import patch
 
 
 SCRIPT = Path(__file__).parents[1] / "scripts" / "audit-repo.py"
@@ -18,16 +17,86 @@ SPEC.loader.exec_module(audit_repo)
 
 
 class AuditRepoTests(unittest.TestCase):
-    @staticmethod
-    def git(root: Path, *args: str) -> str:
-        result = subprocess.run(
-            ["git", *args],
-            cwd=root,
-            check=True,
-            text=True,
-            capture_output=True,
-        )
-        return result.stdout.strip()
+    def test_pre_delete_tip_change_holds_and_emits_no_deletion_commands(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            self._init_repo(root)
+            self._git(root, "switch", "-q", "-c", "feature/cleanup")
+            (root / "reviewed.txt").write_text("reviewed\n", encoding="utf-8")
+            self._git(root, "add", "reviewed.txt")
+            self._git(root, "commit", "-qm", "reviewed work")
+            reviewed_head = self._git(root, "rev-parse", "HEAD").strip()
+
+            (root / "moved.txt").write_text("changed\n", encoding="utf-8")
+            self._git(root, "add", "moved.txt")
+            self._git(root, "commit", "-qm", "moved branch tip")
+
+            check = audit_repo.prepare_branch_deletion(
+                root,
+                "feature/cleanup",
+                reviewed_head,
+            )
+            self.assertEqual(check["bucket"], "review")
+            self.assertEqual(check["reviewed_head"], reviewed_head)
+            self.assertEqual(
+                check["current_head"],
+                self._git(root, "rev-parse", "HEAD").strip(),
+            )
+            self.assertEqual(check["deletion_commands"], [])
+
+    def test_pre_delete_matching_tip_keeps_remote_first_sequence(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            self._init_repo(root)
+            self._git(root, "switch", "-q", "-c", "feature/cleanup")
+            (root / "reviewed.txt").write_text("reviewed\n", encoding="utf-8")
+            self._git(root, "add", "reviewed.txt")
+            self._git(root, "commit", "-qm", "reviewed work")
+            reviewed_head = self._git(root, "rev-parse", "HEAD").strip()
+
+            check = audit_repo.prepare_branch_deletion(
+                root,
+                "feature/cleanup",
+                reviewed_head,
+                remote="upstream",
+            )
+            self.assertEqual(check["bucket"], "delete")
+            self.assertEqual(check["reviewed_head"], reviewed_head)
+            self.assertEqual(check["current_head"], reviewed_head)
+            self.assertEqual(check["deletion_commands"], [
+                ["git", "push", "upstream", "--delete", "feature/cleanup"],
+                ["git", "branch", "-d", "feature/cleanup"],
+            ])
+
+    def test_cli_rejects_missing_deletion_approval_details(self) -> None:
+        invalid_invocations = [
+            (["--reviewed-head", "reviewed-sha"], "--check-delete requires --branch"),
+            (["--branch", "feature/cleanup"], "--check-delete requires --reviewed-head"),
+        ]
+        for arguments, expected_error in invalid_invocations:
+            with self.subTest(arguments=arguments), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                self._init_repo(root)
+
+                result = subprocess.run(
+                    [
+                        sys.executable,
+                        str(SCRIPT),
+                        "--root",
+                        str(root),
+                        "--check-delete",
+                        *arguments,
+                    ],
+                    check=False,
+                    capture_output=True,
+                    text=True,
+                )
+
+                self.assertNotEqual(result.returncode, 0)
+                error_report = json.loads(result.stdout)
+                self.assertEqual(error_report["error"], expected_error)
+                self.assertNotIn("deletion_commands", error_report)
+                self.assertNotIn('"bucket": "delete"', result.stdout)
 
     def test_naming_exceptions_and_violations(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -68,810 +137,24 @@ class AuditRepoTests(unittest.TestCase):
             with self.assertRaises(audit_repo.AuditError):
                 audit_repo.ensure_base(root, "origin/main")
 
-    def test_hosted_branch_parser_preserves_exact_provider_and_ref(self) -> None:
-        self.assertEqual(
-            audit_repo.parse_hosted_branch("github=agent/feature-one"),
-            ("github", "agent/feature-one"),
-        )
-        self.assertEqual(
-            audit_repo.parse_hosted_branch("replit:agent/feature-one"),
-            ("replit", "agent/feature-one"),
-        )
-        with self.assertRaises(audit_repo.AuditError):
-            audit_repo.parse_hosted_branch("github")
-
-    def test_hosted_lifecycle_fixture_blocks_unverified_cleanup(self) -> None:
-        directory = tempfile.TemporaryDirectory()
-        self.addCleanup(directory.cleanup)
-        root = self.git_repo_from(directory)
-        remote = root / "redacted-hosted.git"
-        self.git(root, "init", "--bare", "-q", str(remote))
-        self.git(root, "remote", "add", "fixture-host", str(remote))
-        for branch in (
-            "feature/protected",
-            "feature/deployed",
-            "feature/pr-associated",
-            "feature/closed-unmerged",
-        ):
-            self.git(root, "branch", branch)
-            self.git(root, "push", "-q", "fixture-host", branch)
-
-        evidence_fixtures = {
-            "feature/protected": {
-                "protection": {"status": "protected", "source": "fixture"},
-                "deployments": {
-                    "status": "available", "count": 0, "items": [],
-                },
-                "pull_requests": {
-                    "status": "available", "count": 0, "items": [],
-                },
-            },
-            "feature/deployed": {
-                "protection": {"status": "unprotected", "source": "fixture"},
-                "deployments": {
-                    "status": "available",
-                    "count": 1,
-                    "items": [{"id": 7, "environment": "production"}],
-                },
-                "pull_requests": {
-                    "status": "available", "count": 0, "items": [],
-                },
-            },
-            "feature/pr-associated": {
-                "protection": {"status": "unprotected", "source": "fixture"},
-                "deployments": {
-                    "status": "available", "count": 0, "items": [],
-                },
-                "pull_requests": {
-                    "status": "available",
-                    "count": 1,
-                    "items": [{
-                        "number": 42,
-                        "state": "open",
-                        "merged_at": None,
-                    }],
-                },
-            },
-            "feature/closed-unmerged": {
-                "protection": {"status": "unprotected", "source": "fixture"},
-                "deployments": {
-                    "status": "available", "count": 0, "items": [],
-                },
-                "pull_requests": {
-                    "status": "available",
-                    "count": 1,
-                    "items": [{
-                        "number": 43,
-                        "state": "closed",
-                        "merged_at": None,
-                    }],
-                },
-            },
-        }
-
-        def fixture_evidence(
-            _root: Path, _remote_url: str | None, branch: str
-        ) -> dict[str, object]:
-            return evidence_fixtures[branch]
-
-        with patch.object(
-            audit_repo, "github_hosted_evidence", side_effect=fixture_evidence
-        ):
-            report = audit_repo.audit_hosted_branches(
-                root,
-                [
-                    "fixture-host=feature/missing",
-                    "fixture-host=feature/protected",
-                    "fixture-host=feature/deployed",
-                    "fixture-host=feature/pr-associated",
-                    "fixture-host=feature/closed-unmerged",
-                    "missing-remote=feature/inaccessible",
-                ],
-            )
-        entries = {entry["ref"]: entry for entry in report["entries"]}
-
-        self.assertEqual(entries["feature/missing"]["classification"], "missing")
-        self.assertEqual(
-            entries["feature/protected"]["classification"], "present"
-        )
-        self.assertEqual(
-            entries["feature/deployed"]["classification"], "present"
-        )
-        self.assertEqual(
-            entries["feature/pr-associated"]["classification"], "present"
-        )
-        self.assertEqual(
-            entries["feature/closed-unmerged"]["classification"], "present"
-        )
-        self.assertEqual(
-            entries["feature/inaccessible"]["classification"], "inaccessible"
-        )
-
-        for branch in (
-            "feature/missing",
-            "feature/protected",
-            "feature/deployed",
-            "feature/pr-associated",
-            "feature/closed-unmerged",
-            "feature/inaccessible",
-        ):
-            self.assertTrue(entries[branch]["deletion_blocked"], branch)
-
-        self.assertIn(
-            "hosted-ref-missing",
-            entries["feature/missing"]["blocking_reasons"],
-        )
-        self.assertIn(
-            "hosted-ref-protected",
-            entries["feature/protected"]["blocking_reasons"],
-        )
-        self.assertIn(
-            "hosted-ref-has-deployments",
-            entries["feature/deployed"]["blocking_reasons"],
-        )
-        self.assertIn(
-            "hosted-open-pull-request",
-            entries["feature/pr-associated"]["blocking_reasons"],
-        )
-        self.assertIn(
-            "hosted-closed-unmerged-pull-request",
-            entries["feature/closed-unmerged"]["blocking_reasons"],
-        )
-        self.assertIn(
-            "hosted-remote-inaccessible",
-            entries["feature/inaccessible"]["blocking_reasons"],
-        )
-        deletion_candidates = [
-            entry["ref"]
-            for entry in report["entries"]
-            if not entry["deletion_blocked"]
-        ]
-        self.assertNotIn("feature/inaccessible", deletion_candidates)
-        self.assertNotIn("feature/closed-unmerged", deletion_candidates)
-        plan = report["cleanup_plan"]
-        self.assertEqual(plan["merge"], [])
-        self.assertEqual(plan["delete"], [])
-        self.assertEqual(
-            [(item["provider"], item["ref"]) for item in plan["keep"]],
-            [
-                ("fixture-host", "feature/deployed"),
-                ("fixture-host", "feature/pr-associated"),
-                ("fixture-host", "feature/protected"),
-            ],
-        )
-        self.assertEqual(
-            [(item["provider"], item["ref"]) for item in plan["review"]],
-            [
-                ("fixture-host", "feature/closed-unmerged"),
-                ("fixture-host", "feature/missing"),
-                ("missing-remote", "feature/inaccessible"),
-            ],
-        )
-        self.assertEqual(
-            plan["review"][2]["blocking_reasons"],
-            ["hosted-remote-inaccessible"],
-        )
-
-    def test_hosted_cleanup_plan_never_deletes_blocked_or_unverified_refs(
-        self,
-    ) -> None:
-        entries = [
-            {
-                "provider": "origin",
-                "ref": "feature/unknown",
-                "deletion_blocked": True,
-                "blocking_reasons": [
-                    "hosted-pull-request-evidence-unknown",
-                    "hosted-protection-unknown",
-                ],
-            },
-            {
-                "provider": "origin",
-                "ref": "feature/protected",
-                "deletion_blocked": True,
-                "blocking_reasons": ["hosted-ref-protected"],
-            },
-            {
-                "provider": "origin",
-                "ref": "feature/verified",
-                "deletion_blocked": False,
-                "blocking_reasons": [],
-            },
-        ]
-
-        plan = audit_repo.hosted_cleanup_plan(entries)
-
-        self.assertEqual(plan["merge"], [])
-        self.assertEqual(plan["delete"], [])
-        self.assertEqual(
-            [item["ref"] for item in plan["keep"]],
-            ["feature/protected"],
-        )
-        self.assertEqual(
-            plan["review"],
-            [{
-                "provider": "origin",
-                "ref": "feature/unknown",
-                "blocking_reasons": [
-                    "hosted-protection-unknown",
-                    "hosted-pull-request-evidence-unknown",
-                ],
-            }],
-        )
-
-    def test_github_api_fixtures_produce_evidence_and_deletion_holds(self) -> None:
-        directory = tempfile.TemporaryDirectory()
-        self.addCleanup(directory.cleanup)
-        root = self.git_repo_from(directory)
-        self.git(
-            root,
-            "remote",
-            "add",
-            "origin",
-            "https://github.com/example/repository.git",
-        )
-        tip = self.git(root, "rev-parse", "HEAD")
-        branches = ("feature/protected", "feature/unprotected")
-        api_fixtures = {
-            "repos/example/repository/branches/feature%2Fprotected": {
-                "protected": True,
-            },
-            "repos/example/repository/branches/feature%2Funprotected": {
-                "protected": False,
-            },
-            (
-                "repos/example/repository/deployments?"
-                "ref=feature%2Fprotected&per_page=100"
-            ): [],
-            (
-                "repos/example/repository/deployments?"
-                "ref=feature%2Funprotected&per_page=100"
-            ): [{
-                "id": 17,
-                "sha": tip,
-                "ref": "feature/unprotected",
-                "environment": "production",
-                "created_at": "2026-09-15T10:00:00Z",
-                "updated_at": "2026-09-15T10:01:00Z",
-                "ignored": "not included in audit evidence",
-            }],
-            (
-                "repos/example/repository/pulls?"
-                "state=all&head=example%3Afeature%2Fprotected&per_page=100"
-            ): [],
-            (
-                "repos/example/repository/pulls?"
-                "state=all&head=example%3Afeature%2Funprotected&per_page=100"
-            ): [
-                {
-                    "number": 21,
-                    "state": "open",
-                    "title": "Open work",
-                    "merged_at": None,
-                    "html_url": "https://github.com/example/repository/pull/21",
-                },
-                {
-                    "number": 20,
-                    "state": "closed",
-                    "title": "Merged work",
-                    "merged_at": "2026-09-14T09:00:00Z",
-                    "html_url": "https://github.com/example/repository/pull/20",
-                },
-                {
-                    "number": 19,
-                    "state": "closed",
-                    "title": "Closed without merge",
-                    "merged_at": None,
-                    "html_url": "https://github.com/example/repository/pull/19",
-                },
-            ],
-        }
-
-        def hosted_fixture(
-            args: list[str], _root: Path
-        ) -> subprocess.CompletedProcess[str]:
-            if args[:3] == ["git", "ls-remote", "--heads"]:
-                branch = args[-1]
-                return subprocess.CompletedProcess(
-                    args, 0, stdout=f"{tip}\t{branch}\n", stderr=""
-                )
-            self.assertEqual(args[:2], ["gh", "api"])
-            endpoint = args[2]
-            self.assertIn(endpoint, api_fixtures)
-            return subprocess.CompletedProcess(
-                args,
-                0,
-                stdout=json.dumps(api_fixtures[endpoint]),
-                stderr="",
-            )
-
-        with patch.object(
-            audit_repo, "hosted_command", side_effect=hosted_fixture
-        ), patch.object(audit_repo.shutil, "which", return_value="/fixture/gh"):
-            report = audit_repo.audit_hosted_branches(
-                root, [f"origin={branch}" for branch in branches]
-            )
-
-        entries = {entry["ref"]: entry for entry in report["entries"]}
-        protected = entries["feature/protected"]
-        unprotected = entries["feature/unprotected"]
-
-        self.assertEqual(protected["protection"]["status"], "protected")
-        self.assertEqual(protected["protection"]["source"], "github-api")
-        self.assertEqual(protected["deployments"]["items"], [])
-        self.assertEqual(protected["pull_requests"]["items"], [])
-        self.assertEqual(
-            protected["blocking_reasons"], ["hosted-ref-protected"]
-        )
-
-        self.assertEqual(unprotected["protection"]["status"], "unprotected")
-        self.assertEqual(unprotected["deployments"]["count"], 1)
-        self.assertEqual(
-            unprotected["deployments"]["items"][0],
-            {
-                "id": 17,
-                "sha": tip,
-                "ref": "feature/unprotected",
-                "environment": "production",
-                "created_at": "2026-09-15T10:00:00Z",
-                "updated_at": "2026-09-15T10:01:00Z",
-            },
-        )
-        self.assertEqual(unprotected["pull_requests"]["count"], 3)
-        self.assertEqual(
-            [
-                (item["number"], item["state"], item["merged_at"])
-                for item in unprotected["pull_requests"]["items"]
-            ],
-            [
-                (21, "open", None),
-                (20, "closed", "2026-09-14T09:00:00Z"),
-                (19, "closed", None),
-            ],
-        )
-        self.assertEqual(
-            unprotected["blocking_reasons"],
-            [
-                "hosted-closed-unmerged-pull-request",
-                "hosted-open-pull-request",
-                "hosted-ref-has-deployments",
-            ],
-        )
-        self.assertTrue(protected["deletion_blocked"])
-        self.assertTrue(unprotected["deletion_blocked"])
-        self.assertTrue(report["deletion_blocked"])
-        self.assertEqual(
-            report["blocking_entries"],
-            ["origin:feature/protected", "origin:feature/unprotected"],
-        )
-
-    def test_hosted_present_ref_reports_tip_independently(self) -> None:
-        directory = tempfile.TemporaryDirectory()
-        self.addCleanup(directory.cleanup)
-        root = self.git_repo_from(directory)
-        remote = root / "hosted.git"
-        self.git(root, "init", "--bare", "-q", str(remote))
-        self.git(root, "remote", "add", "hosted", str(remote))
-        self.git(root, "branch", "feature/example")
-        self.git(root, "push", "-q", "hosted", "feature/example")
-
-        report = audit_repo.audit_hosted_branches(
-            root,
-            ["hosted=feature/example", "hosted=feature/missing"],
-        )
-        present, missing = report["entries"]
-
-        self.assertEqual(present["classification"], "present")
-        self.assertEqual(present["ref"], "feature/example")
-        self.assertEqual(present["tip"], self.git(root, "rev-parse", "HEAD"))
-        self.assertEqual(missing["classification"], "missing")
-        self.assertTrue(report["deletion_blocked"])
-
-    def test_approved_local_deletion_survives_supported_maintenance_modes(
-        self,
-    ) -> None:
-        results = []
-        for mode in audit_repo.RECOVERY_MAINTENANCE_COMMANDS:
-            with self.subTest(mode=mode):
-                with tempfile.TemporaryDirectory() as directory:
-                    root = self.git_repo_at(Path(directory))
-                    self.git(root, "branch", "feature/recover")
-                    self.git(root, "checkout", "-q", "feature/recover")
-                    (root / "feature.txt").write_text(
-                        "recover me\n", encoding="utf-8"
-                    )
-                    self.git(root, "add", "feature.txt")
-                    self.git(root, "commit", "-qm", "feature commit")
-                    feature_tip = self.git(root, "rev-parse", "feature/recover")
-                    self.git(root, "checkout", "-q", "main")
-                    self.git(root, "update-ref", "refs/archive/existing", "HEAD")
-                    self.git(root, "update-ref", "refs/recovery/existing", "HEAD")
-                    self.git(
-                        root, "update-ref", "refs/remotes/origin/main", "HEAD"
-                    )
-                    (root / "README.md").write_text(
-                        "stashed work\n", encoding="utf-8"
-                    )
-                    self.git(root, "stash", "push", "-qm", "preserve this")
-
-                    before = audit_repo.recovery_snapshot(root)
-                    self.git(
-                        root,
-                        "update-ref",
-                        "refs/recovery/feature-recover",
-                        feature_tip,
-                    )
-                    self.git(root, "branch", "-D", "feature/recover")
-                    maintenance = audit_repo.run_recovery_maintenance(root, mode)
-                    results.append(maintenance)
-                    if maintenance["status"] == "unavailable":
-                        continue
-
-                    after = audit_repo.recovery_snapshot(root)
-                    result = audit_repo.compare_recovery_snapshots(
-                        before, after, ["feature/recover"]
-                    )
-
-                    self.assertTrue(result["passed"], result["errors"])
-                    self.assertEqual(result["changed_refs"], [])
-                    self.assertTrue(result["stashes_unchanged"])
-                    self.assertEqual(result["unreachable_objects"], [])
-                    self.assertEqual(
-                        before["refs"]["refs/archive/existing"],
-                        after["refs"]["refs/archive/existing"],
-                    )
-                    self.assertEqual(
-                        before["refs"]["refs/remotes/origin/main"],
-                        after["refs"]["refs/remotes/origin/main"],
-                    )
-                    self.assertEqual(
-                        self.git(
-                            root,
-                            "rev-parse",
-                            "refs/recovery/feature-recover",
-                        ),
-                        feature_tip,
-                    )
-                    self.git(root, "cat-file", "-e", f"{feature_tip}^{{commit}}")
-
-        self.assertEqual(
-            [item["mode"] for item in results],
-            list(audit_repo.RECOVERY_MAINTENANCE_COMMANDS),
-        )
-        self.assertTrue(
-            all(item["status"] in {"available", "unavailable"} for item in results)
-        )
-
-    def test_unsupported_maintenance_command_is_reported_unavailable(self) -> None:
-        completed = subprocess.CompletedProcess(
-            ["git", "maintenance", "run", "--task=gc"],
-            129,
-            stdout="",
-            stderr="error: 'maintenance' is not a git command",
-        )
-        with patch.object(audit_repo.subprocess, "run", return_value=completed):
-            result = audit_repo.run_recovery_maintenance(Path("."), "maintenance-gc")
-
-        self.assertEqual(result["status"], "unavailable")
-        self.assertIn("not a git command", result["reason"])
-
-    def test_guard_is_read_only_without_exact_approval(self) -> None:
-        directory = tempfile.TemporaryDirectory()
-        self.addCleanup(directory.cleanup)
-        root = self.git_repo_from(directory)
-        self.git(root, "branch", "feature/unapproved")
-        before = audit_repo.recovery_snapshot(root)
-        self.git(root, "branch", "-D", "feature/unapproved")
-        after = audit_repo.recovery_snapshot(root)
-
-        result = audit_repo.compare_recovery_snapshots(before, after)
-
-        self.assertFalse(result["passed"])
-        self.assertIn(
-            "refs/heads/feature/unapproved",
-            result["unexpected_removed_refs"],
-        )
-        self.assertIn(
-            "refs/heads/feature/unapproved",
-            result["removed_refs"],
-        )
-
-    def test_guard_rejects_unapproved_recovery_ref_removal(self) -> None:
-        directory = tempfile.TemporaryDirectory()
-        self.addCleanup(directory.cleanup)
-        root = self.git_repo_from(directory)
-        self.git(root, "update-ref", "refs/recovery/retained", "HEAD")
-        before = audit_repo.recovery_snapshot(root)
-        self.git(root, "update-ref", "-d", "refs/recovery/retained")
-
-        result = audit_repo.compare_recovery_snapshots(
-            before, audit_repo.recovery_snapshot(root)
-        )
-
-        self.assertFalse(result["passed"])
-        self.assertEqual(
-            result["unexpected_removed_refs"],
-            ["refs/recovery/retained"],
-        )
-
-    def test_guard_records_exact_evidenced_recovery_ref_retirement(self) -> None:
-        directory = tempfile.TemporaryDirectory()
-        self.addCleanup(directory.cleanup)
-        root = self.git_repo_from(directory)
-        self.git(root, "update-ref", "refs/recovery/merged-work", "HEAD")
-        before = audit_repo.recovery_snapshot(root)
-        self.git(root, "update-ref", "-d", "refs/recovery/merged-work")
-        decision = (
-            "refs/recovery/merged-work="
-            "owner confirmed the protected commit is reachable from main"
-        )
-
-        result = audit_repo.compare_recovery_snapshots(
-            before,
-            audit_repo.recovery_snapshot(root),
-            approved_recovery_retirements=[decision],
-        )
-
-        self.assertTrue(result["passed"], result["errors"])
-        self.assertEqual(
-            result["approved_recovery_retirements"],
-            [{
-                "ref": "refs/recovery/merged-work",
-                "evidence": (
-                    "owner confirmed the protected commit is reachable from main"
-                ),
-            }],
-        )
-        self.assertEqual(result["unreachable_objects"], [])
-
-    def test_recovery_retirement_requires_exact_ref_and_evidence(self) -> None:
-        for decision in (
-            "refs/recovery/missing-evidence=",
-            "refs/heads/not-recovery=owner approved",
-            "recovery/name=owner approved",
-        ):
-            with self.subTest(decision=decision), self.assertRaisesRegex(
-                audit_repo.AuditError,
-                r"refs/recovery/<exact-ref>=<evidence",
-            ):
-                audit_repo.parse_recovery_retirement(decision)
-
-    def test_recovery_snapshot_round_trip_and_cli_verification(self) -> None:
-        directory = tempfile.TemporaryDirectory()
-        self.addCleanup(directory.cleanup)
-        root = self.git_repo_from(directory)
-        snapshot_path = root / "recovery.json"
-        snapshot = audit_repo.recovery_snapshot(root)
-        audit_repo.write_recovery_snapshot(snapshot_path, snapshot)
-        loaded = audit_repo.read_recovery_snapshot(snapshot_path)
-
-        self.assertEqual(snapshot, loaded)
-        self.assertEqual(
-            json.loads(snapshot_path.read_text(encoding="utf-8")),
-            snapshot,
-        )
-        cli_snapshot = root / "cli-recovery.json"
-        snapshot_result = subprocess.run(
-            [
-                sys.executable,
-                str(SCRIPT),
-                "--root",
-                str(root),
-                "--snapshot-recovery",
-                str(cli_snapshot),
-            ],
-            check=False,
-            text=True,
-            capture_output=True,
-        )
-        self.assertEqual(snapshot_result.returncode, 0, snapshot_result.stderr)
-        verify_result = subprocess.run(
-            [
-                sys.executable,
-                str(SCRIPT),
-                "--root",
-                str(root),
-                "--verify-recovery",
-                str(cli_snapshot),
-            ],
-            check=False,
-            text=True,
-            capture_output=True,
-        )
-        self.assertEqual(verify_result.returncode, 0, verify_result.stderr)
-        self.assertTrue(
-            json.loads(verify_result.stdout)["recovery_guard"]["passed"]
-        )
-
-    def test_recovery_snapshot_repeat_write_preserves_original_file(self) -> None:
-        directory = tempfile.TemporaryDirectory()
-        self.addCleanup(directory.cleanup)
-        root = self.git_repo_from(directory)
-        snapshot_path = root / "recovery.json"
-        original = audit_repo.recovery_snapshot(root)
-        audit_repo.write_recovery_snapshot(snapshot_path, original)
-        original_bytes = snapshot_path.read_bytes()
-
-        changed = json.loads(json.dumps(original))
-        changed["current_branch"] = "different"
-        changed["integrity"] = audit_repo.recovery_snapshot_integrity(
-            {key: value for key, value in changed.items() if key != "integrity"}
-        )
-        with self.assertRaisesRegex(
-            audit_repo.AuditError,
-            (
-                r"preserve the existing snapshot and choose a new "
-                r"--snapshot-recovery path.*--verify-recovery"
-            ),
-        ):
-            audit_repo.write_recovery_snapshot(snapshot_path, changed)
-
-        self.assertEqual(snapshot_path.read_bytes(), original_bytes)
-        self.assertEqual(audit_repo.read_recovery_snapshot(snapshot_path), original)
-
-    def test_cli_repeat_snapshot_reports_recovery_action_without_overwrite(
-        self,
-    ) -> None:
-        directory = tempfile.TemporaryDirectory()
-        self.addCleanup(directory.cleanup)
-        root = self.git_repo_from(directory)
-        snapshot_path = root / "recovery.json"
-        first_result = subprocess.run(
-            [
-                sys.executable,
-                str(SCRIPT),
-                "--root",
-                str(root),
-                "--snapshot-recovery",
-                str(snapshot_path),
-            ],
-            check=False,
-            text=True,
-            capture_output=True,
-        )
-        self.assertEqual(first_result.returncode, 0, first_result.stderr)
-        original_bytes = snapshot_path.read_bytes()
-
-        repeat_result = subprocess.run(
-            [
-                sys.executable,
-                str(SCRIPT),
-                "--root",
-                str(root),
-                "--snapshot-recovery",
-                str(snapshot_path),
-            ],
-            check=False,
-            text=True,
-            capture_output=True,
-        )
-
-        self.assertEqual(repeat_result.returncode, 1)
-        error = json.loads(repeat_result.stdout)["error"]
-        self.assertIn("preserve the existing snapshot", error)
-        self.assertIn("choose a new --snapshot-recovery path", error)
-        self.assertIn("--verify-recovery", error)
-        self.assertEqual(snapshot_path.read_bytes(), original_bytes)
-
-    def test_tampered_protected_ref_snapshot_is_rejected(self) -> None:
-        directory = tempfile.TemporaryDirectory()
-        self.addCleanup(directory.cleanup)
-        root = self.git_repo_from(directory)
-        snapshot = audit_repo.recovery_snapshot(root)
-        tampered = json.loads(json.dumps(snapshot))
-        tampered["refs"]["refs/heads/main"] = "0" * 40
-
-        with self.assertRaisesRegex(
-            audit_repo.AuditError, "integrity marker failed validation"
-        ):
-            audit_repo.validate_recovery_snapshot(tampered)
-
-    def test_tampered_reachable_object_snapshot_is_rejected(self) -> None:
-        directory = tempfile.TemporaryDirectory()
-        self.addCleanup(directory.cleanup)
-        root = self.git_repo_from(directory)
-        snapshot = audit_repo.recovery_snapshot(root)
-        tampered = json.loads(json.dumps(snapshot))
-        tampered["reachable_objects"].append("f" * 40)
-        tampered["reachable_objects"].sort()
-
-        with self.assertRaisesRegex(
-            audit_repo.AuditError, "integrity marker failed validation"
-        ):
-            audit_repo.compare_recovery_snapshots(tampered, snapshot)
-
-    def test_recovery_validation_names_failed_evidence_section(self) -> None:
-        directory = tempfile.TemporaryDirectory()
-        self.addCleanup(directory.cleanup)
-        snapshot = audit_repo.recovery_snapshot(self.git_repo_from(directory))
-        cases = [
-            ("format", {"format": 2}),
-            ("ref inventory", {"refs": []}),
-            ("stash list", {"stashes": {}}),
-            ("reachable-object inventory", {"reachable_objects": {}}),
-            ("integrity marker", {"integrity": {"algorithm": "md5", "digest": "x"}}),
-        ]
-
-        for section, replacement in cases:
-            with self.subTest(section=section):
-                malformed = json.loads(json.dumps(snapshot))
-                malformed.update(replacement)
-                with self.assertRaisesRegex(
-                    audit_repo.AuditError,
-                    rf"recovery snapshot {section} failed validation",
-                ):
-                    audit_repo.validate_recovery_snapshot(malformed)
-
-    def test_cli_verification_reports_failed_recovery_section(self) -> None:
-        directory = tempfile.TemporaryDirectory()
-        self.addCleanup(directory.cleanup)
-        root = self.git_repo_from(directory)
-        snapshot_path = root / "malformed-recovery.json"
-        malformed = audit_repo.recovery_snapshot(root)
-        malformed["stashes"] = {}
-        snapshot_path.write_text(json.dumps(malformed), encoding="utf-8")
-
+    @staticmethod
+    def _git(root: Path, *args: str) -> str:
         result = subprocess.run(
-            [
-                sys.executable,
-                str(SCRIPT),
-                "--root",
-                str(root),
-                "--verify-recovery",
-                str(snapshot_path),
-            ],
-            check=False,
-            text=True,
+            ["git", *args],
+            cwd=root,
+            check=True,
             capture_output=True,
+            text=True,
         )
+        return result.stdout
 
-        self.assertNotEqual(result.returncode, 0)
-        error = json.loads(result.stdout)["error"]
-        self.assertIn("stash list failed validation", error)
-        self.assertIn("expected a list of stash records", error)
-
-    def test_lost_objects_fail_even_with_approval_after_maintenance(self) -> None:
-        directory = tempfile.TemporaryDirectory()
-        self.addCleanup(directory.cleanup)
-        root = self.git_repo_from(directory)
-        self.git(root, "branch", "feature/lost")
-        self.git(root, "checkout", "-q", "feature/lost")
-        (root / "lost.txt").write_text("only on deleted branch\n", encoding="utf-8")
-        self.git(root, "add", "lost.txt")
-        self.git(root, "commit", "-qm", "unique commit")
-        self.git(root, "checkout", "-q", "main")
-        before = audit_repo.recovery_snapshot(root)
-        self.git(root, "branch", "-D", "feature/lost")
-        self.git(root, "repack", "-ad")
-        after = audit_repo.recovery_snapshot(root)
-
-        result = audit_repo.compare_recovery_snapshots(
-            before, after, ["feature/lost"]
-        )
-
-        self.assertFalse(result["passed"])
-        self.assertIn(
-            "refs/heads/feature/lost", result["missing_recovery_refs"]
-        )
-        self.assertIn(
-            "removed local refs lack recovery refs: refs/heads/feature/lost",
-            result["errors"],
-        )
-        self.assertTrue(result["unreachable_objects"])
-
-    @classmethod
-    def git_repo_from(cls, directory: tempfile.TemporaryDirectory[str]) -> Path:
-        return cls.git_repo_at(Path(directory.name))
-
-    @classmethod
-    def git_repo_at(cls, root: Path) -> Path:
-        cls.git(root, "init", "-q", "-b", "main")
-        cls.git(root, "config", "user.email", "test@example.com")
-        cls.git(root, "config", "user.name", "Test User")
-        (root / "README.md").write_text("initial\n", encoding="utf-8")
-        cls.git(root, "add", "README.md")
-        cls.git(root, "commit", "-qm", "initial")
-        return root
+    def _init_repo(self, root: Path) -> None:
+        self._git(root, "init", "-q", "-b", "main")
+        self._git(root, "config", "user.email", "test@example.com")
+        self._git(root, "config", "user.name", "Audit Test")
+        (root / "README.md").write_text("fixture\n", encoding="utf-8")
+        self._git(root, "add", "README.md")
+        self._git(root, "commit", "-qm", "initial")
 
 
 if __name__ == "__main__":

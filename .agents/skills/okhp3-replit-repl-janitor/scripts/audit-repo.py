@@ -3,25 +3,20 @@
 
 Reports local branch facts, naming violations, and nested detritus folders as
 JSON. The script never deletes, renames, prunes, merges, or force-pushes.
-Network fetch is opt-in with --fetch and still never prunes. Recovery snapshots
-and verification are also read-only; an approval only identifies the exact
-local branch removal that the comparison is allowed to observe.
+Network fetch is opt-in with --fetch and still never prunes. Its pre-delete
+check only emits deletion commands after the reviewed branch tip matches the
+freshly read tip.
 """
 
 from __future__ import annotations
 
 import argparse
-import hashlib
-import hmac
 import json
-import os
 import re
-import shutil
 import subprocess
 import sys
 from pathlib import Path
 from typing import Iterable
-from urllib.parse import quote, urlparse
 
 
 ROOT_GOVERNANCE_FILES = {
@@ -51,12 +46,6 @@ IGNORED_DIRS = {
 }
 KEBAB_OK = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 REPLIT_BRANCH_PATTERNS = re.compile(r"^(subrepl-|replit-agent$|agent/)")
-RECOVERY_MAINTENANCE_COMMANDS = {
-    "repack": ["git", "repack", "-ad"],
-    "gc": ["git", "gc", "--prune=now"],
-    "prune": ["git", "prune", "--expire=now"],
-    "maintenance-gc": ["git", "maintenance", "run", "--task=gc"],
-}
 
 
 class AuditError(RuntimeError):
@@ -72,66 +61,6 @@ def run(args: list[str], cwd: Path) -> str:
     return result.stdout.strip()
 
 
-def run_recovery_maintenance(root: Path, mode: str) -> dict[str, object]:
-    """Run one declared maintenance mode and report unsupported Git features."""
-    if mode not in RECOVERY_MAINTENANCE_COMMANDS:
-        raise AuditError(f"unsupported recovery maintenance mode: {mode}")
-    command = RECOVERY_MAINTENANCE_COMMANDS[mode]
-    result = subprocess.run(
-        command,
-        cwd=root,
-        capture_output=True,
-        text=True,
-    )
-    detail = result.stderr.strip() or result.stdout.strip()
-    unavailable_markers = (
-        "is not a git command",
-        "unknown subcommand",
-        "unknown option",
-        "invalid option",
-        "unrecognized option",
-        "is not a valid task",
-    )
-    if result.returncode and (
-        result.returncode == 129
-        or any(marker in detail.lower() for marker in unavailable_markers)
-    ):
-        return {
-            "mode": mode,
-            "command": command,
-            "status": "unavailable",
-            "reason": detail or f"Git exited with status {result.returncode}",
-        }
-    if result.returncode:
-        raise AuditError(
-            f"`{' '.join(command)}` failed ({result.returncode}): "
-            f"{detail or 'no output'}"
-        )
-    return {
-        "mode": mode,
-        "command": command,
-        "status": "available",
-    }
-
-
-def hosted_command(args: list[str], cwd: Path) -> subprocess.CompletedProcess[str]:
-    """Run a hosted read-only command without allowing interactive auth."""
-    env = os.environ.copy()
-    env["GIT_TERMINAL_PROMPT"] = "0"
-    ssh_command = env.get("GIT_SSH_COMMAND", "ssh")
-    if "BatchMode" not in ssh_command:
-        ssh_command = f"{ssh_command} -o BatchMode=yes"
-    env["GIT_SSH_COMMAND"] = ssh_command
-    return subprocess.run(
-        args,
-        cwd=cwd,
-        capture_output=True,
-        text=True,
-        stdin=subprocess.DEVNULL,
-        env=env,
-    )
-
-
 def ensure_repository(root: Path) -> None:
     if not root.is_dir():
         raise AuditError(f"repository root does not exist: {root}")
@@ -144,314 +73,51 @@ def ensure_base(root: Path, base: str) -> None:
     run(["git", "rev-parse", "--verify", f"{base}^{{commit}}"], root)
 
 
-def git_ref_snapshot(root: Path) -> dict[str, str]:
-    """Return every ref and its object ID in stable, machine-readable form."""
-    output = run(
-        ["git", "for-each-ref", "--format=%(refname)%00%(objectname)"],
+def prepare_branch_deletion(
+    root: Path,
+    branch: str,
+    reviewed_head: str,
+    *,
+    remote: str = "origin",
+) -> dict[str, object]:
+    """Refresh a branch tip and prepare, but never execute, its deletion.
+
+    The reviewed SHA is the approval boundary.  A changed tip produces a
+    review hold with no deletion commands; a missing branch or other Git
+    failure raises visibly.  When the tip matches, the returned commands
+    preserve the required remote-first order.
+    """
+    if not branch:
+        raise AuditError("branch is required for the pre-delete check")
+    if not reviewed_head:
+        raise AuditError("reviewed branch head is required for the pre-delete check")
+
+    current_head = run(
+        ["git", "rev-parse", "--verify", f"refs/heads/{branch}^{{commit}}"],
         root,
     )
-    refs: dict[str, str] = {}
-    for line in output.splitlines():
-        name, separator, object_id = line.partition("\0")
-        if not separator or not name or not object_id:
-            raise AuditError(f"malformed Git ref record: {line!r}")
-        refs[name] = object_id
-    return dict(sorted(refs.items()))
-
-
-def reachable_object_snapshot(root: Path) -> list[str]:
-    """Return all objects reachable from refs, sorted for deterministic diffs."""
-    output = run(["git", "rev-list", "--all", "--objects"], root)
-    object_ids = {
-        line.split(maxsplit=1)[0]
-        for line in output.splitlines()
-        if line
+    result: dict[str, object] = {
+        "branch": branch,
+        "reviewed_head": reviewed_head,
+        "current_head": current_head,
     }
-    return sorted(object_ids)
+    if current_head != reviewed_head:
+        result.update({
+            "bucket": "review",
+            "reason": "branch tip changed since review",
+            "deletion_commands": [],
+        })
+        return result
 
-
-def recovery_snapshot(root: Path) -> dict[str, object]:
-    """Capture refs, stashes, and reachable objects without changing Git."""
-    snapshot: dict[str, object] = {
-        "format": 1,
-        "current_branch": run(["git", "branch", "--show-current"], root) or None,
-        "refs": git_ref_snapshot(root),
-        "stashes": run(
-            ["git", "stash", "list", "--format=%H%x00%gd%x00%s"], root
-        ).splitlines(),
-        "reachable_objects": reachable_object_snapshot(root),
-    }
-    snapshot["integrity"] = recovery_snapshot_integrity(snapshot)
-    return snapshot
-
-
-def recovery_snapshot_integrity(snapshot: dict[str, object]) -> dict[str, str]:
-    """Return a deterministic digest for the snapshot content."""
-    payload = json.dumps(
-        snapshot,
-        ensure_ascii=True,
-        sort_keys=True,
-        separators=(",", ":"),
-    ).encode("utf-8")
-    return {
-        "algorithm": "sha256",
-        "digest": hashlib.sha256(payload).hexdigest(),
-    }
-
-
-def validate_recovery_snapshot(snapshot: object) -> dict[str, object]:
-    """Reject malformed or incomplete snapshots before comparing them."""
-    if not isinstance(snapshot, dict) or snapshot.get("format") != 1:
-        raise AuditError(
-            "recovery snapshot format failed validation: expected format 1"
-        )
-    expected_fields = {
-        "format",
-        "current_branch",
-        "refs",
-        "stashes",
-        "reachable_objects",
-        "integrity",
-    }
-    if set(snapshot) != expected_fields:
-        missing = sorted(expected_fields - set(snapshot))
-        unexpected = sorted(set(snapshot) - expected_fields)
-        details = []
-        if missing:
-            details.append("missing " + ", ".join(missing))
-        if unexpected:
-            details.append("unexpected " + ", ".join(unexpected))
-        raise AuditError(
-            "recovery snapshot format failed validation: " + "; ".join(details)
-        )
-    current_branch = snapshot.get("current_branch")
-    refs = snapshot.get("refs")
-    stashes = snapshot.get("stashes")
-    reachable = snapshot.get("reachable_objects")
-    integrity = snapshot.get("integrity")
-    if current_branch is not None and not isinstance(current_branch, str):
-        raise AuditError(
-            "recovery snapshot format failed validation: "
-            "current_branch must be a string or null"
-        )
-    if not isinstance(refs, dict) or not all(
-        isinstance(name, str) and isinstance(object_id, str)
-        for name, object_id in refs.items()
-    ):
-        raise AuditError(
-            "recovery snapshot ref inventory failed validation: "
-            "expected a mapping of ref names to object IDs"
-        )
-    if not isinstance(stashes, list) or not all(
-        isinstance(stash, str) for stash in stashes
-    ):
-        raise AuditError(
-            "recovery snapshot stash list failed validation: "
-            "expected a list of stash records"
-        )
-    if not isinstance(reachable, list) or not all(
-        isinstance(object_id, str) for object_id in reachable
-    ):
-        raise AuditError(
-            "recovery snapshot reachable-object inventory failed validation: "
-            "expected a list of object IDs"
-        )
-    if len(reachable) != len(set(reachable)) or reachable != sorted(reachable):
-        raise AuditError(
-            "recovery snapshot reachable-object inventory failed validation: "
-            "object IDs must be unique and sorted"
-        )
-    if not (
-        isinstance(integrity, dict)
-        and integrity.keys() == {"algorithm", "digest"}
-        and integrity.get("algorithm") == "sha256"
-        and isinstance(integrity.get("digest"), str)
-        and re.fullmatch(r"[0-9a-f]{64}", integrity["digest"])
-    ):
-        raise AuditError(
-            "recovery snapshot integrity marker failed validation: "
-            "expected a sha256 algorithm and 64-character lowercase hex digest"
-        )
-    expected_integrity = recovery_snapshot_integrity(
-        {key: snapshot[key] for key in expected_fields if key != "integrity"}
-    )
-    if not hmac.compare_digest(
-        integrity["digest"], expected_integrity["digest"]
-    ):
-        raise AuditError(
-            "recovery snapshot integrity marker failed validation: "
-            "digest does not match the snapshot evidence"
-        )
-    return snapshot
-
-
-def approved_local_ref(branch: str) -> str:
-    """Convert an exact branch approval into a fully qualified local ref."""
-    if branch.startswith("refs/") or not branch:
-        raise AuditError(
-            "approved deletion must be a local branch name, not a ref path"
-        )
-    return f"refs/heads/{branch}"
-
-
-def parse_recovery_retirement(value: str) -> tuple[str, str]:
-    """Parse one exact recovery-ref retirement decision and its evidence."""
-    ref, separator, evidence = value.partition("=")
-    if (
-        not separator
-        or not ref.startswith("refs/recovery/")
-        or ref == "refs/recovery/"
-        or not evidence.strip()
-    ):
-        raise AuditError(
-            "recovery retirement must use "
-            "refs/recovery/<exact-ref>=<evidence work is no longer needed>"
-        )
-    return ref, evidence.strip()
-
-
-def compare_recovery_snapshots(
-    before: dict[str, object],
-    after: dict[str, object],
-    approved_deletions: Iterable[str] = (),
-    approved_recovery_retirements: Iterable[str] = (),
-) -> dict[str, object]:
-    """Compare snapshots, permitting only exact, evidenced ref removals."""
-    before = validate_recovery_snapshot(before)
-    after = validate_recovery_snapshot(after)
-    before_refs = before["refs"]
-    after_refs = after["refs"]
-    assert isinstance(before_refs, dict)
-    assert isinstance(after_refs, dict)
-
-    approved_refs = {approved_local_ref(branch) for branch in approved_deletions}
-    retirement_decisions = dict(
-        parse_recovery_retirement(value)
-        for value in approved_recovery_retirements
-    )
-    approved_recovery_refs = set(retirement_decisions)
-    current_branch = before.get("current_branch")
-    if "refs/heads/main" in approved_refs:
-        raise AuditError("main is protected and cannot be approved for deletion")
-    if current_branch and f"refs/heads/{current_branch}" in approved_refs:
-        raise AuditError("the checked-out branch cannot be approved for deletion")
-
-    removed_refs = sorted(set(before_refs) - set(after_refs))
-    changed_refs = sorted(
-        name for name in set(before_refs) & set(after_refs)
-        if before_refs[name] != after_refs[name]
-    )
-    allowed_removed_refs = approved_refs | approved_recovery_refs
-    unexpected_removed_refs = sorted(set(removed_refs) - allowed_removed_refs)
-    missing_approved_refs = sorted(approved_refs - set(removed_refs))
-    missing_approved_recovery_refs = sorted(
-        approved_recovery_refs - set(removed_refs)
-    )
-
-    approved_tip_ids = {
-        before_refs[ref] for ref in approved_refs if ref in before_refs
-    }
-    added_refs = sorted(set(after_refs) - set(before_refs))
-    invalid_added_refs = sorted(
-        name for name in added_refs
-        if not (
-            name.startswith("refs/recovery/")
-            and after_refs[name] in approved_tip_ids
-        )
-    )
-    missing_recovery_refs = sorted(
-        ref for ref in approved_refs
-        if ref in before_refs
-        and not any(
-            name.startswith("refs/recovery/")
-            and object_id == before_refs[ref]
-            for name, object_id in after_refs.items()
-        )
-    )
-
-    before_stashes = before["stashes"]
-    after_stashes = after["stashes"]
-    assert isinstance(before_stashes, list)
-    assert isinstance(after_stashes, list)
-    stash_changed = before_stashes != after_stashes
-
-    before_objects = set(before["reachable_objects"])
-    after_objects = set(after["reachable_objects"])
-    unreachable_objects = sorted(before_objects - after_objects)
-    errors: list[str] = []
-    if unexpected_removed_refs:
-        errors.append(
-            "unexpected refs removed: " + ", ".join(unexpected_removed_refs)
-        )
-    if missing_approved_refs:
-        errors.append(
-            "approved local refs were not removed: "
-            + ", ".join(missing_approved_refs)
-        )
-    if missing_approved_recovery_refs:
-        errors.append(
-            "approved recovery refs were not removed: "
-            + ", ".join(missing_approved_recovery_refs)
-        )
-    if changed_refs:
-        errors.append("refs changed: " + ", ".join(changed_refs))
-    if invalid_added_refs:
-        errors.append(
-            "unexpected refs added: " + ", ".join(invalid_added_refs)
-        )
-    if missing_recovery_refs:
-        errors.append(
-            "removed local refs lack recovery refs: "
-            + ", ".join(missing_recovery_refs)
-        )
-    if stash_changed:
-        errors.append("stash entries changed")
-    if unreachable_objects:
-        errors.append(
-            f"{len(unreachable_objects)} previously reachable objects were lost"
-        )
-
-    return {
-        "passed": not errors,
-        "approved_local_deletions": sorted(approved_refs),
-        "approved_recovery_retirements": [
-            {"ref": ref, "evidence": retirement_decisions[ref]}
-            for ref in sorted(retirement_decisions)
+    result.update({
+        "bucket": "delete",
+        "reason": "branch tip matches reviewed head",
+        "deletion_commands": [
+            ["git", "push", remote, "--delete", branch],
+            ["git", "branch", "-d", branch],
         ],
-        "removed_refs": removed_refs,
-        "changed_refs": changed_refs,
-        "added_refs": added_refs,
-        "unexpected_removed_refs": unexpected_removed_refs,
-        "invalid_added_refs": invalid_added_refs,
-        "missing_recovery_refs": missing_recovery_refs,
-        "missing_approved_recovery_refs": missing_approved_recovery_refs,
-        "stashes_unchanged": not stash_changed,
-        "unreachable_objects": unreachable_objects,
-        "errors": errors,
-    }
-
-
-def write_recovery_snapshot(path: Path, snapshot: dict[str, object]) -> None:
-    snapshot = validate_recovery_snapshot(snapshot)
-    path.parent.mkdir(parents=True, exist_ok=True)
-    content = json.dumps(snapshot, indent=2, sort_keys=True) + "\n"
-    try:
-        with path.open("x", encoding="utf-8") as snapshot_file:
-            snapshot_file.write(content)
-    except FileExistsError as exc:
-        raise AuditError(
-            f"recovery snapshot already exists: {path}; preserve the existing "
-            "snapshot and choose a new --snapshot-recovery path, or verify the "
-            "existing snapshot with --verify-recovery"
-        ) from exc
-
-
-def read_recovery_snapshot(path: Path) -> dict[str, object]:
-    try:
-        data = json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError) as exc:
-        raise AuditError(f"could not read recovery snapshot {path}: {exc}") from exc
-    return validate_recovery_snapshot(data)
+    })
+    return result
 
 
 def audit_branches(root: Path, base: str) -> tuple[list[dict[str, object]], str]:
@@ -485,373 +151,6 @@ def audit_branches(root: Path, base: str) -> tuple[list[dict[str, object]], str]
             "replit_generated_pattern": bool(REPLIT_BRANCH_PATTERNS.match(branch)),
         })
     return ledger, current
-
-
-def parse_hosted_branch(value: str) -> tuple[str, str]:
-    """Parse the exact provider/ref pair accepted by the hosted audit."""
-    separator = "=" if "=" in value else ":"
-    if separator not in value:
-        raise AuditError(
-            "hosted branch must use PROVIDER=BRANCH (or PROVIDER:BRANCH)"
-        )
-    provider, branch = value.split(separator, 1)
-    if not provider or not branch:
-        raise AuditError(
-            "hosted branch must include both a provider and an exact branch"
-        )
-    if branch.startswith("refs/heads/"):
-        branch = branch.removeprefix("refs/heads/")
-    if (
-        not branch
-        or branch.startswith("/")
-        or branch.endswith("/")
-        or "\x00" in branch
-        or any(character.isspace() for character in branch)
-    ):
-        raise AuditError(f"invalid hosted branch name: {branch!r}")
-    return provider, branch
-
-
-def remote_url_for_provider(root: Path, provider: str) -> tuple[str, str | None]:
-    """Resolve a configured remote, or accept a URL as an explicit provider."""
-    if "://" in provider or provider.startswith("git@"):
-        return provider, provider
-    result = subprocess.run(
-        ["git", "remote", "get-url", provider],
-        cwd=root,
-        capture_output=True,
-        text=True,
-    )
-    if result.returncode:
-        return provider, None
-    return provider, result.stdout.strip() or None
-
-
-def github_repository(remote_url: str | None) -> tuple[str, str] | None:
-    """Extract owner/repository from common GitHub remote URL forms."""
-    if not remote_url:
-        return None
-    if remote_url.startswith("git@github.com:"):
-        path = remote_url.split(":", 1)[1]
-    else:
-        parsed = urlparse(remote_url)
-        if parsed.hostname != "github.com":
-            return None
-        path = parsed.path.lstrip("/")
-    path = path.removesuffix(".git").strip("/")
-    parts = path.split("/")
-    if len(parts) != 2 or not all(parts):
-        return None
-    return parts[0], parts[1]
-
-
-def unknown_hosted_evidence(reason: str) -> dict[str, object]:
-    return {"status": "unknown", "reason": reason}
-
-
-def gh_api_json(root: Path, endpoint: str) -> tuple[object | None, str | None]:
-    """Read one GitHub API endpoint, returning an explicit failure reason."""
-    if shutil.which("gh") is None:
-        return None, "GitHub CLI (`gh`) is not installed"
-    result = hosted_command(["gh", "api", endpoint], root)
-    if result.returncode:
-        detail = result.stderr.strip() or result.stdout.strip() or "no output"
-        return None, f"GitHub API request failed ({result.returncode}): {detail}"
-    try:
-        return json.loads(result.stdout), None
-    except json.JSONDecodeError as exc:
-        return None, f"GitHub API returned invalid JSON: {exc}"
-
-
-def github_hosted_evidence(
-    root: Path, remote_url: str | None, branch: str
-) -> dict[str, object]:
-    """Collect protection, deployment, and PR evidence when GitHub is usable."""
-    repository = github_repository(remote_url)
-    if repository is None:
-        reason = "no supported hosted-provider evidence adapter"
-        return {
-            "protection": unknown_hosted_evidence(reason),
-            "deployments": unknown_hosted_evidence(reason),
-            "pull_requests": unknown_hosted_evidence(reason),
-        }
-
-    owner, repo = repository
-    encoded_repo = f"{quote(owner, safe='')}/{quote(repo, safe='')}"
-    encoded_branch = quote(branch, safe="")
-    branch_data, branch_error = gh_api_json(
-        root,
-        f"repos/{encoded_repo}/branches/{encoded_branch}",
-    )
-    if branch_error:
-        protection: dict[str, object] = unknown_hosted_evidence(branch_error)
-    elif isinstance(branch_data, dict):
-        protected = branch_data.get("protected")
-        if isinstance(protected, bool):
-            protection = {
-                "status": "protected" if protected else "unprotected",
-                "source": "github-api",
-                "repository": f"{owner}/{repo}",
-                "ref": branch,
-            }
-        else:
-            protection = unknown_hosted_evidence(
-                "GitHub branch response did not include protection status"
-            )
-    else:
-        protection = unknown_hosted_evidence(
-            "GitHub branch response was not an object"
-        )
-
-    deployments_data, deployments_error = gh_api_json(
-        root,
-        f"repos/{encoded_repo}/deployments?ref={encoded_branch}&per_page=100",
-    )
-    if deployments_error:
-        deployments: dict[str, object] = unknown_hosted_evidence(
-            deployments_error
-        )
-    elif isinstance(deployments_data, list):
-        deployments = {
-            "status": "available",
-            "source": "github-api",
-            "count": len(deployments_data),
-            "items": [
-                {
-                    key: item.get(key)
-                    for key in (
-                        "id", "sha", "ref", "environment", "created_at",
-                        "updated_at",
-                    )
-                    if isinstance(item, dict) and key in item
-                }
-                for item in deployments_data
-                if isinstance(item, dict)
-            ],
-        }
-    else:
-        deployments = unknown_hosted_evidence(
-            "GitHub deployments response was not a list"
-        )
-
-    head = quote(f"{owner}:{branch}", safe="")
-    pull_requests_data, pull_requests_error = gh_api_json(
-        root,
-        f"repos/{encoded_repo}/pulls?state=all&head={head}&per_page=100",
-    )
-    if pull_requests_error:
-        pull_requests: dict[str, object] = unknown_hosted_evidence(
-            pull_requests_error
-        )
-    elif isinstance(pull_requests_data, list):
-        pull_requests = {
-            "status": "available",
-            "source": "github-api",
-            "count": len(pull_requests_data),
-            "items": [
-                {
-                    key: item.get(key)
-                    for key in (
-                        "number", "state", "title", "merged_at", "html_url",
-                        "head", "base",
-                    )
-                    if isinstance(item, dict) and key in item
-                }
-                for item in pull_requests_data
-                if isinstance(item, dict)
-            ],
-        }
-    else:
-        pull_requests = unknown_hosted_evidence(
-            "GitHub pull-request response was not a list"
-        )
-    return {
-        "protection": protection,
-        "deployments": deployments,
-        "pull_requests": pull_requests,
-    }
-
-
-def audit_hosted_branches(
-    root: Path, requested: Iterable[str]
-) -> dict[str, object]:
-    """Audit each exact provider/ref pair without collapsing provider state."""
-    entries: list[dict[str, object]] = []
-    for value in requested:
-        provider, branch = parse_hosted_branch(value)
-        remote, remote_url = remote_url_for_provider(root, provider)
-        entry: dict[str, object] = {
-            "provider": provider,
-            "ref": branch,
-            "full_ref": f"refs/heads/{branch}",
-            "remote": remote,
-            "remote_url": remote_url,
-        }
-        if remote_url is None:
-            entry.update({
-                "classification": "inaccessible",
-                "ref_status": "unknown",
-                "reason": f"configured remote is not available: {provider}",
-            })
-            entry.update({
-                "protection": unknown_hosted_evidence(
-                    "hosted remote is inaccessible"
-                ),
-                "deployments": unknown_hosted_evidence(
-                    "hosted remote is inaccessible"
-                ),
-                "pull_requests": unknown_hosted_evidence(
-                    "hosted remote is inaccessible"
-                ),
-                "deletion_blocked": True,
-                "blocking_reasons": ["hosted-remote-inaccessible"],
-            })
-            entries.append(entry)
-            continue
-
-        probe = hosted_command(
-            ["git", "ls-remote", "--heads", remote, entry["full_ref"]],
-            root,
-        )
-        if probe.returncode:
-            detail = probe.stderr.strip() or probe.stdout.strip() or "no output"
-            entry.update({
-                "classification": "inaccessible",
-                "ref_status": "unknown",
-                "reason": detail,
-            })
-            evidence = {
-                "protection": unknown_hosted_evidence(
-                    "hosted remote is inaccessible"
-                ),
-                "deployments": unknown_hosted_evidence(
-                    "hosted remote is inaccessible"
-                ),
-                "pull_requests": unknown_hosted_evidence(
-                    "hosted remote is inaccessible"
-                ),
-            }
-            entry.update(evidence)
-            entry.update({
-                "deletion_blocked": True,
-                "blocking_reasons": ["hosted-remote-inaccessible"],
-            })
-            entries.append(entry)
-            continue
-
-        matching_lines = [
-            line.split()[0]
-            for line in probe.stdout.splitlines()
-            if line.split() and line.split()[-1] == entry["full_ref"]
-        ]
-        if not matching_lines:
-            entry.update({
-                "classification": "missing",
-                "ref_status": "missing",
-                "reason": "hosted branch ref was not returned by the remote",
-            })
-            evidence = {
-                "protection": unknown_hosted_evidence("hosted ref is missing"),
-                "deployments": unknown_hosted_evidence("hosted ref is missing"),
-                "pull_requests": unknown_hosted_evidence("hosted ref is missing"),
-            }
-            entry.update(evidence)
-            entry.update({
-                "deletion_blocked": True,
-                "blocking_reasons": ["hosted-ref-missing"],
-            })
-            entries.append(entry)
-            continue
-
-        entry.update({
-            "classification": "present",
-            "ref_status": "present",
-            "tip": matching_lines[0],
-        })
-        evidence = github_hosted_evidence(root, remote_url, branch)
-        entry.update(evidence)
-        blocking_reasons: list[str] = []
-        protection = evidence["protection"]
-        deployments = evidence["deployments"]
-        pull_requests = evidence["pull_requests"]
-        assert isinstance(protection, dict)
-        assert isinstance(deployments, dict)
-        assert isinstance(pull_requests, dict)
-        if protection.get("status") == "protected":
-            blocking_reasons.append("hosted-ref-protected")
-        elif protection.get("status") == "unknown":
-            blocking_reasons.append("hosted-protection-unknown")
-        if deployments.get("status") != "available":
-            blocking_reasons.append("hosted-deployment-evidence-unknown")
-        elif deployments.get("count", 0):
-            blocking_reasons.append("hosted-ref-has-deployments")
-        if pull_requests.get("status") != "available":
-            blocking_reasons.append("hosted-pull-request-evidence-unknown")
-        else:
-            for pull_request in pull_requests.get("items", []):
-                if not isinstance(pull_request, dict):
-                    continue
-                if pull_request.get("state") == "open":
-                    blocking_reasons.append("hosted-open-pull-request")
-                elif (
-                    pull_request.get("state") == "closed"
-                    and not pull_request.get("merged_at")
-                ):
-                    blocking_reasons.append(
-                        "hosted-closed-unmerged-pull-request"
-                    )
-        entry["deletion_blocked"] = bool(blocking_reasons)
-        entry["blocking_reasons"] = sorted(set(blocking_reasons))
-        entries.append(entry)
-
-    blocking_entries = [
-        f"{entry['provider']}:{entry['ref']}"
-        for entry in entries
-        if entry["deletion_blocked"]
-    ]
-    cleanup_plan = hosted_cleanup_plan(entries)
-    return {
-        "requested": True,
-        "entries": entries,
-        "deletion_blocked": bool(blocking_entries),
-        "blocking_entries": blocking_entries,
-        "cleanup_plan": cleanup_plan,
-    }
-
-
-def hosted_cleanup_plan(
-    entries: Iterable[dict[str, object]],
-) -> dict[str, list[dict[str, object]]]:
-    """Project hosted evidence into the human-readable four-bucket plan."""
-    plan: dict[str, list[dict[str, object]]] = {
-        "keep": [],
-        "merge": [],
-        "delete": [],
-        "review": [],
-    }
-    keep_reasons = {
-        "hosted-ref-protected",
-        "hosted-ref-has-deployments",
-        "hosted-open-pull-request",
-    }
-    for entry in entries:
-        reasons = sorted({
-            str(reason)
-            for reason in entry.get("blocking_reasons", [])
-        })
-        if not entry.get("deletion_blocked"):
-            continue
-        bucket = "keep" if keep_reasons.intersection(reasons) else "review"
-        plan[bucket].append({
-            "provider": entry["provider"],
-            "ref": entry["ref"],
-            "blocking_reasons": reasons,
-        })
-    for bucket in plan:
-        plan[bucket].sort(
-            key=lambda item: (str(item["provider"]), str(item["ref"]))
-        )
-    return plan
 
 
 def is_exception(path: Path, root: Path) -> bool:
@@ -930,52 +229,27 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--root", default=".")
     parser.add_argument("--base", default="origin/main")
     parser.add_argument(
+        "--check-delete",
+        action="store_true",
+        help="refresh one branch tip and emit a safe deletion plan; never deletes",
+    )
+    parser.add_argument(
+        "--branch",
+        help="exact local branch to check with --check-delete",
+    )
+    parser.add_argument(
+        "--reviewed-head",
+        help="branch SHA recorded during review with --check-delete",
+    )
+    parser.add_argument(
+        "--remote",
+        default="origin",
+        help="remote to use in the remote-first deletion plan (default: origin)",
+    )
+    parser.add_argument(
         "--fetch",
         action="store_true",
         help="run `git fetch --all` before auditing; never prunes",
-    )
-    parser.add_argument(
-        "--snapshot-recovery",
-        metavar="PATH",
-        help="write a read-only snapshot of refs, stashes, and reachable objects",
-    )
-    parser.add_argument(
-        "--verify-recovery",
-        metavar="PATH",
-        help="compare the current read-only state with a recovery snapshot",
-    )
-    parser.add_argument(
-        "--approve-local-deletion",
-        action="append",
-        default=[],
-        metavar="BRANCH",
-        help=(
-            "allow exactly this local branch ref to be absent during "
-            "--verify-recovery; does not delete anything"
-        ),
-    )
-    parser.add_argument(
-        "--approve-recovery-retirement",
-        action="append",
-        default=[],
-        metavar="REF=EVIDENCE",
-        help=(
-            "allow exactly this refs/recovery/ ref to be absent during "
-            "--verify-recovery and record why its protected work is no longer "
-            "needed; does not delete anything"
-        ),
-    )
-    parser.add_argument(
-        "--hosted-branch",
-        "--hosted-ref",
-        dest="hosted_branches",
-        action="append",
-        default=[],
-        metavar="PROVIDER=BRANCH",
-        help=(
-            "audit one exact hosted branch through the named Git remote; "
-            "repeat for each provider/ref pair"
-        ),
     )
     return parser.parse_args()
 
@@ -985,46 +259,23 @@ def main() -> int:
     root = Path(args.root).resolve()
     try:
         ensure_repository(root)
-        if args.snapshot_recovery and args.verify_recovery:
-            raise AuditError(
-                "--snapshot-recovery and --verify-recovery are mutually exclusive"
-            )
-        if args.fetch and (args.snapshot_recovery or args.verify_recovery):
-            raise AuditError(
-                "--fetch cannot be combined with the read-only recovery guard"
-            )
-        if args.approve_local_deletion and not args.verify_recovery:
-            raise AuditError(
-                "--approve-local-deletion requires --verify-recovery"
-            )
-        if args.approve_recovery_retirement and not args.verify_recovery:
-            raise AuditError(
-                "--approve-recovery-retirement requires --verify-recovery"
-            )
         if args.fetch:
             run(["git", "fetch", "--all"], root)
-        if args.snapshot_recovery:
-            snapshot = recovery_snapshot(root)
-            path = Path(args.snapshot_recovery).resolve()
-            write_recovery_snapshot(path, snapshot)
-            print(json.dumps({
-                "snapshot_file": str(path),
-                "recovery_snapshot": snapshot,
-            }, indent=2, sort_keys=True))
+        if args.check_delete:
+            if not args.branch:
+                raise AuditError("--check-delete requires --branch")
+            if not args.reviewed_head:
+                raise AuditError("--check-delete requires --reviewed-head")
+            print(json.dumps(
+                prepare_branch_deletion(
+                    root,
+                    args.branch,
+                    args.reviewed_head,
+                    remote=args.remote,
+                ),
+                indent=2,
+            ))
             return 0
-        if args.verify_recovery:
-            before = read_recovery_snapshot(Path(args.verify_recovery).resolve())
-            result = compare_recovery_snapshots(
-                before,
-                recovery_snapshot(root),
-                args.approve_local_deletion,
-                args.approve_recovery_retirement,
-            )
-            print(json.dumps({
-                "snapshot_file": str(Path(args.verify_recovery).resolve()),
-                "recovery_guard": result,
-            }, indent=2, sort_keys=True))
-            return 0 if result["passed"] else 1
         ensure_base(root, args.base)
         branches, current = audit_branches(root, args.base)
         report = {
@@ -1037,10 +288,6 @@ def main() -> int:
             "naming_violations": audit_naming(root),
             "detritus_folders": audit_detritus(root),
         }
-        if args.hosted_branches:
-            report["hosted_lifecycle"] = audit_hosted_branches(
-                root, args.hosted_branches
-            )
         print(json.dumps(report, indent=2))
         return 0
     except (AuditError, OSError) as exc:
