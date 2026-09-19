@@ -3,7 +3,7 @@
     "node": "22.19.0"
   },
   "devDependencies": {
-    "playwright": "1.60.0",
+    "playwright": "1.63.0",
     "lighthouse": "13.4.1"
   },
   "scripts": {
