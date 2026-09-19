@@ -1,0 +1,49 @@
+name: Technology Version Audit
+
+on:
+  schedule:
+    - cron: '43 15 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: technology-version-audit
+  cancel-in-progress: false
+
+jobs:
+  inventory:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.11'
+      - name: Set up Node
+        uses: actions/setup-node@v7.0.0
+        with:
+          node-version-file: .node-version
+      - name: Record configured Python QA environment
+        run: python3 -m pip install -r requirements-qa.txt
+      - name: Query stable publisher releases
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python3 scripts/technology-audit.py --fail-on-outdated
+      - name: Publish version summary
+        if: always()
+        run: |
+          if [ -f .scratch/technology-audit/technology-versions.md ]; then
+            cat .scratch/technology-audit/technology-versions.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Retain complete version evidence
+        if: always()
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: technology-versions-${{ github.sha }}-${{ github.run_attempt }}
+          path: .scratch/technology-audit/
+          if-no-files-found: error
+          retention-days: 90

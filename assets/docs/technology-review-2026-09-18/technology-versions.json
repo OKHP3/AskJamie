@@ -1,0 +1,1772 @@
+{
+  "schema_version": 1,
+  "checked_at": "2026-09-19T01:42:42.272052+00:00",
+  "source_commit": "8decfb8679c76818b2a27c68c5dc43b1719ab112",
+  "working_tree": "dirty",
+  "scope": "Repository manifests, every npm lockfile path, workflow actions, runtimes, local QA closure. See technology-review.md for standards, services, and optional tools.",
+  "contracts": [],
+  "runtimes": [
+    {
+      "name": "Node.js",
+      "current": "22.19.0",
+      "latest": "v26.9.0",
+      "latest_lts": "v24.21.0",
+      "latest_same_major": "v22.23.2",
+      "npm_bundled_with_pin": "10.9.3",
+      "status": "outdated",
+      "policy": "latest LTS",
+      "source": "https://nodejs.org/dist/index.json"
+    },
+    {
+      "name": "Python",
+      "current": "3.11 (floating patch)",
+      "latest": "3.14.7",
+      "latest_same_minor": "3.11.16",
+      "status": "outdated",
+      "source": "https://www.python.org/downloads/"
+    }
+  ],
+  "dependencies": [
+    {
+      "kind": "npm",
+      "name": "@formatjs/ecma402-abstract",
+      "current": "2.3.6",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/@formatjs/ecma402-abstract",
+      "path": "node_modules/@formatjs/ecma402-abstract",
+      "latest": "3.2.0",
+      "source": "https://registry.npmjs.org/%40formatjs%2Fecma402-abstract/latest",
+      "requires": null,
+      "status": "outdated"
+    },
+    {
+      "kind": "npm",
+      "name": "@formatjs/fast-memoize",
+      "current": "2.2.7",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/@formatjs/fast-memoize",
+      "path": "node_modules/@formatjs/fast-memoize",
+      "latest": "3.1.7",
+      "source": "https://registry.npmjs.org/%40formatjs%2Ffast-memoize/latest",
+      "requires": null,
+      "status": "outdated"
+    },
+    {
+      "kind": "npm",
+      "name": "@formatjs/icu-messageformat-parser",
+      "current": "2.11.4",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/@formatjs/icu-messageformat-parser",
+      "path": "node_modules/@formatjs/icu-messageformat-parser",
+      "latest": "3.5.19",
+      "source": "https://registry.npmjs.org/%40formatjs%2Ficu-messageformat-parser/latest",
+      "requires": null,
+      "status": "outdated"
+    },
+    {
+      "kind": "npm",
+      "name": "@formatjs/icu-skeleton-parser",
+      "current": "1.8.16",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/@formatjs/icu-skeleton-parser",
+      "path": "node_modules/@formatjs/icu-skeleton-parser",
+      "latest": "2.1.12",
+      "source": "https://registry.npmjs.org/%40formatjs%2Ficu-skeleton-parser/latest",
+      "requires": null,
+      "status": "outdated"
+    },
+    {
+      "kind": "npm",
+      "name": "@formatjs/intl-localematcher",
+      "current": "0.6.2",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/@formatjs/intl-localematcher",
+      "path": "node_modules/@formatjs/intl-localematcher",
+      "latest": "0.9.0",
+      "source": "https://registry.npmjs.org/%40formatjs%2Fintl-localematcher/latest",
+      "requires": null,
+      "status": "outdated"
+    },
+    {
+      "kind": "npm",
+      "name": "@opentelemetry/api",
+      "current": "1.9.1",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/@opentelemetry/api",
+      "path": "node_modules/@opentelemetry/api",
+      "latest": "1.9.1",
+      "source": "https://registry.npmjs.org/%40opentelemetry%2Fapi/latest",
+      "requires": {
+        "node": ">=8.0.0"
+      },
+      "status": "current"
+    },
+    {
+      "kind": "npm",
+      "name": "@opentelemetry/api-logs",
+      "current": "0.220.0",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/@opentelemetry/api-logs",
+      "path": "node_modules/@opentelemetry/api-logs",
+      "latest": "0.222.0",
+      "source": "https://registry.npmjs.org/%40opentelemetry%2Fapi-logs/latest",
+      "requires": {
+        "node": ">=8.0.0"
+      },
+      "status": "outdated"
+    },
+    {
+      "kind": "npm",
+      "name": "@opentelemetry/core",
+      "current": "2.11.0",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/@opentelemetry/core",
+      "path": "node_modules/@opentelemetry/core",
+      "latest": "2.11.0",
+      "source": "https://registry.npmjs.org/%40opentelemetry%2Fcore/latest",
+      "requires": {
+        "node": "^18.19.0 || >=20.6.0"
+      },
+      "status": "current"
+    },
+    {
+      "kind": "npm",
+      "name": "@opentelemetry/instrumentation",
+      "current": "0.220.0",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/@opentelemetry/instrumentation",
+      "path": "node_modules/@opentelemetry/instrumentation",
+      "latest": "0.222.0",
+      "source": "https://registry.npmjs.org/%40opentelemetry%2Finstrumentation/latest",
+      "requires": {
+        "node": "^18.19.0 || >=20.6.0"
+      },
+      "status": "outdated"
+    },
+    {
+      "kind": "npm",
+      "name": "@opentelemetry/resources",
+      "current": "2.11.0",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/@opentelemetry/resources",
+      "path": "node_modules/@opentelemetry/resources",
+      "latest": "2.11.0",
+      "source": "https://registry.npmjs.org/%40opentelemetry%2Fresources/latest",
+      "requires": {
+        "node": "^18.19.0 || >=20.6.0"
+      },
+      "status": "current"
+    },
+    {
+      "kind": "npm",
+      "name": "@opentelemetry/sdk-trace",
+      "current": "2.11.0",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/@opentelemetry/sdk-trace",
+      "path": "node_modules/@opentelemetry/sdk-trace",
+      "latest": "2.11.0",
+      "source": "https://registry.npmjs.org/%40opentelemetry%2Fsdk-trace/latest",
+      "requires": {
+        "node": "^18.19.0 || >=20.6.0"
+      },
+      "status": "current"
+    },
+    {
+      "kind": "npm",
+      "name": "@opentelemetry/sdk-trace-base",
+      "current": "2.11.0",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/@opentelemetry/sdk-trace-base",
+      "path": "node_modules/@opentelemetry/sdk-trace-base",
+      "latest": "2.11.0",
+      "source": "https://registry.npmjs.org/%40opentelemetry%2Fsdk-trace-base/latest",
+      "requires": {
+        "node": "^18.19.0 || >=20.6.0"
+      },
+      "status": "current"
+    },
+    {
+      "kind": "npm",
+      "name": "@opentelemetry/semantic-conventions",
+      "current": "1.43.0",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/@opentelemetry/semantic-conventions",
+      "path": "node_modules/@opentelemetry/semantic-conventions",
+      "latest": "1.43.0",
+      "source": "https://registry.npmjs.org/%40opentelemetry%2Fsemantic-conventions/latest",
+      "requires": {
+        "node": ">=14"
+      },
+      "status": "current"
+    },
+    {
+      "kind": "npm",
+      "name": "@paulirish/trace_engine",
+      "current": "0.0.65",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/@paulirish/trace_engine",
+      "path": "node_modules/@paulirish/trace_engine",
+      "latest": "0.0.65",
+      "source": "https://registry.npmjs.org/%40paulirish%2Ftrace_engine/latest",
+      "requires": null,
+      "status": "current"
+    },
+    {
+      "kind": "npm",
+      "name": "@puppeteer/browsers",
+      "current": "3.2.2",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/@puppeteer/browsers",
+      "path": "node_modules/@puppeteer/browsers",
+      "latest": "3.2.2",
+      "source": "https://registry.npmjs.org/%40puppeteer%2Fbrowsers/latest",
+      "requires": {
+        "node": ">=22.12.0"
+      },
+      "status": "current"
+    },
+    {
+      "kind": "npm",
+      "name": "ansi-regex",
+      "current": "6.3.0",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/@puppeteer/browsers/node_modules/ansi-regex",
+      "path": "node_modules/@puppeteer/browsers/node_modules/ansi-regex",
+      "latest": "6.3.0",
+      "source": "https://registry.npmjs.org/ansi-regex/latest",
+      "requires": {
+        "node": ">=12"
+      },
+      "status": "current"
+    },
+    {
+      "kind": "npm",
+      "name": "ansi-styles",
+      "current": "6.2.3",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/@puppeteer/browsers/node_modules/ansi-styles",
+      "path": "node_modules/@puppeteer/browsers/node_modules/ansi-styles",
+      "latest": "7.0.0",
+      "source": "https://registry.npmjs.org/ansi-styles/latest",
+      "requires": {
+        "node": ">=22"
+      },
+      "status": "outdated"
+    },
+    {
+      "kind": "npm",
+      "name": "cliui",
+      "current": "9.0.1",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/@puppeteer/browsers/node_modules/cliui",
+      "path": "node_modules/@puppeteer/browsers/node_modules/cliui",
+      "latest": "9.0.1",
+      "source": "https://registry.npmjs.org/cliui/latest",
+      "requires": {
+        "node": ">=20"
+      },
+      "status": "current"
+    },
+    {
+      "kind": "npm",
+      "name": "string-width",
+      "current": "7.2.0",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/@puppeteer/browsers/node_modules/cliui/node_modules/string-width",
+      "path": "node_modules/@puppeteer/browsers/node_modules/cliui/node_modules/string-width",
+      "latest": "8.2.2",
+      "source": "https://registry.npmjs.org/string-width/latest",
+      "requires": {
+        "node": ">=20"
+      },
+      "status": "outdated"
+    },
+    {
+      "kind": "npm",
+      "name": "emoji-regex",
+      "current": "10.6.0",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/@puppeteer/browsers/node_modules/emoji-regex",
+      "path": "node_modules/@puppeteer/browsers/node_modules/emoji-regex",
+      "latest": "11.0.0",
+      "source": "https://registry.npmjs.org/emoji-regex/latest",
+      "requires": null,
+      "status": "outdated"
+    },
+    {
+      "kind": "npm",
+      "name": "string-width",
+      "current": "8.2.2",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/@puppeteer/browsers/node_modules/string-width",
+      "path": "node_modules/@puppeteer/browsers/node_modules/string-width",
+      "latest": "8.2.2",
+      "source": "https://registry.npmjs.org/string-width/latest",
+      "requires": {
+        "node": ">=20"
+      },
+      "status": "current"
+    },
+    {
+      "kind": "npm",
+      "name": "strip-ansi",
+      "current": "7.2.0",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/@puppeteer/browsers/node_modules/strip-ansi",
+      "path": "node_modules/@puppeteer/browsers/node_modules/strip-ansi",
+      "latest": "7.2.0",
+      "source": "https://registry.npmjs.org/strip-ansi/latest",
+      "requires": {
+        "node": ">=12"
+      },
+      "status": "current"
+    },
+    {
+      "kind": "npm",
+      "name": "wrap-ansi",
+      "current": "9.0.2",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/@puppeteer/browsers/node_modules/wrap-ansi",
+      "path": "node_modules/@puppeteer/browsers/node_modules/wrap-ansi",
+      "latest": "10.0.1",
+      "source": "https://registry.npmjs.org/wrap-ansi/latest",
+      "requires": {
+        "node": ">=20"
+      },
+      "status": "outdated"
+    },
+    {
+      "kind": "npm",
+      "name": "string-width",
+      "current": "7.2.0",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/@puppeteer/browsers/node_modules/wrap-ansi/node_modules/string-width",
+      "path": "node_modules/@puppeteer/browsers/node_modules/wrap-ansi/node_modules/string-width",
+      "latest": "8.2.2",
+      "source": "https://registry.npmjs.org/string-width/latest",
+      "requires": {
+        "node": ">=20"
+      },
+      "status": "outdated"
+    },
+    {
+      "kind": "npm",
+      "name": "yargs",
+      "current": "18.1.0",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/@puppeteer/browsers/node_modules/yargs",
+      "path": "node_modules/@puppeteer/browsers/node_modules/yargs",
+      "latest": "18.1.0",
+      "source": "https://registry.npmjs.org/yargs/latest",
+      "requires": {
+        "node": "^20.19.0 || ^22.12.0 || >=23"
+      },
+      "status": "current"
+    },
+    {
+      "kind": "npm",
+      "name": "yargs-parser",
+      "current": "22.0.0",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/@puppeteer/browsers/node_modules/yargs-parser",
+      "path": "node_modules/@puppeteer/browsers/node_modules/yargs-parser",
+      "latest": "22.0.0",
+      "source": "https://registry.npmjs.org/yargs-parser/latest",
+      "requires": {
+        "node": "^20.19.0 || ^22.12.0 || >=23"
+      },
+      "status": "current"
+    },
+    {
+      "kind": "npm",
+      "name": "@sentry/conventions",
+      "current": "0.16.0",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/@sentry/conventions",
+      "path": "node_modules/@sentry/conventions",
+      "latest": "0.23.0",
+      "source": "https://registry.npmjs.org/%40sentry%2Fconventions/latest",
+      "requires": {
+        "node": ">=14"
+      },
+      "status": "outdated"
+    },
+    {
+      "kind": "npm",
+      "name": "@sentry/core",
+      "current": "10.74.0",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/@sentry/core",
+      "path": "node_modules/@sentry/core",
+      "latest": "10.75.0",
+      "source": "https://registry.npmjs.org/%40sentry%2Fcore/latest",
+      "requires": {
+        "node": ">=18"
+      },
+      "status": "outdated"
+    },
+    {
+      "kind": "npm",
+      "name": "@sentry/node",
+      "current": "10.74.0",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/@sentry/node",
+      "path": "node_modules/@sentry/node",
+      "latest": "10.75.0",
+      "source": "https://registry.npmjs.org/%40sentry%2Fnode/latest",
+      "requires": {
+        "node": ">=18"
+      },
+      "status": "outdated"
+    },
+    {
+      "kind": "npm",
+      "name": "@sentry/node-core",
+      "current": "10.74.0",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/@sentry/node-core",
+      "path": "node_modules/@sentry/node-core",
+      "latest": "10.75.0",
+      "source": "https://registry.npmjs.org/%40sentry%2Fnode-core/latest",
+      "requires": {
+        "node": ">=18"
+      },
+      "status": "outdated"
+    },
+    {
+      "kind": "npm",
+      "name": "@sentry/opentelemetry",
+      "current": "10.74.0",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/@sentry/opentelemetry",
+      "path": "node_modules/@sentry/opentelemetry",
+      "latest": "10.75.0",
+      "source": "https://registry.npmjs.org/%40sentry%2Fopentelemetry/latest",
+      "requires": {
+        "node": ">=18"
+      },
+      "status": "outdated"
+    },
+    {
+      "kind": "npm",
+      "name": "@sentry/server-utils",
+      "current": "10.74.0",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/@sentry/server-utils",
+      "path": "node_modules/@sentry/server-utils",
+      "latest": "10.75.0",
+      "source": "https://registry.npmjs.org/%40sentry%2Fserver-utils/latest",
+      "requires": {
+        "node": ">=18"
+      },
+      "status": "outdated"
+    },
+    {
+      "kind": "npm",
+      "name": "@types/node",
+      "current": "26.2.0",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/@types/node",
+      "path": "node_modules/@types/node",
+      "latest": "26.6.2",
+      "source": "https://registry.npmjs.org/%40types%2Fnode/latest",
+      "requires": null,
+      "status": "outdated"
+    },
+    {
+      "kind": "npm",
+      "name": "ansi-colors",
+      "current": "4.1.3",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/ansi-colors",
+      "path": "node_modules/ansi-colors",
+      "latest": "4.1.3",
+      "source": "https://registry.npmjs.org/ansi-colors/latest",
+      "requires": {
+        "node": ">=6"
+      },
+      "status": "current"
+    },
+    {
+      "kind": "npm",
+      "name": "ansi-regex",
+      "current": "5.0.1",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/ansi-regex",
+      "path": "node_modules/ansi-regex",
+      "latest": "6.3.0",
+      "source": "https://registry.npmjs.org/ansi-regex/latest",
+      "requires": {
+        "node": ">=12"
+      },
+      "status": "outdated"
+    },
+    {
+      "kind": "npm",
+      "name": "ansi-styles",
+      "current": "4.3.0",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/ansi-styles",
+      "path": "node_modules/ansi-styles",
+      "latest": "7.0.0",
+      "source": "https://registry.npmjs.org/ansi-styles/latest",
+      "requires": {
+        "node": ">=22"
+      },
+      "status": "outdated"
+    },
+    {
+      "kind": "npm",
+      "name": "atomically",
+      "current": "2.1.1",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/atomically",
+      "path": "node_modules/atomically",
+      "latest": "2.1.1",
+      "source": "https://registry.npmjs.org/atomically/latest",
+      "requires": null,
+      "status": "current"
+    },
+    {
+      "kind": "npm",
+      "name": "axe-core",
+      "current": "4.13.0",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/axe-core",
+      "path": "node_modules/axe-core",
+      "latest": "4.13.0",
+      "source": "https://registry.npmjs.org/axe-core/latest",
+      "requires": {
+        "node": ">=4"
+      },
+      "status": "current"
+    },
+    {
+      "kind": "npm",
+      "name": "chrome-launcher",
+      "current": "1.2.1",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/chrome-launcher",
+      "path": "node_modules/chrome-launcher",
+      "latest": "1.2.1",
+      "source": "https://registry.npmjs.org/chrome-launcher/latest",
+      "requires": {
+        "node": ">=12.13.0"
+      },
+      "status": "current"
+    },
+    {
+      "kind": "npm",
+      "name": "chromium-bidi",
+      "current": "17.0.2",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/chromium-bidi",
+      "path": "node_modules/chromium-bidi",
+      "latest": "17.0.2",
+      "source": "https://registry.npmjs.org/chromium-bidi/latest",
+      "requires": {
+        "node": ">=20.19.0 <22.0.0 || >=22.12.0"
+      },
+      "status": "current"
+    },
+    {
+      "kind": "npm",
+      "name": "cjs-module-lexer",
+      "current": "2.2.1",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/cjs-module-lexer",
+      "path": "node_modules/cjs-module-lexer",
+      "latest": "2.2.1",
+      "source": "https://registry.npmjs.org/cjs-module-lexer/latest",
+      "requires": null,
+      "status": "current"
+    },
+    {
+      "kind": "npm",
+      "name": "cliui",
+      "current": "8.0.1",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/cliui",
+      "path": "node_modules/cliui",
+      "latest": "9.0.1",
+      "source": "https://registry.npmjs.org/cliui/latest",
+      "requires": {
+        "node": ">=20"
+      },
+      "status": "outdated"
+    },
+    {
+      "kind": "npm",
+      "name": "color-convert",
+      "current": "2.0.1",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/color-convert",
+      "path": "node_modules/color-convert",
+      "latest": "3.1.3",
+      "source": "https://registry.npmjs.org/color-convert/latest",
+      "requires": {
+        "node": ">=14.6"
+      },
+      "status": "outdated"
+    },
+    {
+      "kind": "npm",
+      "name": "color-name",
+      "current": "1.1.4",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/color-name",
+      "path": "node_modules/color-name",
+      "latest": "2.1.1",
+      "source": "https://registry.npmjs.org/color-name/latest",
+      "requires": {
+        "node": ">=12.20"
+      },
+      "status": "outdated"
+    },
+    {
+      "kind": "npm",
+      "name": "configstore",
+      "current": "7.1.0",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/configstore",
+      "path": "node_modules/configstore",
+      "latest": "8.0.0",
+      "source": "https://registry.npmjs.org/configstore/latest",
+      "requires": {
+        "node": ">=20"
+      },
+      "status": "outdated"
+    },
+    {
+      "kind": "npm",
+      "name": "csp_evaluator",
+      "current": "1.1.8",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/csp_evaluator",
+      "path": "node_modules/csp_evaluator",
+      "latest": "1.1.8",
+      "source": "https://registry.npmjs.org/csp_evaluator/latest",
+      "requires": null,
+      "status": "current"
+    },
+    {
+      "kind": "npm",
+      "name": "debug",
+      "current": "4.4.3",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/debug",
+      "path": "node_modules/debug",
+      "latest": "4.4.3",
+      "source": "https://registry.npmjs.org/debug/latest",
+      "requires": {
+        "node": ">=6.0"
+      },
+      "status": "current"
+    },
+    {
+      "kind": "npm",
+      "name": "decimal.js",
+      "current": "10.6.0",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/decimal.js",
+      "path": "node_modules/decimal.js",
+      "latest": "10.6.0",
+      "source": "https://registry.npmjs.org/decimal.js/latest",
+      "requires": null,
+      "status": "current"
+    },
+    {
+      "kind": "npm",
+      "name": "define-lazy-prop",
+      "current": "2.0.0",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/define-lazy-prop",
+      "path": "node_modules/define-lazy-prop",
+      "latest": "3.0.0",
+      "source": "https://registry.npmjs.org/define-lazy-prop/latest",
+      "requires": {
+        "node": ">=12"
+      },
+      "status": "outdated"
+    },
+    {
+      "kind": "npm",
+      "name": "devtools-protocol",
+      "current": "0.0.1663043",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/devtools-protocol",
+      "path": "node_modules/devtools-protocol",
+      "latest": "0.0.1700460",
+      "source": "https://registry.npmjs.org/devtools-protocol/latest",
+      "requires": null,
+      "status": "outdated"
+    },
+    {
+      "kind": "npm",
+      "name": "dot-prop",
+      "current": "9.0.0",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/dot-prop",
+      "path": "node_modules/dot-prop",
+      "latest": "10.2.0",
+      "source": "https://registry.npmjs.org/dot-prop/latest",
+      "requires": {
+        "node": ">=20"
+      },
+      "status": "outdated"
+    },
+    {
+      "kind": "npm",
+      "name": "emoji-regex",
+      "current": "8.0.0",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/emoji-regex",
+      "path": "node_modules/emoji-regex",
+      "latest": "11.0.0",
+      "source": "https://registry.npmjs.org/emoji-regex/latest",
+      "requires": null,
+      "status": "outdated"
+    },
+    {
+      "kind": "npm",
+      "name": "enquirer",
+      "current": "2.4.1",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/enquirer",
+      "path": "node_modules/enquirer",
+      "latest": "2.4.1",
+      "source": "https://registry.npmjs.org/enquirer/latest",
+      "requires": {
+        "node": ">=8.6"
+      },
+      "status": "current"
+    },
+    {
+      "kind": "npm",
+      "name": "es-module-lexer",
+      "current": "3.0.2",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/es-module-lexer",
+      "path": "node_modules/es-module-lexer",
+      "latest": "3.0.2",
+      "source": "https://registry.npmjs.org/es-module-lexer/latest",
+      "requires": null,
+      "status": "current"
+    },
+    {
+      "kind": "npm",
+      "name": "escalade",
+      "current": "3.2.0",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/escalade",
+      "path": "node_modules/escalade",
+      "latest": "3.2.0",
+      "source": "https://registry.npmjs.org/escalade/latest",
+      "requires": {
+        "node": ">=6"
+      },
+      "status": "current"
+    },
+    {
+      "kind": "npm",
+      "name": "escape-string-regexp",
+      "current": "4.0.0",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/escape-string-regexp",
+      "path": "node_modules/escape-string-regexp",
+      "latest": "5.0.0",
+      "source": "https://registry.npmjs.org/escape-string-regexp/latest",
+      "requires": {
+        "node": ">=12"
+      },
+      "status": "outdated"
+    },
+    {
+      "kind": "npm",
+      "name": "fsevents",
+      "current": "2.3.2",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/fsevents",
+      "path": "node_modules/fsevents",
+      "latest": "2.3.3",
+      "source": "https://registry.npmjs.org/fsevents/latest",
+      "requires": {
+        "node": "^8.16.0 || ^10.6.0 || >=11.0.0"
+      },
+      "status": "outdated"
+    },
+    {
+      "kind": "npm",
+      "name": "get-caller-file",
+      "current": "2.0.5",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/get-caller-file",
+      "path": "node_modules/get-caller-file",
+      "latest": "2.0.5",
+      "source": "https://registry.npmjs.org/get-caller-file/latest",
+      "requires": {
+        "node": "6.* || 8.* || >= 10.*"
+      },
+      "status": "current"
+    },
+    {
+      "kind": "npm",
+      "name": "get-east-asian-width",
+      "current": "1.6.0",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/get-east-asian-width",
+      "path": "node_modules/get-east-asian-width",
+      "latest": "1.7.0",
+      "source": "https://registry.npmjs.org/get-east-asian-width/latest",
+      "requires": {
+        "node": ">=18"
+      },
+      "status": "outdated"
+    },
+    {
+      "kind": "npm",
+      "name": "graceful-fs",
+      "current": "4.2.11",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/graceful-fs",
+      "path": "node_modules/graceful-fs",
+      "latest": "4.2.11",
+      "source": "https://registry.npmjs.org/graceful-fs/latest",
+      "requires": null,
+      "status": "current"
+    },
+    {
+      "kind": "npm",
+      "name": "http-link-header",
+      "current": "1.1.4",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/http-link-header",
+      "path": "node_modules/http-link-header",
+      "latest": "1.1.4",
+      "source": "https://registry.npmjs.org/http-link-header/latest",
+      "requires": {
+        "node": ">=6.0.0"
+      },
+      "status": "current"
+    },
+    {
+      "kind": "npm",
+      "name": "image-ssim",
+      "current": "0.2.0",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/image-ssim",
+      "path": "node_modules/image-ssim",
+      "latest": "0.2.0",
+      "source": "https://registry.npmjs.org/image-ssim/latest",
+      "requires": null,
+      "status": "current"
+    },
+    {
+      "kind": "npm",
+      "name": "import-in-the-middle",
+      "current": "3.5.1",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/import-in-the-middle",
+      "path": "node_modules/import-in-the-middle",
+      "latest": "3.5.1",
+      "source": "https://registry.npmjs.org/import-in-the-middle/latest",
+      "requires": {
+        "node": ">=18"
+      },
+      "status": "current"
+    },
+    {
+      "kind": "npm",
+      "name": "intl-messageformat",
+      "current": "10.7.18",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/intl-messageformat",
+      "path": "node_modules/intl-messageformat",
+      "latest": "12.1.1",
+      "source": "https://registry.npmjs.org/intl-messageformat/latest",
+      "requires": null,
+      "status": "outdated"
+    },
+    {
+      "kind": "npm",
+      "name": "is-docker",
+      "current": "2.2.1",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/is-docker",
+      "path": "node_modules/is-docker",
+      "latest": "4.0.0",
+      "source": "https://registry.npmjs.org/is-docker/latest",
+      "requires": {
+        "node": ">=20"
+      },
+      "status": "outdated"
+    },
+    {
+      "kind": "npm",
+      "name": "is-fullwidth-code-point",
+      "current": "3.0.0",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/is-fullwidth-code-point",
+      "path": "node_modules/is-fullwidth-code-point",
+      "latest": "5.1.0",
+      "source": "https://registry.npmjs.org/is-fullwidth-code-point/latest",
+      "requires": {
+        "node": ">=18"
+      },
+      "status": "outdated"
+    },
+    {
+      "kind": "npm",
+      "name": "is-wsl",
+      "current": "2.2.0",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/is-wsl",
+      "path": "node_modules/is-wsl",
+      "latest": "3.1.1",
+      "source": "https://registry.npmjs.org/is-wsl/latest",
+      "requires": {
+        "node": ">=16"
+      },
+      "status": "outdated"
+    },
+    {
+      "kind": "npm",
+      "name": "jpeg-js",
+      "current": "0.4.4",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/jpeg-js",
+      "path": "node_modules/jpeg-js",
+      "latest": "0.4.4",
+      "source": "https://registry.npmjs.org/jpeg-js/latest",
+      "requires": null,
+      "status": "current"
+    },
+    {
+      "kind": "npm",
+      "name": "js-library-detector",
+      "current": "6.7.0",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/js-library-detector",
+      "path": "node_modules/js-library-detector",
+      "latest": "6.7.0",
+      "source": "https://registry.npmjs.org/js-library-detector/latest",
+      "requires": {
+        "node": ">=12"
+      },
+      "status": "current"
+    },
+    {
+      "kind": "npm",
+      "name": "legacy-javascript",
+      "current": "0.0.1",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/legacy-javascript",
+      "path": "node_modules/legacy-javascript",
+      "latest": "0.0.1",
+      "source": "https://registry.npmjs.org/legacy-javascript/latest",
+      "requires": null,
+      "status": "current"
+    },
+    {
+      "kind": "npm",
+      "name": "lighthouse",
+      "current": "13.4.1",
+      "declared": "13.4.1",
+      "evidence": "package-lock.json: node_modules/lighthouse",
+      "path": "node_modules/lighthouse",
+      "latest": "13.5.0",
+      "source": "https://registry.npmjs.org/lighthouse/latest",
+      "requires": {
+        "node": ">=22.19"
+      },
+      "status": "outdated"
+    },
+    {
+      "kind": "npm",
+      "name": "lighthouse-logger",
+      "current": "2.0.2",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/lighthouse-logger",
+      "path": "node_modules/lighthouse-logger",
+      "latest": "2.0.2",
+      "source": "https://registry.npmjs.org/lighthouse-logger/latest",
+      "requires": null,
+      "status": "current"
+    },
+    {
+      "kind": "npm",
+      "name": "lighthouse-stack-packs",
+      "current": "1.12.3",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/lighthouse-stack-packs",
+      "path": "node_modules/lighthouse-stack-packs",
+      "latest": "1.12.3",
+      "source": "https://registry.npmjs.org/lighthouse-stack-packs/latest",
+      "requires": null,
+      "status": "current"
+    },
+    {
+      "kind": "npm",
+      "name": "lodash-es",
+      "current": "4.18.1",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/lodash-es",
+      "path": "node_modules/lodash-es",
+      "latest": "4.18.1",
+      "source": "https://registry.npmjs.org/lodash-es/latest",
+      "requires": null,
+      "status": "current"
+    },
+    {
+      "kind": "npm",
+      "name": "lookup-closest-locale",
+      "current": "6.2.0",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/lookup-closest-locale",
+      "path": "node_modules/lookup-closest-locale",
+      "latest": "6.2.0",
+      "source": "https://registry.npmjs.org/lookup-closest-locale/latest",
+      "requires": null,
+      "status": "current"
+    },
+    {
+      "kind": "npm",
+      "name": "marky",
+      "current": "1.3.0",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/marky",
+      "path": "node_modules/marky",
+      "latest": "1.3.0",
+      "source": "https://registry.npmjs.org/marky/latest",
+      "requires": null,
+      "status": "current"
+    },
+    {
+      "kind": "npm",
+      "name": "mitt",
+      "current": "3.0.1",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/mitt",
+      "path": "node_modules/mitt",
+      "latest": "3.0.1",
+      "source": "https://registry.npmjs.org/mitt/latest",
+      "requires": null,
+      "status": "current"
+    },
+    {
+      "kind": "npm",
+      "name": "modern-tar",
+      "current": "0.8.5",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/modern-tar",
+      "path": "node_modules/modern-tar",
+      "latest": "0.8.5",
+      "source": "https://registry.npmjs.org/modern-tar/latest",
+      "requires": {
+        "node": ">=18.0.0"
+      },
+      "status": "current"
+    },
+    {
+      "kind": "npm",
+      "name": "module-details-from-path",
+      "current": "1.0.4",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/module-details-from-path",
+      "path": "node_modules/module-details-from-path",
+      "latest": "1.0.4",
+      "source": "https://registry.npmjs.org/module-details-from-path/latest",
+      "requires": null,
+      "status": "current"
+    },
+    {
+      "kind": "npm",
+      "name": "ms",
+      "current": "2.1.3",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/ms",
+      "path": "node_modules/ms",
+      "latest": "2.1.3",
+      "source": "https://registry.npmjs.org/ms/latest",
+      "requires": null,
+      "status": "current"
+    },
+    {
+      "kind": "npm",
+      "name": "open",
+      "current": "8.4.2",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/open",
+      "path": "node_modules/open",
+      "latest": "11.0.4",
+      "source": "https://registry.npmjs.org/open/latest",
+      "requires": {
+        "node": ">=20"
+      },
+      "status": "outdated"
+    },
+    {
+      "kind": "npm",
+      "name": "playwright",
+      "current": "1.60.0",
+      "declared": "1.60.0",
+      "evidence": "package-lock.json: node_modules/playwright",
+      "path": "node_modules/playwright",
+      "latest": "1.63.0",
+      "source": "https://registry.npmjs.org/playwright/latest",
+      "requires": {
+        "node": ">=20"
+      },
+      "status": "outdated"
+    },
+    {
+      "kind": "npm",
+      "name": "playwright-core",
+      "current": "1.60.0",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/playwright-core",
+      "path": "node_modules/playwright-core",
+      "latest": "1.63.0",
+      "source": "https://registry.npmjs.org/playwright-core/latest",
+      "requires": {
+        "node": ">=20"
+      },
+      "status": "outdated"
+    },
+    {
+      "kind": "npm",
+      "name": "puppeteer-core",
+      "current": "25.10.0",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/puppeteer-core",
+      "path": "node_modules/puppeteer-core",
+      "latest": "25.11.0",
+      "source": "https://registry.npmjs.org/puppeteer-core/latest",
+      "requires": {
+        "node": ">=22.12.0"
+      },
+      "status": "outdated"
+    },
+    {
+      "kind": "npm",
+      "name": "devtools-protocol",
+      "current": "0.0.1666840",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/puppeteer-core/node_modules/devtools-protocol",
+      "path": "node_modules/puppeteer-core/node_modules/devtools-protocol",
+      "latest": "0.0.1700460",
+      "source": "https://registry.npmjs.org/devtools-protocol/latest",
+      "requires": null,
+      "status": "outdated"
+    },
+    {
+      "kind": "npm",
+      "name": "ws",
+      "current": "8.21.3",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/puppeteer-core/node_modules/ws",
+      "path": "node_modules/puppeteer-core/node_modules/ws",
+      "latest": "8.21.3",
+      "source": "https://registry.npmjs.org/ws/latest",
+      "requires": {
+        "node": ">=10.0.0"
+      },
+      "status": "current"
+    },
+    {
+      "kind": "npm",
+      "name": "require-directory",
+      "current": "2.1.1",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/require-directory",
+      "path": "node_modules/require-directory",
+      "latest": "2.1.1",
+      "source": "https://registry.npmjs.org/require-directory/latest",
+      "requires": {
+        "node": ">=0.10.0"
+      },
+      "status": "current"
+    },
+    {
+      "kind": "npm",
+      "name": "require-in-the-middle",
+      "current": "8.0.1",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/require-in-the-middle",
+      "path": "node_modules/require-in-the-middle",
+      "latest": "8.0.1",
+      "source": "https://registry.npmjs.org/require-in-the-middle/latest",
+      "requires": {
+        "node": ">=9.3.0 || >=8.10.0 <9.0.0"
+      },
+      "status": "current"
+    },
+    {
+      "kind": "npm",
+      "name": "robots-parser",
+      "current": "3.0.1",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/robots-parser",
+      "path": "node_modules/robots-parser",
+      "latest": "3.0.1",
+      "source": "https://registry.npmjs.org/robots-parser/latest",
+      "requires": {
+        "node": ">=10.0.0"
+      },
+      "status": "current"
+    },
+    {
+      "kind": "npm",
+      "name": "speedline-core",
+      "current": "1.4.3",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/speedline-core",
+      "path": "node_modules/speedline-core",
+      "latest": "1.4.3",
+      "source": "https://registry.npmjs.org/speedline-core/latest",
+      "requires": {
+        "node": ">=8.0"
+      },
+      "status": "current"
+    },
+    {
+      "kind": "npm",
+      "name": "string-width",
+      "current": "4.2.3",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/string-width",
+      "path": "node_modules/string-width",
+      "latest": "8.2.2",
+      "source": "https://registry.npmjs.org/string-width/latest",
+      "requires": {
+        "node": ">=20"
+      },
+      "status": "outdated"
+    },
+    {
+      "kind": "npm",
+      "name": "strip-ansi",
+      "current": "6.0.1",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/strip-ansi",
+      "path": "node_modules/strip-ansi",
+      "latest": "7.2.0",
+      "source": "https://registry.npmjs.org/strip-ansi/latest",
+      "requires": {
+        "node": ">=12"
+      },
+      "status": "outdated"
+    },
+    {
+      "kind": "npm",
+      "name": "stubborn-fs",
+      "current": "2.0.0",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/stubborn-fs",
+      "path": "node_modules/stubborn-fs",
+      "latest": "2.0.0",
+      "source": "https://registry.npmjs.org/stubborn-fs/latest",
+      "requires": null,
+      "status": "current"
+    },
+    {
+      "kind": "npm",
+      "name": "stubborn-utils",
+      "current": "1.0.2",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/stubborn-utils",
+      "path": "node_modules/stubborn-utils",
+      "latest": "1.0.2",
+      "source": "https://registry.npmjs.org/stubborn-utils/latest",
+      "requires": null,
+      "status": "current"
+    },
+    {
+      "kind": "npm",
+      "name": "third-party-web",
+      "current": "0.29.2",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/third-party-web",
+      "path": "node_modules/third-party-web",
+      "latest": "0.30.0",
+      "source": "https://registry.npmjs.org/third-party-web/latest",
+      "requires": null,
+      "status": "outdated"
+    },
+    {
+      "kind": "npm",
+      "name": "tldts-core",
+      "current": "7.4.10",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/tldts-core",
+      "path": "node_modules/tldts-core",
+      "latest": "7.4.13",
+      "source": "https://registry.npmjs.org/tldts-core/latest",
+      "requires": null,
+      "status": "outdated"
+    },
+    {
+      "kind": "npm",
+      "name": "tldts-icann",
+      "current": "7.4.10",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/tldts-icann",
+      "path": "node_modules/tldts-icann",
+      "latest": "7.4.13",
+      "source": "https://registry.npmjs.org/tldts-icann/latest",
+      "requires": null,
+      "status": "outdated"
+    },
+    {
+      "kind": "npm",
+      "name": "tslib",
+      "current": "2.8.1",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/tslib",
+      "path": "node_modules/tslib",
+      "latest": "2.8.1",
+      "source": "https://registry.npmjs.org/tslib/latest",
+      "requires": null,
+      "status": "current"
+    },
+    {
+      "kind": "npm",
+      "name": "type-fest",
+      "current": "4.41.0",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/type-fest",
+      "path": "node_modules/type-fest",
+      "latest": "5.10.0",
+      "source": "https://registry.npmjs.org/type-fest/latest",
+      "requires": {
+        "node": ">=20"
+      },
+      "status": "outdated"
+    },
+    {
+      "kind": "npm",
+      "name": "typed-query-selector",
+      "current": "2.12.2",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/typed-query-selector",
+      "path": "node_modules/typed-query-selector",
+      "latest": "2.12.2",
+      "source": "https://registry.npmjs.org/typed-query-selector/latest",
+      "requires": null,
+      "status": "current"
+    },
+    {
+      "kind": "npm",
+      "name": "undici-types",
+      "current": "8.3.0",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/undici-types",
+      "path": "node_modules/undici-types",
+      "latest": "8.10.2",
+      "source": "https://registry.npmjs.org/undici-types/latest",
+      "requires": null,
+      "status": "outdated"
+    },
+    {
+      "kind": "npm",
+      "name": "web-features",
+      "current": "3.38.0",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/web-features",
+      "path": "node_modules/web-features",
+      "latest": "3.39.0",
+      "source": "https://registry.npmjs.org/web-features/latest",
+      "requires": null,
+      "status": "outdated"
+    },
+    {
+      "kind": "npm",
+      "name": "webdriver-bidi-protocol",
+      "current": "0.4.3",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/webdriver-bidi-protocol",
+      "path": "node_modules/webdriver-bidi-protocol",
+      "latest": "1.0.1",
+      "source": "https://registry.npmjs.org/webdriver-bidi-protocol/latest",
+      "requires": null,
+      "status": "outdated"
+    },
+    {
+      "kind": "npm",
+      "name": "when-exit",
+      "current": "2.1.5",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/when-exit",
+      "path": "node_modules/when-exit",
+      "latest": "2.1.5",
+      "source": "https://registry.npmjs.org/when-exit/latest",
+      "requires": null,
+      "status": "current"
+    },
+    {
+      "kind": "npm",
+      "name": "wrap-ansi",
+      "current": "7.0.0",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/wrap-ansi",
+      "path": "node_modules/wrap-ansi",
+      "latest": "10.0.1",
+      "source": "https://registry.npmjs.org/wrap-ansi/latest",
+      "requires": {
+        "node": ">=20"
+      },
+      "status": "outdated"
+    },
+    {
+      "kind": "npm",
+      "name": "ws",
+      "current": "7.5.13",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/ws",
+      "path": "node_modules/ws",
+      "latest": "8.21.3",
+      "source": "https://registry.npmjs.org/ws/latest",
+      "requires": {
+        "node": ">=10.0.0"
+      },
+      "status": "outdated"
+    },
+    {
+      "kind": "npm",
+      "name": "xdg-basedir",
+      "current": "5.1.0",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/xdg-basedir",
+      "path": "node_modules/xdg-basedir",
+      "latest": "5.1.0",
+      "source": "https://registry.npmjs.org/xdg-basedir/latest",
+      "requires": {
+        "node": ">=12"
+      },
+      "status": "current"
+    },
+    {
+      "kind": "npm",
+      "name": "y18n",
+      "current": "5.0.8",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/y18n",
+      "path": "node_modules/y18n",
+      "latest": "5.0.8",
+      "source": "https://registry.npmjs.org/y18n/latest",
+      "requires": {
+        "node": ">=10"
+      },
+      "status": "current"
+    },
+    {
+      "kind": "npm",
+      "name": "yargs",
+      "current": "17.7.3",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/yargs",
+      "path": "node_modules/yargs",
+      "latest": "18.1.0",
+      "source": "https://registry.npmjs.org/yargs/latest",
+      "requires": {
+        "node": "^20.19.0 || ^22.12.0 || >=23"
+      },
+      "status": "outdated"
+    },
+    {
+      "kind": "npm",
+      "name": "yargs-parser",
+      "current": "21.1.1",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/yargs-parser",
+      "path": "node_modules/yargs-parser",
+      "latest": "22.0.0",
+      "source": "https://registry.npmjs.org/yargs-parser/latest",
+      "requires": {
+        "node": "^20.19.0 || ^22.12.0 || >=23"
+      },
+      "status": "outdated"
+    },
+    {
+      "kind": "npm",
+      "name": "zod",
+      "current": "3.25.76",
+      "declared": null,
+      "evidence": "package-lock.json: node_modules/zod",
+      "path": "node_modules/zod",
+      "latest": "4.6.5",
+      "source": "https://registry.npmjs.org/zod/latest",
+      "requires": null,
+      "status": "outdated"
+    },
+    {
+      "kind": "pypi",
+      "name": "beautifulsoup4",
+      "current": "4.15.0",
+      "evidence": "requirements-qa.txt",
+      "declared": "4.15.0",
+      "latest": "4.15.0",
+      "source": "https://pypi.org/pypi/beautifulsoup4/json",
+      "requires": ">=3.7.0",
+      "status": "current"
+    },
+    {
+      "kind": "pypi",
+      "name": "pytest",
+      "current": "9.1.1",
+      "evidence": "requirements-qa.txt",
+      "declared": "9.1.1",
+      "latest": "9.1.1",
+      "source": "https://pypi.org/pypi/pytest/json",
+      "requires": ">=3.10",
+      "status": "current"
+    },
+    {
+      "kind": "npm",
+      "name": "mermaid",
+      "declared": "vendored",
+      "current": "11.17.2",
+      "evidence": "assets/vendor/mermaid/VERSION; validate-site.py checks bundle agreement",
+      "latest": "12.0.0",
+      "source": "https://registry.npmjs.org/mermaid/latest",
+      "requires": {
+        "node": ">=22.12.0"
+      },
+      "status": "outdated"
+    },
+    {
+      "kind": "action",
+      "name": "actions/checkout",
+      "current": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+      "evidence": ".github/workflows/i18n-page-sync.yml, .github/workflows/mermaid-version-watch.yml, .github/workflows/technology-audit.yml",
+      "latest": "v7.0.1",
+      "source": "https://api.github.com/repos/actions/checkout/releases/latest",
+      "resolved": "v7.0.1",
+      "status": "current"
+    },
+    {
+      "kind": "action",
+      "name": "actions/checkout",
+      "current": "v4",
+      "evidence": ".github/workflows/hosted-js-smoke.yml, .github/workflows/public-gpt-links.yml, .github/workflows/validate.yml",
+      "latest": "v7.0.1",
+      "source": "https://api.github.com/repos/actions/checkout/releases/latest",
+      "resolved": "v4.4.0",
+      "status": "outdated"
+    },
+    {
+      "kind": "action",
+      "name": "actions/configure-pages",
+      "current": "v5",
+      "evidence": ".github/workflows/validate.yml",
+      "latest": "v6.0.0",
+      "source": "https://api.github.com/repos/actions/configure-pages/releases/latest",
+      "resolved": "v5.0.0",
+      "status": "outdated"
+    },
+    {
+      "kind": "action",
+      "name": "actions/deploy-pages",
+      "current": "v4",
+      "evidence": ".github/workflows/validate.yml",
+      "latest": "v5.0.1",
+      "source": "https://api.github.com/repos/actions/deploy-pages/releases/latest",
+      "resolved": "v4.0.5",
+      "status": "outdated"
+    },
+    {
+      "kind": "action",
+      "name": "actions/download-artifact",
+      "current": "v4",
+      "evidence": ".github/workflows/validate.yml",
+      "latest": "v8.0.1",
+      "source": "https://api.github.com/repos/actions/download-artifact/releases/latest",
+      "resolved": "v4.3.0",
+      "status": "outdated"
+    },
+    {
+      "kind": "action",
+      "name": "actions/github-script",
+      "current": "f28e40c7f34bde8b3046d885e986cb6290c5673b",
+      "evidence": ".github/workflows/mermaid-version-watch.yml",
+      "latest": "v9.0.0",
+      "source": "https://api.github.com/repos/actions/github-script/releases/latest",
+      "resolved": "v7.1.0",
+      "status": "outdated"
+    },
+    {
+      "kind": "action",
+      "name": "actions/setup-node",
+      "current": "v4",
+      "evidence": ".github/workflows/hosted-js-smoke.yml, .github/workflows/validate.yml",
+      "latest": "v7.0.0",
+      "source": "https://api.github.com/repos/actions/setup-node/releases/latest",
+      "resolved": "v4.4.0",
+      "status": "outdated"
+    },
+    {
+      "kind": "action",
+      "name": "actions/setup-node",
+      "current": "v7.0.0",
+      "evidence": ".github/workflows/technology-audit.yml",
+      "latest": "v7.0.0",
+      "source": "https://api.github.com/repos/actions/setup-node/releases/latest",
+      "resolved": "v7.0.0",
+      "status": "current"
+    },
+    {
+      "kind": "action",
+      "name": "actions/setup-python",
+      "current": "5fda3b95a4ea91299a34e894583c3862153e4b97",
+      "evidence": ".github/workflows/i18n-page-sync.yml, .github/workflows/technology-audit.yml",
+      "latest": "v7.0.0",
+      "source": "https://api.github.com/repos/actions/setup-python/releases/latest",
+      "resolved": "v7.0.0",
+      "status": "current"
+    },
+    {
+      "kind": "action",
+      "name": "actions/setup-python",
+      "current": "v5",
+      "evidence": ".github/workflows/public-gpt-links.yml, .github/workflows/validate.yml",
+      "latest": "v7.0.0",
+      "source": "https://api.github.com/repos/actions/setup-python/releases/latest",
+      "resolved": "v5.6.0",
+      "status": "outdated"
+    },
+    {
+      "kind": "action",
+      "name": "actions/upload-artifact",
+      "current": "v4",
+      "evidence": ".github/workflows/hosted-js-smoke.yml, .github/workflows/public-gpt-links.yml, .github/workflows/validate.yml",
+      "latest": "v7.0.1",
+      "source": "https://api.github.com/repos/actions/upload-artifact/releases/latest",
+      "resolved": "v4.6.2",
+      "status": "outdated"
+    },
+    {
+      "kind": "action",
+      "name": "actions/upload-artifact",
+      "current": "v7.0.1",
+      "evidence": ".github/workflows/technology-audit.yml",
+      "latest": "v7.0.1",
+      "source": "https://api.github.com/repos/actions/upload-artifact/releases/latest",
+      "resolved": "v7.0.1",
+      "status": "current"
+    },
+    {
+      "kind": "action",
+      "name": "actions/upload-pages-artifact",
+      "current": "v3",
+      "evidence": ".github/workflows/validate.yml",
+      "latest": "v5.0.0",
+      "source": "https://api.github.com/repos/actions/upload-pages-artifact/releases/latest",
+      "resolved": "v3.0.1",
+      "status": "outdated"
+    }
+  ],
+  "local_observations": {
+    "node": "v24.11.1",
+    "npm": "11.6.2",
+    "python": "3.14.0rc1",
+    "git": "git version 2.55.0.windows.5",
+    "npm_installed_direct": {
+      "playwright": "1.60.0",
+      "lighthouse": "12.8.2"
+    },
+    "python_installed_closure": {
+      "beautifulsoup4": "4.15.0",
+      "colorama": "0.4.6",
+      "iniconfig": "2.3.0",
+      "packaging": "26.3",
+      "pip": "25.1.1",
+      "pluggy": "1.6.0",
+      "pygments": "2.21.0",
+      "pytest": "9.1.1",
+      "soupsieve": "2.9.2",
+      "typing-extensions": "4.16.0"
+    },
+    "scope": "This process and local installations only; not CI, Replit, or live deployment."
+  },
+  "local_python_packages": [
+    {
+      "name": "beautifulsoup4",
+      "current": "4.15.0",
+      "latest": "4.15.0",
+      "source": "https://pypi.org/pypi/beautifulsoup4/json",
+      "requires": ">=3.7.0"
+    },
+    {
+      "name": "colorama",
+      "current": "0.4.6",
+      "latest": "0.4.6",
+      "source": "https://pypi.org/pypi/colorama/json",
+      "requires": "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,!=3.5.*,!=3.6.*,>=2.7"
+    },
+    {
+      "name": "iniconfig",
+      "current": "2.3.0",
+      "latest": "2.3.0",
+      "source": "https://pypi.org/pypi/iniconfig/json",
+      "requires": ">=3.10"
+    },
+    {
+      "name": "packaging",
+      "current": "26.3",
+      "latest": "26.3",
+      "source": "https://pypi.org/pypi/packaging/json",
+      "requires": ">=3.9"
+    },
+    {
+      "name": "pip",
+      "current": "25.1.1",
+      "latest": "26.2.1",
+      "source": "https://pypi.org/pypi/pip/json",
+      "requires": ">=3.10"
+    },
+    {
+      "name": "pluggy",
+      "current": "1.6.0",
+      "latest": "1.6.0",
+      "source": "https://pypi.org/pypi/pluggy/json",
+      "requires": ">=3.9"
+    },
+    {
+      "name": "pygments",
+      "current": "2.21.0",
+      "latest": "2.21.0",
+      "source": "https://pypi.org/pypi/pygments/json",
+      "requires": ">=3.9"
+    },
+    {
+      "name": "pytest",
+      "current": "9.1.1",
+      "latest": "9.1.1",
+      "source": "https://pypi.org/pypi/pytest/json",
+      "requires": ">=3.10"
+    },
+    {
+      "name": "soupsieve",
+      "current": "2.9.2",
+      "latest": "2.9.2",
+      "source": "https://pypi.org/pypi/soupsieve/json",
+      "requires": ">=3.10"
+    },
+    {
+      "name": "typing-extensions",
+      "current": "4.16.0",
+      "latest": "4.16.0",
+      "source": "https://pypi.org/pypi/typing-extensions/json",
+      "requires": ">=3.9"
+    }
+  ],
+  "npm_tool": {
+    "name": "npm",
+    "current": "11.6.2",
+    "latest": "12.0.2",
+    "source": "https://registry.npmjs.org/npm/latest",
+    "requires": {
+      "node": "^22.22.2 || ^24.15.0 || >=26.0.0"
+    }
+  }
+}
