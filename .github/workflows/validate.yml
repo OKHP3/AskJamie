@@ -32,7 +32,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install beautifulsoup4 "pytest>=8"
+          python3 -m pip install -r requirements-qa.txt
           installed=false
           for attempt in 1 2 3; do
             if npm ci --no-audit --no-fund --prefer-offline && node --input-type=module -e "import('playwright').then(() => console.log('Playwright dependency resolved from node_modules.'))"; then
@@ -47,6 +47,9 @@ jobs:
             exit 1
           fi
           npx playwright install --with-deps chromium
+
+      - name: Verify dependency manifest contracts
+        run: python3 scripts/technology-audit.py --check
 
       - name: Run site validator
         run: python3 scripts/validate-site.py

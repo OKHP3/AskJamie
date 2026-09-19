@@ -270,6 +270,22 @@ The July 24, 2026 inspection re-ran these checks against the working tree
   the current scorecard and rerun the commands above instead of treating this
   dated inspection as present state.
 
+### Technology updates
+
+`requirements-qa.txt` is the exact Python QA input consumed by Site Validation.
+Run `python3 scripts/technology-audit.py --check` to verify dependency manifests
+and their CI consumer without contacting the network. The weekly Technology
+Version Audit queries publisher releases and retains a complete report.
+`.github/dependabot.yml` proposes npm, pip, and GitHub Actions updates through
+pull requests. Major upgrades stay separate and require compatibility review.
+Node updates follow the latest LTS release. Mermaid remains a reviewed vendor
+update. See `docs/technology-update-policy.md` for activation and update steps.
+
+The inherited `scripts/check-stack-conformance.py` has historical fixed-version
+and layout assumptions that conflict with this repository. Do not use its
+`--fix` mode as an upgrade mechanism. The technology audit checks version
+consistency without requiring old releases.
+
 ### Generated data and mutation rules
 
 After a content change, rebuild the search index with:

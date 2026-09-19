@@ -1,5 +1,6 @@
 # Runtime/CI HTML QA dependencies for askjamie.bot.
-# Pinned per ADR-0007; update only through a reviewed dependency change.
+# Exact pins consumed by Site Validation; update through a tested dependency PR.
 # Browser automation runs in Node here (responsive-qa.mjs, experience-qa.cjs),
 # so python-playwright is deliberately not pinned in this repository.
 beautifulsoup4==4.15.0
+pytest==9.1.1
