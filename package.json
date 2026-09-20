@@ -1,10 +1,10 @@
 {
   "engines": {
-    "node": "22.19.0"
+    "node": "24.21.0"
   },
   "devDependencies": {
-    "playwright": "1.63.0",
-    "lighthouse": "13.4.1"
+    "lighthouse": "13.5.0",
+    "playwright": "1.63.0"
   },
   "scripts": {
     "validate": "python3 scripts/validate-site.py",
