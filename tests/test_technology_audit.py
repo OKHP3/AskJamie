@@ -91,7 +91,8 @@ def test_manifest_contract_catches_stale_lock_and_bypassed_requirements(project)
 
 
 def test_runtime_major_upgrade_requires_matching_replit_configuration(project):
-    (project / ".node-version").write_text("24.21.0\n")
+    current_major = int((project / ".node-version").read_text().split(".")[0])
+    (project / ".node-version").write_text(f"{current_major + 2}.0.0\n")
     errors = audit.contracts(project)
     assert "Replit Node module differs from .node-version major" in errors
 
